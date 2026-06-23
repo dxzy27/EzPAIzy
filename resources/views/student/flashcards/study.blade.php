@@ -262,6 +262,7 @@
                             if (i === 0 || normalizedDefinition[i-1] !== ' ') {
                                 if (normalizedDefinition.substring(i).match(/^\s+\d+\.\s/)) {
                                     answerWords += '<div style="margin-top: 15px;"></div>';
+                                    continue;
                                 }
                             }
                             answerWords += ' &nbsp; ';
@@ -397,6 +398,7 @@
                     if (i === 0 || correct[i-1] !== ' ') {
                         if (correct.substring(i).match(/^\s+\d+\.\s/)) {
                             display += '<div style="margin-top: 15px;"></div>';
+                            continue;
                         }
                     }
                     display += ' &nbsp; ';
