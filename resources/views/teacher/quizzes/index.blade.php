@@ -8,16 +8,6 @@
             <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-dark">
                 <i class="bi bi-cpu me-1"></i> Generate with AI
             </a>
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle {{ !request('topic') ? 'disabled' : '' }}" type="button" id="createQuizDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="{{ !request('topic') ? 'Select a folder first' : 'Create Quiz' }}">
-                    + Create Quiz
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="createQuizDropdown">
-                    <li><a class="dropdown-item" href="{{ route('teacher.quizzes.create', ['difficulty' => 'easy', 'topic' => request('topic')]) }}">Easy</a></li>
-                    <li><a class="dropdown-item" href="{{ route('teacher.quizzes.create', ['difficulty' => 'medium', 'topic' => request('topic')]) }}">Medium</a></li>
-                    <li><a class="dropdown-item" href="{{ route('teacher.quizzes.create', ['difficulty' => 'hard', 'topic' => request('topic')]) }}">Hard</a></li>
-                </ul>
-            </div>
         </div>
     </div>
 

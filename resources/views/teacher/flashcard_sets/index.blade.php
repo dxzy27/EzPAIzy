@@ -6,9 +6,6 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold mb-0">My Flashcard Sets</h4>
-        <a href="{{ route('teacher.flashcard-sets.create', ['topic' => request('topic')]) }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>New Flashcard Set
-        </a>
     </div>
 
 
