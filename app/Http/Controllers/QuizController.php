@@ -207,7 +207,7 @@ class QuizController extends Controller
             $request->input('instructions', '')
         );
 
-        $result = $this->callGemini($prompt);
+        $result = $this->callAI($prompt, 'openai/gpt-oss-120b:free');
 
         if (isset($result['error'])) {
             return redirect()->back()->with('error', 'AI generation failed: ' . $result['error']);
@@ -256,11 +256,10 @@ class QuizController extends Controller
         );
 
         // Fetch Gemini questions
-        $gemini = $this->callGemini($prompt);
+        $gemini = $this->callAI($prompt, 'google/gemini-2.5-flash-lite-preview-09-2025'); // OpenRouter supports this
 
-        // Fetch GPT questions (simulated by calling Gemini with a different prompt/temperature/system setting)
-        $gptPrompt = "Act as OpenAI's GPT model. Generate a distinct set of questions for comparison. Here is the requirement:\n\n" . $prompt;
-        $gpt = $this->callGemini($gptPrompt, 0.9); // higher temperature for variance
+        // Fetch GPT questions using actual OpenAI model via OpenRouter
+        $gpt = $this->callAI($prompt, 'openai/gpt-oss-120b:free', 0.9);
 
         return view('teacher.quizzes.compare', [
             'gemini' => $gemini,
@@ -378,7 +377,7 @@ class QuizController extends Controller
         }
         Do not return any other text, comments or formatting besides the raw JSON. Here is the module text:\n\n" . substr($text, 0, 15000); // chunk to avoid size limits
 
-        $result = $this->callGemini($prompt);
+        $result = $this->callAI($prompt, 'openai/gpt-oss-120b:free');
 
         if (isset($result['error']) || empty($result['questions'])) {
             return redirect()->back()->with('error', 'AI Extraction failed: ' . ($result['error'] ?? 'No questions found.'));
@@ -453,37 +452,42 @@ class QuizController extends Controller
     }
 
     /**
-     * Call Gemini 1.5 Flash API.
+     * Call APIFree AI Unified Endpoint
      */
-    private function callGemini($prompt, $temp = 0.2)
+    private function callAI($prompt, $model = 'openai/gpt-oss-120b:free', $temp = 0.2)
     {
-        $key = env('GEMINI_API_KEY');
+        $key = env('OPENROUTER_API_KEY');
+        
         if (empty($key)) {
-            return ['error' => 'GEMINI_API_KEY is not set in the .env file.'];
+            return ['error' => 'API Key is not set in the .env file.'];
         }
 
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $key;
+        $url = "https://openrouter.ai/api/v1/chat/completions";
 
         try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json'
+            $response = Http::withToken($key)->withHeaders([
+                'Content-Type' => 'application/json',
+                'HTTP-Referer' => url('/'), // Optional, for OpenRouter rankings
+                'X-Title' => 'EzPAIzy App' // Optional, for OpenRouter rankings
             ])->post($url, [
-                'contents' => [
+                'model' => $model,
+                'messages' => [
                     [
-                        'parts' => [
-                            ['text' => $prompt]
-                        ]
+                        'role' => 'user',
+                        'content' => $prompt
                     ]
                 ],
-                'generationConfig' => [
-                    'responseMimeType' => 'application/json',
-                    'temperature' => $temp
-                ]
+                'temperature' => $temp
             ]);
 
             if ($response->successful()) {
-                $text = $response->json('candidates.0.content.parts.0.text');
+                $jsonResponse = $response->json();
+                $text = data_get($jsonResponse, 'choices.0.message.content');
                 
+                if ($text === null) {
+                    return ['error' => 'Unexpected API format. Raw JSON: ' . json_encode($jsonResponse)];
+                }
+
                 // Clean up any potential markdown wraps
                 $text = trim($text);
                 if (str_starts_with($text, '```')) {
