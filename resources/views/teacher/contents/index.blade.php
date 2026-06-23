@@ -6,9 +6,6 @@
         <div class="col-md-8">
             <h1>Other Materials</h1>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ route('teacher.contents.create', ['topic' => request('topic')]) }}" class="btn btn-primary">+ Add Content</a>
-        </div>
     </div>
 
 
