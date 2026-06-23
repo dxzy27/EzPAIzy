@@ -244,7 +244,7 @@
     .hide-password-icon {
         position: absolute; right: 14px; top: 50%;
         transform: translateY(-50%);
-        color: #94a3b8; cursor: pointer; font-size: 1rem;
+        color: #94a3b8; cursor: pointer; font-size: 1rem; z-index: 10;
     }
     .hide-password-icon:hover { color: var(--accent); }
 
@@ -282,14 +282,16 @@
 
 @push('scripts')
 <script>
-    const icon = document.getElementById('passIcon');
-    const inp  = document.getElementById('password');
-    if (icon) {
-        icon.addEventListener('click', () => {
-            const show = inp.type === 'password';
-            inp.type = show ? 'text' : 'password';
-            icon.className = show ? 'bi bi-eye-slash hide-password-icon' : 'bi bi-eye hide-password-icon';
-        });
-    }
+    document.addEventListener('click', function(e) {
+        const icon = e.target.closest('#passIcon');
+        if (icon) {
+            const inp = document.getElementById('password');
+            if (inp) {
+                const show = inp.type === 'password';
+                inp.type = show ? 'text' : 'password';
+                icon.className = show ? 'bi bi-eye-slash hide-password-icon' : 'bi bi-eye hide-password-icon';
+            }
+        }
+    });
 </script>
 @endpush
