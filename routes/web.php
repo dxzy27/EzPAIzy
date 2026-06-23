@@ -140,7 +140,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::post('/students/store', [StudentManagementController::class, 'store'])->name('students.store');
     Route::get('/students/{student}', [StudentManagementController::class, 'show'])->name('students.show');
     Route::get('/students/{student}/edit', [StudentManagementController::class, 'edit'])->name('students.edit');
-    Route::post('/students/{student}/update', [StudentManagementController::class, 'update'])->name('students.update');
+    Route::put('/students/{student}/update', [StudentManagementController::class, 'update'])->name('students.update');
     Route::delete('/students/{student}/destroy', [StudentManagementController::class, 'destroy'])->name('students.destroy');
 
     // Topics Management
