@@ -430,7 +430,7 @@
         .card {
             border-radius: 16px !important;
             border: 1px solid rgba(0, 0, 0, 0.05) !important;
-            background: #ffffff !important;
+            background: #ffffff;
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
             transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
