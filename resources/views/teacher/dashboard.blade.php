@@ -75,7 +75,7 @@
         </a>
     </div>
     <div class="col-sm-6 col-xl-3">
-        <a href="{{ route('teacher.contents.index') }}" class="card stat-card text-decoration-none d-block" style="padding:18px 20px;">
+        <a href="{{ route('teacher.flashcard-sets.index') }}" class="card stat-card text-decoration-none d-block" style="padding:18px 20px;">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#d1fae5; color:#059669;"><i class="bi bi-collection"></i></div>
                 <div>

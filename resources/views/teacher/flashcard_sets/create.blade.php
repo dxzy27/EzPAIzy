@@ -72,8 +72,8 @@
             <div class="col-md-6">
                 <div class="card shadow-sm border-0" style="cursor: pointer; transition: all 0.2s; background: linear-gradient(135deg, #f0f4c3 0%, #ffffff 100%); border: 1px dashed #c0ca33 !important;" id="csv-import-btn">
                     <div class="card-body py-4 text-center">
-                        <h5 class="fw-bold mb-0 text-success text-uppercase"><i class="bi bi-file-earmark-spreadsheet"></i> Import from CSV</h5>
-                        <input type="file" id="csv-file-input" class="d-none" accept=".csv, .txt">
+                        <h5 class="fw-bold mb-0 text-success text-uppercase"><i class="bi bi-file-earmark-spreadsheet"></i> Import from CSV/Excel</h5>
+                        <input type="file" id="csv-file-input" class="d-none" accept=".csv, .txt, .xlsx, .xls">
                     </div>
                 </div>
             </div>
@@ -168,6 +168,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('cards-container');
@@ -273,67 +274,102 @@
             }
         }
 
-        // --- CSV Import Logic ---
-        const csvImportBtn = document.getElementById('csv-import-btn');
-        const csvFileInput = document.getElementById('csv-file-input');
+        // --- File Import Logic ---
+        const fileImportBtn = document.getElementById('csv-import-btn');
+        const fileInput = document.getElementById('csv-file-input');
 
-        if(csvImportBtn && csvFileInput) {
-            csvImportBtn.addEventListener('click', (e) => {
-                if(e.target !== csvFileInput) {
-                    csvFileInput.click();
+        if(fileImportBtn && fileInput) {
+            fileImportBtn.addEventListener('click', (e) => {
+                if(e.target !== fileInput) {
+                    fileInput.click();
                 }
             });
 
-            csvFileInput.addEventListener('change', async function() {
+            fileInput.addEventListener('change', function(e) {
                 if (this.files.length === 0) return;
 
                 const file = this.files[0];
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('_token', '{{ csrf_token() }}');
+                const originalText = fileImportBtn.querySelector('h5').innerHTML;
+                fileImportBtn.querySelector('h5').innerHTML = '<i class="bi bi-hourglass-split"></i> Parsing file...';
+                fileImportBtn.style.pointerEvents = 'none';
 
-                // Show loading state
-                const originalText = csvImportBtn.querySelector('h5').innerHTML;
-                csvImportBtn.querySelector('h5').innerHTML = '<i class="bi bi-hourglass-split"></i> Parsing CSV...';
-                csvImportBtn.style.pointerEvents = 'none';
-
-                try {
-                    const response = await fetch('{{ route('teacher.flashcards.import_csv') }}', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Failed to import CSV');
-                    }
-
-                    if (data.flashcards && data.flashcards.length > 0) {
-                        data.flashcards.forEach(card => addCard(card));
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, {type: 'array'});
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
                         
-                        // Scroll to the first new card
-                        const allCards = container.querySelectorAll('.flashcard-row');
-                        if(allCards.length > 0) {
-                            allCards[allCards.length - data.flashcards.length].scrollIntoView({ behavior: 'smooth' });
+                        // Convert to JSON (array of arrays)
+                        const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                        
+                        let importedCount = 0;
+                        if (json.length > 0) {
+                            // Find column indices
+                            let termIdx = 0;
+                            let defIdx = 1;
+                            
+                            const headerRow = json[0].map(h => String(h).toLowerCase().trim());
+                            
+                            // Try to find specific columns
+                            const questionCol = headerRow.findIndex(h => h.includes('question') || h.includes('term'));
+                            const answerCol = headerRow.findIndex(h => h.includes('answer') || h.includes('definition'));
+                            
+                            if (questionCol !== -1 && answerCol !== -1) {
+                                termIdx = questionCol;
+                                defIdx = answerCol;
+                            } else if (headerRow.length >= 3 && (headerRow[0].includes('no') || headerRow[0] === '#')) {
+                                // If no explicit headers but first column looks like "No.", shift over
+                                termIdx = 1;
+                                defIdx = 2;
+                            }
+
+                            json.forEach((row, index) => {
+                                // Skip the header row if we detected headers
+                                if (index === 0 && (questionCol !== -1 || row[termIdx]?.toString().toLowerCase().includes('term') || row[termIdx]?.toString().toLowerCase().includes('question'))) {
+                                    return;
+                                }
+
+                                if (!row || row.length < 2) return;
+                                
+                                const term = row[termIdx] ? String(row[termIdx]).trim() : '';
+                                const definition = row[defIdx] ? String(row[defIdx]).trim() : '';
+                                
+                                if (term && definition) {
+                                    addCard({term: term, definition: definition});
+                                    importedCount++;
+                                }
+                            });
                         }
-                        
-                        alert('Success! ' + data.flashcards.length + ' flashcards imported.');
-                    } else {
-                        alert('No valid flashcards found in the CSV. Please ensure it has at least two columns (Term, Definition).');
+
+                        if (importedCount > 0) {
+                            const allCards = container.querySelectorAll('.flashcard-row');
+                            if(allCards.length > 0) {
+                                allCards[allCards.length - importedCount].scrollIntoView({ behavior: 'smooth' });
+                            }
+                            alert('Success! ' + importedCount + ' flashcards imported.');
+                        } else {
+                            alert('No valid flashcards found. Please ensure the file has at least two columns (Term, Definition).');
+                        }
+
+                    } catch (error) {
+                        console.error(error);
+                        alert('Error parsing file: ' + error.message);
+                    } finally {
+                        fileImportBtn.querySelector('h5').innerHTML = originalText;
+                        fileImportBtn.style.pointerEvents = 'auto';
+                        fileInput.value = '';
                     }
-
-                } catch (error) {
-                    console.error(error);
-                    alert('Error: ' + error.message);
-                } finally {
-                    // Reset UI
-                    csvImportBtn.querySelector('h5').innerHTML = originalText;
-                    csvImportBtn.style.pointerEvents = 'auto';
-                    csvFileInput.value = ''; 
+                };
+                reader.onerror = function() {
+                    alert('Error reading file.');
+                    fileImportBtn.querySelector('h5').innerHTML = originalText;
+                    fileImportBtn.style.pointerEvents = 'auto';
+                    fileInput.value = '';
                 }
+                reader.readAsArrayBuffer(file);
             });
-
         }
 
         // --- Delete All Logic ---
@@ -359,6 +395,21 @@
                 reindexCards();
             }
         });
+        // --- Prevent Double Submission ---
+        const flashcardForm = document.getElementById('flashcardForm');
+        if (flashcardForm) {
+            flashcardForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    if (submitBtn.disabled) {
+                        e.preventDefault();
+                        return;
+                    }
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+                }
+            });
+        }
     });
 </script>
 @endpush

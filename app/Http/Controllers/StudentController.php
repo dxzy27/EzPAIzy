@@ -203,9 +203,9 @@ class StudentController extends Controller
     public function showFlashcardSet(FlashcardSet $set)
     {
         $allCards = $set->flashcards()->get(['id', 'term', 'definition']);
-        return view('student.flashcards.show', [
+        return view('student.flashcards.study', [
             'flashcardSet' => $set,
-            'allCards' => $allCards
+            'dueCards' => $allCards
         ]);
     }
 

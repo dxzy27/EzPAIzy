@@ -71,7 +71,7 @@ class FlashcardSetController extends Controller
             ]);
         }
 
-        return redirect()->route('teacher.contents.index', ['topic' => $set->topic])
+        return redirect()->route('teacher.flashcard-sets.folder', ['topic' => $set->topic])
             ->with('success', 'Flashcard set created successfully!');
     }
 
@@ -116,7 +116,7 @@ class FlashcardSetController extends Controller
             ]);
         }
 
-        return redirect()->route('teacher.contents.index', ['topic' => $flashcardSet->topic])
+        return redirect()->back()
             ->with('success', 'Flashcard set updated successfully!');
     }
 
@@ -129,7 +129,7 @@ class FlashcardSetController extends Controller
         $flashcardSet->flashcards()->delete();
         $flashcardSet->delete();
 
-        return redirect()->route('teacher.contents.index', ['topic' => $topic])
+        return redirect()->route('teacher.flashcard-sets.folder', ['topic' => $topic])
             ->with('success', 'Flashcard set deleted successfully!');
     }
 

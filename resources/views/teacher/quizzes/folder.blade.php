@@ -9,7 +9,8 @@
                     <i class="bi bi-arrow-left fs-5"></i>
                 </a>
                 <div>
-                    <h1 class="h2 fw-bold text-dark mb-0">{{ $topic }}</h1>
+                    <h1 class="h2 fw-bold text-dark mb-0 d-inline-block pe-2" id="topic-title-display" title="Double click to rename" style="cursor: pointer;" data-bs-toggle="tooltip">{{ $topic }} <i class="bi bi-pencil ms-2 text-muted" style="font-size: 0.8rem; opacity: 0.5;"></i></h1>
+                    <input type="text" id="topic-title-input" class="form-control d-none fw-bold text-dark mb-0" value="{{ $topic }}" style="font-size: 1.75rem; padding: 0.2rem 0.5rem; max-width: 300px;">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="{{ route('teacher.quizzes.index') }}" class="text-decoration-none">Quizzes</a></li>
@@ -36,12 +37,7 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+
 
     @if($quizzes->isEmpty())
     <div class="card border-0 shadow-sm text-center py-5" style="border-radius:14px;">
@@ -85,3 +81,89 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleDisplay = document.getElementById('topic-title-display');
+        const titleInput = document.getElementById('topic-title-input');
+        const originalTopic = "{{ $topic }}";
+
+        if (titleDisplay && titleInput) {
+            // Double click to edit
+            titleDisplay.addEventListener('dblclick', function() {
+                titleDisplay.classList.add('d-none');
+                titleInput.classList.remove('d-none');
+                titleInput.focus();
+                // Put cursor at the end
+                const val = titleInput.value;
+                titleInput.value = '';
+                titleInput.value = val;
+            });
+
+            // Submit on blur or enter
+            function submitRename() {
+                const newName = titleInput.value.trim();
+                if (newName === '' || newName === originalTopic) {
+                    // Cancel
+                    titleInput.classList.add('d-none');
+                    titleDisplay.classList.remove('d-none');
+                    titleInput.value = originalTopic;
+                    return;
+                }
+
+                // Disable input while submitting
+                titleInput.disabled = true;
+
+                fetch(`/topics/${encodeURIComponent(originalTopic)}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        new_name: newName,
+                        type: 'quiz'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        alert('Failed to rename topic.');
+                        titleInput.disabled = false;
+                        titleInput.focus();
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('An error occurred while renaming.');
+                    titleInput.disabled = false;
+                    titleInput.focus();
+                });
+            }
+
+            titleInput.addEventListener('blur', submitRename);
+            titleInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    titleInput.blur(); // Triggers blur which calls submitRename
+                } else if (e.key === 'Escape') {
+                    titleInput.value = originalTopic;
+                    titleInput.blur();
+                }
+            });
+        }
+        
+        // Initialize tooltip if bootstrap is available
+        if (typeof bootstrap !== 'undefined') {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+    });
+</script>
+@endpush

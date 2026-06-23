@@ -413,7 +413,6 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,.14);
             transition: transform .2s, box-shadow .2s;
-            text-transform: uppercase;
         }
         .profile-avatar:hover { transform: scale(1.07); box-shadow: 0 6px 18px rgba(0,0,0,.2); }
 
@@ -613,6 +612,20 @@
         </header>
 
         <div class="page-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             @yield('content')
         </div>
     </div>

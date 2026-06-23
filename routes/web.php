@@ -101,7 +101,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::post('/quizzes/store', [QuizController::class, 'store'])->name('quizzes.store');
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
     Route::get('/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
-    Route::post('/quizzes/{quiz}/update', [QuizController::class, 'update'])->name('quizzes.update');
+    Route::put('/quizzes/{quiz}/update', [QuizController::class, 'update'])->name('quizzes.update');
     Route::delete('/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quizzes.destroy');
 
     // AI Quiz Generation & Comparison
@@ -121,7 +121,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::post('/contents/store', [ContentController::class, 'store'])->name('contents.store');
     Route::get('/contents/{content}', [ContentController::class, 'show'])->name('contents.show');
     Route::get('/contents/{content}/edit', [ContentController::class, 'edit'])->name('contents.edit');
-    Route::post('/contents/{content}/update', [ContentController::class, 'update'])->name('contents.update');
+    Route::put('/contents/{content}/update', [ContentController::class, 'update'])->name('contents.update');
     Route::delete('/contents/{content}/destroy', [ContentController::class, 'destroy'])->name('contents.destroy');
  
     // Flashcard Sets (hyphen-named to match view references)
@@ -131,7 +131,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::post('/flashcard-sets/store', [FlashcardSetController::class, 'store'])->name('flashcard-sets.store');
     Route::post('/flashcard-sets/import-csv', [FlashcardSetController::class, 'importCsv'])->name('flashcards.import_csv');
     Route::get('/flashcard-sets/{flashcardSet}/edit', [FlashcardSetController::class, 'edit'])->name('flashcard-sets.edit');
-    Route::post('/flashcard-sets/{flashcardSet}/update', [FlashcardSetController::class, 'update'])->name('flashcard-sets.update');
+    Route::put('/flashcard-sets/{flashcardSet}/update', [FlashcardSetController::class, 'update'])->name('flashcard-sets.update');
     Route::delete('/flashcard-sets/{flashcardSet}/destroy', [FlashcardSetController::class, 'destroy'])->name('flashcard-sets.destroy');
 
     // Student Management
@@ -145,6 +145,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
 
     // Topics Management
     Route::post('/topics', [TopicController::class, 'store'])->name('topics.store');
+    Route::put('/topics/{topicName}', [TopicController::class, 'update'])->name('topics.update');
     Route::delete('/topics/{topic}', [TopicController::class, 'destroy'])->name('topics.destroy');
 });
 

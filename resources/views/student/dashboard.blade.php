@@ -137,13 +137,6 @@
 
 <div class="container">
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" style="border-radius: 12px;">
-        <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
     {{-- ── Diagnosis Banner (undiagnosed only) ── --}}
     @if(!$style && !session('diag_banner_dismissed'))
     <div class="diag-banner">
@@ -189,20 +182,12 @@
     {{-- ── Stats Cards (order + accent changes per style) ── --}}
     {{-- Define the 3 card slots --}}
     @php
-        $cardFlashcard = [
-            'title'     => '🗂️ Flashcards',
-            'count'     => $flashcardCount,
-            'sub'       => 'Card Sets Available',
-            'color'     => '#7c3aed',
-            'isPrimary' => $style === 'visual',
-            'type'      => 'flashcard',
-        ];
         $cardMaterials = [
             'title'     => '📚 Materials',
-            'count'     => $contentCount,
-            'sub'       => 'Reading Materials',
-            'color'     => '#0891b2',
-            'isPrimary' => $style === 'auditory',
+            'count'     => $contentCount + $flashcardCount,
+            'sub'       => 'Available Materials',
+            'color'     => ($style === 'visual') ? '#7c3aed' : '#0891b2',
+            'isPrimary' => ($style === 'auditory' || $style === 'visual'),
             'type'      => 'materials',
         ];
         $cardQuizzes = [
@@ -223,12 +208,10 @@
         ];
 
         // Card order based on style
-        if ($style === 'visual') {
-            $orderedCards = [$cardFlashcard, $cardMaterials, $cardCompleted];
-        } elseif ($style === 'auditory') {
-            $orderedCards = [$cardMaterials, $cardFlashcard, $cardCompleted];
+        if ($style === 'visual' || $style === 'auditory') {
+            $orderedCards = [$cardMaterials, $cardQuizzes, $cardCompleted];
         } elseif ($style === 'competitive') {
-            $orderedCards = [$cardQuizzes, $cardFlashcard, $cardCompleted];
+            $orderedCards = [$cardQuizzes, $cardMaterials, $cardCompleted];
         } else {
             $orderedCards = [$cardQuizzes, $cardMaterials, $cardCompleted];
         }

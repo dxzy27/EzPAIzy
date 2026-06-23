@@ -59,10 +59,12 @@ class ContentController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'topic' => 'required|string',
             'file' => 'nullable|file|max:102400', // 100MB max
         ]);
+
+        $validated['content'] = $validated['content'] ?? '';
 
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('contents', 'public');
@@ -105,10 +107,12 @@ class ContentController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'topic' => 'required|string',
             'file' => 'nullable|file|max:102400', // 100MB max
         ]);
+
+        $validated['content'] = $validated['content'] ?? '';
 
         if ($request->hasFile('file')) {
             // Delete old file if exists

@@ -32,25 +32,56 @@
         backface-visibility: hidden;
         border-radius: 1rem;
         box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        background-color: #1abc9c !important;
+        background-color: #1e293b !important; /* Premium Slate/Navy for Student Front */
         color: white !important;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
         padding: 2rem;
         font-size: 1.5rem;
+        overflow-y: auto;
+    }
+    
+    .flashcard-face::-webkit-scrollbar {
+        width: 8px;
+    }
+    .flashcard-face::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+    .flashcard-face::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+    }
+    .flashcard-face::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+    
+    .flashcard-content-wrapper {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .flashcard-content {
+        margin: auto 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
     
     .flashcard-front {
-        border: 1px solid #16a085;
+        border: 1px solid #0f172a;
     }
     
     .flashcard-back {
-        background-color: #16a085 !important;
+        background-color: #334155 !important; /* Lighter Slate for Student Back */
         color: white !important;
         transform: rotateY(180deg);
-        border: 1px solid #12876f;
+        border: 1px solid #1e293b;
     }
 
     .controls {
@@ -70,7 +101,14 @@
             <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
                 <div>
                     <h1>Study: {{ $flashcardSet->title }}</h1>
-                    <p class="text-muted"><i class="bi bi-psychology text-primary"></i> Smart Review Mode</p>
+                    <div class="btn-group mt-2" role="group" aria-label="Mode toggle">
+                        <button type="button" class="btn btn-sm btn-outline-primary active" id="btn-mode-read" onclick="setMode('read')">
+                            <i class="bi bi-book"></i> Read Mode
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btn-mode-review" onclick="setMode('review')">
+                            <i class="bi bi-psychology"></i> Review Mode
+                        </button>
+                    </div>
                 </div>
                 @if(auth()->user()?->learning_style === 'auditory')
                 <div class="d-flex align-items-center gap-2 mt-1"
@@ -107,9 +145,12 @@
         const cards = {!! json_encode($dueCards) !!};
         const app = document.getElementById('flashcard-app');
         
+        let mode = 'read';
+        
         let currentIndex = 0;
         let isFlipped = false;
         let isSubmitting = false;
+        let typedAnswer = '';
 
         function render() {
             if (cards.length === 0 || currentIndex >= cards.length) {
@@ -133,58 +174,128 @@
             }
 
             const currentCard = cards[currentIndex];
+            const normalizedDefinition = currentCard.definition.replace(/\s+/g, ' ').trim();
+            const isList = /(?:\s+|^)\d+\.\s/.test(normalizedDefinition);
+            const alignClass = isList ? 'text-start d-inline-block w-100' : 'text-center';
+            const formattedDef = normalizedDefinition.replace(/(?:\s+)(\d+\.)\s/g, '<div style="margin-top: 15px;"></div>$1 ');
             
             let controlsHtml = '';
             
             if (!isFlipped) {
                 controlsHtml = `
                     <div class="text-center mt-4">
-                        <p class="text-muted mb-2">Think of the answer, then tap the card to flip and type it.</p>
+                        <p class="text-muted mb-2">Think of the answer, then tap the card to flip${mode === 'review' ? ' and type it' : ''}.</p>
                     </div>
                 `;
             } else {
-                controlsHtml = `
-                    <div id="typing-controls" class="mt-4 text-center">
-                        <button class="btn btn-outline-secondary" onclick="revealAnswer()">I give up, show answer</button>
-                    </div>
-                    <div id="grading-controls" class="mt-4 text-center d-none">
-                        <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
-                        <div class="d-flex justify-content-center gap-2 flex-wrap">
-                            <button class="btn btn-danger px-4 py-2" onclick="submitReview(${currentCard.id}, 0)" ${isSubmitting ? 'disabled' : ''}>
-                                Again
-                            </button>
-                            <button class="btn btn-warning px-4 py-2" onclick="submitReview(${currentCard.id}, 3)" ${isSubmitting ? 'disabled' : ''}>
-                                Hard
-                            </button>
-                            <button class="btn btn-success px-4 py-2" onclick="submitReview(${currentCard.id}, 4)" ${isSubmitting ? 'disabled' : ''}>
-                                Good
-                            </button>
-                            <button class="btn btn-primary px-4 py-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
-                                Easy
-                            </button>
+                if (mode === 'read') {
+                    controlsHtml = ``;
+                } else {
+                    controlsHtml = `
+                        <div id="typing-controls" class="mt-4 text-center">
+                            <button class="btn btn-outline-secondary" onclick="revealAnswer()">I give up, show answer</button>
                         </div>
-                    </div>
-                `;
+                        <div id="grading-controls" class="mt-4 text-center d-none">
+                            <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
+                            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                <button class="btn btn-danger px-4 py-2" onclick="submitReview(${currentCard.id}, 0)" ${isSubmitting ? 'disabled' : ''}>
+                                    Again
+                                </button>
+                                <button class="btn btn-warning px-4 py-2" onclick="submitReview(${currentCard.id}, 3)" ${isSubmitting ? 'disabled' : ''}>
+                                    Hard
+                                </button>
+                                <button class="btn btn-success px-4 py-2" onclick="submitReview(${currentCard.id}, 4)" ${isSubmitting ? 'disabled' : ''}>
+                                    Good
+                                </button>
+                                <button class="btn btn-primary px-4 py-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
+                                    Easy
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
             }
+
+            // Always add Next/Prev buttons
+            controlsHtml += `
+                <div class="mt-4 text-center d-flex justify-content-center gap-3">
+                    <button class="btn btn-outline-secondary px-4 py-2" onclick="prevCard()" ${currentIndex === 0 ? 'disabled' : ''}>
+                        Previous
+                    </button>
+                    <button class="btn btn-primary px-4 py-2" onclick="nextCard()">
+                        Next
+                    </button>
+                </div>
+            `;
 
             let backFaceHtml = '';
             if (isFlipped) {
-                // Generate the hidden answer display
-                const answerWords = currentCard.definition.split(' ').map(word => '_'.repeat(word.length)).join(' &nbsp; ');
-                
-                backFaceHtml = `
-                    <small class="text-white-50 text-uppercase fw-bold mb-3" style="font-size: 0.8rem;">${currentCard.term}</small>
-                    <p id="placeholder-text" class="fs-4 fw-bold mt-3" style="letter-spacing: 3px; font-family: monospace;">${answerWords}</p>
+                if (mode === 'read') {
+                    backFaceHtml = `
+                        <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
+                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
+                            <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                        </div>
+                        <div class="flashcard-content-wrapper mt-3">
+                            <div class="flashcard-content">
+                                <div class="${alignClass}">
+                                    <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Generate the hidden answer display
+                    const numberMarkerIndices = new Set();
+                    const regex = /(?:^|\s)(\d+\.)(?=\s)/g;
+                    let match;
+                    while ((match = regex.exec(normalizedDefinition)) !== null) {
+                        const start = match.index + (match[0].startsWith(' ') ? 1 : 0);
+                        for (let j = 0; j < match[1].length; j++) {
+                            numberMarkerIndices.add(start + j);
+                        }
+                    }
+
+                    let answerWords = '';
+                    for (let i = 0; i < normalizedDefinition.length; i++) {
+                        if (normalizedDefinition[i] === ' ') {
+                            if (i === 0 || normalizedDefinition[i-1] !== ' ') {
+                                if (normalizedDefinition.substring(i).match(/^\s+\d+\.\s/)) {
+                                    answerWords += '<div style="margin-top: 15px;"></div>';
+                                }
+                            }
+                            answerWords += ' &nbsp; ';
+                        } else if (numberMarkerIndices.has(i)) {
+                            answerWords += normalizedDefinition[i];
+                        } else {
+                            answerWords += '_';
+                        }
+                    }
                     
-                    <input type="text" id="answer-input" class="form-control text-center mt-4 mx-auto" 
-                           style="max-width: 80%; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);" 
-                           autocomplete="off" autocorrect="off" spellcheck="false" 
-                           placeholder="Type the exact answer..." oninput="checkTyping(this.value)">
-                           
-                    <div id="revealed-answer" class="d-none mt-3">
-                        <p class="fs-3 text-white fw-bold">${currentCard.definition}</p>
-                    </div>
-                `;
+                    backFaceHtml = `
+                        <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
+                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
+                            <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                        </div>
+                        <div class="flashcard-content-wrapper mt-3">
+                            <div class="flashcard-content">
+                                <div class="${alignClass}">
+                                    <div id="placeholder-text" class="fs-4 fw-bold mt-3" style="letter-spacing: 3px; font-family: monospace; line-height: 1.4;">${answerWords}</div>
+                                </div>
+                                
+                                <input type="text" id="answer-input" class="form-control text-center mt-4 mx-auto" 
+                                       style="max-width: 80%; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);" 
+                                       autocomplete="off" autocorrect="off" spellcheck="false" 
+                                       value="${typedAnswer.replace(/"/g, '&quot;')}"
+                                       placeholder="Type the exact answer..." oninput="checkTyping(this.value)" onclick="event.stopPropagation()">
+                                       
+                                <div id="revealed-answer" class="d-none mt-3 ${alignClass}">
+                                    <div class="fs-3 text-white fw-bold" style="line-height: 1.4;">${formattedDef}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
             app.innerHTML = `
@@ -195,11 +306,17 @@
                 <div class="flashcard-container" onclick="flipCard()">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
                         <div class="flashcard-face flashcard-front">
-                            <small class="text-white-50 text-uppercase fw-bold mb-3" style="font-size: 0.8rem;">Term</small>
-                            <p>${currentCard.term}</p>
-                            <small class="text-white-50 mt-auto" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
+                                <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold">FRONT</span>
+                                <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            </div>
+                            <div class="flashcard-content-wrapper mt-3">
+                                <div class="flashcard-content">
+                                    <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${currentCard.term}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flashcard-face flashcard-back" style="cursor: default;" onclick="event.stopPropagation()">
+                        <div class="flashcard-face flashcard-back">
                             ${backFaceHtml}
                         </div>
                     </div>
@@ -218,26 +335,76 @@
             }
         }
 
+        window.setMode = function(newMode) {
+            mode = newMode;
+            document.getElementById('btn-mode-read').classList.toggle('active', mode === 'read');
+            document.getElementById('btn-mode-review').classList.toggle('active', mode === 'review');
+            isFlipped = false;
+            render();
+        };
+
         window.flipCard = function() {
-            if (!isFlipped && !isSubmitting) {
-                isFlipped = true;
+            if (isSubmitting) return;
+            isFlipped = !isFlipped;
+            render();
+        };
+
+        window.nextCard = function() {
+            if (currentIndex < cards.length - 1) {
+                currentIndex++;
+                isFlipped = false;
+                typedAnswer = '';
+                render();
+            } else {
+                // finished
+                currentIndex++;
+                render();
+            }
+        };
+
+        window.prevCard = function() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                isFlipped = false;
+                typedAnswer = '';
                 render();
             }
         };
 
         window.checkTyping = function(val) {
+            typedAnswer = val;
             const currentCard = cards[currentIndex];
-            const correct = currentCard.definition.trim();
+            const correct = currentCard.definition.replace(/\s+/g, ' ').trim();
             const correctLower = correct.toLowerCase();
             const valLower = val.trim().toLowerCase();
             
             // Build the visual string: show typed characters, underscores for the rest
+            const numberMarkerIndices = new Set();
+            const regex = /(?:^|\s)(\d+\.)(?=\s)/g;
+            let match;
+            while ((match = regex.exec(correct)) !== null) {
+                const start = match.index + (match[0].startsWith(' ') ? 1 : 0);
+                for (let j = 0; j < match[1].length; j++) {
+                    numberMarkerIndices.add(start + j);
+                }
+            }
+
             let display = '';
             let valIndex = 0;
             
             for (let i = 0; i < correct.length; i++) {
                 if (correct[i] === ' ') {
+                    if (i === 0 || correct[i-1] !== ' ') {
+                        if (correct.substring(i).match(/^\s+\d+\.\s/)) {
+                            display += '<div style="margin-top: 15px;"></div>';
+                        }
+                    }
                     display += ' &nbsp; ';
+                } else if (numberMarkerIndices.has(i)) {
+                    display += correct[i];
+                    if (valIndex < val.length && val[valIndex].toLowerCase() === correct[i].toLowerCase()) {
+                        valIndex++;
+                    }
                 } else if (valIndex < val.length) {
                     display += val[valIndex];
                     valIndex++;
@@ -248,7 +415,10 @@
             
             document.getElementById('placeholder-text').innerHTML = display;
 
-            if (valLower === correctLower) {
+            const cleanCorrect = correctLower.replace(/(?:^|\s)\d+\.\s/g, ' ').replace(/\s+/g, ' ').trim();
+            const cleanVal = valLower.replace(/(?:^|\s)\d+\.\s/g, ' ').replace(/\s+/g, ' ').trim();
+
+            if (valLower === correctLower || (cleanVal === cleanCorrect && cleanVal.length > 0)) {
                 // Success!
                 document.getElementById('answer-input').classList.add('d-none');
                 document.getElementById('placeholder-text').classList.add('d-none');
