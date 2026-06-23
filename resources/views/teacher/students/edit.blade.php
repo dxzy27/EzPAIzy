@@ -44,7 +44,7 @@
                         <div class="mb-3">
                             <label for="email" class="form-label">Email *</label>
                             <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                   id="email" name="email" value="{{ old('email', $student->email) }}" required>
+                                   id="email" name="email" value="{{ old('email', $student->email) }}" required autocomplete="off">
                             @error('email')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -78,7 +78,7 @@
                         <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
                             <textarea class="form-control @error('address') is-invalid @enderror" 
-                                      id="address" name="address" rows="3">{{ old('address', $student->address) }}</textarea>
+                                      id="address" name="address" rows="3" autocomplete="off">{{ old('address', $student->address) }}</textarea>
                             @error('address')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
