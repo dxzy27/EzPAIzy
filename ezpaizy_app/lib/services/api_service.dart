@@ -220,4 +220,30 @@ class ApiService {
       return null;
     }
   }
+
+  static Future<bool> resetDiagnosis() async {
+    try {
+      final res = await http.post(
+        Uri.parse('$baseUrl/student/diagnosis/reset'),
+        headers: await _headers(),
+      );
+      return res.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<Map<String, dynamic>> getQuranByMood(String mood) async {
+    try {
+      final res = await http.get(
+        Uri.parse('$baseUrl/student/quran-mood?mood=$mood'),
+        headers: await _headers(),
+      );
+      if (res.statusCode != 200) return {};
+      final decoded = jsonDecode(res.body);
+      return (decoded is Map<String, dynamic>) ? decoded : {};
+    } catch (_) {
+      return {};
+    }
+  }
 }

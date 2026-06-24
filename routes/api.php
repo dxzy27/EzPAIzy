@@ -49,4 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Learning Style / Diagnosis
     Route::get('/student/diagnosis',             [StudentApiController::class, 'getDiagnosis']);
     Route::post('/student/diagnosis',            [StudentApiController::class, 'storeDiagnosis']);
+    Route::post('/student/diagnosis/reset',      [StudentApiController::class, 'resetDiagnosis']);
+    Route::get('/student/quran-mood',            [StudentApiController::class, 'quranMood']);
 });
+

@@ -265,6 +265,7 @@ class StudentApiController extends Controller
                         'surah'       => ($data[0]['surah']['englishName'] ?? '') .
                             ' (' . ($data[0]['surah']['name'] ?? '') . ')' .
                             ' — Ayah ' . ($data[0]['numberInSurah'] ?? ''),
+                        'audio'       => "https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/{$ayahId}",
                     ];
                 }
             } catch (\Exception $e) {
@@ -275,6 +276,7 @@ class StudentApiController extends Controller
                 'arabic'  => 'إِنَّ مَعَ الْعُسْرِ يُسْرًا',
                 'verse'   => 'Indeed, with hardship will be ease.',
                 'surah'   => 'Al-Inshirah — Ayah 6',
+                'audio'   => 'https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/6085',
             ];
         });
 
@@ -388,67 +390,323 @@ class StudentApiController extends Controller
     }
 
     /**
-     * Store Diagnosis result.
+     * Store Diagnosis result using 10-question expert system.
      */
     public function storeDiagnosis(Request $request)
     {
-        $facts = [
-            'q1' => $request->input('q1', 'visual'),
-            'q2' => $request->input('q2', 'visual'),
-            'q3' => $request->input('q3', 'visual'),
-            'q4' => $request->input('q4', 'slow'),
-            'q5' => $request->input('q5', 'slow'),
-        ];
+        $answers = $request->validate([
+            'q1'  => 'required|in:A,B,C',
+            'q2'  => 'required|in:A,B,C',
+            'q3'  => 'required|in:A,B,C',
+            'q4'  => 'required|in:A,B,C',
+            'q5'  => 'required|in:A,B,C',
+            'q6'  => 'required|in:A,B,C',
+            'q7'  => 'required|in:A,B,C',
+            'q8'  => 'required|in:A,B,C',
+            'q9'  => 'required|in:A,B,C',
+            'q10' => 'required|in:A,B,C',
+        ]);
 
-        // 1. Determine Primary Type (Auditory, Visual, Competitive)
-        $primaryScores = ['auditory' => 0, 'visual' => 0, 'competitive' => 0];
-        $primaryScores[$facts['q1']]++;
-        $primaryScores[$facts['q2']]++;
-        $primaryScores[$facts['q3']]++;
-        $maxPrimaryScore = max($primaryScores);
-        $dominantType = array_search($maxPrimaryScore, $primaryScores);
+        $result = $this->runInferenceEngine($answers);
+        $style  = $result['style'];
+        $persona = $this->buildPersona($style, $result['confidence'], $answers);
+        $recommendations = $this->generateRecommendations($style, $result, $answers);
 
-        // 2. Determine Subtype (Slow vs Fast)
-        $subTypeScores = ['slow' => 0, 'fast' => 0];
-        $subTypeScores[$facts['q4']]++;
-        $subTypeScores[$facts['q5']]++;
-        $maxSubTypeScore = max($subTypeScores);
-        $subType = array_search($maxSubTypeScore, $subTypeScores);
-
-        // 3. Construct Persona Label
-        $persona = ucfirst($subType) . ' ' . ucfirst($dominantType) . ' Learner';
-        $recommendations = [];
-
-        // 4. Generate Recommendations
-        if ($dominantType === 'visual') {
-            $recommendations[] = 'Focus heavily on Flashcards to visually map concepts and characters.';
-            $recommendations[] = 'Use color-coding and try to visualize the shape of texts when learning.';
-        } elseif ($dominantType === 'auditory') {
-            $recommendations[] = 'Read the Jawi texts or flashcards out loud to yourself.';
-            $recommendations[] = 'Discuss topics with peers to reinforce your memory verbally.';
-        } else {
-            $recommendations[] = 'Your primary tool should be interactive Quizzes with timers.';
-            $recommendations[] = 'Set personal high scores and try to beat them consistently.';
-        }
-
-        if ($subType === 'slow') {
-            $recommendations[] = 'Do not rush. Take your time to absorb the material in Reading Mode first.';
-            $recommendations[] = 'Use Spaced Repetition daily for short, steady periods.';
-        } else {
-            $recommendations[] = 'Jump straight into Revision Mode to test your quick recall.';
-            $recommendations[] = 'Keep your study sessions intense but short to maintain high engagement.';
-        }
-
-        // Save Profile
         $profile = LearningProfile::updateOrCreate(
             ['user_id' => $request->user()->id],
-            array_merge($facts, [
-                'persona' => $persona,
-                'recommendations' => $recommendations
-            ])
+            [
+                'answers'           => $answers,
+                'score_read_write'  => $result['scores']['read_write'],
+                'score_auditory'    => $result['scores']['auditory'],
+                'score_competitive' => $result['scores']['competitive'],
+                'confidence'        => $result['confidence'],
+                'learning_style'    => $style,
+                'persona'           => $persona,
+                'recommendations'   => $recommendations,
+            ]
         );
 
+        // Also persist on the user record for fast access
+        $request->user()->update(['learning_style' => $style]);
+
         return response()->json($profile);
+    }
+
+    /**
+     * Reset Learning Profile (Diagnosis).
+     */
+    public function resetDiagnosis(Request $request)
+    {
+        $user = $request->user();
+        $user->update(['learning_style' => null]);
+        LearningProfile::where('user_id', $user->id)->delete();
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Get Quran verse by mood.
+     */
+    public function quranMood(Request $request)
+    {
+        $mood = $request->query('mood', 'happy');
+
+        $moodMap = [
+            'happy' => 6074,
+            'sad' => 6072,
+            'anxious' => 1735,
+            'unmotivated' => 432,
+            'lost' => 6076,
+        ];
+
+        $ayahId = $moodMap[$mood] ?? 6074;
+
+        try {
+            $response = Http::get("http://api.alquran.cloud/v1/ayah/{$ayahId}/editions/quran-uthmani,en.sahih,ms.basmeih");
+
+            if ($response->successful()) {
+                $data = $response->json('data');
+                return response()->json([
+                    'success' => true,
+                    'arabic' => $data[0]['text'] ?? '',
+                    'verse' => $data[1]['text'] ?? '',
+                    'translation' => $data[2]['text'] ?? '',
+                    'surah' => ($data[0]['surah']['englishName'] ?? '') .
+                        ' (' . ($data[0]['surah']['name'] ?? '') . ')' .
+                        ' — Ayah ' . ($data[0]['numberInSurah'] ?? ''),
+                ]);
+            }
+        } catch (\Exception $e) {
+            // handle error below
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Unable to fetch verse'
+        ], 500);
+    }
+
+    private function runInferenceEngine(array $answers): array
+    {
+        $knowledgeBase = $this->getKnowledgeBase();
+        $scores = ['read_write' => 0, 'auditory' => 0, 'competitive' => 0];
+        $totalWeight = 0;
+
+        foreach ($knowledgeBase as $qKey => $rule) {
+            $chosen = $answers[$qKey] ?? null;
+            if (!$chosen || !isset($rule['answers'][$chosen])) continue;
+
+            $weight = $rule['weight'];
+            $totalWeight += $weight;
+
+            foreach ($rule['answers'][$chosen] as $type => $points) {
+                $scores[$type] += $points * $weight;
+            }
+        }
+
+        $maxScore = max($scores);
+        $totalEvidence = array_sum($scores);
+
+        arsort($scores);
+        $types   = array_keys($scores);
+        $first   = $types[0];
+        $second  = $types[1];
+        $margin  = $scores[$first] - $scores[$second];
+
+        $conflictThreshold = $totalEvidence * 0.15;
+
+        if ($margin < $conflictThreshold) {
+            $strongSignals = ['q1', 'q4', 'q9'];
+            $tieScores = ['read_write' => 0, 'auditory' => 0, 'competitive' => 0];
+
+            foreach ($strongSignals as $qKey) {
+                $chosen = $answers[$qKey] ?? null;
+                if (!$chosen || !isset($knowledgeBase[$qKey]['answers'][$chosen])) continue;
+
+                $rule = $knowledgeBase[$qKey];
+                foreach ($rule['answers'][$chosen] as $type => $points) {
+                    $tieScores[$type] += $points * 2;
+                }
+            }
+
+            foreach ($tieScores as $type => $delta) {
+                $scores[$type] += $delta;
+            }
+            arsort($scores);
+            $types = array_keys($scores);
+            $first = $types[0];
+        }
+
+        $totalFinal   = max(1, array_sum($scores));
+        $confidence   = round(($scores[$first] / $totalFinal) * 100, 1);
+
+        return [
+            'style'      => $first,
+            'scores'     => $scores,
+            'confidence' => $confidence,
+            'is_mixed'   => $confidence < 45,
+        ];
+    }
+
+    private function buildPersona(string $style, float $confidence, array $answers): string
+    {
+        $labels = [
+            'read_write'  => 'Read/Write Learner',
+            'auditory'    => 'Auditory Learner',
+            'competitive' => 'Competitive Learner',
+        ];
+
+        if ($confidence >= 65) {
+            $prefix = 'Strong ';
+        } elseif ($confidence >= 45) {
+            $prefix = '';
+        } else {
+            $prefix = 'Emerging ';
+        }
+
+        return $prefix . $labels[$style];
+    }
+
+    private function generateRecommendations(string $style, array $result, array $answers): array
+    {
+        $recs = [];
+        $isMixed = $result['is_mixed'];
+
+        if ($style === 'read_write') {
+            $recs[] = 'Your dashboard highlights Materials first — use the sidebar Notepad to write custom notes and acronyms to reinforce the concepts.';
+            $recs[] = 'When reading or taking quizzes, actively summarize the key points in the notepad on the right. Rewriting information helps your memory.';
+            if (($answers['q5'] ?? null) === 'C') {
+                $recs[] = 'You prefer working independently — organize your study notes into custom topic folders using the "My Folders" sidebar section.';
+            } else {
+                $recs[] = 'Try forming a study group where you can compare summaries and share acronyms with classmates.';
+            }
+            if (($answers['q8'] ?? null) === 'C') {
+                $recs[] = 'Organize your study room into categorized note folders. Having neat, structured summaries keeps you motivated.';
+            }
+        } elseif ($style === 'auditory') {
+            $recs[] = 'Your dashboard highlights Other Materials (e-books, notes) first — read them out loud or mouth the words silently to engage your auditory memory.';
+            $recs[] = 'After reading a flashcard term, say it aloud and use it in a sentence. Verbal repetition is your strongest memory tool.';
+            if (($answers['q2'] ?? null) === 'B') {
+                $recs[] = 'You focus best with background sound — light instrumental or white noise while studying with flashcards can improve your retention.';
+            } else {
+                $recs[] = 'Try recording yourself reading key definitions and replaying them during rest periods for passive reinforcement.';
+            }
+            if (($answers['q6'] ?? null) === 'C') {
+                $recs[] = 'When you get a quiz question wrong, say the correct answer out loud three times — verbal repetition helps auditory learners correct mistakes faster.';
+            }
+        } else {
+            $recs[] = 'Your dashboard highlights Quizzes first — use timed quiz mode to challenge yourself and aim for a higher score each attempt.';
+            $recs[] = 'Track your quiz scores in My Progress and set a personal target — beating your own record is the strongest motivator for your learning style.';
+            if (($answers['q3'] ?? null) === 'C') {
+                $recs[] = 'When encountering a new topic, jump straight into a short quiz to gauge your baseline — then study the gaps you discovered.';
+            } else {
+                $recs[] = 'Use flashcards as rapid-fire self-tests: flip through as many cards as possible in 5 minutes and measure how many you got right.';
+            }
+            if (($answers['q6'] ?? null) === 'B') {
+                $recs[] = 'When you score below your target, immediately retake the quiz with the intention of beating it — competitive learners thrive on fast recovery cycles.';
+            }
+        }
+
+        if ($isMixed) {
+            $recs[] = 'Your learning style shows a blend of more than one type — experiment with different study approaches across Materials, Flashcards, and Quizzes to discover what works best for you each week.';
+        }
+
+        return $recs;
+    }
+
+    private function getKnowledgeBase(): array
+    {
+        return [
+            'q1' => [
+                'weight'  => 3,
+                'dimension' => 'memory_encoding',
+                'answers' => [
+                    'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                    'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                    'C' => ['read_write' => 1, 'auditory' => 0, 'competitive' => 2],
+                ],
+            ],
+            'q2' => [
+                'weight'  => 3,
+                'dimension' => 'distraction_response',
+                'answers' => [
+                    'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
+                    'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                    'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                ],
+            ],
+            'q3' => [
+                'weight'  => 2,
+                'dimension' => 'new_topic_approach',
+                'answers' => [
+                    'A' => ['read_write' => 2, 'auditory' => 0, 'competitive' => 1],
+                    'B' => ['read_write' => 0, 'auditory' => 2, 'competitive' => 1],
+                    'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                ],
+            ],
+            'q4' => [
+                'weight'  => 3,
+                'dimension' => 'exam_preparation',
+                'answers' => [
+                    'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                    'B' => ['read_write' => 0, 'auditory' => 2, 'competitive' => 1],
+                    'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                ],
+            ],
+            'q5' => [
+                'weight'  => 2,
+                'dimension' => 'group_dynamics',
+                'answers' => [
+                    'A' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
+                    'B' => ['read_write' => 1, 'auditory' => 0, 'competitive' => 2],
+                    'C' => ['read_write' => 2, 'auditory' => 0, 'competitive' => 1],
+                ],
+            ],
+            'q6' => [
+                'weight'  => 3,
+                'dimension' => 'failure_reaction',
+                'answers' => [
+                    'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
+                    'B' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                    'C' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                ],
+            ],
+            'q7' => [
+                'weight'  => 2,
+                'dimension' => 'content_preference',
+                'answers' => [
+                    'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                    'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                    'C' => ['read_write' => 0, 'auditory' => 1, 'competitive' => 2],
+                ],
+            ],
+            'q8' => [
+                'weight'  => 2,
+                'dimension' => 'progress_motivation',
+                'answers' => [
+                    'A' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                    'B' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
+                    'C' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                ],
+            ],
+            'q9' => [
+                'weight'  => 3,
+                'dimension' => 'retention_strategy',
+                'answers' => [
+                    'A' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                    'B' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                    'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                ],
+            ],
+            'q10' => [
+                'weight'  => 2,
+                'dimension' => 'self_assessment',
+                'answers' => [
+                    'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
+                    'B' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                    'C' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
+                ],
+            ],
+        ];
     }
     /**
      * Single progress record with full details (for mobile app detail view).

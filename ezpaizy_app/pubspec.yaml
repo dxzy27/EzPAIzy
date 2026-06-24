@@ -41,6 +41,8 @@ dependencies:
   fl_chart: ^0.67.0           # Progress charts
   lottie: ^3.1.0              # Animations
   intl: ^0.19.0               # Date formatting
+  url_launcher: ^6.2.5        # Launch audio links
+
 
 
 dev_dependencies:

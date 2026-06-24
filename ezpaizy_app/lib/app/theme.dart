@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const Color primary = Color(0xFF1B5E20);
-  static const Color primaryLight = Color(0xFF4CAF50);
+  static const Color primary = Color(0xFF3B82F6);
+  static const Color primaryLight = Color(0xFF60A5FA);
   static const Color gold = Color(0xFFFFC107);
-  static const Color background = Color(0xFFF5F5F5);
+  static const Color background = Color(0xFFF4F8FD);
 
   static ThemeData get theme => ThemeData(
         useMaterial3: true,
@@ -15,7 +15,7 @@ class AppTheme {
           secondary: primaryLight,
         ),
         scaffoldBackgroundColor: background,
-        textTheme: GoogleFonts.poppinsTextTheme(),
+        textTheme: GoogleFonts.outfitTextTheme(),
         appBarTheme: const AppBarTheme(
           backgroundColor: primary,
           foregroundColor: Colors.white,
@@ -28,14 +28,15 @@ class AppTheme {
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 14),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
         ),
         cardTheme: CardThemeData(
           elevation: 2,
+          shadowColor: primary.withOpacity(0.1),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(20),
           ),
           margin: EdgeInsets.zero,
         ),
