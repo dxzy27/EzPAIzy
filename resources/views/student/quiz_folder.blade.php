@@ -30,8 +30,19 @@
     @if($quizzes->count() > 0)
         <div class="row g-4">
             @foreach($quizzes as $quiz)
+                @php
+                    $isLocked = false;
+                    $lockMessage = '';
+                    if ($quiz->difficulty === 'medium' && $mediumLocked) {
+                        $isLocked = true;
+                        $lockMessage = 'Score 80%+ on Easy quizzes first';
+                    } elseif ($quiz->difficulty === 'hard' && $hardLocked) {
+                        $isLocked = true;
+                        $lockMessage = 'Score 80%+ on Medium quizzes first';
+                    }
+                @endphp
                 <div class="col-md-6 col-lg-4 col-xl-3">
-                    <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 12px; overflow: hidden;">
+                    <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 12px; overflow: hidden; {{ $isLocked ? 'opacity: 0.7; filter: grayscale(20%);' : '' }}">
                         <div class="card-body d-flex flex-column p-4">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <span class="badge rounded-pill bg-light text-dark shadow-sm border" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 600;">
@@ -54,6 +65,13 @@
                             <p class="text-muted small mb-3">
                                 <i class="bi bi-person-circle me-1"></i> {{ $quiz->teacher->name ?? 'Unknown Teacher' }}
                             </p>
+
+                            @if($isLocked)
+                                <div class="alert alert-warning py-1 px-2 mb-3 d-flex align-items-center gap-2" style="font-size: 0.75rem; border-radius: 8px; font-weight: 600;">
+                                    <i class="bi bi-lock-fill text-warning fs-6"></i>
+                                    <span>Locked: {{ $lockMessage }}</span>
+                                </div>
+                            @endif
 
                             @php
                                 $p = $quiz->progress->first();
@@ -115,7 +133,11 @@
                                 </div>
                                 
                                 @if($quiz->questions_count > 0)
-                                    @if($p)
+                                    @if($isLocked)
+                                        <button class="btn btn-secondary w-100" style="border-radius: 8px;" disabled>
+                                            <i class="bi bi-lock-fill me-1"></i> Locked
+                                        </button>
+                                    @elseif($p)
                                         <a href="{{ route('student.quiz.take', $quiz) }}" class="btn btn-outline-primary w-100 shadow-sm" style="border-radius: 8px;">
                                             <i class="bi bi-arrow-repeat me-1"></i> Retake Quiz
                                         </a>
@@ -125,7 +147,7 @@
                                         </a>
                                     @endif
                                 @else
-                                    <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#quizModal{{ $quiz->id }}" style="border-radius: 8px;">
+                                    <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#quizModal{{ $quiz->id }}" style="border-radius: 8px;" {{ $isLocked ? 'disabled' : '' }}>
                                         <i class="bi bi-pencil-square me-1"></i> {{ $p ? 'Retake & Log Score' : 'Log Score' }}
                                     </button>
                                 @endif

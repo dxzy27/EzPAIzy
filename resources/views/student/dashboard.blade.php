@@ -383,41 +383,60 @@
                 <div class="card-header"
                      style="{{ $style && $cfg ? 'border-left: 3px solid '.$cfg['accent'].';' : '' }}">
                     <h5 class="mb-0">
-                        {{ $style && $cfg ? $cfg['recTitle'] : 'New Learning Materials' }}
+                        {{ $style === 'competitive' ? '🏆 Class Leaderboard' : ($style && $cfg ? $cfg['recTitle'] : 'New Learning Materials') }}
                     </h5>
                 </div>
                 <div class="card-body">
 
                     @if($style === 'competitive')
-                        {{-- Competitive: show quizzes to retake --}}
-                        @if($recentQuizzes->count() > 0)
+                        {{-- Class Leaderboard --}}
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead><tr><th>Quiz</th><th>Questions</th><th></th></tr></thead>
-                                <tbody>
-                                    @foreach($recentQuizzes as $q)
-                                    <tr>
-                                        <td>{{ Str::limit($q->title, 26) }}</td>
-                                        <td>
-                                            <span class="badge bg-secondary">
-                                                {{ $q->questions->count() }} Qs
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('student.quiz.take', $q) }}"
-                                               class="btn btn-sm btn-outline-warning">
-                                                <i class="bi bi-play-fill"></i> Challenge
-                                            </a>
-                                        </td>
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr class="table-light">
+                                        <th style="width: 60px;">Rank</th>
+                                        <th>Student</th>
+                                        <th class="text-end">Quizzes</th>
+                                        <th class="text-end">Points</th>
                                     </tr>
-                                    @endforeach
+                                </thead>
+                                <tbody>
+                                    @forelse($leaderboard as $index => $mate)
+                                        @php
+                                            $isSelf = $mate->id === auth()->id();
+                                            $rank = $index + 1;
+                                            $rankBadge = match($rank) {
+                                                1 => '🥇',
+                                                2 => '🥈',
+                                                3 => '🥉',
+                                                default => '#' . $rank
+                                            };
+                                        @endphp
+                                        <tr style="{{ $isSelf ? 'background-color: #fffcf0; font-weight: bold;' : '' }}">
+                                            <td>
+                                                <span class="fs-5">{{ $rankBadge }}</span>
+                                            </td>
+                                            <td>
+                                                {{ $mate->name }}
+                                                @if($isSelf)
+                                                    <span class="badge bg-warning text-dark ms-1">You</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-end text-muted small">
+                                                {{ $mate->completed_count }} Completed
+                                            </td>
+                                            <td class="text-end text-primary fw-bold">
+                                                {{ number_format($mate->points) }} pts
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-4">No classmates found.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
-                        @else
-                        <p class="text-muted text-center py-4">No quizzes available yet.</p>
-                        @endif
-
                     @elseif($style === 'visual')
                         {{-- Visual: flashcards first --}}
                         @php $visualList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp

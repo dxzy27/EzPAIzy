@@ -38,7 +38,60 @@ class StudentController extends Controller
         $quizzes  = Quiz::where('is_flagged', false)->with('teacher')->get();
         $progress = $user->progress()->with('quiz.teacher')->get();
 
-        return view('student.dashboard', compact('quizzes', 'progress'));
+        $leaderboard = [];
+        if ($user->learning_style === 'competitive') {
+            // Find all student users in the same class
+            $classmates = \App\Models\User::where('role', 'student')
+                ->where('class_name', $user->class_name)
+                ->get();
+
+            $leaderboardData = [];
+            foreach ($classmates as $mate) {
+                // Fetch progress records
+                $mateProgress = $mate->progress()->with('quiz')->get();
+
+                $totalPoints = 0;
+                $quizzesCount = 0;
+
+                foreach ($mateProgress as $p) {
+                    if (!$p->quiz || $p->status === 'pending') {
+                        continue;
+                    }
+
+                    $multiplier = match ($p->quiz->difficulty) {
+                        'easy' => 1,
+                        'medium' => 2,
+                        'hard' => 3,
+                        default => 1
+                    };
+
+                    $totalPoints += ($p->score * $multiplier);
+                    $quizzesCount++;
+                }
+
+                $leaderboardData[] = (object) [
+                    'id' => $mate->id,
+                    'name' => $mate->name,
+                    'points' => $totalPoints,
+                    'completed_count' => $quizzesCount,
+                ];
+            }
+
+            // Sort by points desc, then completed_count desc, then name asc
+            usort($leaderboardData, function($a, $b) {
+                if ($b->points !== $a->points) {
+                    return $b->points <=> $a->points;
+                }
+                if ($b->completed_count !== $a->completed_count) {
+                    return $b->completed_count <=> $a->completed_count;
+                }
+                return strcasecmp($a->name, $b->name);
+            });
+
+            $leaderboard = $leaderboardData;
+        }
+
+        return view('student.dashboard', compact('quizzes', 'progress', 'leaderboard'));
     }
 
     /**
@@ -72,6 +125,43 @@ class StudentController extends Controller
             ->pluck('id')
             ->toArray();
 
+        // Get all quizzes in this folder to check locks
+        $allQuizzes = Quiz::where('is_flagged', false)
+            ->where('topic', $topic)
+            ->whereIn('teacher_id', $teacherIds)
+            ->with(['progress' => function($q) use ($user) {
+                $q->where('student_id', $user->id);
+            }])
+            ->get();
+
+        $easyQuizzes = $allQuizzes->where('difficulty', 'easy');
+        $mediumQuizzes = $allQuizzes->where('difficulty', 'medium');
+
+        $easyAllPassed = true;
+        if ($easyQuizzes->count() > 0) {
+            foreach ($easyQuizzes as $eq) {
+                $prog = $eq->progress->first();
+                if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
+                    $easyAllPassed = false;
+                    break;
+                }
+            }
+        }
+
+        $mediumAllPassed = true;
+        if ($mediumQuizzes->count() > 0) {
+            foreach ($mediumQuizzes as $mq) {
+                $prog = $mq->progress->first();
+                if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
+                    $mediumAllPassed = false;
+                    break;
+                }
+            }
+        }
+
+        $mediumLocked = ($user->learning_style === 'competitive') && !$easyAllPassed;
+        $hardLocked = ($user->learning_style === 'competitive') && (!$easyAllPassed || !$mediumAllPassed);
+
         $quizzes = Quiz::where('is_flagged', false)
             ->where('topic', $topic)
             ->whereIn('teacher_id', $teacherIds)
@@ -82,7 +172,7 @@ class StudentController extends Controller
             ->latest()
             ->paginate(12);
 
-        return view('student.quiz_folder', compact('topic', 'quizzes'));
+        return view('student.quiz_folder', compact('topic', 'quizzes', 'mediumLocked', 'hardLocked'));
     }
 
     /**
