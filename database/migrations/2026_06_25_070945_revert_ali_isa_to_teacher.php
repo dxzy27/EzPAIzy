@@ -14,8 +14,8 @@ return new class extends Migration
         $user = \App\Models\User::where('email', 'ali123@gmail.com')->first();
         if ($user) {
             $user->update([
-                'role' => 'student',
-                'class_name' => '5A1'
+                'role' => 'teacher',
+                'class_name' => null
             ]);
         }
     }
@@ -28,8 +28,8 @@ return new class extends Migration
         $user = \App\Models\User::where('email', 'ali123@gmail.com')->first();
         if ($user) {
             $user->update([
-                'role' => 'teacher',
-                'class_name' => null
+                'role' => 'student',
+                'class_name' => '5A1'
             ]);
         }
     }
