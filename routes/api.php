@@ -9,8 +9,9 @@ use App\Http\Controllers\Api\StudentApiController;
 |--------------------------------------------------------------------------
 */
 
-// Public: login (no auth needed)
+// Public: login & register (no auth needed)
 Route::post('/login', [StudentApiController::class, 'login']);
+Route::post('/register', [StudentApiController::class, 'register']);
 
 // Protected: require valid Sanctum token
 Route::middleware('auth:sanctum')->group(function () {

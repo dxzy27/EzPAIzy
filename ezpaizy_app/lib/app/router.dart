@@ -16,6 +16,7 @@ import '../screens/daily_quran_screen.dart';
 import '../screens/learning_style_screen.dart';
 import '../screens/learning_profile_screen.dart';
 import '../screens/notes_folder_screen.dart';
+import '../screens/register_screen.dart';
 
 class AppRouter {
   static GoRouter router(AuthProvider auth) => GoRouter(
@@ -23,14 +24,19 @@ class AppRouter {
         redirect: (context, state) {
           final loggedIn = auth.token != null;
           final onLogin = state.matchedLocation == '/login';
-          if (!loggedIn && !onLogin) return '/login';
-          if (loggedIn && onLogin) return '/dashboard';
+          final onRegister = state.matchedLocation == '/register';
+          if (!loggedIn && !onLogin && !onRegister) return '/login';
+          if (loggedIn && (onLogin || onRegister)) return '/dashboard';
           return null;
         },
         routes: [
           GoRoute(
             path: '/login',
             builder: (_, _) => const LoginScreen(),
+          ),
+          GoRoute(
+            path: '/register',
+            builder: (_, _) => const RegisterScreen(),
           ),
           ShellRoute(
             builder: (context, state, child) =>

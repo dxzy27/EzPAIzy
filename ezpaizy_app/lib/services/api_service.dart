@@ -35,6 +35,36 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+    required String phoneNumber,
+    required String address,
+    required String className,
+  }) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$baseUrl/register'),
+        headers: await _headers(),
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+          'phone_number': phoneNumber,
+          'address': address,
+          'class_name': className,
+        }),
+      );
+      final decoded = jsonDecode(res.body);
+      return (decoded is Map<String, dynamic>) ? decoded : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
   static Future<void> logout() async {
     await http.post(
       Uri.parse('$baseUrl/logout'),

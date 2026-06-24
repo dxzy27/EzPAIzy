@@ -59,6 +59,38 @@ class StudentApiController extends Controller
     }
 
     /**
+     * Register a new student user.
+     */
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone_number' => ['required', 'string', 'max:20'],
+            'address' => ['required', 'string', 'max:255'],
+            'class_name' => ['required', 'string', 'in:5A1,5A2,5A3,5B1,5B2,5B3'],
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+            'role' => 'student',
+            'phone_number' => $validated['phone_number'],
+            'address' => $validated['address'],
+            'class_name' => $validated['class_name'],
+            'is_approved' => true, // Students do not require admin approval
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account created successfully! You can now log in.',
+            'user' => $user->only(['id', 'name', 'email', 'role']),
+        ]);
+    }
+
+    /**
      * Dashboard stats.
      */
     public function dashboard(Request $request)
