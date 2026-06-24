@@ -226,10 +226,7 @@
                     controlsHtml = ``;
                 } else {
                     controlsHtml = `
-                        <div id="typing-controls" class="mt-4 text-center">
-                            <button class="btn btn-outline-secondary" onclick="revealAnswer()">I give up, show answer</button>
-                        </div>
-                        <div id="grading-controls" class="mt-4 text-center d-none">
+                        <div id="grading-controls" class="mt-4 text-center">
                             <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
                             <div class="d-flex justify-content-center gap-3">
                                 <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
@@ -312,6 +309,9 @@
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
+                                <button id="show-answer-btn" type="button" class="btn btn-outline-light text-white-50 border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center" style="font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
+                                    Show Answer
+                                </button>
                                 @if(auth()->user()?->learning_style === 'auditory')
                                 <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
@@ -482,10 +482,11 @@
                 const speakBtn = document.getElementById('review-speak-btn');
                 if(speakBtn) { speakBtn.classList.remove('d-none'); speakBtn.style.display = 'flex'; }
                 
-                document.getElementById('typing-controls').classList.add('d-none');
-                const gradingControls = document.getElementById('grading-controls');
-                gradingControls.classList.remove('d-none');
-                document.getElementById('grading-message').innerText = 'Perfect! How easy was that?';
+                const showAnswerBtn = document.getElementById('show-answer-btn');
+                if(showAnswerBtn) showAnswerBtn.classList.add('d-none');
+                
+                const gradingMsg = document.getElementById('grading-message');
+                if(gradingMsg) gradingMsg.innerText = 'Perfect! How easy was that?';
             }
         };
 
@@ -496,10 +497,11 @@
             const speakBtn = document.getElementById('review-speak-btn');
             if(speakBtn) { speakBtn.classList.remove('d-none'); speakBtn.style.display = 'flex'; }
             
-            document.getElementById('typing-controls').classList.add('d-none');
-            const gradingControls = document.getElementById('grading-controls');
-            gradingControls.classList.remove('d-none');
-            document.getElementById('grading-message').innerText = 'Answer Revealed. Be honest, grade yourself:';
+            const showAnswerBtn = document.getElementById('show-answer-btn');
+            if(showAnswerBtn) showAnswerBtn.classList.add('d-none');
+            
+            const gradingMsg = document.getElementById('grading-message');
+            if(gradingMsg) gradingMsg.innerText = 'Answer Revealed. Be honest, grade yourself:';
         };
 
         window.submitReview = function(flashcardId, quality) {
