@@ -221,7 +221,7 @@
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" data-text="${currentCard.definition.replace(/["\n\r]/g, ' ')}" onclick="event.stopPropagation(); speakText(this.getAttribute('data-text'));" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
@@ -270,7 +270,7 @@
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" data-text="${currentCard.definition.replace(/["\n\r]/g, ' ')}" onclick="event.stopPropagation(); speakText(this.getAttribute('data-text'));" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
@@ -310,7 +310,7 @@
                                 <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold" onclick="flipCard(event)" style="cursor:pointer;">FRONT</span>
                                 <div class="d-flex align-items-center gap-2">
                                     @if(auth()->user()?->learning_style === 'auditory')
-                                    <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].term);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
+                                    <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" data-text="${currentCard.term.replace(/["\n\r]/g, ' ')}" onclick="event.stopPropagation(); speakText(this.getAttribute('data-text'));" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
                                         <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
@@ -507,50 +507,50 @@
 
     window.speakText = function(text) {
         synth.cancel();
-        const temp = document.createElement("div");
-        temp.innerHTML = text;
-        let plainText = temp.textContent || temp.innerText || "";
-        plainText = plainText.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
         
-        // Chrome silently drops TTS requests if the text is longer than ~200-250 characters.
-        // Flashcard answers can be long, so we must chunk them by words.
-        let chunks = [];
-        if (plainText.length > 200) {
-            let words = plainText.split(' ');
-            let currentChunk = '';
-            words.forEach(word => {
-                if ((currentChunk + word).length > 180) {
-                    chunks.push(currentChunk.trim());
-                    currentChunk = word + ' ';
+        // Ensure browser has cleared old utterances
+        setTimeout(() => {
+            let plainText = text.replace(/<[^>]*>?/gm, ''); // strip html
+            plainText = plainText.replace(/[\r\n]+/g, '. ').replace(/\s{2,}/g, ' ').trim();
+            
+            if (!plainText) return;
+
+            // Split by punctuation to ensure short, safe utterances
+            let chunks = plainText.match(/[^.!?]+[.!?]+/g);
+            if (!chunks) chunks = [plainText];
+
+            let safeChunks = [];
+            for (let chunk of chunks) {
+                if (chunk.length > 200) {
+                    let parts = chunk.match(/.{1,180}(?:\s|$)/g) || [chunk];
+                    safeChunks.push(...parts);
                 } else {
-                    currentChunk += word + ' ';
+                    safeChunks.push(chunk);
                 }
-            });
-            if (currentChunk.trim()) chunks.push(currentChunk.trim());
-        } else {
-            chunks = [plainText];
-        }
-
-        chunks.forEach(chunkText => {
-            if (!chunkText) return;
-            const u = new SpeechSynthesisUtterance(chunkText);
-            
-            let malayVoice = availableVoices.find(v => v.lang.includes('ms-MY') || v.lang.includes('ms_MY') || v.name.toLowerCase().includes('malay'));
-            let indoVoice = availableVoices.find(v => v.lang.includes('id-ID') || v.lang.includes('id_ID') || v.name.toLowerCase().includes('indonesia'));
-
-            if (malayVoice) {
-                u.voice = malayVoice;
-                u.lang = malayVoice.lang;
-            } else if (indoVoice) {
-                u.voice = indoVoice;
-                u.lang = indoVoice.lang;
-            } else {
-                u.lang = 'id-ID'; 
             }
-            
-            u.rate = 0.95;
-            synth.speak(u);
-        });
+
+            safeChunks.forEach(chunkText => {
+                chunkText = chunkText.trim();
+                if (!chunkText) return;
+                const u = new SpeechSynthesisUtterance(chunkText);
+                
+                let malayVoice = availableVoices.find(v => v.lang.includes('ms') || v.name.toLowerCase().includes('malay'));
+                let indoVoice = availableVoices.find(v => v.lang.includes('id') || v.name.toLowerCase().includes('indonesia'));
+
+                if (malayVoice) {
+                    u.voice = malayVoice;
+                    u.lang = malayVoice.lang;
+                } else if (indoVoice) {
+                    u.voice = indoVoice;
+                    u.lang = indoVoice.lang;
+                } else {
+                    u.lang = 'id-ID'; 
+                }
+                
+                u.rate = 0.95;
+                synth.speak(u);
+            });
+        }, 50);
     };
     
     window.addEventListener('beforeunload', () => synth.cancel());
