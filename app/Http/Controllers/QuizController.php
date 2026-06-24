@@ -342,6 +342,30 @@ class QuizController extends Controller
     }
 
     /**
+     * Search global Questions from existing quizzes by topic and difficulty.
+     */
+    public function searchQuestions(Request $request)
+    {
+        $topic = $request->input('topic');
+        $difficulty = $request->input('difficulty');
+
+        if (!$topic || !$difficulty) {
+            return response()->json([]);
+        }
+
+        // Fetch questions where the parent quiz matches the topic and difficulty
+        $questions = \App\Models\Question::whereHas('quiz', function ($query) use ($topic, $difficulty) {
+            $query->where('topic', $topic)
+                  ->where('difficulty', $difficulty);
+        })
+        ->get()
+        ->unique('question_text')
+        ->values();
+
+        return response()->json($questions);
+    }
+
+    /**
      * Build prompt for Quiz Generation.
      */
     private function buildQuizPrompt($topic, $difficulty, $count, $context = '', $instructions = '')
