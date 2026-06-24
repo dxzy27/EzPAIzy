@@ -425,6 +425,7 @@ class QuizController extends Controller
 
         $prompt = "You are an AI specialized in Pendidikan Agama Islam (PAI). Generate exactly {$count} quiz questions for the topic: '{$topic}' at a '{$difficulty}' difficulty level.
         The questions must be {$typeInstruction}
+        IMPORTANT: All questions and answers MUST be written in Bahasa Melayu.
         
         Enforce output strictly as a JSON object matching this schema:
         {
@@ -465,7 +466,7 @@ class QuizController extends Controller
         $url = "https://openrouter.ai/api/v1/chat/completions";
 
         try {
-            $response = Http::withToken($key)->withHeaders([
+            $response = Http::timeout(120)->withToken($key)->withHeaders([
                 'Content-Type' => 'application/json',
                 'HTTP-Referer' => url('/'), // Optional, for OpenRouter rankings
                 'X-Title' => 'EzPAIzy App' // Optional, for OpenRouter rankings

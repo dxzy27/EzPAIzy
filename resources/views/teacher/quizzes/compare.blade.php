@@ -88,7 +88,7 @@
                 <div class="model-header-gpt p-3 d-flex align-items-center gap-2">
                     <span style="font-size:1.4rem;">🤖</span>
                     <div>
-                        <div class="fw-bold">GPT-5.2 <small class="opacity-75 fw-normal">(OpenAI)</small></div>
+                        <div class="fw-bold">GPT</div>
                         <div style="font-size:.8rem;opacity:.8;">{{ count($gpt['questions'] ?? []) }} questions generated</div>
                     </div>
                     <div class="ms-auto d-flex gap-1">
@@ -100,7 +100,7 @@
                     @if(isset($gpt['error']))
                         <div class="error-box">
                             <i class="bi bi-exclamation-triangle-fill text-danger fs-3 d-block mb-2"></i>
-                            <strong>GPT-5.2 failed</strong>
+                            <strong>GPT failed</strong>
                             <p class="text-muted small mt-1 mb-0">{{ $gpt['error'] }}</p>
                         </div>
                     @else
@@ -113,7 +113,7 @@
                                     <div class="flex-grow-1">
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span class="q-num">Q{{ $i + 1 }}</span>
-                                            <span class="source-badge-gpt">GPT-5.2</span>
+                                            <span class="source-badge-gpt">GPT</span>
                                         </div>
                                         <div class="fw-semibold text-dark" style="font-size:1rem;">{{ $q['text'] }}</div>
                                 @if(!empty($q['options']))
@@ -149,7 +149,7 @@
                 <div class="model-header-gemini p-3 d-flex align-items-center gap-2">
                     <span style="font-size:1.4rem;">✨</span>
                     <div>
-                        <div class="fw-bold">Gemini 2.5 Flash <small class="opacity-75 fw-normal">(Google)</small></div>
+                        <div class="fw-bold">Gemini</div>
                         <div style="font-size:.8rem;opacity:.8;">{{ count($gemini['questions'] ?? []) }} questions generated</div>
                     </div>
                     <div class="ms-auto d-flex gap-1">
@@ -241,7 +241,7 @@
         } else {
             const q = allData[model][index];
             selectedQuestions[key] = Object.assign({}, q, {
-                _source: model === 'gpt' ? 'GPT-5.2' : 'Gemini 2.5 Flash'
+                _source: model === 'gpt' ? 'GPT' : 'Gemini'
             });
             if (el) el.classList.add('selected');
         }
@@ -255,7 +255,7 @@
             const checkbox = document.getElementById(model + '-check-' + index);
             
             selectedQuestions[key] = Object.assign({}, q, {
-                _source: model === 'gpt' ? 'GPT-5.2' : 'Gemini 2.5 Flash'
+                _source: model === 'gpt' ? 'GPT' : 'Gemini'
             });
             if (el) el.classList.add('selected');
             if (checkbox) checkbox.checked = true;
@@ -289,7 +289,7 @@
             document.getElementById('save-summary').textContent = 'No questions selected';
         } else {
             let parts = [];
-            if (gptCount)    parts.push(gptCount + ' from GPT-5.2');
+            if (gptCount)    parts.push(gptCount + ' from GPT');
             if (geminiCount) parts.push(geminiCount + ' from Gemini');
             document.getElementById('save-summary').textContent = parts.join(' + ');
         }

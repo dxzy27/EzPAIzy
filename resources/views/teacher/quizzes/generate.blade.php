@@ -92,15 +92,15 @@
                                     onclick="submitCompare()">
                                     ⚖️ Compare Both AIs Side-by-Side
                                     <small class="d-block fw-normal opacity-75" style="font-size:.75rem;">
-                                        GPT-5.2 vs Gemini 2.5 Flash — recommended for FYP
+                                        GPT vs Gemini — recommended for FYP
                                     </small>
                                 </button>
 
                                 {{-- Single Model --}}
                                 <div class="input-group">
                                     <select name="ai_model" id="ai_model" class="form-select">
-                                        <option value="openai/gpt-5.2">🤖 GPT-5.2 (OpenAI)</option>
-                                        <option value="google/gemini-2.5-flash">✨ Gemini 2.5 Flash (Google)</option>
+                                        <option value="openai/gpt-oss-120b:free">🤖 GPT</option>
+                                        <option value="google/gemini-2.5-flash-lite-preview-09-2025">✨ Gemini</option>
                                     </select>
                                     <button type="submit" class="btn btn-primary" id="generate-btn">
                                         <i class="bi bi-cpu me-1"></i> Generate with Selected
