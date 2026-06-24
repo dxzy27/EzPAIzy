@@ -106,7 +106,7 @@
             'tipIcon'     => '🎵',
             'tipTitle'    => 'Auditory Study Tip',
             'tip'         => 'After reading any material today, close it and say aloud — in your own words — what you just learned. If you can explain it, you have truly encoded it.',
-            'recTitle'    => '✨ Recommended: Reading Materials',
+            'recTitle'    => '✨ Recent Listenable Materials',
         ],
         'competitive' => [
             'accent'      => '#d97706',
@@ -482,15 +482,6 @@
                                     <div class="fw-semibold text-truncate" style="font-size:.88rem;color:#0f172a;">{{ $item->title }}</div>
                                     <div style="font-size:.75rem;color:#64748b;">{{ $topicLabel }}</div>
                                 </div>
-                                {{-- Listen button --}}
-                                <button onclick="ttsPreview('{{ addslashes($item->title) }}', '{{ addslashes($topicLabel) }}')"
-                                        title="Listen to preview"
-                                        style="background:#0891b2;border:none;color:#fff;border-radius:9px;
-                                               padding:5px 11px;font-size:.78rem;cursor:pointer;flex-shrink:0;
-                                               transition:background .15s;"
-                                        onmouseover="this.style.background='#0e7490'" onmouseout="this.style.background='#0891b2'">
-                                    🔊
-                                </button>
                                 {{-- Open button --}}
                                 <a href="{{ $itemUrl }}"
                                    class="btn btn-sm"
@@ -500,15 +491,6 @@
                             </div>
                             @endforeach
                         </div>
-                        <script>
-                        window.ttsPreview = function(title, topic) {
-                            const synth = window.speechSynthesis;
-                            synth.cancel();
-                            const u = new SpeechSynthesisUtterance(title + '. Topic: ' + topic);
-                            u.lang = 'en-US'; u.rate = 0.95;
-                            synth.speak(u);
-                        };
-                        </script>
                         @else
                         <p class="text-muted text-center py-4">No materials available.</p>
                         @endif
