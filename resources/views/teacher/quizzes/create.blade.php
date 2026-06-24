@@ -41,9 +41,18 @@
                         <div class="mb-4">
                             <h4 class="mb-3">Questions {{ $difficulty == 'medium' || $difficulty == 'hard' ? '(Short Answer/KBAT)' : '(MCQ)' }}</h4>
                             <div id="questions-container"></div>
-                            <button type="button" class="btn btn-outline-primary w-100" id="add-question-btn">
-                                <i class="bi bi-plus-lg"></i> Add Question
-                            </button>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-outline-primary w-100 h-100" id="add-question-btn">
+                                        <i class="bi bi-plus-lg"></i> Add Blank Question
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-outline-success w-100" id="import-qbank-btn" data-bs-toggle="modal" data-bs-target="#qbankModal">
+                                        <i class="bi bi-archive-fill"></i> Import from Question Bank
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         @endif
 
@@ -53,6 +62,50 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Question Bank Modal -->
+<div class="modal fade" id="qbankModal" tabindex="-1" aria-labelledby="qbankModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="qbankModalLabel">
+                    <i class="bi bi-archive-fill text-success me-2"></i>Import from Question Bank
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info py-2 small mb-3">
+                    <i class="bi bi-info-circle-fill me-1"></i> Showing questions matching topic: <strong id="modal-topic-label">...</strong> and difficulty: <strong id="modal-diff-label">...</strong>.
+                </div>
+                
+                <!-- Search Filter -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="modal-search-input" class="form-control" placeholder="Search questions in pool...">
+                </div>
+
+                <div id="qbank-loading" class="text-center py-4">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p class="text-muted mt-2 small">Loading questions from bank...</p>
+                </div>
+
+                <div id="qbank-empty" class="text-center py-4 d-none">
+                    <i class="bi bi-folder-x fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">No matching questions found in the bank database.</p>
+                </div>
+
+                <div id="qbank-list" class="list-group d-none">
+                    <!-- Dynamic Questions Injection -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-muted me-auto small" id="modal-selected-count">0 selected</span>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="modal-import-btn" disabled>Import Selected</button>
             </div>
         </div>
     </div>
@@ -69,8 +122,8 @@
             questionCount++;
             const current = questionCount;
             
-            const text = data ? (data.question_text || data.text) : ''; // Handle both API (text) and DB (question_text) naming if needed
-            const correct = data ? (data.correct_answer) : '';
+            const text = data ? (data.question_text || data.text || '') : ''; // Handle both API (text) and DB (question_text) naming if needed
+            const correct = data ? (data.correct_answer || '') : '';
             const type = data ? (data.type || 'mcq') : (difficulty === 'medium' ? 'short_answer' : 'mcq');
 
             // Common Header
@@ -174,13 +227,173 @@
                     question_text: q.text,
                     options: q.options,
                     correct_answer: q.correct_answer,
-                    type: q.type // Ensure type is passed if available
+                    type: q.type
                 };
                 addQuestion(data);
             });
         } else {
             addQuestion(); // Add empty first question
         }
+
+        // ── Question Bank Import Modal Logic ──
+        const qbankModal = document.getElementById('qbankModal');
+        const qbankList = document.getElementById('qbank-list');
+        const qbankLoading = document.getElementById('qbank-loading');
+        const qbankEmpty = document.getElementById('qbank-empty');
+        const modalTopicLabel = document.getElementById('modal-topic-label');
+        const modalDiffLabel = document.getElementById('modal-diff-label');
+        const modalSearchInput = document.getElementById('modal-search-input');
+        const modalSelectedCount = document.getElementById('modal-selected-count');
+        const modalImportBtn = document.getElementById('modal-import-btn');
+        
+        let qbankQuestions = [];
+        let selectedIndices = new Set();
+
+        qbankModal.addEventListener('show.bs.modal', function () {
+            const topic = document.getElementById('topic').value;
+            modalTopicLabel.textContent = topic || '(None)';
+            modalDiffLabel.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+            
+            qbankList.classList.add('d-none');
+            qbankEmpty.classList.add('d-none');
+            qbankLoading.classList.remove('d-none');
+            modalSearchInput.value = '';
+            selectedIndices.clear();
+            updateModalFooter();
+
+            if (!topic) {
+                qbankLoading.classList.add('d-none');
+                qbankEmpty.classList.remove('d-none');
+                qbankEmpty.querySelector('p').textContent = 'Please select a Topic in the form first.';
+                return;
+            }
+
+            fetch(`{{ route('teacher.quizzes.question_bank_search') }}?topic=${encodeURIComponent(topic)}&difficulty=${difficulty}`)
+                .then(res => res.json())
+                .then(data => {
+                    qbankQuestions = data;
+                    qbankLoading.classList.add('d-none');
+                    renderQbankQuestions(data);
+                })
+                .catch(err => {
+                    console.error(err);
+                    qbankLoading.classList.add('d-none');
+                    qbankEmpty.classList.remove('d-none');
+                    qbankEmpty.querySelector('p').textContent = 'Error fetching questions from database.';
+                });
+        });
+
+        function renderQbankQuestions(questions) {
+            qbankList.innerHTML = '';
+            if (questions.length === 0) {
+                qbankEmpty.classList.remove('d-none');
+                qbankEmpty.querySelector('p').textContent = 'No matching questions found in the bank database.';
+                return;
+            }
+
+            qbankEmpty.classList.add('d-none');
+            qbankList.classList.remove('d-none');
+
+            questions.forEach((q, index) => {
+                let html = `
+                    <label class="list-group-item d-flex gap-3 align-items-start py-3 qbank-item" style="cursor: pointer;" data-index="${index}">
+                        <input class="form-check-input flex-shrink-0 qbank-check" type="checkbox" value="${index}" style="width: 1.25em; height: 1.25em;">
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold text-dark">${q.question_text}</div>
+                            <div class="small text-muted mt-1">Type: ${q.type === 'mcq' ? 'MCQ' : 'Short Answer/KBAT'}</div>
+                `;
+
+                if (q.type === 'mcq' && q.options) {
+                    let parsedOptions = q.options;
+                    if (typeof q.options === 'string') {
+                        try { parsedOptions = JSON.parse(q.options); } catch(e) {}
+                    }
+                    html += `<div class="row g-1 mt-1">`;
+                    for (const key in parsedOptions) {
+                        const isCorrect = String(q.correct_answer).toLowerCase() === key.toLowerCase();
+                        html += `
+                            <div class="col-md-6 small">
+                                <span class="${isCorrect ? 'text-success fw-bold' : 'text-muted'}">${key.toUpperCase()}. ${parsedOptions[key]}</span>
+                            </div>
+                        `;
+                    }
+                    html += `</div>`;
+                } else {
+                    html += `<div class="small text-success mt-1">Suggested Answer: <strong>${q.correct_answer}</strong></div>`;
+                }
+
+                html += `
+                        </div>
+                    </label>
+                `;
+                qbankList.insertAdjacentHTML('beforeend', html);
+            });
+
+            // Bind checkbox events
+            document.querySelectorAll('.qbank-check').forEach(chk => {
+                chk.addEventListener('change', function () {
+                    const index = parseInt(this.value);
+                    if (this.checked) {
+                        selectedIndices.add(index);
+                    } else {
+                        selectedIndices.delete(index);
+                    }
+                    updateModalFooter();
+                });
+            });
+        }
+
+        // Live Search Filter inside Modal
+        modalSearchInput.addEventListener('input', function() {
+            const term = this.value.toLowerCase();
+            const items = qbankList.querySelectorAll('.qbank-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const text = item.querySelector('.fw-semibold').textContent.toLowerCase();
+                if (text.includes(term)) {
+                    item.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+
+            if (visibleCount === 0 && qbankQuestions.length > 0) {
+                qbankEmpty.classList.remove('d-none');
+                qbankEmpty.querySelector('p').textContent = 'No questions match your search.';
+            } else if (qbankQuestions.length > 0) {
+                qbankEmpty.classList.add('d-none');
+            }
+        });
+
+        function updateModalFooter() {
+            const count = selectedIndices.size;
+            modalSelectedCount.textContent = `${count} selected`;
+            modalImportBtn.disabled = count === 0;
+        }
+
+        modalImportBtn.addEventListener('click', function () {
+            selectedIndices.forEach(index => {
+                const q = qbankQuestions[index];
+                
+                let parsedOptions = q.options;
+                if (typeof q.options === 'string') {
+                    try { parsedOptions = JSON.parse(q.options); } catch(e) {}
+                }
+
+                addQuestion({
+                    question_text: q.question_text,
+                    options: parsedOptions,
+                    correct_answer: q.correct_answer,
+                    type: q.type
+                });
+            });
+
+            // Close modal
+            const modalInstance = bootstrap.Modal.getInstance(qbankModal);
+            modalInstance.hide();
+        });
     });
 </script>
 

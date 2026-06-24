@@ -342,6 +342,26 @@ class QuizController extends Controller
     }
 
     /**
+     * Search global Question Bank.
+     */
+    public function searchQuestionBank(Request $request)
+    {
+        $query = \App\Models\QuestionBank::query();
+
+        if ($request->has('topic') && $request->topic != '') {
+            $query->where('topic', $request->topic);
+        }
+
+        if ($request->has('difficulty') && $request->difficulty != '') {
+            $query->where('difficulty', $request->difficulty);
+        }
+
+        $questions = $query->get();
+
+        return response()->json($questions);
+    }
+
+    /**
      * Question Bank Index view.
      */
     public function questionBankIndex()

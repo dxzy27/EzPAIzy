@@ -103,6 +103,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::get('/quizzes/folder/{topic}', [QuizController::class, 'folder'])->name('quizzes.folder');
     Route::get('/quizzes/generate', [QuizController::class, 'generate'])->name('quizzes.generate');
     Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+    Route::get('/quizzes/question-bank/search', [QuizController::class, 'searchQuestionBank'])->name('quizzes.question_bank_search');
     Route::post('/quizzes/store', [QuizController::class, 'store'])->name('quizzes.store');
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
     Route::get('/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
