@@ -55,6 +55,57 @@
                                 <i class="bi bi-person-circle me-1"></i> {{ $quiz->teacher->name ?? 'Unknown Teacher' }}
                             </p>
 
+                            @php
+                                $p = $quiz->progress->first();
+                            @endphp
+                            <div class="mb-3 mt-2">
+                                @if($p)
+                                    @if($quiz->difficulty === 'hard' && $p->status === 'pending')
+                                        <div class="d-flex justify-content-between text-muted small mb-1">
+                                            <span>Quiz Progress</span>
+                                            <span class="text-warning fw-semibold">Pending Review</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" title="Pending Review"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
+                                            <span class="text-warning" style="font-weight: 500;"><i class="bi bi-clock-history me-1"></i>Awaiting grading</span>
+                                            <span class="text-secondary">Attempted</span>
+                                        </div>
+                                    @else
+                                        @php
+                                            $scoreClass = $p->score >= 70 ? 'text-success' : ($p->score >= 50 ? 'text-warning' : 'text-danger');
+                                            $barBg = $p->score >= 70 ? 'bg-success' : ($p->score >= 50 ? 'bg-warning' : 'bg-danger');
+                                            $statusText = $p->score >= 70 ? 'Passed' : ($p->score >= 50 ? 'Average' : 'Failed');
+                                        @endphp
+                                        <div class="d-flex justify-content-between text-muted small mb-1">
+                                            <span>Quiz Score</span>
+                                            <span class="{{ $scoreClass }} fw-bold">{{ $p->score }}%</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar {{ $barBg }}" role="progressbar" style="width: {{ $p->score }}%" title="{{ $statusText }}"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
+                                            <span class="{{ $scoreClass }}" style="font-weight: 500;">
+                                                <i class="bi @if($p->score >= 70) bi-check-circle-fill @elseif($p->score >= 50) bi-exclamation-circle-fill @else bi-x-circle-fill @endif me-1"></i>{{ $statusText }}
+                                            </span>
+                                            <span class="text-secondary">Completed</span>
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="d-flex justify-content-between text-muted small mb-1">
+                                        <span>Quiz Score</span>
+                                        <span class="text-secondary">Not Attempted</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px; background-color: #e9ecef;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
+                                        <span class="text-muted"><i class="bi bi-circle me-1"></i>Not started</span>
+                                    </div>
+                                @endif
+                            </div>
+
                             <div class="mt-auto pt-3 border-top">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text-muted small">
@@ -64,12 +115,18 @@
                                 </div>
                                 
                                 @if($quiz->questions_count > 0)
-                                    <a href="{{ route('student.quiz.take', $quiz) }}" class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;">
-                                        <i class="bi bi-play-fill me-1"></i> Take Quiz
-                                    </a>
+                                    @if($p)
+                                        <a href="{{ route('student.quiz.take', $quiz) }}" class="btn btn-outline-primary w-100 shadow-sm" style="border-radius: 8px;">
+                                            <i class="bi bi-arrow-repeat me-1"></i> Retake Quiz
+                                        </a>
+                                    @else
+                                        <a href="{{ route('student.quiz.take', $quiz) }}" class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;">
+                                            <i class="bi bi-play-fill me-1"></i> Take Quiz
+                                        </a>
+                                    @endif
                                 @else
                                     <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#quizModal{{ $quiz->id }}" style="border-radius: 8px;">
-                                        <i class="bi bi-pencil-square me-1"></i> Log Score
+                                        <i class="bi bi-pencil-square me-1"></i> {{ $p ? 'Retake & Log Score' : 'Log Score' }}
                                     </button>
                                 @endif
                             </div>

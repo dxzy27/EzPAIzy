@@ -75,7 +75,9 @@ class StudentController extends Controller
         $quizzes = Quiz::where('is_flagged', false)
             ->where('topic', $topic)
             ->whereIn('teacher_id', $teacherIds)
-            ->with('teacher')
+            ->with(['teacher', 'progress' => function($q) use ($user) {
+                $q->where('student_id', $user->id);
+            }])
             ->withCount('questions')
             ->latest()
             ->paginate(12);
