@@ -34,6 +34,11 @@
         from { opacity: 0; transform: translateY(-12px); }
         to   { opacity: 1; transform: translateY(0); }
     }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
     .diag-banner-icon {
         width: 54px; height: 54px; border-radius: 14px;
         background: rgba(255,255,255,.18);
@@ -137,21 +142,27 @@
 
 <div class="container">
 
-    {{-- ── Diagnosis Banner (undiagnosed only) ── --}}
+    {{-- ── Diagnosis Modal (undiagnosed only) ── --}}
     @if(!$style && !session('diag_banner_dismissed'))
-    <div class="diag-banner">
-        <div class="diag-banner-icon">🧠</div>
-        <div class="flex-grow-1">
-            <div style="font-weight:800;font-size:1.05rem;margin-bottom:4px;">Discover Your Learning Style</div>
-            <div style="font-size:.86rem;opacity:.88;line-height:1.45;">
-                Take a 10-question diagnosis to personalise your dashboard and get study recommendations tailored specifically to how <em>you</em> learn best. It only takes ~4 minutes.
+    <div class="modal fade" id="diagnosisModal" tabindex="-1" aria-labelledby="diagnosisModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: white;">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 3.5rem; display: inline-block; animation: pulse 2s infinite ease-in-out;">🧠</div>
+                    <h3 class="fw-bold mb-2" id="diagnosisModalLabel">Discover Your Learning Style</h3>
+                    <p class="text-white-50 mb-4" style="line-height: 1.5; font-size: 0.95rem; opacity: 0.85;">
+                        Take a 10-question diagnosis to personalise your dashboard and get study recommendations tailored specifically to how <em>you</em> learn best. It only takes ~4 minutes.
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('student.diagnosis.create') }}" class="btn btn-light fw-bold py-2" style="border-radius: 10px; font-size: 1rem; color: #5b21b6 !important;">
+                            <i class="bi bi-clipboard-pulse me-1"></i> Start Diagnosis
+                        </a>
+                        <a href="{{ route('student.dashboard') }}?dismiss_diag=1" class="btn btn-link text-white-50 fw-semibold text-decoration-none py-1" style="font-size: 0.9rem;">
+                            Maybe later
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="diag-banner-actions">
-            <a href="{{ route('student.diagnosis.create') }}" class="diag-banner-cta">
-                <i class="bi bi-clipboard-pulse me-1"></i> Start Diagnosis
-            </a>
-            <a href="{{ route('student.dashboard') }}?dismiss_diag=1" class="diag-banner-dismiss">Maybe later</a>
         </div>
     </div>
     @endif
@@ -544,3 +555,17 @@
     </div>{{-- /row --}}
 </div>{{-- /container --}}
 @endsection
+
+@push('scripts')
+@if(!$style && !session('diag_banner_dismissed'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalEl = document.getElementById('diagnosisModal');
+        if (modalEl) {
+            const myModal = new bootstrap.Modal(modalEl);
+            myModal.show();
+        }
+    });
+</script>
+@endif
+@endpush
