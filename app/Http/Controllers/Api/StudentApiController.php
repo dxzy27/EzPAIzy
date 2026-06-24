@@ -66,15 +66,104 @@ class StudentApiController extends Controller
         $user     = $request->user();
         $progress = $user->progress()->with(['quiz.teacher'])->latest()->get();
         $profile  = LearningProfile::where('user_id', $user->id)->first();
+        $style    = $user->learning_style;
+
+        // 1. Calculate leaderboard if competitive
+        $leaderboard = [];
+        if ($style === 'competitive') {
+            $classmates = \App\Models\User::where('role', 'student')
+                ->where('class_name', $user->class_name)
+                ->get();
+
+            $leaderboardData = [];
+            foreach ($classmates as $mate) {
+                $mateProgress = $mate->progress()->with('quiz')->get();
+                $totalPoints = 0;
+                $quizzesCount = 0;
+
+                foreach ($mateProgress as $p) {
+                    if (!$p->quiz || $p->status === 'pending') {
+                        continue;
+                    }
+
+                    $multiplier = match ($p->quiz->difficulty) {
+                        'easy' => 1,
+                        'medium' => 2,
+                        'hard' => 3,
+                        default => 1
+                    };
+
+                    $totalPoints += ($p->score * $multiplier);
+                    $quizzesCount++;
+                }
+
+                $leaderboardData[] = [
+                    'id' => $mate->id,
+                    'name' => $mate->name,
+                    'points' => $totalPoints,
+                    'completed_count' => $quizzesCount,
+                ];
+            }
+
+            usort($leaderboardData, function($a, $b) {
+                if ($b['points'] !== $a['points']) {
+                    return $b['points'] <=> $a['points'];
+                }
+                if ($b['completed_count'] !== $a['completed_count']) {
+                    return $b['completed_count'] <=> $a['completed_count'];
+                }
+                return strcasecmp($a['name'], $b['name']);
+            });
+
+            $leaderboard = $leaderboardData;
+        }
+
+        // 2. Fetch new/recommended materials if not competitive
+        $newMaterials = [];
+        if ($style !== 'competitive') {
+            $recentContents   = Content::where('is_flagged', false)->latest()->take(5)->get();
+            $recentFlashcards = FlashcardSet::where('is_flagged', false)->latest()->take(5)->get();
+
+            $mappedContents = $recentContents->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'topic' => $item->topic ?? 'General',
+                    'type' => 'Content',
+                    'action' => 'View',
+                    'created_at' => $item->created_at->toIso8601String(),
+                ];
+            });
+
+            $mappedFlashcards = $recentFlashcards->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'topic' => $item->topic ?? 'General',
+                    'type' => 'Flashcard',
+                    'action' => 'Practice',
+                    'created_at' => $item->created_at->toIso8601String(),
+                ];
+            });
+
+            if ($style === 'read_write') {
+                $newMaterials = $mappedFlashcards->concat($mappedContents)->sortByDesc('created_at')->take(5)->values()->all();
+            } else {
+                $newMaterials = $mappedContents->concat($mappedFlashcards)->sortByDesc('created_at')->take(5)->values()->all();
+            }
+        }
 
         return response()->json([
-            'user'             => $user->only(['id', 'name', 'email']),
+            'user'             => $user->only(['id', 'name', 'email', 'learning_style', 'class_name']),
             'persona'          => $profile?->persona,
             'profile'          => $profile,
-            'quiz_count'       => Quiz::count(),
-            'materials_count'  => Content::count() + FlashcardSet::count(),
+            'quiz_count'       => Quiz::where('is_flagged', false)->count(),
+            'materials_count'  => Content::where('is_flagged', false)->count() + FlashcardSet::where('is_flagged', false)->count(),
             'completed_count'  => $progress->count(),
+            'best_score'       => ($style === 'competitive' && $progress->count() > 0) ? $progress->max('score') : null,
             'recent_results'   => $progress->take(5)->values(),
+            'new_materials'    => $newMaterials,
+            'leaderboard'      => $leaderboard,
         ]);
     }
 

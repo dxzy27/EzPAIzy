@@ -91,14 +91,32 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
   Future<void> _launchAudio(String? url) async {
     if (url == null || url.isEmpty) return;
     final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not play recitation audio.')),
-        );
+    bool launched = false;
+
+    final modes = [
+      LaunchMode.platformDefault,
+      LaunchMode.inAppBrowserView,
+      LaunchMode.externalApplication,
+    ];
+
+    for (final mode in modes) {
+      try {
+        if (await canLaunchUrl(uri)) {
+          launched = await launchUrl(uri, mode: mode);
+          if (launched) break;
+        } else {
+          launched = await launchUrl(uri, mode: mode);
+          if (launched) break;
+        }
+      } catch (_) {
+        // try next mode
       }
+    }
+
+    if (!launched && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not play recitation audio.')),
+      );
     }
   }
 

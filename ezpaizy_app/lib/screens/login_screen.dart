@@ -77,9 +77,13 @@ class _LoginScreenState extends State<LoginScreen> {
               child: OutlinedButton(
                 onPressed: () async {
                   final url = Uri.parse('http://165.245.186.220/register');
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
+                  try {
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    } else {
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    }
+                  } catch (_) {}
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF334155),
@@ -216,9 +220,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: GestureDetector(
                               onTap: () async {
                                 final url = Uri.parse('http://165.245.186.220/register');
-                                if (await canLaunchUrl(url)) {
-                                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                                }
+                                try {
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  } else {
+                                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  }
+                                } catch (_) {}
                               },
                               child: RichText(
                                 text: const TextSpan(
@@ -390,9 +398,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: GestureDetector(
                               onTap: () async {
                                 final url = Uri.parse('http://165.245.186.220/register');
-                                if (await canLaunchUrl(url)) {
-                                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                                }
+                                try {
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  } else {
+                                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  }
+                                } catch (_) {}
                               },
                               child: RichText(
                                 text: const TextSpan(

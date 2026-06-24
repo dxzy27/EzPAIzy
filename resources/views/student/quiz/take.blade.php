@@ -222,6 +222,20 @@ document.addEventListener('DOMContentLoaded', function() {
     let timerInterval = null;
     let secondsElapsed = 0;
 
+    function isShortAnswerCorrect(studentAns, correctAns) {
+        if (!studentAns || !correctAns) return false;
+        const cleanString = (str) => {
+            return str
+                .toLowerCase()
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+        };
+        const cleanStudent = cleanString(studentAns);
+        const alternatives = correctAns.split('|');
+        return alternatives.some(alt => cleanStudent === cleanString(alt));
+    }
+
     if (learningStyle === 'competitive') {
         const timerSpan = document.getElementById('timer');
         if (timerSpan) {
@@ -417,8 +431,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (type === 'mcq') {
                     if (userAns === correctAns) correctCount++;
                 } else {
-                    // Case-insensitive comparison for text
-                    if (userAns.toLowerCase() === correctAns.toLowerCase()) {
+                    // Flexible comparison for text
+                    if (isShortAnswerCorrect(userAns, correctAns)) {
                         correctCount++;
                     }
                 }

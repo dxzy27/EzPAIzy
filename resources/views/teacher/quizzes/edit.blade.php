@@ -151,8 +151,9 @@
                 html += `
                     <!-- Correct Answer Input -->
                     <div class="mb-2">
-                        <label class="form-label small text-muted">Correct Answer / Suggested Key Points</label>
-                        <input type="text" name="questions[${current}][correct]" class="form-control" placeholder="Enter the correct answer or suggested key points (Hard difficulty is manually graded)" value="${correct}" required>
+                        <label class="form-label small text-muted">${difficulty === 'medium' ? 'Correct Answer / Alternatives (separated by |)' : 'Suggested Key Points'}</label>
+                        <input type="text" name="questions[${current}][correct]" class="form-control" placeholder="${difficulty === 'medium' ? 'e.g. Fiqah|Feqah|Fikah' : 'Enter suggested key points (Hard difficulty is manually graded)'}" value="${correct}" required>
+                        ${difficulty === 'medium' ? '<div class="form-text text-muted small mt-1">Tip: Separatkan jawapan alternatif dengan tanda "|" untuk memudahkan pelajar (cth: Fiqah|Feqah).</div>' : ''}
                     </div>
                 `;
             } else {
