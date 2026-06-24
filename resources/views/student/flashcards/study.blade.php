@@ -221,8 +221,8 @@
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" title="Read Answer">
-                                    <i class="bi bi-volume-up-fill text-primary"></i>
+                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
                                 <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
@@ -270,8 +270,8 @@
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button id="review-speak-btn" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" title="Read Answer">
-                                    <i class="bi bi-volume-up-fill text-primary"></i>
+                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
                                 <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
@@ -310,8 +310,8 @@
                                 <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold">FRONT</span>
                                 <div class="d-flex align-items-center gap-2">
                                     @if(auth()->user()?->learning_style === 'auditory')
-                                    <button class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].term);" title="Read Question">
-                                        <i class="bi bi-volume-up-fill text-primary"></i>
+                                    <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].term);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
+                                        <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
                                     <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
