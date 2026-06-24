@@ -21,6 +21,24 @@
         </div>
     </div>
 
+    @if(auth()->user()->learning_style === 'auditory')
+    <div class="card mb-4 p-4"
+         style="border-left: 4px solid #0891b2; background: #e0f2fe; border-radius: 14px; border: 1px solid #0891b2;">
+         <div class="d-flex align-items-start gap-3">
+             <div style="font-size:1.8rem;flex-shrink:0;">🎵</div>
+             <div>
+                 <div class="fw-bold mb-1"
+                      style="color:#0c4a6e;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;">
+                     AUDITORY STUDY TIP
+                 </div>
+                 <div style="font-size:.92rem;color:#0c4a6e;line-height:1.55;">
+                     When practicing flashcards today, say the terms and definitions out loud. Hearing the vocabulary spoken makes it much easier for your brain to remember.
+                 </div>
+             </div>
+         </div>
+    </div>
+    @endif
+
     <h5 class="text-muted fw-bold mt-2 mb-3">SETS IN {{ strtoupper($topic) }}</h5>
 
     @if($flashcardSets->count() > 0)
