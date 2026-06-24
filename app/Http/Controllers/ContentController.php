@@ -61,7 +61,7 @@ class ContentController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
             'topic' => 'required|string',
-            'file' => 'nullable|file|max:102400', // 100MB max
+            'file' => 'nullable|file|max:204800', // 200MB max
         ]);
 
         $validated['content'] = $validated['content'] ?? '';
@@ -109,7 +109,7 @@ class ContentController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
             'topic' => 'required|string',
-            'file' => 'nullable|file|max:102400', // 100MB max
+            'file' => 'nullable|file|max:204800', // 200MB max
         ]);
 
         $validated['content'] = $validated['content'] ?? '';

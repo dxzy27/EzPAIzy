@@ -3,7 +3,10 @@
 @section('content')
 <div class="container py-4">
     <div class="row mb-4">
-        <div class="col-md-12">
+        <div class="col-md-12 d-flex flex-column align-items-start">
+            <a href="{{ route('teacher.quizzes.index') }}" class="btn btn-secondary mb-3">
+                <i class="bi bi-arrow-left"></i> Back to Quizzes
+            </a>
             <h1>
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" class="text-primary me-2" style="vertical-align: text-bottom;">
                     <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.0462 6.0462 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24.991a6.0462 6.0462 0 0 0 3.9977-2.9001 5.9847 5.9847 0 0 0-.7427-7.0966 5.98 5.98 0 0 0-.2223-1.1732h.005zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.5399-.7956l.0009-.0004-.0004-.0003h-1e-4c-1.353-.8273-2.126-2.2778-2.0232-3.794l.0003-.01.0718-.89 2.5843 1.4921-.005.0084a.6923.6923 0 0 0 .9794.2274.6973.6973 0 0 0 .2539-.9305l-.0133-.0212-3.3444-1.9309.0245-.2765a4.5422 4.5422 0 0 1 2.9822-3.861l.019-.0045 1.62-.3876v3.003h-1e-4a.6975.6975 0 0 0 .6975.6975.6975.6975 0 0 0 .6975-.6975h-.0001V8.214l1.2483.7208v5.5724a.6975.6975 0 0 0 .6975.6975.6975.6975 0 0 0 .6975-.6975V7.7493l.3662-.1282a4.4755 4.4755 0 0 1 2.5399.7956l-.0009.0004.0004.0003h1e-4c1.353.8273 2.126 2.2778 2.0232 3.794l-.0003.01-.0718.89-2.5843-1.4921.005-.0084a.6923.6923 0 0 0-.9794-.2274.6973.6973 0 0 0-.2539.9305l.0133.0212 3.3444 1.9309-.0245.2765a4.5422 4.5422 0 0 1-2.9822 3.861l-.019.0045-1.62.3876v-3.003h1e-4a.6975.6975 0 0 0-.6975-.6975.6975.6975 0 0 0-.6975.6975h.0001v6.3364l-1.2483-.7208v-5.5724a.6975.6975 0 0 0-.6975-.6975.6975.6975 0 0 0-.6975.6975v6.7621l-.3662.1282z"/>
@@ -74,7 +77,7 @@
                             
                             <div id="file-input-container" style="display: none;">
                                 <input type="file" class="form-control" name="file" id="file" accept=".pdf,.txt,.md">
-                                <div class="form-text">Supported formats: PDF, Text. Max size: 10MB.</div>
+                                <div class="form-text">Supported formats: PDF, Text. Max size: 200MB.</div>
                             </div>
                         </div>
 
@@ -90,9 +93,9 @@
                                 {{-- Compare Both --}}
                                 <button type="button" class="btn btn-lg btn-dark" id="compare-btn"
                                     onclick="submitCompare()">
-                                    ⚖️ Compare Both AIs Side-by-Side
+                                    ⚖️ Compare Both AIs
                                     <small class="d-block fw-normal opacity-75" style="font-size:.75rem;">
-                                        GPT vs Gemini — recommended for FYP
+                                        GPT vs Gemini
                                     </small>
                                 </button>
 

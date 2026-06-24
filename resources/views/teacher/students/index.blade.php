@@ -2,11 +2,14 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 @section('content')
 <div class="container mt-5">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2>Manage Students</h2>
+    <div class="d-flex flex-column mb-4">
+        <div class="align-self-start mb-3">
+            <a href="{{ route('teacher.dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
         </div>
-        <div class="col-md-4 text-end">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Manage Students</h2>
             <a href="{{ route('teacher.students.create') }}" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i> Add New Student
             </a>
@@ -73,10 +76,6 @@
     <div class="d-flex justify-content-center mt-4">
         {{ $students->links() }}
     </div>
-        <div class="row mt-4">
-        <div class="col-md-12">
-            <a href="{{ route('teacher.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-        </div>
-    </div>
+
 </div>
 @endsection

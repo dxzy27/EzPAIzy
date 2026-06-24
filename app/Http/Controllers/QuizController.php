@@ -184,7 +184,7 @@ class QuizController extends Controller
             'question_count' => 'required|integer|min:1|max:20',
             'context' => 'nullable|string',
             'instructions' => 'nullable|string',
-            'file' => 'nullable|file|max:10240', // 10MB
+            'file' => 'nullable|file|max:204800', // 200MB
         ]);
 
         $textContext = $request->input('context', '');
@@ -233,7 +233,7 @@ class QuizController extends Controller
             'question_count' => 'required|integer|min:1|max:20',
             'context' => 'nullable|string',
             'instructions' => 'nullable|string',
-            'file' => 'nullable|file|max:10240',
+            'file' => 'nullable|file|max:204800',
         ]);
 
         $textContext = $request->input('context', '');

@@ -60,19 +60,17 @@
 <div class="container-fluid py-4 px-4" style="padding-bottom: 130px;">
 
     {{-- Header --}}
-    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-        <div>
-            <h1 class="h3 fw-bold mb-1">⚖️ AI Comparison Results</h1>
-            <p class="text-muted mb-0">
-                Topic: <strong>{{ $topic }}</strong> &nbsp;|&nbsp;
-                Difficulty: <strong>{{ ucfirst($difficulty) }}</strong>
-                &nbsp;|&nbsp;
-                <span class="text-primary fw-semibold" id="selected-count">0 questions selected</span>
-            </p>
-        </div>
-        <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-outline-secondary btn-sm">
+    <div class="d-flex flex-column align-items-start mb-4">
+        <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-outline-secondary btn-sm mb-3">
             <i class="bi bi-arrow-left me-1"></i> Generate Again
         </a>
+        <h1 class="h3 fw-bold mb-1">⚖️ AI Comparison Results</h1>
+        <p class="text-muted mb-0">
+            Topic: <strong>{{ $topic }}</strong> &nbsp;|&nbsp;
+            Difficulty: <strong>{{ ucfirst($difficulty) }}</strong>
+            &nbsp;|&nbsp;
+            <span class="text-primary fw-semibold" id="selected-count">0 questions selected</span>
+        </p>
     </div>
 
     <p class="text-muted mb-4">

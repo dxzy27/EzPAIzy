@@ -147,6 +147,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::get('/students/{student}/edit', [StudentManagementController::class, 'edit'])->name('students.edit');
     Route::put('/students/{student}/update', [StudentManagementController::class, 'update'])->name('students.update');
     Route::delete('/students/{student}/destroy', [StudentManagementController::class, 'destroy'])->name('students.destroy');
+    Route::post('/students/progress/{progress}/grade', [StudentManagementController::class, 'grade'])->name('students.grade');
 
     // Topics Management
     Route::post('/topics', [TopicController::class, 'store'])->name('topics.store');

@@ -3,15 +3,12 @@
 @section('content')
 <div class="container mt-5">
     <div class="row mb-4">
-        <div class="col-md-8">
-            <h2>Edit Student</h2>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ route('teacher.students.index') }}" class="btn btn-secondary">
+        <div class="col-md-12 d-flex flex-column align-items-start">
+            <a href="{{ route('teacher.students.index') }}" class="btn btn-secondary mb-3">
                 <i class="bi bi-arrow-left"></i> Back
             </a>
+            <h2>Edit Student</h2>
         </div>
-    </div>
 
     @if ($errors->any())
         <div class="alert alert-danger">

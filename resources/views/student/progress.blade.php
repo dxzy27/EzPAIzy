@@ -138,7 +138,27 @@
                                                                         @foreach($questions as $index => $q)
                                                                             <div class="mb-4 p-3 border rounded bg-white shadow-sm">
                                                                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                                    <h6 class="fw-bold mb-0">Q{{ $index + 1 }}: {{ $q->question_text }}</h6>
+                                                                                    @php
+                                                                                        $studentAnsRaw = $answers[$index] ?? null;
+                                                                                        $isWrong = false;
+                                                                                        if (isset($notes[$index]['status'])) {
+                                                                                            if ($notes[$index]['status'] === 'incorrect') {
+                                                                                                $isWrong = true;
+                                                                                            }
+                                                                                        } else {
+                                                                                            if ($p->difficulty !== 'hard' && $studentAnsRaw !== null && $q->correct_answer) {
+                                                                                                if (strtolower(trim($studentAnsRaw)) !== strtolower(trim($q->correct_answer))) {
+                                                                                                    $isWrong = true;
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    @endphp
+                                                                                    <h6 class="fw-bold mb-0">
+                                                                                        @if($isWrong)
+                                                                                            <span class="text-danger me-1" title="Incorrect Answer">●</span>
+                                                                                        @endif
+                                                                                        Q{{ $index + 1 }}: {{ $q->question_text }}
+                                                                                    </h6>
                                                                                     @if(isset($notes[$index]['status']))
                                                                                         @if($notes[$index]['status'] == 'correct')
                                                                                             <span class="badge bg-success text-white"><i class="bi bi-check-lg"></i> Approved</span>
@@ -170,7 +190,13 @@
                                                                                     </div>
                                                                                 @endif
                                                                                 <div class="mt-3">
-                                                                                    <p class="mb-1 text-success small fw-bold">SUGGESTED ANSWER / KEY POINTS:</p>
+                                                                                    <p class="mb-1 text-success small fw-bold">
+                                                                                        @if($p->difficulty === 'easy')
+                                                                                            CORRECT ANSWER:
+                                                                                        @else
+                                                                                            SUGGESTED ANSWER / KEY POINTS:
+                                                                                        @endif
+                                                                                    </p>
                                                                                     <div class="p-3 border rounded bg-white text-muted small">
                                                                                         @if($q->options && isset($q->options[$q->correct_answer]))
                                                                                             <span class="text-success fw-bold">{{ strtoupper($q->correct_answer) }}:</span> {{ $q->options[$q->correct_answer] }}
@@ -180,10 +206,17 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                        @endforeach
-                                                                    </div>
-                                                                    
-                                                                    @if($isReadWrite)
+                                                                            @endforeach
+
+                                                                            @if(isset($notes['overall_comment']) && $notes['overall_comment'])
+                                                                                <div class="mt-4 p-3 border rounded shadow-sm" style="background-color: #f0f8ff; border-left: 5px solid #0d6efd !important;">
+                                                                                    <h6 class="fw-bold mb-2 text-primary"><i class="bi bi-chat-quote-fill me-2"></i>Teacher's Overall Comment</h6>
+                                                                                    <p class="mb-0 text-dark" style="white-space: pre-wrap;">{{ $notes['overall_comment'] }}</p>
+                                                                                </div>
+                                                                            @endif
+                                                                        </div>
+                                                                        
+                                                                        @if($isReadWrite)
                                                                         <div class="col-md-5">
                                                                             @php
                                                                                 $existingNote = \App\Models\StudentNote::where('user_id', auth()->id())

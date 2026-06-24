@@ -220,4 +220,26 @@ class StudentManagementController extends Controller
         return redirect()->route('teacher.students.index')
             ->with('success', "Student '$studentName' deleted successfully!");
     }
+
+    /**
+     * Grade a KBAT quiz
+     */
+    public function grade(Request $request, \App\Models\Progress $progress)
+    {
+        $validated = $request->validate([
+            'score' => 'required|numeric|min:0|max:100',
+            'overall_comment' => 'nullable|string|max:1000',
+        ]);
+
+        $progress->score = $validated['score'];
+        $progress->status = 'graded';
+        
+        $notes = is_array($progress->teacher_notes) ? $progress->teacher_notes : [];
+        $notes['overall_comment'] = $validated['overall_comment'];
+        $progress->teacher_notes = $notes;
+        
+        $progress->save();
+
+        return redirect()->back()->with('success', 'Quiz graded successfully!');
+    }
 }

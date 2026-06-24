@@ -4,7 +4,12 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <h2 class="mb-4">Add New Student</h2>
+            <div class="d-flex flex-column align-items-start mb-4">
+                <a href="{{ route('teacher.students.index') }}" class="btn btn-secondary mb-3">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <h2 class="mb-0">Add New Student</h2>
+            </div>
 
             @if ($errors->any())
                 <div class="alert alert-danger">

@@ -2,12 +2,19 @@
 
 @section('content')
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2 fw-bold text-dark">My Quizzes</h1>
-        <div class="d-flex gap-2">
-            <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-dark">
-                <i class="bi bi-cpu me-1"></i> Generate with AI
+    <div class="d-flex flex-column mb-4">
+        <div class="align-self-start mb-3">
+            <a href="{{ route('teacher.dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h2 fw-bold text-dark mb-0">My Quizzes</h1>
+            <div class="d-flex gap-2">
+                <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-dark">
+                    <i class="bi bi-cpu me-1"></i> Generate with AI
+                </a>
+            </div>
         </div>
     </div>
 
@@ -85,10 +92,6 @@
     </div>
     @endif
     
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <a href="{{ route('teacher.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-        </div>
-    </div>
+
 </div>
 @endsection
