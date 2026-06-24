@@ -5,8 +5,8 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <a href="{{ route('teacher.quizzes.index') }}" class="btn btn-outline-secondary btn-sm me-2">
-            <i class="bi bi-arrow-left me-1"></i>Back to Quizzes
+        <a href="{{ $quiz->topic ? route('teacher.quizzes.folder', ['topic' => $quiz->topic]) : route('teacher.quizzes.index') }}" class="btn btn-outline-secondary btn-sm me-2">
+            <i class="bi bi-arrow-left me-1"></i>Back to Folder
         </a>
         <h4 class="d-inline-block mb-0 fw-bold">{{ $quiz->title }}</h4>
     </div>
