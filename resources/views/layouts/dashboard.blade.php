@@ -606,8 +606,6 @@
         $sectionTitle = 'Other Materials';
     } elseif (request()->routeIs('*quizzes*')) {
         $sectionTitle = 'Quizzes';
-    } elseif (request()->routeIs('*question-bank*')) {
-        $sectionTitle = 'Question Bank';
     } elseif (request()->routeIs('*students*')) {
         $sectionTitle = 'Students';
     } elseif (request()->routeIs('*revision*')) {

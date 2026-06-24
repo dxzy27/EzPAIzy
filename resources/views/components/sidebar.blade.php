@@ -45,16 +45,6 @@
                 </a>
             </li>
 
-            {{-- Global Question Bank --}}
-            <li>
-                <a href="{{ route('admin.question-bank.index') }}"
-                   class="nav-link {{ request()->routeIs('admin.question-bank.*') ? 'active' : '' }}"
-                   data-tooltip="Question Bank">
-                    <i class="bi bi-archive nav-icon"></i>
-                    <span class="nav-label">Question Bank</span>
-                </a>
-            </li>
-
         @elseif(auth()->user()->role === 'teacher')
 
             {{-- ── TEACHER LINKS ──────────────────────── --}}
@@ -121,16 +111,6 @@
                         </li>
                     </ul>
                 </div>
-            </li>
-
-            {{-- Question Bank --}}
-            <li>
-                <a href="{{ route('teacher.question-bank.index') }}"
-                   class="nav-link {{ request()->routeIs('teacher.question-bank.*') ? 'active' : '' }}"
-                   data-tooltip="Question Bank">
-                    <i class="bi bi-archive nav-icon"></i>
-                    <span class="nav-label">Question Bank</span>
-                </a>
             </li>
 
             {{-- Students --}}

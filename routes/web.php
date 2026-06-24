@@ -103,7 +103,6 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::get('/quizzes/folder/{topic}', [QuizController::class, 'folder'])->name('quizzes.folder');
     Route::get('/quizzes/generate', [QuizController::class, 'generate'])->name('quizzes.generate');
     Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
-    Route::get('/quizzes/question-bank/search', [QuizController::class, 'searchQuestionBank'])->name('quizzes.question_bank_search');
     Route::post('/quizzes/store', [QuizController::class, 'store'])->name('quizzes.store');
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
     Route::get('/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
@@ -114,10 +113,6 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::post('/quizzes/process-generate', [QuizController::class, 'processGenerate'])->name('quizzes.process_generate');
     Route::post('/quizzes/process-compare', [QuizController::class, 'processCompare'])->name('quizzes.process_compare');
     Route::post('/quizzes/save-selected', [QuizController::class, 'saveSelected'])->name('quizzes.save_selected');
-
-    // Question Bank (PDF Extract)
-    Route::get('/question-bank', [QuizController::class, 'questionBankIndex'])->name('question-bank.index');
-    Route::post('/question-bank/extract', [QuizController::class, 'extractQuestionBank'])->name('question-bank.extract');
 
     // Learning Materials (Contents)
     Route::get('/contents', [ContentController::class, 'index'])->name('contents.index');
@@ -180,12 +175,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/moderation/flashcard/{flashcardSet}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyFlashcardSet'])->name('moderation.flashcard.destroy');
     Route::post('/moderation/quiz/{quiz}/toggle-flag', [App\Http\Controllers\Admin\ModerationController::class, 'toggleQuizFlag'])->name('moderation.quiz.toggle-flag');
     Route::delete('/moderation/quiz/{quiz}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyQuiz'])->name('moderation.quiz.destroy');
-
-    // Question Bank (CRUD)
-    Route::get('/question-bank', [App\Http\Controllers\Admin\QuestionBankController::class, 'index'])->name('question-bank.index');
-    Route::get('/question-bank/create', [App\Http\Controllers\Admin\QuestionBankController::class, 'create'])->name('question-bank.create');
-    Route::post('/question-bank/store', [App\Http\Controllers\Admin\QuestionBankController::class, 'store'])->name('question-bank.store');
-    Route::get('/question-bank/{question}/edit', [App\Http\Controllers\Admin\QuestionBankController::class, 'edit'])->name('question-bank.edit');
-    Route::post('/question-bank/{question}/update', [App\Http\Controllers\Admin\QuestionBankController::class, 'update'])->name('question-bank.update');
-    Route::delete('/question-bank/{question}/destroy', [App\Http\Controllers\Admin\QuestionBankController::class, 'destroy'])->name('question-bank.destroy');
 });

@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Content;
 use App\Models\FlashcardSet;
 use App\Models\Quiz;
-use App\Models\QuestionBank;
 
 class AdminController extends Controller
 {
@@ -25,7 +24,6 @@ class AdminController extends Controller
             'flagged_contents' => Content::where('is_flagged', true)->count(),
             'flagged_flashcards' => FlashcardSet::where('is_flagged', true)->count(),
             'flagged_quizzes' => Quiz::where('is_flagged', true)->count(),
-            'question_bank_count' => QuestionBank::count(),
         ];
 
         return view('admin.dashboard', compact('stats'));

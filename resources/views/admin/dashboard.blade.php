@@ -42,15 +42,12 @@
         <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm px-3">
             <i class="bi bi-person-plus-fill me-1"></i> Add Account
         </a>
-        <a href="{{ route('admin.question-bank.create') }}" class="btn btn-outline-secondary btn-sm px-3">
-            <i class="bi bi-plus-circle me-1"></i> Add Global Question
-        </a>
     </div>
 </div>
 
 {{-- Stats Row --}}
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-md-4">
         <a href="{{ route('admin.users.index', ['role' => 'teacher']) }}" class="card stat-card text-decoration-none d-block p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#eef2ff; color:#4f46e5;"><i class="bi bi-person-badge"></i></div>
@@ -62,7 +59,7 @@
             </div>
         </a>
     </div>
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-md-4">
         <a href="{{ route('admin.users.index', ['role' => 'student']) }}" class="card stat-card text-decoration-none d-block p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#ecfdf5; color:#059669;"><i class="bi bi-people"></i></div>
@@ -74,7 +71,7 @@
             </div>
         </a>
     </div>
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-md-4">
         <a href="{{ route('admin.users.index') }}" class="card stat-card text-decoration-none d-block p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#fef2f2; color:#dc2626;"><i class="bi bi-person-x"></i></div>
@@ -82,18 +79,6 @@
                     <div class="stat-label">Suspended</div>
                     <div class="stat-value">{{ $stats['suspended_users'] }}</div>
                     <div class="stat-sub">Blocked Accounts</div>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <a href="{{ route('admin.question-bank.index') }}" class="card stat-card text-decoration-none d-block p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="stat-icon" style="background:#fffbeb; color:#d97706;"><i class="bi bi-database"></i></div>
-                <div>
-                    <div class="stat-label">Question Bank</div>
-                    <div class="stat-value">{{ $stats['question_bank_count'] }}</div>
-                    <div class="stat-sub">Global Questions</div>
                 </div>
             </div>
         </a>
@@ -123,15 +108,6 @@
                         <div>
                             <div class="fw-bold">Content Control Panel</div>
                             <div class="text-muted small">Moderate study materials, flashcards and quiz questions.</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-12">
-                    <a href="{{ route('admin.question-bank.index') }}" class="action-btn">
-                        <div class="action-btn-icon" style="background:#fef3c7; color:#f59e0b;"><i class="bi bi-folder-fill"></i></div>
-                        <div>
-                            <div class="fw-bold">Global Question Bank</div>
-                            <div class="text-muted small">Access and curate system questions shared across PAI teachers.</div>
                         </div>
                     </a>
                 </div>
