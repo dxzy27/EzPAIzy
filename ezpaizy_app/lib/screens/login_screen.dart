@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -35,6 +36,74 @@ class _LoginScreenState extends State<LoginScreen> {
     final auth = context.watch<AuthProvider>();
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        titleSpacing: 24,
+        shape: const Border(
+          bottom: BorderSide(
+            color: Color(0xFFE2E8F0),
+            width: 1,
+          ),
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/images/logo.png',
+              height: 40,
+              errorBuilder: (context, error, stackTrace) => const Icon(Icons.school, color: Color(0xFF3B82F6), size: 32),
+            ),
+            const SizedBox(width: 8),
+            Image.asset(
+              'assets/images/EzPAIzy.png',
+              height: 24,
+              errorBuilder: (context, error, stackTrace) => const Text(
+                'EzPAIzy',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E293B),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 24.0),
+            child: Center(
+              child: OutlinedButton(
+                onPressed: () async {
+                  final url = Uri.parse('http://165.245.186.220/register');
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF334155),
+                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text(
+                  'Sign up',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Outfit',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -57,32 +126,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 constraints: const BoxConstraints(maxWidth: 440),
                 child: Column(
                   children: [
-                    // ── Brand Header (Matching Web Top Navigation Brand) ──
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/logo.png',
-                          height: 36,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6), size: 30),
-                        ),
-                        const SizedBox(width: 8),
-                        Image.asset(
-                          'assets/images/EzPAIzy.png',
-                          height: 22,
-                          errorBuilder: (_, __, ___) => const Text(
-                            'EzPAIzy',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E293B),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-
                     // ── Auth Card (Matching Web auth-card) ──
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
@@ -138,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               'assets/images/mrsm.png',
                               height: 80,
                               fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Icon(
+                              errorBuilder: (context, error, stackTrace) => const Icon(
                                 Icons.verified_user,
                                 size: 60,
                                 color: Color(0xFF3B82F6),
@@ -169,12 +212,32 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          const Center(
-                            child: Text(
-                              "Don't have an account? Sign up",
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF64748B),
+                          Center(
+                            child: GestureDetector(
+                              onTap: () async {
+                                final url = Uri.parse('http://165.245.186.220/register');
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                }
+                              },
+                              child: RichText(
+                                text: const TextSpan(
+                                  text: "Don't have an account? ",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF64748B),
+                                    fontFamily: 'Outfit',
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Sign up',
+                                      style: TextStyle(
+                                        color: Color(0xFF3B82F6),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -319,6 +382,37 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Icon(Icons.arrow_forward, size: 18),
                                       ],
                                     ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+                          Center(
+                            child: GestureDetector(
+                              onTap: () async {
+                                final url = Uri.parse('http://165.245.186.220/register');
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                }
+                              },
+                              child: RichText(
+                                text: const TextSpan(
+                                  text: "New here? ",
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    color: Color(0xFF64748B),
+                                    fontFamily: 'Outfit',
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Create an account',
+                                      style: TextStyle(
+                                        color: Color(0xFF3B82F6),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ],
