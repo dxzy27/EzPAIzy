@@ -99,6 +99,40 @@
         pointer-events: auto !important;
     }
 
+    .btn-grade-still {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border: 1px solid rgba(239, 68, 68, 0.4) !important;
+        color: #f87171 !important;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.2s ease-in-out;
+        padding: 0.6rem 1.8rem;
+    }
+    
+    .btn-grade-still:hover:not(:disabled) {
+        background-color: rgba(239, 68, 68, 0.25) !important;
+        border-color: rgba(239, 68, 68, 0.6) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+    
+    .btn-grade-know {
+        background-color: rgba(16, 185, 129, 0.15) !important;
+        border: 1px solid rgba(16, 185, 129, 0.4) !important;
+        color: #34d399 !important;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.2s ease-in-out;
+        padding: 0.6rem 1.8rem;
+    }
+    
+    .btn-grade-know:hover:not(:disabled) {
+        background-color: rgba(16, 185, 129, 0.25) !important;
+        border-color: rgba(16, 185, 129, 0.6) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
     .controls {
         max-width: 600px;
         margin: 20px auto;
@@ -197,18 +231,12 @@
                         </div>
                         <div id="grading-controls" class="mt-4 text-center d-none">
                             <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
-                            <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                <button class="btn btn-danger px-4 py-2" onclick="submitReview(${currentCard.id}, 0)" ${isSubmitting ? 'disabled' : ''}>
-                                    Again
+                            <div class="d-flex justify-content-center gap-3">
+                                <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
+                                    <i class="bi bi-x-lg fs-5"></i> Still learning
                                 </button>
-                                <button class="btn btn-warning px-4 py-2" onclick="submitReview(${currentCard.id}, 3)" ${isSubmitting ? 'disabled' : ''}>
-                                    Hard
-                                </button>
-                                <button class="btn btn-success px-4 py-2" onclick="submitReview(${currentCard.id}, 4)" ${isSubmitting ? 'disabled' : ''}>
-                                    Good
-                                </button>
-                                <button class="btn btn-primary px-4 py-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
-                                    Easy
+                                <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
+                                    <i class="bi bi-check-lg fs-5"></i> Know
                                 </button>
                             </div>
                         </div>
