@@ -27,12 +27,12 @@ class CompetitiveLearnerFeaturesTest extends TestCase
         ]);
 
         $student2 = User::create([
-            'name' => 'Visual Student A',
+            'name' => 'ReadWrite Student A',
             'email' => 'visA_' . uniqid() . '@example.com',
             'password' => bcrypt('password'),
             'role' => 'student',
             'class_name' => 'Class X',
-            'learning_style' => 'visual',
+            'learning_style' => 'read_write',
         ]);
 
         $student3 = User::create([
@@ -88,13 +88,13 @@ class CompetitiveLearnerFeaturesTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Class Leaderboard');
         $response->assertSee('Comp Student A');
-        $response->assertSee('Visual Student A');
+        $response->assertSee('ReadWrite Student A');
         $response->assertSee('90 pts');
         $response->assertSee('100 pts');
         // Should not see classmate from another class
         $response->assertDontSee('Comp Student B');
 
-        // 5. Act: View dashboard as student 2 (visual) - should not see the leaderboard
+        // 5. Act: View dashboard as student 2 (read_write) - should not see the leaderboard
         $responseVisual = $this->actingAs($student2)->get(route('student.dashboard'));
         $responseVisual->assertDontSee('Class Leaderboard');
     }
@@ -111,12 +111,12 @@ class CompetitiveLearnerFeaturesTest extends TestCase
         ]);
 
         $nonCompStudent = User::create([
-            'name' => 'Visual Student',
+            'name' => 'ReadWrite Student',
             'email' => 'vis_' . uniqid() . '@example.com',
             'password' => bcrypt('password'),
             'role' => 'student',
             'class_name' => 'Class Z',
-            'learning_style' => 'visual',
+            'learning_style' => 'read_write',
         ]);
 
         $teacher = User::create([
@@ -154,7 +154,7 @@ class CompetitiveLearnerFeaturesTest extends TestCase
         $response = $this->actingAs($student)->get(route('student.quizzes.folder', ['topic' => $topicName]));
         $response->assertSee('Locked: Score 80%+ on Easy quizzes first');
 
-        // Medium should be Unlocked for visual student
+        // Medium should be Unlocked for read_write student
         $responseVisual = $this->actingAs($nonCompStudent)->get(route('student.quizzes.folder', ['topic' => $topicName]));
         $responseVisual->assertDontSee('Locked:');
 

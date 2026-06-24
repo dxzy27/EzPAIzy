@@ -19,14 +19,63 @@
             $role = auth()->user()?->role;
             $isTeacher = $role === 'teacher';
             $isAdmin = $role === 'admin';
+            $isStudent = $role === 'student';
             
-            $sidebarBg = $isAdmin ? '#1e1e2d' : ($isTeacher ? '#1e3a5f' : '#134e4a');
-            $sidebarHover = $isAdmin ? '#2c2c3e' : ($isTeacher ? '#2a4f7c' : '#1a6460');
-            $sidebarActive = $isAdmin ? '#8b5cf6' : ($isTeacher ? '#60a5fa' : '#2dd4bf');
-            $sidebarActiveBg = $isAdmin ? 'rgba(139,92,246,.18)' : ($isTeacher ? 'rgba(96,165,250,.18)' : 'rgba(45,212,191,.18)');
-            $accent = $isAdmin ? '#8b5cf6' : ($isTeacher ? '#3b82f6' : '#14b8a6');
-            $accentSoft = $isAdmin ? '#f5f3ff' : ($isTeacher ? '#eff6ff' : '#f0fdfa');
-            $pageBg = $isAdmin ? '#f8fafc' : ($isTeacher ? '#f0f7ff' : '#f0fdfb');
+            $style = $isStudent ? auth()->user()?->learning_style : null;
+            
+            if ($isAdmin) {
+                $sidebarBg = '#1e1e2d';
+                $sidebarHover = '#2c2c3e';
+                $sidebarActive = '#8b5cf6';
+                $sidebarActiveBg = 'rgba(139,92,246,.18)';
+                $accent = '#8b5cf6';
+                $accentSoft = '#f5f3ff';
+                $pageBg = '#f8fafc';
+            } elseif ($isTeacher) {
+                $sidebarBg = '#1e3a5f';
+                $sidebarHover = '#2a4f7c';
+                $sidebarActive = '#60a5fa';
+                $sidebarActiveBg = 'rgba(96,165,250,.18)';
+                $accent = '#3b82f6';
+                $accentSoft = '#eff6ff';
+                $pageBg = '#f0f7ff';
+            } else {
+                // Students (both Basic UI and diagnosed styles)
+                if ($style === 'auditory') {
+                    $sidebarBg = '#3c1704'; // dark brown-orange
+                    $sidebarHover = '#5a250a';
+                    $sidebarActive = '#e5b181';
+                    $sidebarActiveBg = 'rgba(229,177,129,.18)';
+                    $accent = '#e5b181';
+                    $accentSoft = '#fff7ed';
+                    $pageBg = '#fffbf7';
+                } elseif ($style === 'competitive') {
+                    $sidebarBg = '#450a0a'; // dark red
+                    $sidebarHover = '#630c14';
+                    $sidebarActive = '#EF9086';
+                    $sidebarActiveBg = 'rgba(239,144,134,.18)';
+                    $accent = '#EF9086';
+                    $accentSoft = '#fef2f2';
+                    $pageBg = '#fffafb';
+                } elseif ($style === 'read_write') {
+                    $sidebarBg = '#383023'; // dark warm gray/tan
+                    $sidebarHover = '#4c4130';
+                    $sidebarActive = '#7d6867';
+                    $sidebarActiveBg = 'rgba(125,104,103,.18)';
+                    $accent = '#7d6867';
+                    $accentSoft = '#faf7f2';
+                    $pageBg = '#fcfbfa';
+                } else {
+                    // Basic UI (default green/teal)
+                    $sidebarBg = '#134e4a';
+                    $sidebarHover = '#1a6460';
+                    $sidebarActive = '#2dd4bf';
+                    $sidebarActiveBg = 'rgba(45,212,191,.18)';
+                    $accent = '#14b8a6';
+                    $accentSoft = '#f0fdfa';
+                    $pageBg = '#f0fdfb';
+                }
+            }
         @endphp
 
         :root {

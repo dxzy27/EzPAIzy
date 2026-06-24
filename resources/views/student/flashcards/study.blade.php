@@ -168,9 +168,54 @@
         </div>
     </div>
 
-    <!-- Flashcard Display -->
-    <div id="flashcard-app">
-        <!-- Rendered by JS -->
+    @php $isReadWrite = auth()->user()?->learning_style === 'read_write'; @endphp
+
+    <div class="row">
+        <div class="{{ $isReadWrite ? 'col-lg-8' : 'col-lg-12' }}">
+            <!-- Flashcard Display -->
+            <div id="flashcard-app">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+        @if($isReadWrite)
+            @php
+                $existingNote = \App\Models\StudentNote::where('user_id', auth()->id())
+                    ->where('resource_type', 'flashcard')
+                    ->where('resource_id', $flashcardSet->id)
+                    ->first();
+            @endphp
+            <div class="col-lg-4">
+                <div class="card border-success shadow-sm sticky-top" style="top: 20px; z-index: 100;">
+                    <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-1"></i> Study Notepad</h6>
+                        <span id="save-status" class="small text-white-50">Auto-saved</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.72rem;">Topic</small>
+                            <span class="badge bg-light text-dark border">{{ $flashcardSet->topic ?? 'General' }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-title" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Note Title</label>
+                            <input type="text" id="note-title" class="form-control form-control-sm fw-bold" 
+                                   value="{{ $existingNote ? $existingNote->title : 'Notes: ' . $flashcardSet->title }}" 
+                                   placeholder="Title of your note...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-content" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Acronyms & Notes</label>
+                            <textarea id="note-content" class="form-control form-control-sm" rows="12" 
+                                      placeholder="Write your study acronyms, summaries, and key points here...">{{ $existingNote ? $existingNote->content : '' }}</textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="button" onclick="saveNote()" class="btn btn-success btn-sm fw-bold">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Save Note
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 @endsection
@@ -747,10 +792,80 @@
     });
 </script>
 
+@if($isReadWrite)
+<script>
+    let saveTimeout = null;
+
+    function saveNote() {
+        const title = document.getElementById('note-title').value.trim();
+        const content = document.getElementById('note-content').value.trim();
+        const statusSpan = document.getElementById('save-status');
+
+        if (!title) {
+            statusSpan.textContent = 'Title required';
+            statusSpan.style.color = '#ef4444';
+            return;
+        }
+
+        statusSpan.textContent = 'Saving...';
+        statusSpan.style.color = 'rgba(255,255,255,0.7)';
+
+        fetch("{{ route('student.notes.save') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                topic: "{{ $flashcardSet->topic ?? 'General' }}",
+                difficulty: null,
+                title: title,
+                content: content,
+                resource_type: 'flashcard',
+                resource_id: {{ $flashcardSet->id }}
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                statusSpan.textContent = 'Auto-saved';
+                statusSpan.style.color = 'rgba(255,255,255,0.7)';
+            } else {
+                statusSpan.textContent = 'Save failed';
+                statusSpan.style.color = '#ef4444';
+            }
+        })
+        .catch(err => {
+            statusSpan.textContent = 'Connection error';
+            statusSpan.style.color = '#ef4444';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('note-title');
+        const contentInput = document.getElementById('note-content');
+
+        if (titleInput && contentInput) {
+            const triggerAutoSave = () => {
+                const statusSpan = document.getElementById('save-status');
+                statusSpan.textContent = 'Unsaved changes';
+                statusSpan.style.color = '#f59e0b';
+                
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveNote, 1500);
+            };
+
+            titleInput.addEventListener('input', triggerAutoSave);
+            contentInput.addEventListener('input', triggerAutoSave);
+        }
+    });
+</script>
+@endif
+
 @if(auth()->user()?->learning_style === 'auditory')
 <div class="modal fade" id="auditoryTipModal" tabindex="-1" aria-labelledby="auditoryTipModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 18px; border-left: 4px solid #0891b2 !important;">
+        <div class="modal-content border-0 shadow" style="border-radius: 18px; border-left: 4px solid #e5b181 !important;">
             <div class="modal-header bg-light border-0 pt-4 px-4 pb-0">
                 <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="auditoryTipModalLabel">
                     <span style="font-size: 1.5rem;">🎵</span> AUDITORY STUDY TIP
@@ -758,12 +873,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <p class="mb-0 text-dark" style="font-size: 1rem; line-height: 1.6; color: #0c4a6e !important;">
+                <p class="mb-0 text-dark" style="font-size: 1rem; line-height: 1.6; color: #7c2d12 !important;">
                     When practicing flashcards today, say the terms and definitions out loud. Hearing the vocabulary spoken makes it much easier for your brain to remember.
                 </p>
             </div>
             <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                <button type="button" class="btn btn-primary px-4 fw-bold" style="border-radius: 10px; background-color: #0891b2; border-color: #0891b2;" data-bs-dismiss="modal">Start Practice</button>
+                <button type="button" class="btn btn-primary px-4 fw-bold" style="border-radius: 10px; background-color: #e5b181; border-color: #e5b181;" data-bs-dismiss="modal">Start Practice</button>
             </div>
         </div>
     </div>

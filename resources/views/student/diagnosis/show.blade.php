@@ -1,11 +1,60 @@
 @extends('layouts.dashboard')
 
 @section('content')
+
+@php
+    $style = $profile->learning_style;
+    $gradClass = 'grad-' . $style;
+    
+    // Theme colors mapping
+    $styleColors = [
+        'read_write' => [
+            'accent'      => '#7d6867',
+            'accentLight' => '#f6f4f4',
+            'accentText'  => '#453938',
+            'rgb'         => '125, 104, 103',
+            'border'      => '#7d6867',
+        ],
+        'auditory' => [
+            'accent'      => '#e5b181',
+            'accentLight' => '#fff7ed',
+            'accentText'  => '#7c2d12',
+            'rgb'         => '229, 177, 129',
+            'border'      => '#e5b181',
+        ],
+        'competitive' => [
+            'accent'      => '#EF9086',
+            'accentLight' => '#fef2f2',
+            'accentText'  => '#991b1b',
+            'rgb'         => '239, 144, 134',
+            'border'      => '#EF9086',
+        ],
+    ];
+
+    $cfg = $styleColors[$style] ?? [
+        'accent'      => '#14b8a6',
+        'accentLight' => '#f0fdfa',
+        'accentText'  => '#115e59',
+        'rgb'         => '20, 184, 166',
+        'border'      => '#14b8a6',
+    ];
+
+    $icons = ['read_write' => 'bi-pencil-square', 'auditory' => 'bi-ear-fill', 'competitive' => 'bi-trophy-fill'];
+    $icon = $icons[$style] ?? 'bi-person-fill';
+    $typeLabels = ['read_write' => 'Read/Write Learner', 'auditory' => 'Auditory Learner', 'competitive' => 'Competitive Learner'];
+    $descriptions = [
+        'read_write'  => 'You process and retain information most effectively through active textual manipulation — note-taking, acronyms, and summarizing key written details are your strongest memory anchors.',
+        'auditory'    => 'You learn best through sound and verbal processing — listening, speaking, reciting, and discussing are your strongest pathways to retaining information.',
+        'competitive' => 'You are driven by challenge and performance — pressure, scoring, and the drive to beat your own record are the most powerful motivators for your learning.',
+    ];
+    $totalScore = max(1, $profile->score_read_write + $profile->score_auditory + $profile->score_competitive);
+@endphp
+
 @push('styles')
 <style>
     :root {
-        --diag-accent: #7c3aed;
-        --diag-accent-light: #ede9fe;
+        --diag-accent: {{ $cfg['accent'] }};
+        --diag-accent-light: {{ $cfg['accentLight'] }};
     }
 
     /* ── Hero card ── */
@@ -74,7 +123,7 @@
     }
     .rec-card:hover {
         border-color: var(--diag-accent);
-        box-shadow: 0 4px 16px -4px rgba(124,58,237,.1);
+        box-shadow: 0 4px 16px -4px rgba({{ $cfg['rgb'] }},.1);
     }
     .rec-icon {
         width: 36px; height: 36px; border-radius: 9px;
@@ -86,9 +135,9 @@
     .radar-wrap { max-width: 280px; margin: 0 auto; }
 
     /* ── Gradient classes ── */
-    .grad-visual      { background: linear-gradient(135deg, #6d28d9, #7c3aed); }
-    .grad-auditory    { background: linear-gradient(135deg, #0891b2, #0ea5e9); }
-    .grad-competitive { background: linear-gradient(135deg, #b45309, #d97706); }
+    .grad-read_write  { background: linear-gradient(135deg, #7d6867, #9b8786); }
+    .grad-auditory    { background: linear-gradient(135deg, #e5b181, #f3cca6); }
+    .grad-competitive { background: linear-gradient(135deg, #EF9086, #f7b2aa); }
 </style>
 @endpush
 
@@ -113,27 +162,10 @@
     </div>
 </div>
 
-@php
-    $style = $profile->learning_style;
-    $gradClass = 'grad-' . $style;
-    $icons = ['visual' => 'bi-eye-fill', 'auditory' => 'bi-ear-fill', 'competitive' => 'bi-trophy-fill'];
-    $icon = $icons[$style] ?? 'bi-person-fill';
-    $typeLabels = ['visual' => 'Visual Learner', 'auditory' => 'Auditory Learner', 'competitive' => 'Competitive Learner'];
-    $descriptions = [
-        'visual'      => 'You process and retain information most effectively through visual stimuli — colour, layout, diagrams, and spatial organisation are your strongest memory anchors.',
-        'auditory'    => 'You learn best through sound and verbal processing — listening, speaking, reciting, and discussing are your strongest pathways to retaining information.',
-        'competitive' => 'You are driven by challenge and performance — pressure, scoring, and the drive to beat your own record are the most powerful motivators for your learning.',
-    ];
-    $totalScore = max(1, $profile->score_visual + $profile->score_auditory + $profile->score_competitive);
-    $recIcons = ['bi-eye', 'bi-ear', 'bi-trophy', 'bi-journals', 'bi-lightbulb', 'bi-bar-chart-line'];
-    $recColors = ['#ede9fe', '#dbeafe', '#fef3c7', '#d1fae5', '#fce7f3', '#f3f4f6'];
-    $recTextColors = ['#6d28d9', '#1d4ed8', '#b45309', '#065f46', '#be185d', '#374151'];
-@endphp
-
 {{-- Hero --}}
 <div class="result-hero {{ $gradClass }}">
     <div class="result-type-badge">
-        <i class="bi {{ $icon }}"></i> {{ strtoupper($style) }} LEARNER
+        <i class="bi {{ $icon }}"></i> {{ strtoupper(str_replace('_', '/', $style)) }} LEARNER
     </div>
     <div class="result-persona-title">{{ $profile->persona }}</div>
     <div class="result-persona-sub">{{ $descriptions[$style] }}</div>
@@ -158,23 +190,23 @@
             <p class="text-muted small mb-4">Raw weighted evidence accumulated from your 10 answers across all learning dimensions.</p>
 
             <div class="score-bar-wrap">
-                <span class="score-bar-label"><i class="bi bi-eye me-1" style="color:#7c3aed;"></i>Visual</span>
+                <span class="score-bar-label"><i class="bi bi-pencil-square me-1" style="color:#7d6867;"></i>Read/Write</span>
                 <div class="score-bar-track">
-                    <div class="score-bar-fill" style="width:{{ round(($profile->score_visual/$totalScore)*100) }}%;background:#7c3aed;"></div>
+                    <div class="score-bar-fill" style="width:{{ round(($profile->score_read_write/$totalScore)*100) }}%;background:#7d6867;"></div>
                 </div>
-                <span class="score-bar-value">{{ $profile->score_visual }}</span>
+                <span class="score-bar-value">{{ $profile->score_read_write }}</span>
             </div>
             <div class="score-bar-wrap">
-                <span class="score-bar-label"><i class="bi bi-ear me-1" style="color:#0891b2;"></i>Auditory</span>
+                <span class="score-bar-label"><i class="bi bi-ear me-1" style="color:#e5b181;"></i>Auditory</span>
                 <div class="score-bar-track">
-                    <div class="score-bar-fill" style="width:{{ round(($profile->score_auditory/$totalScore)*100) }}%;background:#0891b2;"></div>
+                    <div class="score-bar-fill" style="width:{{ round(($profile->score_auditory/$totalScore)*100) }}%;background:#e5b181;"></div>
                 </div>
                 <span class="score-bar-value">{{ $profile->score_auditory }}</span>
             </div>
             <div class="score-bar-wrap">
-                <span class="score-bar-label"><i class="bi bi-trophy me-1" style="color:#d97706;"></i>Competitive</span>
+                <span class="score-bar-label"><i class="bi bi-trophy me-1" style="color:#EF9086;"></i>Competitive</span>
                 <div class="score-bar-track">
-                    <div class="score-bar-fill" style="width:{{ round(($profile->score_competitive/$totalScore)*100) }}%;background:#d97706;"></div>
+                    <div class="score-bar-fill" style="width:{{ round(($profile->score_competitive/$totalScore)*100) }}%;background:#EF9086;"></div>
                 </div>
                 <span class="score-bar-value">{{ $profile->score_competitive }}</span>
             </div>
@@ -192,29 +224,11 @@
     </div>
 </div>
 
-{{-- Recommendations --}}
-<div class="card p-4 mb-4">
-    <h6 class="fw-bold mb-1"><i class="bi bi-list-check me-2 text-success"></i>Personalised Recommendations</h6>
-    <p class="text-muted small mb-4">Based on your specific answer patterns — not just your overall type.</p>
-
-    @foreach($profile->recommendations as $i => $rec)
-        @php
-            $iconIdx = $i % count($recIcons);
-        @endphp
-        <div class="rec-card">
-            <div class="rec-icon" style="background:{{ $recColors[$iconIdx] }};color:{{ $recTextColors[$iconIdx] }};">
-                <i class="bi {{ $recIcons[$iconIdx] }}"></i>
-            </div>
-            <div style="font-size:.9rem;color:var(--text-main);line-height:1.5;">{{ $rec }}</div>
-        </div>
-    @endforeach
-</div>
-
 {{-- CTA --}}
-<div class="card p-4 text-center" style="background:var(--diag-accent-light);border-color:#c4b5fd;">
-    <div class="fw-bold mb-1" style="color:#4c1d95;">Ready to study your way?</div>
+<div class="card p-4 text-center" style="background:var(--diag-accent-light);border-color:{{ $cfg['border'] }};">
+    <div class="fw-bold mb-1" style="color:{{ $cfg['accentText'] }};">Ready to study your way?</div>
     <p class="text-muted small mb-3">Your dashboard is now personalised for your learning style.</p>
-    <a href="{{ route('student.dashboard') }}" class="btn btn-primary btn-sm px-4">
+    <a href="{{ route('student.dashboard') }}" class="btn btn-primary btn-sm px-4" style="background-color:{{ $cfg['accent'] }}; border-color:{{ $cfg['accent'] }}; color:#fff;">
         <i class="bi bi-house-door me-1"></i> Go to Dashboard
     </a>
 </div>
@@ -227,21 +241,21 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['Visual', 'Auditory', 'Competitive'],
+            labels: ['Read/Write', 'Auditory', 'Competitive'],
             datasets: [{
                 label: 'Your Profile',
                 data: [
-                    {{ $profile->score_visual }},
+                    {{ $profile->score_read_write }},
                     {{ $profile->score_auditory }},
                     {{ $profile->score_competitive }}
                 ],
                 fill: true,
-                backgroundColor: 'rgba(124, 58, 237, 0.15)',
-                borderColor: '#7c3aed',
-                pointBackgroundColor: '#7c3aed',
+                backgroundColor: 'rgba({{ $cfg['rgb'] }}, 0.15)',
+                borderColor: '{{ $cfg['accent'] }}',
+                pointBackgroundColor: '{{ $cfg['accent'] }}',
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#7c3aed',
+                pointHoverBorderColor: '{{ $cfg['accent'] }}',
                 borderWidth: 2,
             }]
         },

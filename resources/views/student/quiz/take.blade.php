@@ -36,58 +36,171 @@
 @endpush
 
 @section('content')
+@php $isReadWrite = auth()->user()?->learning_style === 'read_write'; @endphp
+
 <div class="container-fluid px-4 py-5" style="min-height: 100vh; background-color: #f8f9fa;">
-    <div class="quiz-container">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{{ route('student.quizzes') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Back to Quizzes
-            </a>
-            <h5 class="text-muted mb-0">{{ $quiz->title }}</h5>
-        </div>
-
-        {{-- Auditory banner removed as requested --}}
-
-        <!-- Progress -->
-        <div class="mb-4">
-            <div class="d-flex justify-content-between small text-muted mb-1">
-                <span id="progress-text">Question 1 of {{ $quiz->questions->count() }}</span>
-                <span id="timer"></span>
+    <div class="row justify-content-center">
+        <div class="{{ $isReadWrite ? 'col-lg-8' : 'col-lg-12' }} quiz-container">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="{{ route('student.quizzes') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Back to Quizzes
+                </a>
+                <h5 class="text-muted mb-0">{{ $quiz->title }}</h5>
             </div>
-            <div class="progress" style="height: 6px;">
-                <div class="progress-bar bg-primary" id="progress-bar" role="progressbar" style="width: 0%"></div>
-            </div>
-        </div>
 
-        <!-- Quiz Display -->
-        <div id="quiz-content">
-            <!-- Questions will be injected here -->
-        </div>
-
-        <!-- Completed Screen (Hidden by default) -->
-        <div id="result-screen" class="card border-0 shadow-sm text-center p-5 d-none">
-            <div class="card-body">
-                <div class="mb-4">
-                    <i class="bi bi-trophy-fill text-warning display-1"></i>
+            <!-- Progress -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span id="progress-text">Question 1 of {{ $quiz->questions->count() }}</span>
+                    <span id="timer"></span>
                 </div>
-                <h2 class="fw-bold mb-3">Quiz Completed!</h2>
-                <h4 class="text-muted mb-4">Your Score: <span id="final-score" class="fw-bold text-primary">0</span>/100</h4>
-                
-                <p id="feedback-text" class="mb-4 lead"></p>
-                
-                <form action="{{ route('student.submit', $quiz) }}" method="POST" id="submit-form">
-                    @csrf
-                    <input type="hidden" name="score" id="score-input">
-                    <input type="hidden" name="answers" id="answers-input">
-                    <button type="submit" class="btn btn-primary btn-lg px-5">
-                        <i class="bi bi-check-circle me-2"></i> Submit Result
-                    </button>
-                </form>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" id="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Quiz Display -->
+            <div id="quiz-content">
+                <!-- Questions will be injected here -->
+            </div>
+
+            <!-- Completed Screen (Hidden by default) -->
+            <div id="result-screen" class="card border-0 shadow-sm text-center p-5 d-none">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <i class="bi bi-trophy-fill text-warning display-1"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Quiz Completed!</h2>
+                    <h4 class="text-muted mb-4">Your Score: <span id="final-score" class="fw-bold text-primary">0</span>/100</h4>
+                    
+                    <p id="feedback-text" class="mb-4 lead"></p>
+                    <p id="time-taken-text" class="text-muted fs-5 d-none mb-4"></p>
+                    
+                    <form action="{{ route('student.submit', $quiz) }}" method="POST" id="submit-form">
+                        @csrf
+                        <input type="hidden" name="score" id="score-input">
+                        <input type="hidden" name="answers" id="answers-input">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-check-circle me-2"></i> Submit Result
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 
+        @if($isReadWrite)
+            <div class="col-lg-4">
+                {{-- Notepad Widget --}}
+                @php
+                    $existingNote = \App\Models\StudentNote::where('user_id', auth()->id())
+                        ->where('resource_type', 'quiz')
+                        ->where('resource_id', $quiz->id)
+                        ->first();
+                @endphp
+                <div class="card border-success shadow-sm sticky-top" style="top: 20px; z-index: 100;">
+                    <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-1"></i> Quiz Notes & Acronyms</h6>
+                        <span id="save-status" class="small text-white-50">Auto-saved</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.72rem;">Quiz Details</small>
+                            <span class="badge bg-light text-dark border me-1">{{ $quiz->topic ?? 'General' }}</span>
+                            <span class="badge bg-secondary text-capitalize">{{ $quiz->difficulty }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-title" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Note Title</label>
+                            <input type="text" id="note-title" class="form-control form-control-sm fw-bold" 
+                                   value="{{ $existingNote ? $existingNote->title : 'Notes: ' . $quiz->title }}" 
+                                   placeholder="Title of your note...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-content" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Acronyms & Notes</label>
+                            <textarea id="note-content" class="form-control form-control-sm" rows="12" 
+                                      placeholder="Write your quiz acronyms, summaries, and key points here...">{{ $existingNote ? $existingNote->content : '' }}</textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="button" onclick="saveNote()" class="btn btn-success btn-sm fw-bold">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Save Note
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
+
+@if($isReadWrite)
+<script>
+    let saveTimeout = null;
+
+    function saveNote() {
+        const title = document.getElementById('note-title').value.trim();
+        const content = document.getElementById('note-content').value.trim();
+        const statusSpan = document.getElementById('save-status');
+
+        if (!title) {
+            statusSpan.textContent = 'Title required';
+            statusSpan.style.color = '#ef4444';
+            return;
+        }
+
+        statusSpan.textContent = 'Saving...';
+        statusSpan.style.color = 'rgba(255,255,255,0.7)';
+
+        fetch("{{ route('student.notes.save') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                topic: "{{ $quiz->topic ?? 'General' }}",
+                difficulty: "{{ $quiz->difficulty }}",
+                title: title,
+                content: content,
+                resource_type: 'quiz',
+                resource_id: {{ $quiz->id }}
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                statusSpan.textContent = 'Auto-saved';
+                statusSpan.style.color = 'rgba(255,255,255,0.7)';
+            } else {
+                statusSpan.textContent = 'Save failed';
+                statusSpan.style.color = '#ef4444';
+            }
+        })
+        .catch(err => {
+            statusSpan.textContent = 'Connection error';
+            statusSpan.style.color = '#ef4444';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('note-title');
+        const contentInput = document.getElementById('note-content');
+
+        if (titleInput && contentInput) {
+            const triggerAutoSave = () => {
+                const statusSpan = document.getElementById('save-status');
+                statusSpan.textContent = 'Unsaved changes';
+                statusSpan.style.color = '#f59e0b';
+                
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveNote, 1500);
+            };
+
+            titleInput.addEventListener('input', triggerAutoSave);
+            contentInput.addEventListener('input', triggerAutoSave);
+        }
+    });
+</script>
+@endif
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -102,9 +215,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitForm = document.getElementById('submit-form');
     
     const quizDifficulty = "{{ $quiz->difficulty }}";
+    const learningStyle = "{{ auth()->user()?->learning_style }}";
     let currentQuestionIndex = 0;
     let userAnswers = {};
     let score = 0;
+    let timerInterval = null;
+    let secondsElapsed = 0;
+
+    if (learningStyle === 'competitive') {
+        const timerSpan = document.getElementById('timer');
+        if (timerSpan) {
+            timerSpan.innerHTML = '<i class="bi bi-stopwatch me-1"></i> 00:00';
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                timerSpan.innerHTML = `<i class="bi bi-stopwatch me-1"></i> ${mins}:${secs}`;
+            }, 1000);
+        }
+    } else {
+        const timerSpan = document.getElementById('timer');
+        if (timerSpan) timerSpan.style.display = 'none';
+    }
 
     function renderQuestion(index) {
         if(index >= questions.length) {
@@ -152,6 +284,21 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
 
+        let kbatGuideHtml = '';
+        if (quizDifficulty === 'hard') {
+            kbatGuideHtml = `
+                <div class="alert alert-info border-0 p-3 mb-4 shadow-sm" style="background-color: #f0f7ff; border-left: 4px solid #0284c7 !important; border-radius: 10px;">
+                    <h6 class="fw-bold text-primary mb-2" style="font-size: 0.95rem;"><i class="bi bi-info-circle-fill me-1"></i> How to answer KBAT questions:</h6>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        <div class="bg-white border rounded px-3 py-2 small shadow-sm d-flex align-items-center"><strong class="text-dark me-1">Isi</strong> <span class="text-muted">(1m)</span></div>
+                        <div class="bg-white border rounded px-3 py-2 small shadow-sm d-flex align-items-center"><strong class="text-dark me-1">Huraian</strong> <span class="text-muted">(1m)</span></div>
+                        <div class="bg-white border rounded px-3 py-2 small shadow-sm d-flex align-items-center"><strong class="text-dark me-1">Huraian Lengkap</strong> <span class="text-muted">&nbsp;- Contoh / Kesan (1m)</span></div>
+                        <div class="bg-white border rounded px-3 py-2 small shadow-sm d-flex align-items-center"><strong class="text-dark me-1">Kesimpulan</strong> <span class="text-muted">(1m)</span></div>
+                    </div>
+                </div>
+            `;
+        }
+
         const html = `
             <div class="card border-0 shadow-sm question-card animated fadeIn">
                 <div class="card-body p-4 p-md-5">
@@ -163,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </button>
                         @endif
                     </div>
+                    ${kbatGuideHtml}
                     <div class="options-list">
                         ${inputHtml}
                     </div>
@@ -236,6 +384,25 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function showResults() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+        
+        if (learningStyle === 'competitive') {
+            const timeTakenText = document.getElementById('time-taken-text');
+            if (timeTakenText) {
+                const mins = Math.floor(secondsElapsed / 60);
+                const secs = secondsElapsed % 60;
+                let timeStr = '';
+                if (mins > 0) {
+                    timeStr += `${mins}m `;
+                }
+                timeStr += `${secs}s`;
+                timeTakenText.innerHTML = `⏱️ <strong>Time Taken:</strong> ${timeStr}`;
+                timeTakenText.classList.remove('d-none');
+            }
+        }
+
         quizContent.style.display = 'none';
         progressBar.parentElement.parentElement.style.display = 'none'; // Hide progress header
         
@@ -296,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
 @if(auth()->user()?->learning_style === 'auditory')
 <div class="modal fade" id="auditoryTipModal" tabindex="-1" aria-labelledby="auditoryTipModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 18px; border-left: 4px solid #0891b2 !important;">
+        <div class="modal-content border-0 shadow" style="border-radius: 18px; border-left: 4px solid #e5b181 !important;">
             <div class="modal-header bg-light border-0 pt-4 px-4 pb-0">
                 <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="auditoryTipModalLabel">
                     <span style="font-size: 1.5rem;">🎵</span> AUDITORY STUDY TIP
@@ -304,12 +471,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <p class="mb-0 text-dark" style="font-size: 1rem; line-height: 1.6; color: #0c4a6e !important;">
+                <p class="mb-0 text-dark" style="font-size: 1rem; line-height: 1.6; color: #7c2d12 !important;">
                     After taking a quiz today, recite the questions and correct answers aloud. Explaining the concepts in your own words helps solidify the knowledge.
                 </p>
             </div>
             <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                <button type="button" class="btn btn-primary px-4 fw-bold" style="border-radius: 10px; background-color: #0891b2; border-color: #0891b2;" data-bs-dismiss="modal">Start Quiz</button>
+                <button type="button" class="btn btn-primary px-4 fw-bold" style="border-radius: 10px; background-color: #e5b181; border-color: #e5b181;" data-bs-dismiss="modal">Start Quiz</button>
             </div>
         </div>
     </div>

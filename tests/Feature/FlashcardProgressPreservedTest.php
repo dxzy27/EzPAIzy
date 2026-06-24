@@ -22,7 +22,7 @@ class FlashcardProgressPreservedTest extends TestCase
             'email' => 'student_' . uniqid() . '@example.com',
             'password' => bcrypt('password'),
             'role' => 'student',
-            'learning_style' => 'visual',
+            'learning_style' => 'read_write',
         ]);
 
         // 2. Create a teacher user (since sets usually belong to teachers)
@@ -36,14 +36,14 @@ class FlashcardProgressPreservedTest extends TestCase
         // 3. Create a LearningProfile
         $profile = LearningProfile::create([
             'user_id' => $student->id,
-            'learning_style' => 'visual',
+            'learning_style' => 'read_write',
             'answers' => ['q1' => 'A', 'q2' => 'A'],
-            'score_visual' => 10,
+            'score_read_write' => 10,
             'score_auditory' => 2,
             'score_competitive' => 1,
             'confidence' => 80.0,
-            'persona' => 'Visual Learner',
-            'recommendations' => ['Use flashcards.'],
+            'persona' => 'Read/Write Learner',
+            'recommendations' => ['Write summaries.'],
         ]);
 
         // 4. Create a FlashcardSet and Flashcard

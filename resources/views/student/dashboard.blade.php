@@ -69,9 +69,9 @@
         font-size: .76rem; font-weight: 700; letter-spacing: .4px;
         text-transform: uppercase; text-decoration: none;
     }
-    .style-badge.visual      { background: #ede9fe; color: #6d28d9; }
-    .style-badge.auditory    { background: #dbeafe; color: #1d4ed8; }
-    .style-badge.competitive { background: #fef3c7; color: #b45309; }
+    .style-badge.read_write  { background: #faf6f6; color: #453938; border: 1px solid #7d6867; }
+    .style-badge.auditory    { background: #fff7ed; color: #7c2d12; border: 1px solid #e5b181; }
+    .style-badge.competitive { background: #fef2f2; color: #991b1b; border: 1px solid #EF9086; }
 
     /* ── Recommended top-stripe ── */
     .primary-card-stripe {
@@ -82,25 +82,25 @@
 
 @php
     $user  = auth()->user();
-    $style = $user->learning_style; // null | visual | auditory | competitive
+    $style = $user->learning_style; // null | read_write | auditory | competitive
 
     // ── Per-style configuration ──────────────────────────────────
     $styleConfig = [
-        'visual' => [
-            'accent'      => '#7c3aed',
-            'accentLight' => '#ede9fe',
-            'accentText'  => '#4c1d95',
-            'icon'        => 'bi-eye-fill',
-            'label'       => 'Visual Learner',
-            'tipIcon'     => '🎨',
-            'tipTitle'    => 'Visual Study Tip',
-            'tip'         => 'Before your next session, spend 5 minutes drawing a mini mind map of what you studied last time. Reconnecting visually with previous material dramatically improves recall.',
-            'recTitle'    => '✨ Recommended: Your Flashcard Sets',
+        'read_write' => [
+            'accent'      => '#7d6867',
+            'accentLight' => '#f6f4f4',
+            'accentText'  => '#453938',
+            'icon'        => 'bi-journal-text',
+            'label'       => 'Read/Write Learner',
+            'tipIcon'     => '✍️',
+            'tipTitle'    => 'Read/Write Study Tip',
+            'tip'         => 'Use the Notepad next to your materials and quizzes to jot down summaries and acronyms. You can access all your saved notes from the "My Folders" sidebar section.',
+            'recTitle'    => '✨ Recommended: Your Saved Notes & Materials',
         ],
         'auditory' => [
-            'accent'      => '#0891b2',
-            'accentLight' => '#e0f2fe',
-            'accentText'  => '#0c4a6e',
+            'accent'      => '#e5b181',
+            'accentLight' => '#fff7ed',
+            'accentText'  => '#7c2d12',
             'icon'        => 'bi-ear-fill',
             'label'       => 'Auditory Learner',
             'tipIcon'     => '🎵',
@@ -109,9 +109,9 @@
             'recTitle'    => '✨ Recent Listenable Materials',
         ],
         'competitive' => [
-            'accent'      => '#d97706',
-            'accentLight' => '#fef3c7',
-            'accentText'  => '#78350f',
+            'accent'      => '#EF9086',
+            'accentLight' => '#fef2f2',
+            'accentText'  => '#991b1b',
             'icon'        => 'bi-trophy-fill',
             'label'       => 'Competitive Learner',
             'tipIcon'     => '🏆',
@@ -136,8 +136,8 @@
     $recentQuizzes    = $quizzes->sortByDesc('created_at')->take(5);
 
     // Style badge data
-    $styleIcons  = ['visual'=>'bi-eye-fill','auditory'=>'bi-ear-fill','competitive'=>'bi-trophy-fill'];
-    $styleLabels = ['visual'=>'Visual Learner','auditory'=>'Auditory Learner','competitive'=>'Competitive Learner'];
+    $styleIcons  = ['read_write'=>'bi-journal-text','auditory'=>'bi-ear-fill','competitive'=>'bi-trophy-fill'];
+    $styleLabels = ['read_write'=>'Read/Write Learner','auditory'=>'Auditory Learner','competitive'=>'Competitive Learner'];
 @endphp
 
 <div class="container">
@@ -197,15 +197,15 @@
             'title'     => '📚 Materials',
             'count'     => $contentCount + $flashcardCount,
             'sub'       => 'Available Materials',
-            'color'     => ($style === 'visual') ? '#7c3aed' : '#0891b2',
-            'isPrimary' => ($style === 'auditory' || $style === 'visual'),
+            'color'     => ($style === 'read_write') ? '#7d6867' : (($style === 'auditory') ? '#e5b181' : '#14b8a6'),
+            'isPrimary' => ($style === 'auditory' || $style === 'read_write'),
             'type'      => 'materials',
         ];
         $cardQuizzes = [
             'title'     => $style === 'competitive' ? '🏆 Quizzes' : '📝 Quizzes',
             'count'     => ($style === 'competitive' && $bestScore !== null) ? $bestScore.'%' : $quizCount,
             'sub'       => ($style === 'competitive' && $bestScore !== null) ? 'Your Best Score' : 'Available Quizzes',
-            'color'     => $style === 'competitive' ? '#d97706' : '#0ea5e9',
+            'color'     => ($style === 'competitive') ? '#EF9086' : '#14b8a6',
             'isPrimary' => $style === 'competitive',
             'type'      => 'quiz',
         ];
@@ -213,13 +213,13 @@
             'title'     => '✅ Completed',
             'count'     => $completedCount,
             'sub'       => 'Quizzes Completed',
-            'color'     => '#0891b2',
+            'color'     => '#14b8a6',
             'isPrimary' => false,
             'type'      => 'completed',
         ];
 
         // Card order based on style
-        if ($style === 'visual' || $style === 'auditory') {
+        if ($style === 'read_write' || $style === 'auditory') {
             $orderedCards = [$cardMaterials, $cardQuizzes, $cardCompleted];
         } elseif ($style === 'competitive') {
             $orderedCards = [$cardQuizzes, $cardMaterials, $cardCompleted];
@@ -351,9 +351,13 @@
                                         </small>
                                     </td>
                                     <td>
-                                        <span class="badge bg-{{ $p->score >= 80 ? 'success' : ($p->score >= 50 ? 'warning' : 'danger') }}">
-                                            {{ $p->score }}%
-                                        </span>
+                                        @if($p->quiz->difficulty === 'hard' && $p->status === 'pending')
+                                            <span class="badge bg-secondary">Pending</span>
+                                        @else
+                                            <span class="badge bg-{{ $p->score >= 80 ? 'success' : ($p->score >= 50 ? 'warning' : 'danger') }}">
+                                                {{ $p->score }}%
+                                            </span>
+                                        @endif
                                     </td>
                                     <td>{{ $p->created_at->format('M d') }}</td>
                                     <td>
@@ -437,15 +441,15 @@
                                 </tbody>
                             </table>
                         </div>
-                    @elseif($style === 'visual')
-                        {{-- Visual: flashcards first --}}
-                        @php $visualList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp
-                        @if($visualList->count() > 0)
+                    @elseif($style === 'read_write')
+                        {{-- Read/Write: flashcards first --}}
+                        @php $readWriteList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp
+                        @if($readWriteList->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead><tr><th>Title</th><th>Type</th><th></th></tr></thead>
                                 <tbody>
-                                    @foreach($visualList as $item)
+                                    @foreach($readWriteList as $item)
                                     <tr>
                                         <td>{{ Str::limit($item->title, 24) }}</td>
                                         <td>

@@ -169,7 +169,8 @@ class StudentController extends Controller
                 $q->where('student_id', $user->id);
             }])
             ->withCount('questions')
-            ->latest()
+            ->orderByRaw("CASE WHEN difficulty = 'easy' THEN 1 WHEN difficulty = 'medium' THEN 2 WHEN difficulty = 'hard' THEN 3 ELSE 4 END ASC")
+            ->orderBy('created_at', 'desc')
             ->paginate(12);
 
         return view('student.quiz_folder', compact('topic', 'quizzes', 'mediumLocked', 'hardLocked'));

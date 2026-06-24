@@ -230,23 +230,23 @@
             <div class="diag-q-number">1</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Memory Encoding</span>
-                <div class="diag-q-text">You just learned the meaning of a new term in class. When you close the book an hour later, what is most likely to help you recall it?</div>
+                <div class="diag-q-text">You just learned a new term. What helps you recall it best an hour later?</div>
             </div>
         </div>
         <label class="diag-option" for="q1_A">
             <input type="radio" name="q1" id="q1_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">A clear mental image of the page layout, colour of the text, or a diagram associated with it.</span>
+            <span class="diag-option-text">Writing it down, summarizing it, or making a quick acronym.</span>
         </label>
         <label class="diag-option" for="q1_B">
             <input type="radio" name="q1" id="q1_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">The way your teacher's voice sounded when explaining it, or how you pronounced it to yourself.</span>
+            <span class="diag-option-text">Remembering how it sounded, or saying it out loud to yourself.</span>
         </label>
         <label class="diag-option" for="q1_C">
             <input type="radio" name="q1" id="q1_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Whether you got it right or wrong in a self-test — the adrenaline of being tested made it stick.</span>
+            <span class="diag-option-text">Recalling whether you got it right or wrong in a self-test.</span>
         </label>
     </div>
 
@@ -256,23 +256,23 @@
             <div class="diag-q-number">2</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Distraction Response</span>
-                <div class="diag-q-text">You sit down to study but after 10 minutes your concentration breaks. What is the most effective thing you instinctively do next to re-focus?</div>
+                <div class="diag-q-text">You lose focus while studying. What helps you get back on track?</div>
             </div>
         </div>
         <label class="diag-option" for="q2_A">
             <input type="radio" name="q2" id="q2_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Re-read the key points, reorganise your notes, or draw a quick summary diagram of what you covered.</span>
+            <span class="diag-option-text">Writing a quick summary list or making a flashcard.</span>
         </label>
         <label class="diag-option" for="q2_B">
             <input type="radio" name="q2" id="q2_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Put on soft background music or talk through what you studied so far — even if just to yourself.</span>
+            <span class="diag-option-text">Listening to background music or speaking thoughts aloud.</span>
         </label>
         <label class="diag-option" for="q2_C">
             <input type="radio" name="q2" id="q2_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Switch to a quick quiz or challenge mode — the pressure of a score timer instantly snaps you back in.</span>
+            <span class="diag-option-text">Starting a timed quiz or score-based challenge.</span>
         </label>
     </div>
 
@@ -282,23 +282,23 @@
             <div class="diag-q-number">3</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">New Topic Approach</span>
-                <div class="diag-q-text">Your teacher assigns a new chapter to prepare before the next class. What is your honest first instinct about how to approach it?</div>
+                <div class="diag-q-text">How do you prefer to start learning a newly assigned topic?</div>
             </div>
         </div>
         <label class="diag-option" for="q3_A">
             <input type="radio" name="q3" id="q3_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Skim through looking for headings, bold terms, tables, and any visual structure before diving into the text.</span>
+            <span class="diag-option-text">Reading the text carefully and taking written summary notes.</span>
         </label>
         <label class="diag-option" for="q3_B">
             <input type="radio" name="q3" id="q3_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Read the chapter carefully from the beginning, pausing to re-read difficult parts aloud or explain them to yourself.</span>
+            <span class="diag-option-text">Reading the text and explaining difficult parts out loud.</span>
         </label>
         <label class="diag-option" for="q3_C">
             <input type="radio" name="q3" id="q3_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Look for practice questions or past tests on the topic first, then study only the areas you get wrong.</span>
+            <span class="diag-option-text">Jumping straight into practice questions or self-tests.</span>
         </label>
     </div>
 
@@ -308,23 +308,23 @@
             <div class="diag-q-number">4</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Exam Preparation</span>
-                <div class="diag-q-text">An important exam is in two days. You have limited time. Which approach feels most natural and effective to you?</div>
+                <div class="diag-q-text">You have an exam in two days. What is your preparation strategy?</div>
             </div>
         </div>
         <label class="diag-option" for="q4_A">
             <input type="radio" name="q4" id="q4_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Create a visual summary: mind maps, colour-coded flashcards, or a one-page visual overview of the entire topic.</span>
+            <span class="diag-option-text">Writing summary sheets, acronyms, or re-writing notes.</span>
         </label>
         <label class="diag-option" for="q4_B">
             <input type="radio" name="q4" id="q4_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Summarise the content verbally: record voice memos, explain concepts to a friend, or form a study group to discuss aloud.</span>
+            <span class="diag-option-text">Recording voice notes, discussing with friends, or explaining concepts out loud.</span>
         </label>
         <label class="diag-option" for="q4_C">
             <input type="radio" name="q4" id="q4_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Do as many practice questions as possible under timed conditions — simulate the exam pressure to get ready.</span>
+            <span class="diag-option-text">Practicing as many timed exam questions as possible.</span>
         </label>
     </div>
 
@@ -334,23 +334,23 @@
             <div class="diag-q-number">5</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Group Dynamics</span>
-                <div class="diag-q-text">A classmate asks you to join a group study session. Which version of that session would you find most beneficial?</div>
+                <div class="diag-q-text">What type of group study session is most beneficial for you?</div>
             </div>
         </div>
         <label class="diag-option" for="q5_A">
             <input type="radio" name="q5" id="q5_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Everyone takes turns verbally explaining one concept while others listen and ask questions — discussion-heavy.</span>
+            <span class="diag-option-text">Discussion-focused sessions explaining concepts verbally.</span>
         </label>
         <label class="diag-option" for="q5_B">
             <input type="radio" name="q5" id="q5_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">The group runs a quiz tournament, competing question by question to see who scores highest by the end.</span>
+            <span class="diag-option-text">Competitive quiz tournaments to see who gets the highest score.</span>
         </label>
         <label class="diag-option" for="q5_C">
             <input type="radio" name="q5" id="q5_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Everyone studies independently at the same table but compares their own written notes or diagrams at the end.</span>
+            <span class="diag-option-text">Studying quietly together and comparing written notes at the end.</span>
         </label>
     </div>
 
@@ -360,23 +360,23 @@
             <div class="diag-q-number">6</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Failure Reaction</span>
-                <div class="diag-q-text">You score poorly on a quiz you thought you had prepared well for. What is your immediate, honest reaction?</div>
+                <div class="diag-q-text">You score poorly on a quiz you prepared for. What is your reaction?</div>
             </div>
         </div>
         <label class="diag-option" for="q6_A">
             <input type="radio" name="q6" id="q6_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Review your notes and annotate the areas where your visual summary missed key points — revise your mind map.</span>
+            <span class="diag-option-text">Reviewing and re-writing corrected facts in your notes.</span>
         </label>
         <label class="diag-option" for="q6_B">
             <input type="radio" name="q6" id="q6_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Retake the quiz immediately — the failure itself motivates you to prove you can do better this time.</span>
+            <span class="diag-option-text">Retaking the quiz immediately to get a higher score.</span>
         </label>
         <label class="diag-option" for="q6_C">
             <input type="radio" name="q6" id="q6_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Talk it over — explain what you got wrong to a friend or to yourself out loud so you can hear where your understanding broke down.</span>
+            <span class="diag-option-text">Talking it over and explaining the mistakes out loud.</span>
         </label>
     </div>
 
@@ -386,23 +386,23 @@
             <div class="diag-q-number">7</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Content Preference</span>
-                <div class="diag-q-text">Your teacher provides three types of study resources. If you could only use one, which would you choose?</div>
+                <div class="diag-q-text">Which type of study material do you prefer most?</div>
             </div>
         </div>
         <label class="diag-option" for="q7_A">
             <input type="radio" name="q7" id="q7_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">A set of visual flashcards with colour-coded categories, diagrams, and structured tables.</span>
+            <span class="diag-option-text">A printed text where you can write notes and marginal definitions.</span>
         </label>
         <label class="diag-option" for="q7_B">
             <input type="radio" name="q7" id="q7_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">A detailed e-book or written notes with thorough explanations written in flowing, readable prose.</span>
+            <span class="diag-option-text">An audio lecture or podcast explaining the concepts.</span>
         </label>
         <label class="diag-option" for="q7_C">
             <input type="radio" name="q7" id="q7_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">An interactive quiz bank with instant right/wrong feedback and a running score counter.</span>
+            <span class="diag-option-text">An interactive quiz bank with instant score feedback.</span>
         </label>
     </div>
 
@@ -412,23 +412,23 @@
             <div class="diag-q-number">8</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Progress Motivation</span>
-                <div class="diag-q-text">Which of the following would give you the strongest sense of satisfaction and push you to study more?</div>
+                <div class="diag-q-text">What motivates you most to keep studying?</div>
             </div>
         </div>
         <label class="diag-option" for="q8_A">
             <input type="radio" name="q8" id="q8_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Seeing your quiz score climb week over week on a leaderboard or personal progress graph.</span>
+            <span class="diag-option-text">Seeing your scores improve on a leaderboard or progress graph.</span>
         </label>
         <label class="diag-option" for="q8_B">
             <input type="radio" name="q8" id="q8_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Getting positive verbal encouragement from your teacher or a study partner who acknowledges your effort aloud.</span>
+            <span class="diag-option-text">Hearing verbal praise or encouragement from a teacher or peer.</span>
         </label>
         <label class="diag-option" for="q8_C">
             <input type="radio" name="q8" id="q8_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Visually checking off a topic on your study plan or seeing your revision list visibly shrink.</span>
+            <span class="diag-option-text">Looking through folders of your completed written summaries.</span>
         </label>
     </div>
 
@@ -438,23 +438,23 @@
             <div class="diag-q-number">9</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Retention Strategy</span>
-                <div class="diag-q-text">You need to memorise a list of 15 key terms for tomorrow's test. Which strategy gives you the most confidence?</div>
+                <div class="diag-q-text">You need to memorize 15 terms for a test. What is your strategy?</div>
             </div>
         </div>
         <label class="diag-option" for="q9_A">
             <input type="radio" name="q9" id="q9_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Recite each term and its meaning aloud in a rhythmic pattern — creating a verbal routine or mini "chant" for each one.</span>
+            <span class="diag-option-text">Saying the terms and definitions out loud repeatedly.</span>
         </label>
         <label class="diag-option" for="q9_B">
             <input type="radio" name="q9" id="q9_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Write each term on a flashcard with a colour or symbol, then go through the deck repeatedly until all are memorised visually.</span>
+            <span class="diag-option-text">Writing down the terms and definitions multiple times.</span>
         </label>
         <label class="diag-option" for="q9_C">
             <input type="radio" name="q9" id="q9_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Quiz yourself on all 15 terms repeatedly under pressure — keep retesting on the ones you get wrong until your score is perfect.</span>
+            <span class="diag-option-text">Practicing active recall via rapid self-quizzing.</span>
         </label>
     </div>
 
@@ -464,23 +464,23 @@
             <div class="diag-q-number">10</div>
             <div>
                 <span class="diag-dimension-badge mb-2 d-inline-block">Self-Assessment</span>
-                <div class="diag-q-text">If you had to explain your own biggest learning strength honestly, which of these fits you best?</div>
+                <div class="diag-q-text">What is your greatest learning strength?</div>
             </div>
         </div>
         <label class="diag-option" for="q10_A">
             <input type="radio" name="q10" id="q10_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">I remember things I have seen — layouts, colours, spatial positions on a page. My memory is highly visual.</span>
+            <span class="diag-option-text">Learning by writing summaries, lists, and notes.</span>
         </label>
         <label class="diag-option" for="q10_B">
             <input type="radio" name="q10" id="q10_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">I perform best under pressure — deadlines and score targets push me to produce my best work.</span>
+            <span class="diag-option-text">Performing well under pressure, deadlines, or test scores.</span>
         </label>
         <label class="diag-option" for="q10_C">
             <input type="radio" name="q10" id="q10_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">I retain information best when I have talked about it — explained, discussed, or heard it multiple times.</span>
+            <span class="diag-option-text">Retaining information by explaining, discussing, or hearing it.</span>
         </label>
     </div>
 

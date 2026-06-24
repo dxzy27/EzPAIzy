@@ -52,34 +52,191 @@
         <!-- Progress/Quizzes -->
         <div class="col-md-8 mb-4">
             <div class="card h-100 border-0 shadow-sm">
-                <div class="card-header bg-white pt-4 pb-3">
-                    <h5 class="fw-bold mb-0"><i class="bi bi-graph-up text-primary me-2"></i> Quiz Progress</h5>
+                <div class="card-header bg-white pt-4 pb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-graph-up text-primary me-2"></i> Student Progress</h5>
                 </div>
+                <!-- Filters -->
+                <div class="row g-2 px-4 py-3 border-bottom align-items-end mx-0 bg-light">
+                    <div class="col-md-5">
+                        <label for="type-filter" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.75rem;">Filter Type</label>
+                        <select id="type-filter" class="form-select form-select-sm" onchange="applyFilters()">
+                            <option value="">All (Quiz & Flashcards)</option>
+                            <option value="quiz" {{ $selectedType === 'quiz' ? 'selected' : '' }}>Quiz</option>
+                            <option value="flashcards" {{ $selectedType === 'flashcards' ? 'selected' : '' }}>Flashcards</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="topic-filter" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.75rem;">Filter Topic</label>
+                        <select id="topic-filter" class="form-select form-select-sm" onchange="applyFilters()">
+                            <option value="">All Topics</option>
+                            @foreach($topics as $topic)
+                                <option value="{{ $topic }}" {{ $selectedTopic === $topic ? 'selected' : '' }}>{{ $topic }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        @if($selectedType || $selectedTopic)
+                            <a href="{{ route('teacher.students.show', $student) }}" class="btn btn-outline-secondary btn-sm w-100"><i class="bi bi-x-circle me-1"></i>Clear</a>
+                        @endif
+                    </div>
+                </div>
+                
+                <script>
+                    function applyFilters() {
+                        const type = document.getElementById('type-filter').value;
+                        const topic = document.getElementById('topic-filter').value;
+                        let url = new URL(window.location.href);
+                        if (type) url.searchParams.set('type', type);
+                        else url.searchParams.delete('type');
+                        
+                        if (topic) url.searchParams.set('topic', topic);
+                        else url.searchParams.delete('topic');
+                        
+                        url.searchParams.delete('page');
+                        window.location.href = url.toString();
+                    }
+                </script>
+
                 <div class="card-body p-0">
                     @if($progress->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover mb-0 align-middle">
                                 <thead>
                                     <tr>
-                                        <th>Quiz Title</th>
+                                        <th>Topic</th>
+                                        <th>Quiz or Flashcards</th>
+                                        <th>Title</th>
+                                        <th>Teacher</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
                                         <th>Score</th>
-                                        <th>Percentage</th>
-                                        <th>Date Taken</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($progress as $p)
                                         <tr>
-                                            <td class="fw-bold">{{ $p->quiz->title ?? 'Deleted Quiz' }}</td>
-                                            <td>{{ $p->score }} / {{ $p->total_questions }}</td>
+                                            <td><span class="badge bg-light text-dark border">{{ $p->topic }}</span></td>
                                             <td>
-                                                @php 
-                                                    $percentage = $p->total_questions > 0 ? round(($p->score / $p->total_questions) * 100) : 0; 
-                                                    $color = $percentage >= 80 ? 'success' : ($percentage >= 50 ? 'warning' : 'danger');
-                                                @endphp
-                                                <span class="badge bg-{{ $color }}">{{ $percentage }}%</span>
+                                                <span class="badge {{ $p->type === 'Quiz' ? 'bg-primary' : 'bg-success' }}">
+                                                    {{ $p->type }}
+                                                </span>
                                             </td>
-                                            <td class="text-muted small">{{ $p->created_at->format('M d, Y H:i') }}</td>
+                                            <td class="fw-bold">{{ $p->title }}</td>
+                                            <td>{{ $p->teacher }}</td>
+                                            <td class="text-muted small">{{ $p->date->format('M d, Y H:i') }}</td>
+                                            <td>
+                                                @if($p->type === 'Quiz')
+                                                    @if($p->difficulty === 'hard' && $p->status === 'pending')
+                                                        <span class="badge bg-secondary">Not Graded Yet</span>
+                                                    @elseif($p->difficulty === 'hard' && $p->status === 'graded')
+                                                        <span class="badge bg-primary">Graded</span>
+                                                    @elseif($p->score_num >= 70)
+                                                        <span class="badge bg-success">Passed</span>
+                                                    @elseif($p->score_num >= 50)
+                                                        <span class="badge bg-warning">Average</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Failed</span>
+                                                    @endif
+                                                @else
+                                                    @if($p->status === 'Mastered')
+                                                        <span class="badge bg-success">Mastered</span>
+                                                    @elseif($p->status === 'Learning')
+                                                        <span class="badge bg-info">Learning</span>
+                                                    @else
+                                                        <span class="badge bg-light text-dark border">Not Started</span>
+                                                    @endif
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($p->type === 'Quiz' && $p->difficulty === 'hard' && $p->status === 'pending')
+                                                    <span class="text-muted italic">Pending Review</span>
+                                                @else
+                                                    <strong>{{ $p->score }}</strong>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($p->type === 'Quiz')
+                                                    @if($p->difficulty === 'hard' || $p->raw_progress->student_answers)
+                                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ $p->id }}">
+                                                            <i class="bi bi-eye"></i> Details
+                                                        </button>
+
+                                                        <!-- Feedback Modal -->
+                                                        <div class="modal fade" id="feedbackModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg text-start">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Quiz Results: {{ $p->title }}</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                                                                        @php
+                                                                            $answers = $p->raw_progress->student_answers ?? [];
+                                                                            $questions = $p->raw_progress->quiz->questions;
+                                                                            $notes = $p->raw_progress->teacher_notes ?? [];
+                                                                        @endphp
+                                                                        
+                                                                        @foreach($questions as $index => $q)
+                                                                            <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                                                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                                    <h6 class="fw-bold mb-0">Q{{ $index + 1 }}: {{ $q->question_text }}</h6>
+                                                                                    @if(isset($notes[$index]['status']))
+                                                                                        @if($notes[$index]['status'] == 'correct')
+                                                                                            <span class="badge bg-success text-white"><i class="bi bi-check-lg"></i> Approved</span>
+                                                                                        @elseif($notes[$index]['status'] == 'incorrect')
+                                                                                            <span class="badge bg-danger text-white"><i class="bi bi-x-lg"></i> Disapproved</span>
+                                                                                        @endif
+                                                                                    @endif
+                                                                                </div>
+                                                                                
+                                                                                <div class="mt-3">
+                                                                                    <p class="mb-1 text-primary small fw-bold">STUDENT ANSWER:</p>
+                                                                                    <div class="p-3 border rounded bg-light text-dark" style="white-space: pre-wrap;">
+                                                                                        @php
+                                                                                            $studentAns = $answers[$index] ?? 'No answer provided';
+                                                                                            if($q->options && isset($q->options[$studentAns])) {
+                                                                                                $studentAns = strtoupper($studentAns) . ': ' . $q->options[$studentAns];
+                                                                                            }
+                                                                                        @endphp
+                                                                                        {{ $studentAns }}
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                @if(isset($notes[$index]['feedback']) && $notes[$index]['feedback'])
+                                                                                    <div class="mt-3">
+                                                                                        <p class="mb-1 text-warning small fw-bold">FEEDBACK/SUGGESTION:</p>
+                                                                                        <div class="p-3 border rounded bg-light-warning shadow-sm" style="background-color: #fffcf0; border-color: #ffeeba;">
+                                                                                            <i class="bi bi-chat-left-dots-fill me-1"></i> {{ $notes[$index]['feedback'] }}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                @endif
+                                                                                <div class="mt-3">
+                                                                                    <p class="mb-1 text-success small fw-bold">SUGGESTED ANSWER / KEY POINTS:</p>
+                                                                                    <div class="p-3 border rounded bg-white text-muted small">
+                                                                                        @if($q->options && isset($q->options[$q->correct_answer]))
+                                                                                            <span class="text-success fw-bold">{{ strtoupper($q->correct_answer) }}:</span> {{ $q->options[$q->correct_answer] }}
+                                                                                        @else
+                                                                                            {{ $q->correct_answer }}
+                                                                                        @endif
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <span class="badge bg-light text-dark border">Auto-graded</span>
+                                                    @endif
+                                                @else
+                                                    <span class="text-muted small">-</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -91,8 +248,8 @@
                     @else
                         <div class="text-center py-5 text-muted">
                             <i class="bi bi-journal-x display-4 mb-3 d-block text-secondary opacity-50"></i>
-                            <h6>No Quizzes Taken Yet</h6>
-                            <p class="small">This student hasn't completed any quizzes.</p>
+                            <h6>No Progress Data Found</h6>
+                            <p class="small">There is no progress logged matching the filters.</p>
                         </div>
                     @endif
                 </div>

@@ -178,6 +178,15 @@ class User extends Authenticatable
     }
 
     /**
+     * A student can have many saved notes.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notes()
+    {
+        return $this->hasMany(StudentNote::class);
+    }
+
+    /**
      * Get a consistent random color for the user avatar based on their ID.
      *
      * @return string

@@ -72,6 +72,11 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     // Progress
     Route::get('/progress', [ProgressController::class, 'index'])->name('progress');
 
+    // Student Notes
+    Route::post('/notes/save', [\App\Http\Controllers\Student\StudentNoteController::class, 'save'])->name('notes.save');
+    Route::get('/notes/folder/{topic}', [\App\Http\Controllers\Student\StudentNoteController::class, 'showFolder'])->name('notes.folder');
+    Route::delete('/notes/{note}', [\App\Http\Controllers\Student\StudentNoteController::class, 'destroy'])->name('notes.destroy');
+
     // Widgets management
     Route::get('/widgets', [WidgetController::class, 'index'])->name('widgets.index');
     Route::post('/widgets', [WidgetController::class, 'store'])->name('widgets.store');

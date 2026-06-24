@@ -30,8 +30,10 @@
         </div>
     </div>
 
+    @php $isReadWrite = auth()->user()?->learning_style === 'read_write'; @endphp
+
     <div class="row">
-        <div class="col-md-12">
+        <div class="{{ $isReadWrite ? 'col-md-8' : 'col-md-12' }}">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Content</h5>
@@ -83,7 +85,120 @@
             </div>
             @endif
         </div>
+
+        @if($isReadWrite)
+            <div class="col-md-4">
+                {{-- Notepad Widget --}}
+                @php
+                    $existingNote = \App\Models\StudentNote::where('user_id', auth()->id())
+                        ->where('resource_type', 'content')
+                        ->where('resource_id', $content->id)
+                        ->first();
+                @endphp
+                <div class="card border-success shadow-sm sticky-top" style="top: 20px; z-index: 100;">
+                    <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-1"></i> Study Notepad</h6>
+                        <span id="save-status" class="small text-white-50">Auto-saved</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.72rem;">Topic</small>
+                            <span class="badge bg-light text-dark border">{{ $content->topic ?? 'General' }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-title" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Note Title</label>
+                            <input type="text" id="note-title" class="form-control form-control-sm fw-bold" 
+                                   value="{{ $existingNote ? $existingNote->title : 'Notes: ' . $content->title }}" 
+                                   placeholder="Title of your note...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-content" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Acronyms & Notes</label>
+                            <textarea id="note-content" class="form-control form-control-sm" rows="12" 
+                                      placeholder="Write your study acronyms, summaries, and key points here...">{{ $existingNote ? $existingNote->content : '' }}</textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="button" onclick="saveNote()" class="btn btn-success btn-sm fw-bold">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Save Note
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
+
+    @if($isReadWrite)
+    <script>
+        let saveTimeout = null;
+
+        function saveNote() {
+            const title = document.getElementById('note-title').value.trim();
+            const content = document.getElementById('note-content').value.trim();
+            const statusSpan = document.getElementById('save-status');
+
+            if (!title) {
+                statusSpan.textContent = 'Title required';
+                statusSpan.style.color = '#ef4444';
+                return;
+            }
+
+            statusSpan.textContent = 'Saving...';
+            statusSpan.style.color = 'rgba(255,255,255,0.7)';
+
+            fetch("{{ route('student.notes.save') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    topic: "{{ $content->topic ?? 'General' }}",
+                    difficulty: null,
+                    title: title,
+                    content: content,
+                    resource_type: 'content',
+                    resource_id: {{ $content->id }}
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    statusSpan.textContent = 'Auto-saved';
+                    statusSpan.style.color = 'rgba(255,255,255,0.7)';
+                    
+                    // Reload folders in sidebar silently by checking if new folder was created
+                    // (we can reload sidebar or just let it update on next page load)
+                } else {
+                    statusSpan.textContent = 'Save failed';
+                    statusSpan.style.color = '#ef4444';
+                }
+            })
+            .catch(err => {
+                statusSpan.textContent = 'Connection error';
+                statusSpan.style.color = '#ef4444';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleInput = document.getElementById('note-title');
+            const contentInput = document.getElementById('note-content');
+
+            if (titleInput && contentInput) {
+                const triggerAutoSave = () => {
+                    const statusSpan = document.getElementById('save-status');
+                    statusSpan.textContent = 'Unsaved changes';
+                    statusSpan.style.color = '#f59e0b';
+                    
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(saveNote, 1500);
+                };
+
+                titleInput.addEventListener('input', triggerAutoSave);
+                contentInput.addEventListener('input', triggerAutoSave);
+            }
+        });
+    </script>
+    @endif
 
     <div class="row mt-4">
         <div class="col-md-12">

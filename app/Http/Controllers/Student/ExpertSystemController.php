@@ -20,90 +20,90 @@ class ExpertSystemController extends Controller
             'weight'  => 3,
             'dimension' => 'memory_encoding',
             'answers' => [
-                'A' => ['visual' => 3, 'auditory' => 0, 'competitive' => 0],
-                'B' => ['visual' => 0, 'auditory' => 3, 'competitive' => 0],
-                'C' => ['visual' => 1, 'auditory' => 0, 'competitive' => 2],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                'C' => ['read_write' => 1, 'auditory' => 0, 'competitive' => 2],
             ],
         ],
         'q2' => [
             'weight'  => 3,
             'dimension' => 'distraction_response',
             'answers' => [
-                'A' => ['visual' => 2, 'auditory' => 1, 'competitive' => 0],
-                'B' => ['visual' => 0, 'auditory' => 3, 'competitive' => 0],
-                'C' => ['visual' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
             ],
         ],
         'q3' => [
             'weight'  => 2,
             'dimension' => 'new_topic_approach',
             'answers' => [
-                'A' => ['visual' => 2, 'auditory' => 0, 'competitive' => 1],
-                'B' => ['visual' => 0, 'auditory' => 2, 'competitive' => 1],
-                'C' => ['visual' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 2, 'auditory' => 0, 'competitive' => 1],
+                'B' => ['read_write' => 0, 'auditory' => 2, 'competitive' => 1],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
             ],
         ],
         'q4' => [
             'weight'  => 3,
             'dimension' => 'exam_preparation',
             'answers' => [
-                'A' => ['visual' => 3, 'auditory' => 0, 'competitive' => 0],
-                'B' => ['visual' => 0, 'auditory' => 2, 'competitive' => 1],
-                'C' => ['visual' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 2, 'competitive' => 1],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
             ],
         ],
         'q5' => [
             'weight'  => 2,
             'dimension' => 'group_dynamics',
             'answers' => [
-                'A' => ['visual' => 1, 'auditory' => 2, 'competitive' => 0],
-                'B' => ['visual' => 1, 'auditory' => 0, 'competitive' => 2],
-                'C' => ['visual' => 2, 'auditory' => 0, 'competitive' => 1],
+                'A' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
+                'B' => ['read_write' => 1, 'auditory' => 0, 'competitive' => 2],
+                'C' => ['read_write' => 2, 'auditory' => 0, 'competitive' => 1],
             ],
         ],
         'q6' => [
             'weight'  => 3,
             'dimension' => 'failure_reaction',
             'answers' => [
-                'A' => ['visual' => 2, 'auditory' => 1, 'competitive' => 0],
-                'B' => ['visual' => 0, 'auditory' => 0, 'competitive' => 3],
-                'C' => ['visual' => 0, 'auditory' => 3, 'competitive' => 0],
+                'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                'C' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
             ],
         ],
         'q7' => [
             'weight'  => 2,
             'dimension' => 'content_preference',
             'answers' => [
-                'A' => ['visual' => 3, 'auditory' => 0, 'competitive' => 0],
-                'B' => ['visual' => 0, 'auditory' => 3, 'competitive' => 0],
-                'C' => ['visual' => 0, 'auditory' => 1, 'competitive' => 2],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 1, 'competitive' => 2],
             ],
         ],
         'q8' => [
             'weight'  => 2,
             'dimension' => 'progress_motivation',
             'answers' => [
-                'A' => ['visual' => 0, 'auditory' => 0, 'competitive' => 3],
-                'B' => ['visual' => 1, 'auditory' => 2, 'competitive' => 0],
-                'C' => ['visual' => 3, 'auditory' => 0, 'competitive' => 0],
+                'A' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                'B' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
+                'C' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
             ],
         ],
         'q9' => [
             'weight'  => 3,
             'dimension' => 'retention_strategy',
             'answers' => [
-                'A' => ['visual' => 0, 'auditory' => 3, 'competitive' => 0],
-                'B' => ['visual' => 3, 'auditory' => 0, 'competitive' => 0],
-                'C' => ['visual' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                'B' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
             ],
         ],
         'q10' => [
             'weight'  => 2,
             'dimension' => 'self_assessment',
             'answers' => [
-                'A' => ['visual' => 2, 'auditory' => 1, 'competitive' => 0],
-                'B' => ['visual' => 0, 'auditory' => 0, 'competitive' => 3],
-                'C' => ['visual' => 1, 'auditory' => 2, 'competitive' => 0],
+                'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                'C' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
             ],
         ],
     ];
@@ -164,7 +164,7 @@ class ExpertSystemController extends Controller
             ['user_id' => auth()->id()],
             [
                 'answers'           => $answers,
-                'score_visual'      => $result['scores']['visual'],
+                'score_read_write'  => $result['scores']['read_write'],
                 'score_auditory'    => $result['scores']['auditory'],
                 'score_competitive' => $result['scores']['competitive'],
                 'confidence'        => $result['confidence'],
@@ -201,7 +201,7 @@ class ExpertSystemController extends Controller
     // ─────────────────────────────────────────────────────────────────────────
     private function runInferenceEngine(array $answers): array
     {
-        $scores = ['visual' => 0, 'auditory' => 0, 'competitive' => 0];
+        $scores = ['read_write' => 0, 'auditory' => 0, 'competitive' => 0];
         $totalWeight = 0;
 
         // ── PASS 1: Weighted Evidence Accumulation ───────────────────────────
@@ -236,7 +236,7 @@ class ExpertSystemController extends Controller
             // q1 (memory_encoding) and q9 (retention_strategy) are the most
             // diagnostic questions — they get double-weighted in a tie.
             $strongSignals = ['q1', 'q4', 'q9'];
-            $tieScores = ['visual' => 0, 'auditory' => 0, 'competitive' => 0];
+            $tieScores = ['read_write' => 0, 'auditory' => 0, 'competitive' => 0];
 
             foreach ($strongSignals as $qKey) {
                 $chosen = $answers[$qKey] ?? null;
@@ -275,7 +275,7 @@ class ExpertSystemController extends Controller
     private function buildPersona(string $style, float $confidence, array $answers): string
     {
         $labels = [
-            'visual'      => 'Visual Learner',
+            'read_write'  => 'Read/Write Learner',
             'auditory'    => 'Auditory Learner',
             'competitive' => 'Competitive Learner',
         ];
@@ -302,20 +302,20 @@ class ExpertSystemController extends Controller
         $recs = [];
         $isMixed = $result['is_mixed'];
 
-        if ($style === 'visual') {
-            $recs[] = 'Your dashboard highlights Flashcards first — use them as your primary study tool since visual memory of cards helps you retain concepts faster.';
-            $recs[] = 'When reading Other Materials (e-books, notes), try to mentally draw or sketch the concept you just read to reinforce it visually.';
+        if ($style === 'read_write') {
+            $recs[] = 'Your dashboard highlights Materials first — use the sidebar Notepad to write custom notes and acronyms to reinforce the concepts.';
+            $recs[] = 'When reading or taking quizzes, actively summarize the key points in the notepad on the right. Rewriting information helps your memory.';
 
             // Extra rec based on q5 (group dynamics)
             if ($answers['q5'] === 'C') {
-                $recs[] = 'You prefer studying independently — use Revision Mode on flashcards to self-test in silence without distractions.';
+                $recs[] = 'You prefer working independently — organize your study notes into custom topic folders using the "My Folders" sidebar section.';
             } else {
-                $recs[] = 'Try forming a study group where you can share and compare your visual notes or flashcard sets with classmates.';
+                $recs[] = 'Try forming a study group where you can compare summaries and share acronyms with classmates.';
             }
 
             // Extra rec based on q8 (motivation)
             if ($answers['q8'] === 'C') {
-                $recs[] = 'Create a visual study progress chart — seeing how many topics you have covered will keep you motivated to continue.';
+                $recs[] = 'Organize your study room into categorized note folders. Having neat, structured summaries keeps you motivated.';
             }
 
         } elseif ($style === 'auditory') {

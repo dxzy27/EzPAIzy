@@ -113,4 +113,187 @@ class QuizProgressIndicatorsTest extends TestCase
         $responseAfterAttempt->assertSee('Pending Review');
         $responseAfterAttempt->assertSee('Awaiting grading');
     }
+
+    public function test_teacher_can_create_hard_difficulty_quiz(): void
+    {
+        $teacher = User::create([
+            'name' => 'Test Teacher',
+            'email' => 'teacher_' . uniqid() . '@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+            'class_name' => 'Class A',
+        ]);
+
+        $response = $this->actingAs($teacher)
+            ->post(route('teacher.quizzes.store'), [
+                'title' => 'Hard Quiz Title',
+                'topic' => 'Al-Quran',
+                'difficulty' => 'hard',
+                'questions' => [
+                    1 => [
+                        'text' => 'Bincangkan ciri-ciri mukmin berjaya.',
+                        'type' => 'short_answer',
+                        'correct' => '1. Solat khusyuk, 2. Jauhkan diri dari perkara sia-sia.',
+                    ]
+                ]
+            ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('quizzes', [
+            'title' => 'Hard Quiz Title',
+            'difficulty' => 'hard',
+        ]);
+        $this->assertDatabaseHas('questions', [
+            'question_text' => 'Bincangkan ciri-ciri mukmin berjaya.',
+            'type' => 'short_answer',
+            'correct_answer' => '1. Solat khusyuk, 2. Jauhkan diri dari perkara sia-sia.',
+        ]);
+    }
+
+    public function test_teacher_can_edit_hard_difficulty_quiz(): void
+    {
+        $teacher = User::create([
+            'name' => 'Test Teacher',
+            'email' => 'teacher_' . uniqid() . '@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+            'class_name' => 'Class A',
+        ]);
+
+        $quiz = Quiz::create([
+            'title' => 'Initial Hard Quiz',
+            'topic' => 'Al-Quran',
+            'difficulty' => 'hard',
+            'teacher_id' => $teacher->id,
+        ]);
+
+        $question = Question::create([
+            'quiz_id' => $quiz->id,
+            'question_text' => 'Bincangkan ciri-ciri mukmin.',
+            'type' => 'short_answer',
+            'correct_answer' => 'Solat khusyuk.',
+            'points' => 10,
+        ]);
+
+        $response = $this->actingAs($teacher)
+            ->put(route('teacher.quizzes.update', $quiz), [
+                'title' => 'Updated Hard Quiz',
+                'topic' => 'Al-Quran',
+                'questions' => [
+                    1 => [
+                        'text' => 'Bincangkan ciri-ciri mukmin berjaya (Updated).',
+                        'type' => 'short_answer',
+                        'correct' => '1. Solat khusyuk, 2. Jauhkan diri.',
+                    ]
+                ]
+            ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('quizzes', [
+            'id' => $quiz->id,
+            'title' => 'Updated Hard Quiz',
+            'difficulty' => 'hard',
+        ]);
+        $this->assertDatabaseHas('questions', [
+            'quiz_id' => $quiz->id,
+            'question_text' => 'Bincangkan ciri-ciri mukmin berjaya (Updated).',
+            'type' => 'short_answer',
+            'correct_answer' => '1. Solat khusyuk, 2. Jauhkan diri.',
+        ]);
+    }
+
+    public function test_quizzes_are_sorted_by_difficulty_easy_medium_hard(): void
+    {
+        $teacher = User::create([
+            'name' => 'Test Teacher',
+            'email' => 'teacher_' . uniqid() . '@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+            'class_name' => 'Class A',
+        ]);
+
+        $student = User::create([
+            'name' => 'Test Student',
+            'email' => 'student_' . uniqid() . '@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'student',
+            'class_name' => 'Class A',
+        ]);
+
+        $topicName = 'Al-Quran';
+        Topic::create([
+            'name' => $topicName,
+            'type' => 'quiz',
+            'user_id' => $teacher->id,
+        ]);
+
+        // Create in reverse order of difficulty (hard, then medium, then easy)
+        $hardQuiz = Quiz::create(['title' => 'Hard Quiz', 'topic' => $topicName, 'difficulty' => 'hard', 'teacher_id' => $teacher->id]);
+        $mediumQuiz = Quiz::create(['title' => 'Medium Quiz', 'topic' => $topicName, 'difficulty' => 'medium', 'teacher_id' => $teacher->id]);
+        $easyQuiz = Quiz::create(['title' => 'Easy Quiz', 'topic' => $topicName, 'difficulty' => 'easy', 'teacher_id' => $teacher->id]);
+
+        // Student View Check
+        $responseStudent = $this->actingAs($student)->get(route('student.quizzes.folder', ['topic' => $topicName]));
+        $responseStudent->assertStatus(200);
+        
+        $quizzesStudent = $responseStudent->viewData('quizzes');
+        $this->assertEquals('easy', $quizzesStudent[0]->difficulty);
+        $this->assertEquals('medium', $quizzesStudent[1]->difficulty);
+        $this->assertEquals('hard', $quizzesStudent[2]->difficulty);
+
+        // Teacher View Check
+        $responseTeacher = $this->actingAs($teacher)->get(route('teacher.quizzes.folder', ['topic' => $topicName]));
+        $responseTeacher->assertStatus(200);
+        
+        $quizzesTeacher = $responseTeacher->viewData('quizzes');
+        $this->assertEquals('easy', $quizzesTeacher[0]->difficulty);
+        $this->assertEquals('medium', $quizzesTeacher[1]->difficulty);
+        $this->assertEquals('hard', $quizzesTeacher[2]->difficulty);
+    }
+
+    public function test_student_progress_page_renders_statistics_successfully(): void
+    {
+        $student = User::create([
+            'name' => 'Test Student',
+            'email' => 'student_' . uniqid() . '@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'student',
+            'class_name' => 'Class A',
+        ]);
+
+        $teacher = User::create([
+            'name' => 'Test Teacher',
+            'email' => 'teacher_' . uniqid() . '@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+            'class_name' => 'Class A',
+        ]);
+
+        $topicName = 'Al-Quran';
+        Topic::create([
+            'name' => $topicName,
+            'type' => 'quiz',
+            'user_id' => $teacher->id,
+        ]);
+
+        $easyQuiz = Quiz::create([
+            'title' => 'Easy Test Quiz',
+            'topic' => $topicName,
+            'difficulty' => 'easy',
+            'teacher_id' => $teacher->id,
+        ]);
+
+        Progress::create([
+            'student_id' => $student->id,
+            'quiz_id' => $easyQuiz->id,
+            'score' => 85,
+            'status' => 'completed',
+        ]);
+
+        $response = $this->actingAs($student)->get(route('student.progress'));
+        $response->assertStatus(200);
+        $response->assertViewHas('totalQuizzes', 1);
+        $response->assertViewHas('averageScore', 85);
+        $response->assertViewHas('highestScore', 85);
+    }
 }

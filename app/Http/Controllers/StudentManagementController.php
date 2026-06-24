@@ -59,14 +59,121 @@ class StudentManagementController extends Controller
     /**
      * Show student details and progress
      */
-    public function show(User $student)
+    public function show(Request $request, User $student)
     {
         abort_if($student->role !== 'student', 403, 'This user is not a student');
 
         $teacher = auth()->user();
-        $progress = $student->progress()->with('quiz')->paginate(5);
+        $selectedType = $request->query('type');
+        $selectedTopic = $request->query('topic');
 
-        return view('teacher.students.show', compact('student', 'teacher', 'progress'));
+        // Fetch Quiz Progress
+        $quizzesProgress = $student->progress()->with(['quiz.teacher', 'quiz.questions'])->get();
+
+        // Fetch Flashcard Progress
+        $attemptedSetIds = \App\Models\FlashcardProgress::where('user_id', $student->id)
+            ->join('flashcards', 'flashcard_progress.flashcard_id', '=', 'flashcards.id')
+            ->pluck('flashcard_set_id')
+            ->unique();
+        $flashcardSets = \App\Models\FlashcardSet::whereIn('id', $attemptedSetIds)->with(['user', 'flashcards'])->get();
+
+        $unified = collect();
+
+        // Add Quiz Progress
+        foreach ($quizzesProgress as $qp) {
+            if (!$qp->quiz) continue;
+            
+            // Apply topic filter
+            if ($selectedTopic && $qp->quiz->topic !== $selectedTopic) {
+                continue;
+            }
+            // Apply type filter
+            if ($selectedType && $selectedType !== 'quiz') {
+                continue;
+            }
+
+            $unified->push((object)[
+                'id' => $qp->id,
+                'type' => 'Quiz',
+                'topic' => $qp->quiz->topic ?? 'General',
+                'title' => $qp->quiz->title ?? 'Deleted Quiz',
+                'teacher' => $qp->quiz->teacher->name ?? 'Unknown',
+                'date' => $qp->updated_at,
+                'status' => $qp->status, 
+                'score' => $qp->quiz->difficulty === 'hard' && $qp->status === 'pending' ? 'Pending' : $qp->score . '%',
+                'score_num' => $qp->score,
+                'difficulty' => $qp->quiz->difficulty ?? 'easy',
+                'raw_progress' => $qp
+            ]);
+        }
+
+        // Add Flashcard Progress
+        foreach ($flashcardSets as $set) {
+            // Apply topic filter
+            if ($selectedTopic && $set->topic !== $selectedTopic) {
+                continue;
+            }
+            // Apply type filter
+            if ($selectedType && $selectedType !== 'flashcards') {
+                continue;
+            }
+
+            $total = $set->flashcards->count();
+            $cardIds = $set->flashcards->pluck('id')->toArray();
+            $progressRecords = \App\Models\FlashcardProgress::where('user_id', $student->id)
+                ->whereIn('flashcard_id', $cardIds)
+                ->get();
+                
+            $mastered = $progressRecords->where('status', 'mastered')->count();
+            $review = $progressRecords->where('status', 'review')->count();
+            $learning = $progressRecords->where('status', 'learning')->count();
+            
+            $latestProgress = $progressRecords->sortByDesc('updated_at')->first();
+            $date = $latestProgress ? $latestProgress->updated_at : $set->updated_at;
+            
+            $percentage = $total > 0 ? round(($mastered / $total) * 100) : 0;
+            
+            $status = 'Not Started';
+            if ($mastered === $total && $total > 0) {
+                $status = 'Mastered';
+            } elseif ($progressRecords->count() > 0) {
+                $status = 'Learning';
+            }
+
+            $unified->push((object)[
+                'id' => $set->id,
+                'type' => 'Flashcards',
+                'topic' => $set->topic ?? 'General',
+                'title' => $set->title,
+                'teacher' => $set->user->name ?? 'Unknown',
+                'date' => $date,
+                'status' => $status,
+                'score' => $mastered . '/' . $total . ' Mastered (' . $percentage . '%)',
+                'score_num' => $percentage,
+                'difficulty' => 'N/A',
+                'raw_progress' => null
+            ]);
+        }
+
+        // Sort by date descending
+        $unified = $unified->sortByDesc('date');
+
+        // Extract unique topics for filter dropdown
+        $topics = \App\Models\Topic::where('user_id', $teacher->id)->pluck('name')->unique()->sort()->values();
+
+        // Paginate collection manually
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $perPage = 5;
+        $sliced = $unified->slice(($page - 1) * $perPage, $perPage)->all();
+        $progress = new \Illuminate\Pagination\LengthAwarePaginator(
+            $sliced, 
+            $unified->count(), 
+            $perPage, 
+            $page, 
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(), 'query' => $request->query()]
+        );
+
+        return view('teacher.students.show', compact('student', 'teacher', 'progress', 'topics', 'selectedType', 'selectedTopic'));
     }
 
     /**

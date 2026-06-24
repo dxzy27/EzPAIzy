@@ -8,14 +8,16 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('contents', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('content')->nullable();
-            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
+        if (!Schema::hasTable('contents')) {
+            Schema::create('contents', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->text('content')->nullable();
+                $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     public function down()

@@ -34,7 +34,8 @@ class QuizController extends Controller
     {
         $quizzes = Quiz::where('teacher_id', auth()->id())
             ->where('topic', $topic)
-            ->latest()
+            ->orderByRaw("CASE WHEN difficulty = 'easy' THEN 1 WHEN difficulty = 'medium' THEN 2 WHEN difficulty = 'hard' THEN 3 ELSE 4 END ASC")
+            ->orderBy('created_at', 'desc')
             ->paginate(12);
 
         return view('teacher.quizzes.folder', compact('quizzes', 'topic'));

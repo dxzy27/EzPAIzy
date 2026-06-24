@@ -11,13 +11,13 @@ class LearningProfile extends Model
 
     protected $fillable = [
         'user_id',
-        'answers',          // JSON: {"q1":"visual","q2":"competitive",...}
-        'score_visual',
+        'answers',          // JSON: {"q1":"read_write","q2":"competitive",...}
+        'score_read_write',
         'score_auditory',
         'score_competitive',
         'confidence',       // float 0–100
-        'learning_style',   // visual | auditory | competitive
-        'persona',          // human-readable label, e.g. "Visual Learner"
+        'learning_style',   // read_write | auditory | competitive
+        'persona',          // human-readable label, e.g. "Read/Write Learner"
         'recommendations',  // JSON array of recommendation strings
     ];
 

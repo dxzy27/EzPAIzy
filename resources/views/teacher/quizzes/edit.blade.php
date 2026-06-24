@@ -94,15 +94,13 @@
                 // Medium/Hard Difficulty: Short Answer / KBAT
                 html += `<input type="hidden" name="questions[${current}][type]" value="short_answer">`;
                 
-                if (difficulty === 'medium') {
-                    html += `
-                        <!-- Correct Answer Input -->
-                        <div class="mb-2">
-                            <label class="form-label small text-muted">Correct Answer</label>
-                            <input type="text" name="questions[${current}][correct]" class="form-control" placeholder="Enter the correct answer" value="${correct}" required>
-                        </div>
-                    `;
-                }
+                html += `
+                    <!-- Correct Answer Input -->
+                    <div class="mb-2">
+                        <label class="form-label small text-muted">Correct Answer / Suggested Key Points</label>
+                        <input type="text" name="questions[${current}][correct]" class="form-control" placeholder="Enter the correct answer or suggested key points (Hard difficulty is manually graded)" value="${correct}" required>
+                    </div>
+                `;
             } else {
                  // Easy/Other: Default Information (MCQ)
                 const optA = data && data.options ? (data.options.a || '') : '';

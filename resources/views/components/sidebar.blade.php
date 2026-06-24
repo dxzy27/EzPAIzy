@@ -229,6 +229,44 @@
                 </a>
             </li>
 
+            {{-- My Folders (Read/Write Learners Only) --}}
+            @if(auth()->user()->learning_style === 'read_write')
+                @php
+                    $studentNoteTopics = \App\Models\StudentNote::where('user_id', auth()->id())
+                        ->select('topic')
+                        ->distinct()
+                        ->orderBy('topic')
+                        ->pluck('topic');
+                @endphp
+                <li>
+                    <a href="#foldersSubmenu" data-bs-toggle="collapse"
+                       class="nav-link {{ request()->routeIs('student.notes.*') ? 'active' : '' }}"
+                       role="button"
+                       data-tooltip="My Folders"
+                       aria-expanded="{{ request()->routeIs('student.notes.*') ? 'true' : 'false' }}">
+                        <i class="bi bi-folder2 nav-icon"></i>
+                        <span class="nav-label">My Folders</span>
+                        <i class="bi bi-chevron-down nav-chevron"></i>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('student.notes.*') ? 'show' : '' }}" id="foldersSubmenu">
+                        <ul class="submenu-list" style="padding-left: 1.5rem; list-style: none;">
+                            @forelse($studentNoteTopics as $folderTopic)
+                                <li>
+                                    <a href="{{ route('student.notes.folder', $folderTopic) }}"
+                                       class="nav-link py-1 {{ request()->routeIs('student.notes.folder') && request()->route('topic') === $folderTopic ? 'active' : '' }}"
+                                       style="font-size: 0.88rem;">
+                                        <i class="bi bi-folder-fill nav-icon text-warning me-1"></i>
+                                        <span class="nav-label">{{ $folderTopic }}</span>
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="text-muted small px-3 py-1">No folders saved yet</li>
+                            @endforelse
+                        </ul>
+                    </div>
+                </li>
+            @endif
+
         @endif
     </ul>
 
