@@ -75,13 +75,28 @@
     
     .flashcard-front {
         border: 1px solid #0f172a;
+        transform: rotateY(0deg) translateZ(1px);
     }
     
     .flashcard-back {
         background-color: #334155 !important; /* Lighter Slate for Student Back */
         color: white !important;
-        transform: rotateY(180deg);
+        transform: rotateY(180deg) translateZ(1px);
         border: 1px solid #1e293b;
+    }
+
+    /* Pointer events control based on active card face to prevent click-through issues */
+    .flashcard-inner:not(.is-flipped) .flashcard-front {
+        pointer-events: auto !important;
+    }
+    .flashcard-inner:not(.is-flipped) .flashcard-back {
+        pointer-events: none !important;
+    }
+    .flashcard-inner.is-flipped .flashcard-front {
+        pointer-events: none !important;
+    }
+    .flashcard-inner.is-flipped .flashcard-back {
+        pointer-events: auto !important;
     }
 
     .controls {
@@ -221,7 +236,7 @@
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" data-text="${currentCard.definition.replace(/["\n\r]/g, ' ')}" onclick="event.stopPropagation(); speakText(this.getAttribute('data-text'));" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
@@ -270,7 +285,7 @@
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" data-text="${currentCard.definition.replace(/["\n\r]/g, ' ')}" onclick="event.stopPropagation(); speakText(this.getAttribute('data-text'));" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
@@ -310,7 +325,7 @@
                                 <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold" onclick="flipCard(event)" style="cursor:pointer;">FRONT</span>
                                 <div class="d-flex align-items-center gap-2">
                                     @if(auth()->user()?->learning_style === 'auditory')
-                                    <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" data-text="${currentCard.term.replace(/["\n\r]/g, ' ')}" onclick="event.stopPropagation(); speakText(this.getAttribute('data-text'));" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
+                                    <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentTerm();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
                                         <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
@@ -487,6 +502,18 @@
             });
         };
 
+        window.speakCurrentTerm = function() {
+            if (typeof window.speakText === 'function' && cards && cards[currentIndex]) {
+                window.speakText(cards[currentIndex].term);
+            }
+        };
+
+        window.speakCurrentDefinition = function() {
+            if (typeof window.speakText === 'function' && cards && cards[currentIndex]) {
+                window.speakText(cards[currentIndex].definition);
+            }
+        };
+
         render();
     });
 </script>
@@ -515,12 +542,13 @@
             
             if (!plainText) return;
 
-            // Split by punctuation to ensure short, safe utterances
-            let chunks = plainText.match(/[^.!?]+[.!?]+/g);
-            if (!chunks) chunks = [plainText];
+            // Split by punctuation using lookbehind to not lose trailing text without punctuation
+            let chunks = plainText.split(/(?<=[.!?])\s+/);
 
             let safeChunks = [];
             for (let chunk of chunks) {
+                chunk = chunk.trim();
+                if (!chunk) continue;
                 if (chunk.length > 200) {
                     let parts = chunk.match(/.{1,180}(?:\s|$)/g) || [chunk];
                     safeChunks.push(...parts);
