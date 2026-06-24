@@ -47,7 +47,7 @@
             <div class="card border-0 shadow-sm h-100" style="border-radius:14px;">
                 <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <span class="badge bg-warning text-dark rounded-pill">{{ $set->topic }}</span>
+                        <span class="badge bg-warning text-dark rounded-pill" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 600;">{{ $set->topic }}</span>
                         <small class="text-muted">{{ $set->created_at->diffForHumans() }}</small>
                     </div>
                     <h6 class="fw-bold mb-1">{{ $set->title }}</h6>

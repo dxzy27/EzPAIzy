@@ -34,7 +34,7 @@
                     <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 12px; overflow: hidden;">
                         <div class="card-body d-flex flex-column p-4">
                             <div class="d-flex justify-content-between align-items-start mb-3">
-                                <span class="badge rounded-pill bg-light text-dark shadow-sm border">
+                                <span class="badge rounded-pill bg-light text-dark shadow-sm border" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 600;">
                                     <i class="bi bi-folder2-open me-1 text-primary"></i> {{ $quiz->topic ?? 'General' }}
                                 </span>
                                 @php
@@ -45,7 +45,7 @@
                                         default => 'primary'
                                     };
                                 @endphp
-                                <span class="badge bg-{{ $difficultyColor }} bg-opacity-10 text-{{ $difficultyColor }}">
+                                <span class="badge bg-{{ $difficultyColor }} bg-opacity-10 text-{{ $difficultyColor }}" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 700;">
                                     {{ ucfirst($quiz->difficulty) }}
                                 </span>
                             </div>

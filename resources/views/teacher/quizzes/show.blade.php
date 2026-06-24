@@ -33,7 +33,7 @@
                 <span class="badge rounded-pill
                     @if($quiz->difficulty === 'easy') bg-success
                     @elseif($quiz->difficulty === 'medium') bg-warning text-dark
-                    @else bg-danger @endif">
+                    @else bg-danger @endif" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 700;">
                     {{ ucfirst($quiz->difficulty) }}
                 </span>
             </div>

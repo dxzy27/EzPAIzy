@@ -46,21 +46,7 @@
             <h5 class="text-muted mb-0">{{ $quiz->title }}</h5>
         </div>
 
-        @if(auth()->user()?->learning_style === 'auditory')
-        <div class="d-flex align-items-center gap-3 mb-4 px-4 py-3 rounded-3"
-             style="background:#e0f2fe;border:1.5px solid #7dd3fc;">
-            <i class="bi bi-ear-fill" style="color:#0891b2;font-size:1.3rem;"></i>
-            <div>
-                <div class="fw-bold" style="color:#0c4a6e;font-size:.88rem;">🎵 Auditory Mode Active</div>
-                <div style="color:#075985;font-size:.8rem;">Each question will be read aloud automatically when it appears.</div>
-            </div>
-            <div class="ms-auto form-check form-switch mb-0">
-                <label class="form-check-label small fw-semibold" style="color:#0c4a6e;" for="quiz-tts-toggle">Auto-read</label>
-                <input class="form-check-input" type="checkbox" id="quiz-tts-toggle" checked
-                       style="cursor:pointer;width:2.2em;height:1.1em;">
-            </div>
-        </div>
-        @endif
+        {{-- Auditory banner removed as requested --}}
 
         <!-- Progress -->
         <div class="mb-4">
@@ -169,7 +155,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const html = `
             <div class="card border-0 shadow-sm question-card animated fadeIn">
                 <div class="card-body p-4 p-md-5">
-                    <h4 class="mb-4 fw-bold text-dark">${q.question_text}</h4>
+                    <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
+                        <h4 class="fw-bold text-dark mb-0" style="line-height: 1.4;">${q.question_text}</h4>
+                        @if(auth()->user()?->learning_style === 'auditory')
+                        <button type="button" class="btn btn-light rounded-circle shadow-sm border d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; padding: 0;" onclick="speakQuestionAndChoices(${index})" title="Listen to question and choices">
+                            <i class="bi bi-volume-up-fill text-primary fs-5"></i>
+                        </button>
+                        @endif
+                    </div>
                     <div class="options-list">
                         ${inputHtml}
                     </div>
@@ -225,12 +218,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.nextQuestion = function() {
         if (!userAnswers[currentQuestionIndex]) return; // prevent empty
+        if (typeof window.speechSynthesis !== 'undefined') {
+            window.speechSynthesis.cancel();
+        }
         currentQuestionIndex++;
         renderQuestion(currentQuestionIndex);
     };
 
     window.prevQuestion = function() {
         if(currentQuestionIndex > 0) {
+            if (typeof window.speechSynthesis !== 'undefined') {
+                window.speechSynthesis.cancel();
+            }
             currentQuestionIndex--;
             renderQuestion(currentQuestionIndex);
         }
@@ -299,50 +298,81 @@ document.addEventListener('DOMContentLoaded', function() {
 // ── Auditory Quiz Read-Aloud ────────────────────────────────────────
 (function() {
     const synth = window.speechSynthesis;
-    const labels = { a: 'A', b: 'B', c: 'C', d: 'D' };
+    const questions = @json($quiz->questions);
+    let availableVoices = [];
 
-    function isAutoRead() {
-        const toggle = document.getElementById('quiz-tts-toggle');
-        return toggle ? toggle.checked : true;
+    function loadVoices() {
+        availableVoices = synth.getVoices();
+    }
+    loadVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
     }
 
-    function readQuestion(q) {
-        if (!isAutoRead()) return;
+    window.speakQuestionAndChoices = function(index) {
         synth.cancel();
+        if (availableVoices.length === 0) {
+            availableVoices = synth.getVoices();
+        }
+        const q = questions[index];
+        if (!q) return;
 
-        let text = q.question_text || '';
-
-        // Append options A B C D for MCQ
+        let plainText = q.question_text || '';
+        
         if (q.type === 'mcq' && q.options) {
-            ['a','b','c','d'].forEach(k => {
-                if (q.options[k]) text += '. ' + labels[k] + ': ' + q.options[k];
+            const labels = { a: 'A', b: 'B', c: 'C', d: 'D' };
+            ['a', 'b', 'c', 'd'].forEach(key => {
+                if (q.options[key]) {
+                    plainText += '. ' + labels[key] + ': ' + q.options[key];
+                }
             });
         }
 
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US';
-        u.rate = 0.9;
-        synth.speak(u);
-    }
+        // Clean formatting
+        plainText = plainText.replace(/<[^>]*>?/gm, ''); // strip html
+        plainText = plainText.replace(/[\r\n]+/g, '. ').replace(/\s{2,}/g, ' ').trim();
 
-    // Monkey-patch the existing renderQuestion by observing DOM changes
-    const qContent = document.getElementById('quiz-content');
-    let lastText = '';
-    const obs = new MutationObserver(function() {
-        const heading = qContent ? qContent.querySelector('h4') : null;
-        if (heading && heading.textContent.trim() !== lastText) {
-            lastText = heading.textContent.trim();
-            // Find current question index from progressText
-            const pText = document.getElementById('progress-text');
-            if (!pText) return;
-            const match = pText.textContent.match(/(\d+)/);
-            if (!match) return;
-            const idx = parseInt(match[1]) - 1;
-            const questions = @json($quiz->questions);
-            if (questions[idx]) setTimeout(() => readQuestion(questions[idx]), 200);
+        if (!plainText) return;
+
+        // Split by punctuation for speech chunks
+        let chunks = plainText.split(/(?<=[.!?])\s+/);
+        let safeChunks = [];
+        for (let chunk of chunks) {
+            chunk = chunk.trim();
+            if (!chunk) continue;
+            if (chunk.length > 200) {
+                let parts = chunk.match(/.{1,180}(?:\s|$)/g) || [chunk];
+                safeChunks.push(...parts);
+            } else {
+                safeChunks.push(chunk);
+            }
         }
-    });
-    if (qContent) obs.observe(qContent, { childList: true, subtree: true });
+
+        // Speak the text
+        setTimeout(() => {
+            safeChunks.forEach(chunkText => {
+                chunkText = chunkText.trim();
+                if (!chunkText) return;
+                const u = new SpeechSynthesisUtterance(chunkText);
+                
+                let malayVoice = availableVoices.find(v => v.lang.includes('ms') || v.name.toLowerCase().includes('malay'));
+                let indoVoice = availableVoices.find(v => v.lang.includes('id') || v.name.toLowerCase().includes('indonesia'));
+
+                if (malayVoice) {
+                    u.voice = malayVoice;
+                    u.lang = malayVoice.lang;
+                } else if (indoVoice) {
+                    u.voice = indoVoice;
+                    u.lang = indoVoice.lang;
+                } else {
+                    u.lang = 'id-ID'; 
+                }
+                
+                u.rate = 0.95;
+                synth.speak(u);
+            });
+        }, 50);
+    };
 
     window.addEventListener('beforeunload', () => synth.cancel());
 })();

@@ -41,7 +41,7 @@
                                     <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
                                 </button>
                             </div>
-                            <span class="badge bg-info mb-2 text-white">{{ $set->topic }}</span>
+                            <span class="badge bg-info mb-2 text-white" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 600;">{{ $set->topic }}</span>
                             <p class="card-text text-muted">{{ Str::limit($set->description, 80) }}</p>
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between text-muted small mb-1">

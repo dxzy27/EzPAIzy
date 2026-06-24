@@ -204,10 +204,10 @@
                                 <div class="text-muted small">{{ $quiz->questions()->count() }} Questions</div>
                             </td>
                             <td>
-                                <span class="badge bg-light text-dark border px-2 py-1">{{ $quiz->topic ?? 'General' }}</span>
+                                <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.85rem; font-weight: 600;">{{ $quiz->topic ?? 'General' }}</span>
                             </td>
                             <td>
-                                <span class="badge" style="background: {{ $quiz->difficulty === 'easy' ? '#d1fae5; color:#065f46;' : ($quiz->difficulty === 'medium' ? '#fef3c7; color:#92400e;' : '#fee2e2; color:#991b1b;') }}">{{ ucfirst($quiz->difficulty) }}</span>
+                                <span class="badge" style="font-size: 0.85rem; font-weight: 700; padding: 0.35rem 0.7rem; background: {{ $quiz->difficulty === 'easy' ? '#d1fae5; color:#065f46;' : ($quiz->difficulty === 'medium' ? '#fef3c7; color:#92400e;' : '#fee2e2; color:#991b1b;') }}">{{ ucfirst($quiz->difficulty) }}</span>
                             </td>
                             <td>
                                 <span class="small">{{ $quiz->teacher->name ?? 'System' }}</span>

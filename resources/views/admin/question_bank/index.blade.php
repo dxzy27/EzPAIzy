@@ -69,13 +69,13 @@
                             @endif
                         </td>
                         <td>
-                            <span class="badge bg-light text-dark border px-2 py-1">{{ $q->topic }}</span>
+                            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.85rem; font-weight: 600;">{{ $q->topic }}</span>
                         </td>
                         <td>
                             <span class="small text-capitalize">{{ $q->type === 'mcq' ? 'MCQ' : 'Short Answer' }}</span>
                         </td>
                         <td>
-                            <span class="badge" style="background: {{ $q->difficulty === 'easy' ? '#d1fae5; color:#065f46;' : ($q->difficulty === 'medium' ? '#fef3c7; color:#92400e;' : '#fee2e2; color:#991b1b;') }}">{{ ucfirst($q->difficulty) }}</span>
+                            <span class="badge" style="font-size: 0.85rem; font-weight: 700; padding: 0.35rem 0.7rem; background: {{ $q->difficulty === 'easy' ? '#d1fae5; color:#065f46;' : ($q->difficulty === 'medium' ? '#fef3c7; color:#92400e;' : '#fee2e2; color:#991b1b;') }}">{{ ucfirst($q->difficulty) }}</span>
                         </td>
                         <td>
                             <code class="text-dark fw-bold">{{ strtoupper($q->correct_answer) }}</code>

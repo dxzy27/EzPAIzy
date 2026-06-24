@@ -55,7 +55,7 @@
                     <div class="card-body">
                         <h5 class="card-title">
                             {{ $quiz->title }}
-                            <span class="badge bg-{{ $quiz->difficulty == 'easy' ? 'success' : ($quiz->difficulty == 'medium' ? 'warning' : 'danger') }} ms-2" style="font-size: 0.6em;">{{ ucfirst($quiz->difficulty) }}</span>
+                            <span class="badge bg-{{ $quiz->difficulty == 'easy' ? 'success' : ($quiz->difficulty == 'medium' ? 'warning' : 'danger') }} ms-2" style="font-size: 0.8rem; padding: 0.35rem 0.7rem; font-weight: 700;">{{ ucfirst($quiz->difficulty) }}</span>
                         </h5>
                         <p class="text-muted small mb-1">Questions: {{ $quiz->questions_count ?? $quiz->questions()->count() }}</p>
                         <p class="text-muted small">Created: {{ $quiz->created_at->format('M d, Y') }}</p>

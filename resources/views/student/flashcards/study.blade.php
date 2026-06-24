@@ -137,6 +137,10 @@
         max-width: 600px;
         margin: 20px auto;
     }
+
+    .text-success-green {
+        color: #22c55e !important;
+    }
 </style>
 @endpush
 
@@ -175,6 +179,7 @@
 <script>
     let cards = [];
     let currentIndex = 0;
+    let peekTimeout = null;
     
     document.addEventListener('DOMContentLoaded', function() {
         cards = {!! json_encode($dueCards) !!};
@@ -185,6 +190,123 @@
         let isFlipped = false;
         let isSubmitting = false;
         let typedAnswer = '';
+        let currentItems = [];
+
+        function parseDefinitionItems(definition) {
+            let normalized = definition.trim();
+            // Match standard lists starting with a digit like "1. ", " 2. ", etc.
+            let regex = /(?:^|\s+)(\d+\.)\s+/g;
+            let items = [];
+            let match;
+            let matches = [];
+
+            while ((match = regex.exec(normalized)) !== null) {
+                matches.push({
+                    number: match[1],
+                    index: match.index,
+                    fullMatchLength: match[0].length
+                });
+            }
+
+            if (matches.length > 0) {
+                for (let i = 0; i < matches.length; i++) {
+                    let start = matches[i].index + matches[i].fullMatchLength;
+                    let end = (i + 1 < matches.length) ? matches[i + 1].index : normalized.length;
+                    let text = normalized.substring(start, end).trim();
+                    items.push({
+                        number: matches[i].number,
+                        text: text,
+                        cleanText: text.toLowerCase().replace(/[^a-z0-9]/g, ''),
+                        revealed: false
+                    });
+                }
+            } else {
+                items.push({
+                    number: '',
+                    text: normalized,
+                    cleanText: normalized.toLowerCase().replace(/[^a-z0-9]/g, ''),
+                    revealed: false
+                });
+            }
+            return items;
+        }
+
+        function getPlaceholderHtml(items, activeIndex = -1, typedVal = '') {
+            let isList = items.length > 1 || (items[0] && items[0].number);
+            let alignClass = isList ? 'text-start d-inline-block w-100' : 'text-center';
+            let html = `<div class="${alignClass} px-3">`;
+            items.forEach((item, idx) => {
+                let displayHtml = '';
+                
+                if (item.revealed) {
+                    displayHtml = `<span class="text-success-green fw-bold">${item.text}</span>`;
+                } else if (idx === activeIndex && typedVal.length > 0) {
+                    // Align typed text with correct item text in real-time
+                    let correctText = item.text;
+                    let typedText = typedVal;
+                    let display = '';
+                    let tIdx = 0;
+                    
+                    for (let i = 0; i < correctText.length; i++) {
+                        let c = correctText[i];
+                        if (c === ' ') {
+                            display += ' &nbsp; ';
+                            if (tIdx < typedText.length && typedText[tIdx] === ' ') {
+                                tIdx++;
+                            }
+                        } else {
+                            if (tIdx < typedText.length) {
+                                if (typedText[tIdx] === ' ') {
+                                    display += ' &nbsp; ';
+                                } else {
+                                    display += typedText[tIdx];
+                                }
+                                tIdx++;
+                            } else {
+                                if (/[a-zA-Z0-9]/.test(c)) {
+                                    display += '_';
+                                } else {
+                                    display += c;
+                                }
+                            }
+                        }
+                    }
+                    displayHtml = `<span class="text-white fw-bold">${display}</span>`;
+                } else {
+                    let underscores = '';
+                    let words = item.text.split(/\s+/);
+                    words.forEach((word, wIdx) => {
+                        let wordUnderscores = '';
+                        for (let c of word) {
+                            if (/[a-zA-Z0-9]/.test(c)) {
+                                wordUnderscores += '_';
+                            } else {
+                                wordUnderscores += c;
+                            }
+                        }
+                        underscores += wordUnderscores + (wIdx < words.length - 1 ? ' &nbsp; ' : '');
+                    });
+                    displayHtml = `<span class="text-white-50">${underscores}</span>`;
+                }
+
+                if (isList && item.number) {
+                    html += `
+                        <div class="d-flex align-items-start fs-4 mb-2" style="font-family: monospace; letter-spacing: 2px;">
+                            <span style="width: 45px; flex-shrink: 0; display: inline-block; text-align: left;">${item.number}</span>
+                            ${displayHtml}
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="fs-4 mb-2" style="font-family: monospace; letter-spacing: 2px;">
+                            ${displayHtml}
+                        </div>
+                    `;
+                }
+            });
+            html += '</div>';
+            return html;
+        }
 
         function render() {
             if (cards.length === 0 || currentIndex >= cards.length) {
@@ -225,9 +347,15 @@
                 if (mode === 'read') {
                     controlsHtml = ``;
                 } else {
+                    if (!currentCard._parsedItems) {
+                        currentCard._parsedItems = parseDefinitionItems(currentCard.definition);
+                    }
+                    let allDone = currentCard._parsedItems.every(item => item.revealed);
+                    let initialMsg = allDone ? 'Perfect! How easy was that?' : 'How well did you remember this?';
+
                     controlsHtml = `
                         <div id="grading-controls" class="mt-4 text-center">
-                            <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
+                            <p class="fw-bold mb-3" id="grading-message">${initialMsg}</p>
                             <div class="d-flex justify-content-center gap-3">
                                 <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
                                     <i class="bi bi-x-lg fs-5"></i> Still learning
@@ -277,43 +405,24 @@
                         </div>
                     `;
                 } else {
-                    // Generate the hidden answer display
-                    const numberMarkerIndices = new Set();
-                    const regex = /(?:^|\s)(\d+\.)(?=\s)/g;
-                    let match;
-                    while ((match = regex.exec(normalizedDefinition)) !== null) {
-                        const start = match.index + (match[0].startsWith(' ') ? 1 : 0);
-                        for (let j = 0; j < match[1].length; j++) {
-                            numberMarkerIndices.add(start + j);
-                        }
+                    if (!currentCard._parsedItems) {
+                        currentCard._parsedItems = parseDefinitionItems(currentCard.definition);
                     }
+                    currentItems = currentCard._parsedItems;
 
-                    let answerWords = '';
-                    for (let i = 0; i < normalizedDefinition.length; i++) {
-                        if (normalizedDefinition[i] === ' ') {
-                            if (i === 0 || normalizedDefinition[i-1] !== ' ') {
-                                if (normalizedDefinition.substring(i).match(/^\s+\d+\.\s/)) {
-                                    answerWords += '<div style="margin-top: 15px;"></div>';
-                                    continue;
-                                }
-                            }
-                            answerWords += ' &nbsp; ';
-                        } else if (numberMarkerIndices.has(i)) {
-                            answerWords += normalizedDefinition[i];
-                        } else {
-                            answerWords += '_';
-                        }
-                    }
+                    let allDone = currentItems.every(item => item.revealed);
+                    let activeIdx = currentItems.findIndex(item => !item.revealed);
+                    let initialAnswerWords = getPlaceholderHtml(currentItems, activeIdx, typedAnswer);
                     
                     backFaceHtml = `
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
-                                <button id="show-answer-btn" type="button" class="btn btn-outline-light text-white-50 border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center" style="font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
+                                <button id="show-answer-btn" type="button" class="btn btn-outline-light text-white-50 border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
                                     Show Answer
                                 </button>
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle ${allDone ? '' : 'd-none'}" style="width:30px;height:30px;padding:0;display:${allDone ? 'flex' : 'none'};align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
@@ -322,19 +431,15 @@
                         </div>
                         <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
                             <div class="flashcard-content">
-                                <div class="${alignClass}">
-                                    <div id="placeholder-text" class="fs-4 fw-bold mt-3" style="letter-spacing: 3px; font-family: monospace; line-height: 1.4;">${answerWords}</div>
+                                <div class="w-100">
+                                    <div id="placeholder-text" class="mt-3">${initialAnswerWords}</div>
                                 </div>
                                 
-                                <input type="text" id="answer-input" class="form-control text-center mt-4 mx-auto" 
+                                <input type="text" id="answer-input" class="form-control text-center mt-4 mx-auto ${allDone ? 'd-none' : ''}" 
                                        style="max-width: 80%; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);" 
                                        autocomplete="off" autocorrect="off" spellcheck="false" 
                                        value="${typedAnswer.replace(/"/g, '&quot;')}"
                                        placeholder="Type the exact answer..." oninput="checkTyping(this.value)" onclick="event.stopPropagation()">
-                                       
-                                <div id="revealed-answer" class="d-none mt-3 ${alignClass}">
-                                    <div class="fs-3 text-white fw-bold" style="line-height: 1.4;">${formattedDef}</div>
-                                </div>
                             </div>
                         </div>
                     `;
@@ -386,10 +491,16 @@
         }
 
         window.setMode = function(newMode) {
+            if (peekTimeout) {
+                clearTimeout(peekTimeout);
+                peekTimeout = null;
+            }
             mode = newMode;
             document.getElementById('btn-mode-read').classList.toggle('active', mode === 'read');
             document.getElementById('btn-mode-review').classList.toggle('active', mode === 'review');
             isFlipped = false;
+            // Reset parsed items so they can practice again
+            cards.forEach(c => delete c._parsedItems);
             render();
         };
 
@@ -405,6 +516,10 @@
         };
 
         window.nextCard = function() {
+            if (peekTimeout) {
+                clearTimeout(peekTimeout);
+                peekTimeout = null;
+            }
             if (currentIndex < cards.length - 1) {
                 currentIndex++;
                 isFlipped = false;
@@ -418,6 +533,10 @@
         };
 
         window.prevCard = function() {
+            if (peekTimeout) {
+                clearTimeout(peekTimeout);
+                peekTimeout = null;
+            }
             if (currentIndex > 0) {
                 currentIndex--;
                 isFlipped = false;
@@ -429,82 +548,162 @@
         window.checkTyping = function(val) {
             typedAnswer = val;
             const currentCard = cards[currentIndex];
-            const correct = currentCard.definition.replace(/\s+/g, ' ').trim();
-            const correctLower = correct.toLowerCase();
-            const valLower = val.trim().toLowerCase();
             
-            // Build the visual string: show typed characters, underscores for the rest
-            const numberMarkerIndices = new Set();
-            const regex = /(?:^|\s)(\d+\.)(?=\s)/g;
-            let match;
-            while ((match = regex.exec(correct)) !== null) {
-                const start = match.index + (match[0].startsWith(' ') ? 1 : 0);
-                for (let j = 0; j < match[1].length; j++) {
-                    numberMarkerIndices.add(start + j);
-                }
+            // Update display in real-time
+            const placeholderEl = document.getElementById('placeholder-text');
+            if (placeholderEl) {
+                let activeIdx = currentItems.findIndex(item => !item.revealed);
+                placeholderEl.innerHTML = getPlaceholderHtml(currentItems, activeIdx, val);
             }
 
-            let display = '';
-            let valIndex = 0;
+            const cleanInput = val.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (cleanInput.length === 0) return;
+
+            // ── FULL PHRASE MATCH CHECK ─────────────────────────────────────
+            // We build the full correct answer without spaces/formatting
+            const correctAllClean = currentCard.definition.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const correctItemsClean = currentItems.map(item => item.cleanText).join('');
             
-            for (let i = 0; i < correct.length; i++) {
-                if (correct[i] === ' ') {
-                    if (i === 0 || correct[i-1] !== ' ') {
-                        if (correct.substring(i).match(/^\s+\d+\.\s/)) {
-                            display += '<div style="margin-top: 15px;"></div>';
-                            continue;
-                        }
+            if (cleanInput === correctAllClean || cleanInput === correctItemsClean) {
+                // Success for all items!
+                currentItems.forEach(item => item.revealed = true);
+                
+                setTimeout(() => {
+                    const inputEl = document.getElementById('answer-input');
+                    if (inputEl) {
+                        inputEl.value = '';
+                        inputEl.classList.add('d-none');
                     }
-                    display += ' &nbsp; ';
-                } else if (numberMarkerIndices.has(i)) {
-                    display += correct[i];
-                    if (valIndex < val.length && val[valIndex].toLowerCase() === correct[i].toLowerCase()) {
-                        valIndex++;
-                    }
-                } else if (valIndex < val.length) {
-                    display += val[valIndex];
-                    valIndex++;
-                } else {
-                    display += '_';
+                    typedAnswer = '';
+                }, 10);
+
+                const placeholderEl = document.getElementById('placeholder-text');
+                if (placeholderEl) {
+                    placeholderEl.innerHTML = getPlaceholderHtml(currentItems);
                 }
-            }
-            
-            document.getElementById('placeholder-text').innerHTML = display;
 
-            const cleanCorrect = correctLower.replace(/(?:^|\s)\d+\.\s/g, ' ').replace(/\s+/g, ' ').trim();
-            const cleanVal = valLower.replace(/(?:^|\s)\d+\.\s/g, ' ').replace(/\s+/g, ' ').trim();
-
-            if (valLower === correctLower || (cleanVal === cleanCorrect && cleanVal.length > 0)) {
-                // Success!
-                document.getElementById('answer-input').classList.add('d-none');
-                document.getElementById('placeholder-text').classList.add('d-none');
-                document.getElementById('revealed-answer').classList.remove('d-none');
                 const speakBtn = document.getElementById('review-speak-btn');
-                if(speakBtn) { speakBtn.classList.remove('d-none'); speakBtn.style.display = 'flex'; }
+                if (speakBtn) {
+                    speakBtn.classList.remove('d-none');
+                    speakBtn.style.display = 'flex';
+                }
                 
                 const showAnswerBtn = document.getElementById('show-answer-btn');
-                if(showAnswerBtn) showAnswerBtn.classList.add('d-none');
+                if (showAnswerBtn) showAnswerBtn.classList.add('d-none');
                 
                 const gradingMsg = document.getElementById('grading-message');
-                if(gradingMsg) gradingMsg.innerText = 'Perfect! How easy was that?';
+                if (gradingMsg) gradingMsg.innerText = 'Perfect! How easy was that?';
+                return;
+            }
+            // ─────────────────────────────────────────────────────────────────
+
+            let matchedIndex = -1;
+            for (let i = 0; i < currentItems.length; i++) {
+                if (!currentItems[i].revealed) {
+                    let cleanText = currentItems[i].text.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    let cleanTextWithNumber = (currentItems[i].number + currentItems[i].text).toLowerCase().replace(/[^a-z0-9]/g, '');
+                    
+                    if (cleanInput === cleanText || cleanInput === cleanTextWithNumber) {
+                        matchedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (matchedIndex !== -1) {
+                // Mark as revealed
+                currentItems[matchedIndex].revealed = true;
+                
+                // Clear input with setTimeout to override browser default keystroke cycle
+                setTimeout(() => {
+                    const inputEl = document.getElementById('answer-input');
+                    if (inputEl) {
+                        inputEl.value = '';
+                        inputEl.focus();
+                    }
+                    typedAnswer = '';
+                }, 10);
+
+                // Update display
+                const placeholderEl = document.getElementById('placeholder-text');
+                if (placeholderEl) {
+                    let newActiveIdx = currentItems.findIndex(item => !item.revealed);
+                    placeholderEl.innerHTML = getPlaceholderHtml(currentItems, newActiveIdx, '');
+                }
+
+                // Check if all are done
+                let allDone = currentItems.every(item => item.revealed);
+                if (allDone) {
+                    setTimeout(() => {
+                        const inputEl = document.getElementById('answer-input');
+                        if (inputEl) inputEl.classList.add('d-none');
+                    }, 20);
+                    
+                    const speakBtn = document.getElementById('review-speak-btn');
+                    if (speakBtn) {
+                        speakBtn.classList.remove('d-none');
+                        speakBtn.style.display = 'flex';
+                    }
+                    
+                    const showAnswerBtn = document.getElementById('show-answer-btn');
+                    if (showAnswerBtn) showAnswerBtn.classList.add('d-none');
+                    
+                    const gradingMsg = document.getElementById('grading-message');
+                    if (gradingMsg) gradingMsg.innerText = 'Perfect! How easy was that?';
+                }
             }
         };
 
         window.revealAnswer = function() {
-            document.getElementById('answer-input').classList.add('d-none');
-            document.getElementById('placeholder-text').classList.add('d-none');
-            document.getElementById('revealed-answer').classList.remove('d-none');
-            const speakBtn = document.getElementById('review-speak-btn');
-            if(speakBtn) { speakBtn.classList.remove('d-none'); speakBtn.style.display = 'flex'; }
+            if (peekTimeout) clearTimeout(peekTimeout);
             
+            const placeholderEl = document.getElementById('placeholder-text');
             const showAnswerBtn = document.getElementById('show-answer-btn');
-            if(showAnswerBtn) showAnswerBtn.classList.add('d-none');
+            const inputEl = document.getElementById('answer-input');
             
-            const gradingMsg = document.getElementById('grading-message');
-            if(gradingMsg) gradingMsg.innerText = 'Answer Revealed. Be honest, grade yourself:';
+            if (!placeholderEl) return;
+            
+            // Build temporary fully-revealed view of all items
+            const peekItems = currentItems.map(item => ({
+                ...item,
+                revealed: true
+            }));
+            
+            // Render the fully revealed text in green
+            placeholderEl.innerHTML = getPlaceholderHtml(peekItems);
+            
+            // Temporarily disable typing during the 0.9s peek
+            if (inputEl) inputEl.disabled = true;
+            
+            if (showAnswerBtn) {
+                showAnswerBtn.disabled = true;
+                showAnswerBtn.innerText = 'Peeking...';
+            }
+            
+            peekTimeout = setTimeout(() => {
+                // Restore original state
+                let activeIdx = currentItems.findIndex(item => !item.revealed);
+                placeholderEl.innerHTML = getPlaceholderHtml(currentItems, activeIdx, typedAnswer);
+                
+                if (inputEl) {
+                    inputEl.disabled = false;
+                    inputEl.focus();
+                }
+                
+                if (showAnswerBtn) {
+                    showAnswerBtn.disabled = false;
+                    showAnswerBtn.innerText = 'Show Answer';
+                }
+                
+                peekTimeout = null;
+            }, 900); // 0.9 seconds
         };
 
         window.submitReview = function(flashcardId, quality) {
+            if (peekTimeout) {
+                clearTimeout(peekTimeout);
+                peekTimeout = null;
+            }
             if (isSubmitting) return;
             isSubmitting = true;
             render(); // Re-render to show disabled buttons

@@ -151,7 +151,7 @@
                     <div class="mb-3" style="font-size: 3.5rem; display: inline-block; animation: pulse 2s infinite ease-in-out;">🧠</div>
                     <h3 class="fw-bold mb-2" id="diagnosisModalLabel">Discover Your Learning Style</h3>
                     <p class="text-white-50 mb-4" style="line-height: 1.5; font-size: 0.95rem; opacity: 0.85;">
-                        Take a 10-question diagnosis to personalise your dashboard and get study recommendations tailored specifically to how <em>you</em> learn best. It only takes ~4 minutes.
+                        Take a 10-question diagnosis to determine your learning styles to study how <em>you</em> learn best.
                     </p>
                     <div class="d-grid gap-2">
                         <a href="{{ route('student.diagnosis.create') }}" class="btn btn-light fw-bold py-2" style="border-radius: 10px; font-size: 1rem; color: #5b21b6 !important;">
