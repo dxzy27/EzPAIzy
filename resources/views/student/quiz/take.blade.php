@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Clean formatting
         plainText = plainText.replace(/<[^>]*>?/gm, ''); // strip html
-        plainText = plainText.replace(/[\r\n]+/g, '. ').replace(/\s{2,}/g, ' ').trim();
+        plainText = plainText.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
 
         if (!plainText) return;
 

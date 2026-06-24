@@ -803,7 +803,7 @@
         // Ensure browser has cleared old utterances
         setTimeout(() => {
             let plainText = text.replace(/<[^>]*>?/gm, ''); // strip html
-            plainText = plainText.replace(/[\r\n]+/g, '. ').replace(/\s{2,}/g, ' ').trim();
+            plainText = plainText.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
             
             if (!plainText) return;
 
