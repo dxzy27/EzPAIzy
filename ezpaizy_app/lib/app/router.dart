@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../screens/login_screen.dart';
 import '../screens/dashboard_screen.dart';
@@ -109,106 +108,67 @@ class ScaffoldWithNav extends StatelessWidget {
   int _selectedIndex(BuildContext context) {
     final loc = GoRouterState.of(context).matchedLocation;
     if (loc.startsWith('/quizzes') || loc.startsWith('/quiz')) return 1;
-    if (loc.startsWith('/contents')) return 2;
-    if (loc.startsWith('/flashcards')) return 3;
-    if (loc.startsWith('/progress') || loc.startsWith('/revision')) return 4;
-    if (loc.startsWith('/learning')) return 5;
+    if (loc.startsWith('/flashcards')) return 2;
+    if (loc.startsWith('/progress') || loc.startsWith('/revision')) return 3;
+    if (loc.startsWith('/daily-quran')) return 4;
+    if (loc.startsWith('/contents') || loc.startsWith('/learning')) return 0; // fallback to home
     return 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
-    final user = auth.user;
-    
     return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex(context),
-            onDestinationSelected: (i) {
-              switch (i) {
-                case 0: context.go('/dashboard'); break;
-                case 1: context.go('/quizzes'); break;
-                case 2: context.go('/contents'); break;
-                case 3: context.go('/flashcards'); break;
-                case 4: context.go('/progress'); break;
-                case 5: context.go('/learning-profile'); break;
-              }
-            },
-            labelType: NavigationRailLabelType.all,
-            backgroundColor: Colors.white,
-            minWidth: 90,
-            leading: Column(
-              children: [
-                const SizedBox(height: 20),
-                CircleAvatar(
-                  radius: 25,
-                  backgroundColor: Colors.deepPurpleAccent,
-                  child: Text(
-                    (user?['name'] != null && (user!['name'] as String).isNotEmpty)
-                        ? user['name'][0].toUpperCase()
-                        : 'U',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  user?['name'] ?? 'Student',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-            trailing: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: IconButton(
-                  onPressed: () {
-                    auth.logout();
-                    context.go('/login');
-                  },
-                  icon: const Icon(Icons.logout, color: Colors.redAccent),
-                  tooltip: 'Sign out',
-                ),
-              ),
-            ),
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: Text('Home'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.quiz_outlined),
-                selectedIcon: Icon(Icons.quiz),
-                label: Text('Quizzes'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.menu_book_outlined),
-                selectedIcon: Icon(Icons.menu_book),
-                label: Text('Materials'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.style_outlined),
-                selectedIcon: Icon(Icons.style),
-                label: Text('Flashcards'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.bar_chart_outlined),
-                selectedIcon: Icon(Icons.bar_chart),
-                label: Text('Progress'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.assignment_ind_outlined),
-                selectedIcon: Icon(Icons.assignment_ind),
-                label: Text('Learning Style'),
-              ),
-            ],
+      body: child,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex(context),
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
+        onTap: (i) {
+          switch (i) {
+            case 0:
+              context.go('/dashboard');
+              break;
+            case 1:
+              context.go('/quizzes');
+              break;
+            case 2:
+              context.go('/flashcards');
+              break;
+            case 3:
+              context.go('/progress');
+              break;
+            case 4:
+              context.go('/daily-quran');
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
           ),
-          const VerticalDivider(thickness: 1, width: 1),
-          Expanded(child: child),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.quiz_outlined),
+            activeIcon: Icon(Icons.quiz),
+            label: 'Quizzes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.style_outlined),
+            activeIcon: Icon(Icons.style),
+            label: 'Flashcards',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            activeIcon: Icon(Icons.bar_chart),
+            label: 'Progress',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.auto_stories_outlined),
+            activeIcon: Icon(Icons.auto_stories),
+            label: 'Quran',
+          ),
         ],
       ),
     );

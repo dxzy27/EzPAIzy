@@ -15,6 +15,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
   Map<String, dynamic>? quiz;
   bool loading = true;
   bool submitted = false;
+  bool _isPending = false;
   int? result;
 
   // answers: index -> selected option key (e.g. 'a', 'b') or text for essay
@@ -52,6 +53,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
           widget.quizId, answers.map((k, v) => MapEntry(k.toString(), v)));
       setState(() {
         result = res['score'];
+        _isPending = res['status'] == 'pending';
         submitted = true;
         loading = false;
       });
@@ -227,6 +229,57 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
   }
 
   Widget _buildResult() {
+    // KBAT quiz — pending teacher grading
+    if (_isPending) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Quiz Submitted')),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.hourglass_top_rounded,
+                    size: 80, color: Colors.deepPurple),
+                const SizedBox(height: 20),
+                const Text(
+                  'Submitted for Review',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'This is a KBAT (Higher Order Thinking) quiz.\nYour teacher will review your answers and assign a grade.',
+                  style: TextStyle(fontSize: 14, color: Colors.grey, height: 1.5),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => context.go('/progress'),
+                    child: const Text('View My Progress'),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: () => context.go('/quizzes'),
+                    child: const Text('Back to Quizzes'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Normal quiz result
     final score = result ?? 0;
     final passed = score >= 70;
     return Scaffold(

@@ -3,9 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // ⚠️ CHANGE THIS to your PC's local IP address (run `ipconfig` to find it)
-  // Example: http://192.168.1.5/EzPAIzy/public/api
-  static const String baseUrl = 'http://172.20.10.8/EzPAIzy/public/api';
+  // Live server URL
+  static const String baseUrl = 'http://165.245.186.220/api';
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -153,6 +152,19 @@ class ApiService {
       return (decoded is List) ? decoded : [];
     } catch (_) {
       return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> getProgressDetail(int progressId) async {
+    try {
+      final res = await http.get(
+          Uri.parse('$baseUrl/student/progress/$progressId'),
+          headers: await _headers());
+      if (res.statusCode != 200) return {};
+      final decoded = jsonDecode(res.body);
+      return (decoded is Map<String, dynamic>) ? decoded : {};
+    } catch (_) {
+      return {};
     }
   }
 

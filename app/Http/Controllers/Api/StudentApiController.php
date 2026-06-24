@@ -450,4 +450,35 @@ class StudentApiController extends Controller
 
         return response()->json($profile);
     }
+    /**
+     * Single progress record with full details (for mobile app detail view).
+     */
+    public function progressDetail(Request $request, Progress $progress)
+    {
+        // Ensure the progress belongs to the requesting user
+        if ($progress->student_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $progress->load(['quiz.questions', 'quiz.teacher']);
+
+        return response()->json([
+            'id'              => $progress->id,
+            'score'           => $progress->score,
+            'status'          => $progress->status,
+            'student_answers' => $progress->student_answers,
+            'teacher_notes'   => $progress->teacher_notes,
+            'quiz'            => [
+                'id'         => $progress->quiz->id,
+                'title'      => $progress->quiz->title,
+                'difficulty' => $progress->quiz->difficulty,
+                'teacher'    => $progress->quiz->teacher?->only(['id', 'name']),
+                'questions'  => $progress->quiz->questions->map(fn($q) => [
+                    'question_text'  => $q->question_text,
+                    'options'        => $q->options,
+                    'correct_answer' => $q->correct_answer,
+                ]),
+            ],
+        ]);
+    }
 }
