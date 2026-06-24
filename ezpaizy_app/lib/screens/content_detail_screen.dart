@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
+import '../providers/auth_provider.dart';
+import '../widgets/study_notepad_widget.dart';
 
 class ContentDetailScreen extends StatefulWidget {
   final int contentId;
@@ -31,6 +34,9 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+    final isReadWrite = auth.user?['learning_style'] == 'read_write';
+
     return Scaffold(
       appBar: AppBar(
         title: Text(content?['title'] ?? 'Content'),
@@ -93,6 +99,16 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                           ),
                         ),
                       ),
+
+                      if (isReadWrite) ...[
+                        const SizedBox(height: 20),
+                        StudyNotepadWidget(
+                          resourceType: 'content',
+                          resourceId: widget.contentId,
+                          topic: content!['topic'] ?? 'General',
+                          defaultTitle: 'Notes: ${content!['title'] ?? ''}',
+                        ),
+                      ],
                     ],
                   ),
                 ),

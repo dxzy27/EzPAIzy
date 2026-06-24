@@ -15,6 +15,7 @@ import '../screens/revision_screen.dart';
 import '../screens/daily_quran_screen.dart';
 import '../screens/learning_style_screen.dart';
 import '../screens/learning_profile_screen.dart';
+import '../screens/notes_folder_screen.dart';
 
 class AppRouter {
   static GoRouter router(AuthProvider auth) => GoRouter(
@@ -94,6 +95,12 @@ class AppRouter {
               GoRoute(
                 path: '/learning-profile',
                 builder: (_, _) => const LearningProfileScreen(),
+              ),
+              GoRoute(
+                path: '/notes/folder/:topic',
+                builder: (_, state) => NotesFolderScreen(
+                  topic: state.pathParameters['topic']!,
+                ),
               ),
             ],
           ),

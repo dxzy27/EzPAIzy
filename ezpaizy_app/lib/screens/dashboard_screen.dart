@@ -16,6 +16,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool loading = true;
   String? error;
   bool sessionDismissed = false;
+  List<dynamic> noteFolders = [];
 
   @override
   void initState() {
@@ -30,10 +31,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     try {
       final d = await ApiService.getDashboard();
+      List<dynamic> folders = [];
+
+      final style = (d['user']?['learning_style'] ?? d['profile']?['learning_style']) as String?;
+      if (style == 'read_write') {
+        folders = await ApiService.getNoteFolders();
+      }
+
       setState(() {
         data = d;
+        noteFolders = folders;
         loading = false;
       });
+      if (d['user'] != null && mounted) {
+        Provider.of<AuthProvider>(context, listen: false).setUser(d['user']);
+      }
     } catch (e) {
       setState(() {
         error = 'Failed to load dashboard';
@@ -338,6 +350,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   children: orderedCards,
                                 ),
                           const SizedBox(height: 10),
+                          if (style == 'read_write') ...[
+                            _buildFoldersSection(accentColor),
+                          ],
 
                           // ── Bottom Panel Row/Column ──
                           width >= 800
@@ -1276,6 +1291,144 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             );
           }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFoldersSection(Color accentColor) {
+    if (noteFolders.isEmpty) {
+      return Container(
+        margin: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: const Column(
+          children: [
+            Icon(Icons.folder_open, size: 48, color: Colors.grey),
+            SizedBox(height: 10),
+            Text(
+              'My Folders is Empty',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1E293B)),
+            ),
+            SizedBox(height: 6),
+            Text(
+              'Your saved study notes will appear here grouped by topic folders.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 3,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: accentColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    '📁 My Folders (Study Notes)',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 2.2,
+            ),
+            itemCount: noteFolders.length,
+            itemBuilder: (context, index) {
+              final folderTopic = noteFolders[index].toString();
+              return InkWell(
+                onTap: () => context.go('/notes/folder/${Uri.encodeComponent(folderTopic)}'),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFAF6F6),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFF7D6867).withOpacity(0.2)),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.folder_shared, color: Color(0xFF7D6867), size: 28),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              folderTopic,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: Color(0xFF453938),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            const Text(
+                              'View Notes',
+                              style: TextStyle(fontSize: 10, color: Color(0xFF7D6867), fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

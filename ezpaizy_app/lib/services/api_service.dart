@@ -246,4 +246,77 @@ class ApiService {
       return {};
     }
   }
+
+  static Future<List<dynamic>> getNoteFolders() async {
+    try {
+      final res = await http.get(Uri.parse('$baseUrl/student/notes/folders'),
+          headers: await _headers());
+      if (res.statusCode != 200) return [];
+      final decoded = jsonDecode(res.body);
+      return (decoded is List) ? decoded : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Future<List<dynamic>> getFolderNotes(String topic) async {
+    try {
+      final res = await http.get(Uri.parse('$baseUrl/student/notes/folder/${Uri.encodeComponent(topic)}'),
+          headers: await _headers());
+      if (res.statusCode != 200) return [];
+      final decoded = jsonDecode(res.body);
+      return (decoded is List) ? decoded : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getResourceNote(String type, int id) async {
+    try {
+      final res = await http.get(Uri.parse('$baseUrl/student/notes/resource-note?resource_type=$type&resource_id=$id'),
+          headers: await _headers());
+      if (res.statusCode != 200) return null;
+      return jsonDecode(res.body);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>> saveNote({
+    required String topic,
+    required String title,
+    required String content,
+    String? resourceType,
+    int? resourceId,
+  }) async {
+    try {
+      final Map<String, dynamic> body = {
+        'topic': topic,
+        'title': title,
+        'content': content,
+      };
+      if (resourceType != null) body['resource_type'] = resourceType;
+      if (resourceId != null) body['resource_id'] = resourceId;
+
+      final res = await http.post(
+        Uri.parse('$baseUrl/student/notes/save'),
+        headers: await _headers(),
+        body: jsonEncode(body),
+      );
+      final decoded = jsonDecode(res.body);
+      return (decoded is Map<String, dynamic>) ? decoded : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  static Future<bool> deleteNote(int id) async {
+    try {
+      final res = await http.delete(Uri.parse('$baseUrl/student/notes/$id'),
+          headers: await _headers());
+      return res.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
+  }
 }

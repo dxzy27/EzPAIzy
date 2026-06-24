@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
+import '../providers/auth_provider.dart';
+import '../widgets/study_notepad_widget.dart';
 
 class FlashcardStudyScreen extends StatefulWidget {
   final int setId;
@@ -141,6 +144,9 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+    final isReadWrite = auth.user?['learning_style'] == 'read_write';
+
     if (loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -295,6 +301,15 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                   ),
                 ],
               ),
+            if (isReadWrite) ...[
+              const SizedBox(height: 24),
+              StudyNotepadWidget(
+                resourceType: 'flashcard',
+                resourceId: widget.setId,
+                topic: set!['topic'] ?? 'General',
+                defaultTitle: 'Notes: ${set!['title'] ?? ''}',
+              ),
+            ],
           ],
         ),
       ),

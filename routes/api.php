@@ -51,5 +51,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/student/diagnosis',            [StudentApiController::class, 'storeDiagnosis']);
     Route::post('/student/diagnosis/reset',      [StudentApiController::class, 'resetDiagnosis']);
     Route::get('/student/quran-mood',            [StudentApiController::class, 'quranMood']);
+
+    // Student Notes API
+    Route::get('/student/notes/folders',         [StudentApiController::class, 'getNoteFolders']);
+    Route::get('/student/notes/folder/{topic}',  [StudentApiController::class, 'getFolderNotes']);
+    Route::post('/student/notes/save',           [StudentApiController::class, 'saveNote']);
+    Route::get('/student/notes/resource-note',   [StudentApiController::class, 'getResourceNote']);
+    Route::delete('/student/notes/{note}',       [StudentApiController::class, 'deleteNote']);
 });
 

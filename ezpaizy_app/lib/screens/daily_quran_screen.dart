@@ -28,6 +28,27 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
     _load();
   }
 
+  String _getStringValue(dynamic val, {String key = 'text'}) {
+    if (val == null) return '';
+    if (val is Map) {
+      return val[key]?.toString() ?? '';
+    }
+    return val.toString();
+  }
+
+  String _getSurahValue(dynamic val) {
+    if (val == null) return '';
+    if (val is Map) {
+      final eng = val['englishName']?.toString() ?? '';
+      final name = val['name']?.toString() ?? '';
+      if (eng.isNotEmpty && name.isNotEmpty) {
+        return '$eng ($name)';
+      }
+      return eng.isNotEmpty ? eng : name;
+    }
+    return val.toString();
+  }
+
   Future<void> _load() async {
     setState(() {
       loading = true;
@@ -37,7 +58,7 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
       final res = await ApiService.getDailyQuran();
       setState(() {
         data = res;
-        _initMemorizeMode(res['arabic'] ?? '');
+        _initMemorizeMode(_getStringValue(res['arabic']));
         loading = false;
       });
     } catch (_) {
@@ -56,7 +77,7 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
       final res = await ApiService.getQuranByMood(mood);
       setState(() {
         data = res;
-        _initMemorizeMode(res['arabic'] ?? '');
+        _initMemorizeMode(_getStringValue(res['arabic']));
         loading = false;
       });
     } catch (_) {
@@ -336,7 +357,7 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
 
         // Arabic text
         Text(
-          data!['arabic'] ?? '',
+          _getStringValue(data!['arabic']),
           textAlign: TextAlign.right,
           textDirection: TextDirection.rtl,
           style: const TextStyle(
@@ -357,7 +378,7 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
             border: Border.all(color: const Color(0xFFE5E7EB)),
           ),
           child: Text(
-            data!['surah'] ?? '',
+            _getSurahValue(data!['surah']),
             style: const TextStyle(color: Color(0xFF6B7280), fontSize: 11, fontWeight: FontWeight.bold),
           ),
         ),
@@ -370,7 +391,7 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
         ),
         const SizedBox(height: 6),
         Text(
-          '"${data!['verse'] ?? ''}"',
+          '"${_getStringValue(data!['verse'])}"',
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: Color(0xFF374151),
@@ -382,14 +403,14 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
         const SizedBox(height: 24),
 
         // Malay Translation
-        if (data!['translation'] != null) ...[
+        if (_getStringValue(data!['translation']).isNotEmpty) ...[
           const Text(
             'BAHASA MELAYU',
             style: TextStyle(color: Color(0xFF9CA3AF), fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.0),
           ),
           const SizedBox(height: 6),
           Text(
-            '"${data!['translation']}"',
+            '"${_getStringValue(data!['translation'])}"',
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Color(0xFF374151),
@@ -401,10 +422,10 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
         ],
 
         // Recitation Player button
-        if (data!['audio'] != null) ...[
+        if (_getStringValue(data!['audio'], key: 'audio').isNotEmpty) ...[
           const Divider(height: 40, color: Color(0xFFE5E7EB)),
           GestureDetector(
-            onTap: () => _launchAudio(data!['audio']),
+            onTap: () => _launchAudio(_getStringValue(data!['audio'], key: 'audio')),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
@@ -499,9 +520,9 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
         const SizedBox(height: 20),
 
         // Show Malay translation below to aid memorization
-        if (data!['translation'] != null) ...[
+        if (_getStringValue(data!['translation']).isNotEmpty) ...[
           Text(
-            '"${data!['translation']}"',
+            '"${_getStringValue(data!['translation'])}"',
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Color(0xFF6B7280),

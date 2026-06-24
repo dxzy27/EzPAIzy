@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
+import '../providers/auth_provider.dart';
+import '../widgets/study_notepad_widget.dart';
 
 class TakeQuizScreen extends StatefulWidget {
   final int quizId;
@@ -88,6 +91,8 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
       );
     }
     final q = questions[currentPage];
+    final auth = context.read<AuthProvider>();
+    final isReadWrite = auth.user?['learning_style'] == 'read_write';
 
     return Scaffold(
       appBar: AppBar(
@@ -121,7 +126,20 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: _buildQuestion(q, currentPage),
+              child: Column(
+                children: [
+                  _buildQuestion(q, currentPage),
+                  if (isReadWrite) ...[
+                    const SizedBox(height: 20),
+                    StudyNotepadWidget(
+                      resourceType: 'quiz',
+                      resourceId: widget.quizId,
+                      topic: quiz!['topic'] ?? 'General',
+                      defaultTitle: 'Notes: ${quiz!['title'] ?? ''}',
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
 

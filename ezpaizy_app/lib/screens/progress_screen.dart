@@ -339,8 +339,23 @@ class _DetailSheetState extends State<_DetailSheet> {
 
   Widget _buildContent(ScrollController controller) {
     final questions = (detail!['quiz']?['questions'] as List?) ?? [];
-    final answers = detail!['student_answers'] as Map<String, dynamic>? ?? {};
-    final teacherNotes = detail!['teacher_notes'] as Map<String, dynamic>? ?? {};
+    
+    final rawAnswers = detail!['student_answers'];
+    final Map<String, dynamic> answers = {};
+    if (rawAnswers is Map) {
+      rawAnswers.forEach((k, v) => answers[k.toString()] = v);
+    } else if (rawAnswers is List) {
+      for (int i = 0; i < rawAnswers.length; i++) {
+        answers[i.toString()] = rawAnswers[i];
+      }
+    }
+
+    final rawNotes = detail!['teacher_notes'];
+    final Map<String, dynamic> teacherNotes = {};
+    if (rawNotes is Map) {
+      rawNotes.forEach((k, v) => teacherNotes[k.toString()] = v);
+    }
+
     final overallComment = teacherNotes['overall_comment'] as String?;
     final isHard = detail!['quiz']?['difficulty'] == 'hard';
 

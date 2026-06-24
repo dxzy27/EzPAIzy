@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
@@ -11,7 +12,20 @@ class AuthProvider extends ChangeNotifier {
   Future<void> loadToken() async {
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
+    final userStr = prefs.getString('user');
+    if (userStr != null) {
+      try {
+        user = jsonDecode(userStr);
+      } catch (_) {}
+    }
     notifyListeners();
+  }
+
+  Future<void> setUser(Map<String, dynamic> newUser) async {
+    user = newUser;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user', jsonEncode(newUser));
   }
 
   Future<bool> login(String email, String password) async {
@@ -26,6 +40,9 @@ class AuthProvider extends ChangeNotifier {
         user = data['user'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token!);
+        if (user != null) {
+          await prefs.setString('user', jsonEncode(user));
+        }
         isLoading = false;
         notifyListeners();
         return true;
@@ -46,6 +63,7 @@ class AuthProvider extends ChangeNotifier {
     } catch (_) {}
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
+    await prefs.remove('user');
     token = null;
     user = null;
     notifyListeners();

@@ -338,7 +338,7 @@ class StudentApiController extends Controller
      */
     public function dailyQuran()
     {
-        $dailyAyah = Cache::remember('daily_ayah_v2_' . now()->format('Y-m-d'), 60 * 24, function () {
+        $dailyAyah = Cache::remember('daily_ayah_api_v1_' . now()->format('Y-m-d'), 60 * 24, function () {
             $totalVerses = 6236;
             $ayahId      = (now()->dayOfYear + now()->year) % $totalVerses + 1;
 
@@ -827,5 +827,101 @@ class StudentApiController extends Controller
                 ]),
             ],
         ]);
+    }
+
+    /**
+     * Get unique note folders (topics) for read/write learners.
+     */
+    public function getNoteFolders(Request $request)
+    {
+        $topics = \App\Models\StudentNote::where('user_id', $request->user()->id)
+            ->select('topic')
+            ->distinct()
+            ->orderBy('topic')
+            ->pluck('topic');
+
+        return response()->json($topics);
+    }
+
+    /**
+     * Get all notes inside a specific folder/topic.
+     */
+    public function getFolderNotes(Request $request, $topic)
+    {
+        $notes = \App\Models\StudentNote::where('user_id', $request->user()->id)
+            ->where('topic', $topic)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return response()->json($notes);
+    }
+
+    /**
+     * Save/update a student note (MCQ/material notepad).
+     */
+    public function saveNote(Request $request)
+    {
+        $validated = $request->validate([
+            'topic' => 'required|string|max:100',
+            'difficulty' => 'nullable|string|max:50',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'resource_type' => 'nullable|string|max:50',
+            'resource_id' => 'nullable|integer',
+        ]);
+
+        $note = \App\Models\StudentNote::updateOrCreate(
+            [
+                'user_id' => $request->user()->id,
+                'resource_type' => $validated['resource_type'] ?? null,
+                'resource_id' => $validated['resource_id'] ?? null,
+                'topic' => $validated['topic'],
+            ],
+            [
+                'difficulty' => $validated['difficulty'] ?? null,
+                'title' => $validated['title'],
+                'content' => $validated['content'],
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Note saved successfully!',
+            'note' => $note,
+        ]);
+    }
+
+    /**
+     * Get a specific existing note by resource type and ID.
+     */
+    public function getResourceNote(Request $request)
+    {
+        $resourceType = $request->query('resource_type');
+        $resourceId = $request->query('resource_id');
+
+        if (!$resourceType || !$resourceId) {
+            return response()->json(null);
+        }
+
+        $note = \App\Models\StudentNote::where('user_id', $request->user()->id)
+            ->where('resource_type', $resourceType)
+            ->where('resource_id', $resourceId)
+            ->first();
+
+        return response()->json($note);
+    }
+
+    /**
+     * Delete a note.
+     */
+    public function deleteNote(Request $request, \App\Models\StudentNote $note)
+    {
+        if ($note->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $note->delete();
+
+        return response()->json(['success' => true]);
     }
 }
