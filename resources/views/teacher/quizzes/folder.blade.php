@@ -61,6 +61,7 @@
                         <p class="text-muted small">Created: {{ $quiz->created_at->format('M d, Y') }}</p>
                     </div>
                     <div class="card-footer bg-light">
+                        <a href="{{ route('teacher.quizzes.show', $quiz) }}" class="btn btn-sm btn-primary">View</a>
                         <a href="{{ route('teacher.quizzes.edit', $quiz) }}" class="btn btn-sm btn-warning">Edit</a>
                         <form action="{{ route('teacher.quizzes.destroy', $quiz) }}" method="POST" style="display:inline;">
                             @csrf
