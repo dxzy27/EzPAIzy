@@ -218,17 +218,17 @@
                 if (mode === 'read') {
                     backFaceHtml = `
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
+                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
                                 <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
-                                <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
                             </div>
                         </div>
-                        <div class="flashcard-content-wrapper mt-3">
+                        <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
                             <div class="flashcard-content">
                                 <div class="${alignClass}">
                                     <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
@@ -267,17 +267,17 @@
                     
                     backFaceHtml = `
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
+                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
                                 <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
-                                <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
                             </div>
                         </div>
-                        <div class="flashcard-content-wrapper mt-3">
+                        <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
                             <div class="flashcard-content">
                                 <div class="${alignClass}">
                                     <div id="placeholder-text" class="fs-4 fw-bold mt-3" style="letter-spacing: 3px; font-family: monospace; line-height: 1.4;">${answerWords}</div>
@@ -303,21 +303,21 @@
                     <span class="badge bg-primary">Reviewing Card ${currentIndex + 1} of ${cards.length}</span>
                 </div>
                 
-                <div class="flashcard-container" onclick="flipCard(event)">
+                <div class="flashcard-container">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
                         <div class="flashcard-face flashcard-front">
                             <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                                <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold">FRONT</span>
+                                <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold" onclick="flipCard(event)" style="cursor:pointer;">FRONT</span>
                                 <div class="d-flex align-items-center gap-2">
                                     @if(auth()->user()?->learning_style === 'auditory')
                                     <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].term);" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
                                         <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
-                                    <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                    <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
                                 </div>
                             </div>
-                            <div class="flashcard-content-wrapper mt-3">
+                            <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
                                 <div class="flashcard-content">
                                     <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${currentCard.term}</div>
                                 </div>
