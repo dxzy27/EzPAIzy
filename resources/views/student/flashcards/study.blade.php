@@ -748,7 +748,43 @@
 </script>
 
 @if(auth()->user()?->learning_style === 'auditory')
+<div class="modal fade" id="auditoryTipModal" tabindex="-1" aria-labelledby="auditoryTipModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 18px; border-left: 4px solid #0891b2 !important;">
+            <div class="modal-header bg-light border-0 pt-4 px-4 pb-0">
+                <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="auditoryTipModalLabel">
+                    <span style="font-size: 1.5rem;">🎵</span> AUDITORY STUDY TIP
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="mb-0 text-dark" style="font-size: 1rem; line-height: 1.6; color: #0c4a6e !important;">
+                    When practicing flashcards today, say the terms and definitions out loud. Hearing the vocabulary spoken makes it much easier for your brain to remember.
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                <button type="button" class="btn btn-primary px-4 fw-bold" style="border-radius: 10px; background-color: #0891b2; border-color: #0891b2;" data-bs-dismiss="modal">Start Practice</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function showTipModal() {
+            if (window.bootstrap && window.bootstrap.Modal) {
+                const modalEl = document.getElementById('auditoryTipModal');
+                if (modalEl) {
+                    const myModal = new window.bootstrap.Modal(modalEl);
+                    myModal.show();
+                }
+            } else {
+                setTimeout(showTipModal, 50);
+            }
+        }
+        showTipModal();
+    });
+
     const synth = window.speechSynthesis;
     let availableVoices = [];
 
