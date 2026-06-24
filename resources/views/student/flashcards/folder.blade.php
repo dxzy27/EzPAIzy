@@ -50,13 +50,12 @@
                                 </div>
                                 <div class="progress" style="height: 6px;">
                                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ $set->stats->total > 0 ? ($set->stats->mastered / $set->stats->total) * 100 : 0 }}%" title="Mastered"></div>
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $set->stats->total > 0 ? ($set->stats->review / $set->stats->total) * 100 : 0 }}%" title="Review"></div>
-                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ $set->stats->total > 0 ? ($set->stats->learning / $set->stats->total) * 100 : 0 }}%" title="Learning"></div>
+                                    <div class="progress-bar" role="progressbar" style="width: {{ $set->stats->total > 0 ? (($set->stats->learning + $set->stats->review) / $set->stats->total) * 100 : 0 }}%; background-color: #f97316;" title="Still Learning"></div>
                                 </div>
                                 <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
                                     <span class="text-secondary"><i class="bi bi-circle-fill text-secondary me-1"></i>{{ $set->stats->new }} New</span>
-                                    <span class="text-info"><i class="bi bi-circle-fill text-info me-1"></i>{{ $set->stats->learning }} Learning</span>
-                                    <span class="text-success"><i class="bi bi-circle-fill text-success me-1"></i>{{ $set->stats->mastered }} Mastered</span>
+                                    <span style="color: #f97316; font-weight: 500;"><i class="bi bi-circle-fill me-1" style="color: #f97316;"></i>{{ $set->stats->learning + $set->stats->review }} Still Learning</span>
+                                    <span class="text-success" style="font-weight: 500;"><i class="bi bi-circle-fill text-success me-1"></i>{{ $set->stats->mastered }} Mastered</span>
                                 </div>
                             </div>
                         </div>
