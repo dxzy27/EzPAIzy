@@ -560,11 +560,18 @@
 @if(!$style && !session('diag_banner_dismissed'))
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const modalEl = document.getElementById('diagnosisModal');
-        if (modalEl) {
-            const myModal = new bootstrap.Modal(modalEl);
-            myModal.show();
+        function showModal() {
+            if (window.bootstrap && window.bootstrap.Modal) {
+                const modalEl = document.getElementById('diagnosisModal');
+                if (modalEl) {
+                    const myModal = new window.bootstrap.Modal(modalEl);
+                    myModal.show();
+                }
+            } else {
+                setTimeout(showModal, 50); // Polling wait for Vite bundle to load Bootstrap
+            }
         }
+        showModal();
     });
 </script>
 @endif
