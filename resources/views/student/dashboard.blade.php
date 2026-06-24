@@ -316,7 +316,7 @@
     <div class="row">
 
         {{-- Recent Quiz Results --}}
-        <div class="col-md-6 mb-4">
+        <div class="col-md-6 mb-4 {{ $style === 'auditory' ? 'order-2' : 'order-1' }}">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Results</h5>
@@ -378,7 +378,7 @@
         </div>
 
         {{-- Adaptive Recommended Panel --}}
-        <div class="col-md-6 mb-4">
+        <div class="col-md-6 mb-4 {{ $style === 'auditory' ? 'order-1' : 'order-2' }}">
             <div class="card h-100">
                 <div class="card-header"
                      style="{{ $style && $cfg ? 'border-left: 3px solid '.$cfg['accent'].';' : '' }}">
