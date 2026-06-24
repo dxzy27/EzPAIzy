@@ -110,24 +110,7 @@
                         </button>
                     </div>
                 </div>
-                @if(auth()->user()?->learning_style === 'auditory')
-                <div class="d-flex align-items-center gap-2 mt-1"
-                     style="background:#e0f2fe;border:1.5px solid #bae6fd;border-radius:12px;padding:8px 14px;">
-                    <i class="bi bi-ear-fill" style="color:#0891b2;font-size:1rem;"></i>
-                    <span style="font-size:.82rem;font-weight:600;color:#0c4a6e;">Auto-read cards</span>
-                    <div class="form-check form-switch mb-0 ms-1">
-                        <input class="form-check-input" type="checkbox" id="tts-toggle"
-                               style="cursor:pointer;width:2.2em;height:1.1em;"
-                               checked onchange="ttsToggleChanged(this.checked)">
-                    </div>
-                    <button onclick="ttsRepeat()" title="Read again"
-                            style="background:rgba(8,145,178,.15);border:1px solid #7dd3fc;
-                                   color:#0c4a6e;border-radius:8px;padding:3px 10px;
-                                   font-size:.8rem;cursor:pointer;">
-                        <i class="bi bi-arrow-repeat"></i>
-                    </button>
-                </div>
-                @endif
+                <!-- Auto-read removed as requested -->
             </div>
         </div>
     </div>
@@ -141,13 +124,15 @@
 
 @push('scripts')
 <script>
+    let cards = [];
+    let currentIndex = 0;
+    
     document.addEventListener('DOMContentLoaded', function() {
-        const cards = {!! json_encode($dueCards) !!};
+        cards = {!! json_encode($dueCards) !!};
         const app = document.getElementById('flashcard-app');
         
         let mode = 'read';
         
-        let currentIndex = 0;
         let isFlipped = false;
         let isSubmitting = false;
         let typedAnswer = '';
@@ -234,7 +219,14 @@
                     backFaceHtml = `
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
-                            <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            <div class="d-flex align-items-center gap-2">
+                                @if(auth()->user()?->learning_style === 'auditory')
+                                <button class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary"></i>
+                                </button>
+                                @endif
+                                <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            </div>
                         </div>
                         <div class="flashcard-content-wrapper mt-3">
                             <div class="flashcard-content">
@@ -276,7 +268,14 @@
                     backFaceHtml = `
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
-                            <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            <div class="d-flex align-items-center gap-2">
+                                @if(auth()->user()?->learning_style === 'auditory')
+                                <button id="review-speak-btn" class="btn btn-sm btn-light rounded-circle d-none" style="width:30px;height:30px;padding:0;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].definition);" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary"></i>
+                                </button>
+                                @endif
+                                <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            </div>
                         </div>
                         <div class="flashcard-content-wrapper mt-3">
                             <div class="flashcard-content">
@@ -304,12 +303,19 @@
                     <span class="badge bg-primary">Reviewing Card ${currentIndex + 1} of ${cards.length}</span>
                 </div>
                 
-                <div class="flashcard-container" onclick="flipCard()">
+                <div class="flashcard-container" onclick="flipCard(event)">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
                         <div class="flashcard-face flashcard-front">
                             <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
                                 <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold">FRONT</span>
-                                <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                <div class="d-flex align-items-center gap-2">
+                                    @if(auth()->user()?->learning_style === 'auditory')
+                                    <button class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakText(cards[currentIndex].term);" title="Read Question">
+                                        <i class="bi bi-volume-up-fill text-primary"></i>
+                                    </button>
+                                    @endif
+                                    <small class="text-white-50" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                </div>
                             </div>
                             <div class="flashcard-content-wrapper mt-3">
                                 <div class="flashcard-content">
@@ -344,7 +350,12 @@
             render();
         };
 
-        window.flipCard = function() {
+        window.flipCard = function(e) {
+            if (e && e.target) {
+                if (e.target.closest('button')) return;
+                if (e.target.closest('.btn')) return;
+                if (e.target.closest('input')) return;
+            }
             if (isSubmitting) return;
             isFlipped = !isFlipped;
             render();
@@ -425,6 +436,8 @@
                 document.getElementById('answer-input').classList.add('d-none');
                 document.getElementById('placeholder-text').classList.add('d-none');
                 document.getElementById('revealed-answer').classList.remove('d-none');
+                const speakBtn = document.getElementById('review-speak-btn');
+                if(speakBtn) { speakBtn.classList.remove('d-none'); speakBtn.style.display = 'flex'; }
                 
                 document.getElementById('typing-controls').classList.add('d-none');
                 const gradingControls = document.getElementById('grading-controls');
@@ -437,6 +450,8 @@
             document.getElementById('answer-input').classList.add('d-none');
             document.getElementById('placeholder-text').classList.add('d-none');
             document.getElementById('revealed-answer').classList.remove('d-none');
+            const speakBtn = document.getElementById('review-speak-btn');
+            if(speakBtn) { speakBtn.classList.remove('d-none'); speakBtn.style.display = 'flex'; }
             
             document.getElementById('typing-controls').classList.add('d-none');
             const gradingControls = document.getElementById('grading-controls');
@@ -478,51 +493,67 @@
 
 @if(auth()->user()?->learning_style === 'auditory')
 <script>
-// ── Auditory TTS for Flashcards ────────────────────────────────────
-(function() {
     const synth = window.speechSynthesis;
-    let autoRead = true;
-    let lastTerm = '';
+    let availableVoices = [];
 
-    window.ttsToggleChanged = function(checked) {
-        autoRead = checked;
-    };
-
-    function speak(text) {
-        synth.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US';
-        u.rate = 0.95;
-        synth.speak(u);
+    // Chrome loads voices asynchronously
+    function loadVoices() {
+        availableVoices = synth.getVoices();
+    }
+    loadVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
     }
 
-    window.ttsRepeat = function() {
-        if (lastTerm) speak(lastTerm);
-    };
-
-    // Hook into the existing render / flipCard functions via MutationObserver
-    const app = document.getElementById('flashcard-app');
-    const observer = new MutationObserver(function() {
-        if (!autoRead) return;
-
-        // Check if a new card front is showing (not flipped)
-        const front = app.querySelector('.flashcard-front p');
-        const back  = app.querySelector('.flashcard-back #revealed-answer p');
-
-        if (front && front.textContent.trim() !== lastTerm) {
-            lastTerm = front.textContent.trim();
-            // Small delay so flip animation completes
-            setTimeout(() => speak(lastTerm), 400);
-        } else if (back) {
-            const def = back.textContent.trim();
-            setTimeout(() => speak(def), 300);
+    window.speakText = function(text) {
+        synth.cancel();
+        const temp = document.createElement("div");
+        temp.innerHTML = text;
+        let plainText = temp.textContent || temp.innerText || "";
+        plainText = plainText.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+        
+        // Chrome silently drops TTS requests if the text is longer than ~200-250 characters.
+        // Flashcard answers can be long, so we must chunk them by words.
+        let chunks = [];
+        if (plainText.length > 200) {
+            let words = plainText.split(' ');
+            let currentChunk = '';
+            words.forEach(word => {
+                if ((currentChunk + word).length > 180) {
+                    chunks.push(currentChunk.trim());
+                    currentChunk = word + ' ';
+                } else {
+                    currentChunk += word + ' ';
+                }
+            });
+            if (currentChunk.trim()) chunks.push(currentChunk.trim());
+        } else {
+            chunks = [plainText];
         }
-    });
 
-    if (app) observer.observe(app, { childList: true, subtree: true });
+        chunks.forEach(chunkText => {
+            if (!chunkText) return;
+            const u = new SpeechSynthesisUtterance(chunkText);
+            
+            let malayVoice = availableVoices.find(v => v.lang.includes('ms-MY') || v.lang.includes('ms_MY') || v.name.toLowerCase().includes('malay'));
+            let indoVoice = availableVoices.find(v => v.lang.includes('id-ID') || v.lang.includes('id_ID') || v.name.toLowerCase().includes('indonesia'));
 
+            if (malayVoice) {
+                u.voice = malayVoice;
+                u.lang = malayVoice.lang;
+            } else if (indoVoice) {
+                u.voice = indoVoice;
+                u.lang = indoVoice.lang;
+            } else {
+                u.lang = 'id-ID'; 
+            }
+            
+            u.rate = 0.95;
+            synth.speak(u);
+        });
+    };
+    
     window.addEventListener('beforeunload', () => synth.cancel());
-})();
 </script>
 @endif
 @endpush
