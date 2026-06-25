@@ -254,7 +254,7 @@ class StudentApiController extends Controller
         $score  = $questions->count() > 0
             ? (int) round(($correct / $questions->count()) * 100)
             : 0;
-        $status = $quiz->difficulty === 'hard' ? 'pending' : 'completed';
+        $status = ($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') ? 'pending' : 'completed';
 
         // Upsert progress
         $progress = Progress::updateOrCreate(

@@ -59,7 +59,7 @@ class ProgressController extends Controller
                 'teacher' => $qp->quiz->teacher->name ?? 'Unknown',
                 'date' => $qp->updated_at,
                 'status' => $qp->status, 
-                'score' => $qp->quiz->difficulty === 'hard' && $qp->status === 'pending' ? 'Pending' : $qp->score . '%',
+                'score' => ($qp->quiz->difficulty === 'hard' || $qp->quiz->difficulty === 'medium') && $qp->status === 'pending' ? 'Pending' : $qp->score . '%',
                 'score_num' => $qp->score,
                 'difficulty' => $qp->quiz->difficulty ?? 'easy',
                 'raw_progress' => $qp
@@ -143,7 +143,7 @@ class ProgressController extends Controller
         $totalQuizzes = $quizzesOnly->count();
         
         $gradedQuizzes = $quizzesOnly->filter(function($p) {
-            return $p->difficulty !== 'hard';
+            return $p->difficulty !== 'hard' && $p->difficulty !== 'medium';
         });
         $averageScore = $gradedQuizzes->count() > 0 ? round($gradedQuizzes->avg('score_num'), 1) : 0;
         $highestScore = $gradedQuizzes->count() > 0 ? $gradedQuizzes->max('score_num') : 0;

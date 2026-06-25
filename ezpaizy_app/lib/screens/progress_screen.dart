@@ -29,7 +29,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
   double get avgScore {
     final graded = progress
-        .where((p) => p['quiz']?['difficulty'] != 'hard' || p['status'] == 'graded')
+        .where((p) => (p['quiz']?['difficulty'] != 'hard' && p['quiz']?['difficulty'] != 'medium') || p['status'] == 'graded')
         .where((p) => (p['score'] ?? 0) > 0)
         .toList();
     if (graded.isEmpty) return 0;
@@ -53,8 +53,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
   String _statusLabel(Map<String, dynamic> p) {
     final diff = p['quiz']?['difficulty'];
     final status = p['status'];
-    if (diff == 'hard' && status == 'pending') return 'Pending Review';
-    if (diff == 'hard' && status == 'graded') return 'Graded';
+    if ((diff == 'hard' || diff == 'medium') && status == 'pending') return 'Pending Review';
+    if ((diff == 'hard' || diff == 'medium') && status == 'graded') return 'Graded';
     final score = p['score'] ?? 0;
     if (score >= 70) return 'Passed';
     if (score >= 50) return 'Average';
@@ -149,8 +149,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
                         ...progress.map((p) {
                           final score = p['score'] ?? 0;
                           final isHard = p['quiz']?['difficulty'] == 'hard';
-                          final isPending = isHard && p['status'] == 'pending';
-                          final isGraded = isHard && p['status'] == 'graded';
+                          final isMedium = p['quiz']?['difficulty'] == 'medium';
+                          final isHandGraded = isHard || isMedium;
+                          final isPending = isHandGraded && p['status'] == 'pending';
+                          final isGraded = isHandGraded && p['status'] == 'graded';
 
                           return Card(
                             margin: const EdgeInsets.only(bottom: 10),
@@ -171,7 +173,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 14),
                                             ),
-                                            if (isHard)
+                                            if (isHandGraded)
                                               Container(
                                                 margin: const EdgeInsets.only(top: 3),
                                                 padding: const EdgeInsets.symmetric(
@@ -180,8 +182,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                                   color: Colors.deepPurple.withOpacity(0.1),
                                                   borderRadius: BorderRadius.circular(4),
                                                 ),
-                                                child: const Text('KBAT',
-                                                    style: TextStyle(
+                                                child: Text(isHard ? 'KBAT' : 'Medium',
+                                                    style: const TextStyle(
                                                         fontSize: 10,
                                                         color: Colors.deepPurple,
                                                         fontWeight: FontWeight.bold)),
@@ -358,6 +360,8 @@ class _DetailSheetState extends State<_DetailSheet> {
 
     final overallComment = teacherNotes['overall_comment'] as String?;
     final isHard = detail!['quiz']?['difficulty'] == 'hard';
+    final isMedium = detail!['quiz']?['difficulty'] == 'medium';
+    final isHandGraded = isHard || isMedium;
 
     return Column(
       children: [
@@ -454,7 +458,7 @@ class _DetailSheetState extends State<_DetailSheet> {
                       '${correctAns.toString().toUpperCase()}: ${options[correctAns]}';
                 }
 
-                final isWrong = !isHard &&
+                final isWrong = !isHandGraded &&
                     studentAns != null &&
                     correctAns != null &&
                     studentAns.toString().toLowerCase() !=
@@ -503,7 +507,7 @@ class _DetailSheetState extends State<_DetailSheet> {
 
                         // Correct answer / key points
                         _answerBox(
-                          label: isHard ? 'SUGGESTED ANSWER / KEY POINTS' : 'CORRECT ANSWER',
+                          label: isHandGraded ? 'SUGGESTED ANSWER / KEY POINTS' : 'CORRECT ANSWER',
                           text: correctAnsDisplay,
                           labelColor: Colors.green.shade700,
                           bgColor: Colors.green.shade50,

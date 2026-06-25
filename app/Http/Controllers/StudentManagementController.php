@@ -100,7 +100,7 @@ class StudentManagementController extends Controller
                 'teacher' => $qp->quiz->teacher->name ?? 'Unknown',
                 'date' => $qp->updated_at,
                 'status' => $qp->status, 
-                'score' => $qp->quiz->difficulty === 'hard' && $qp->status === 'pending' ? 'Pending' : $qp->score . '%',
+                'score' => ($qp->quiz->difficulty === 'hard' || $qp->quiz->difficulty === 'medium') && $qp->status === 'pending' ? 'Pending' : $qp->score . '%',
                 'score_num' => $qp->score,
                 'difficulty' => $qp->quiz->difficulty ?? 'easy',
                 'raw_progress' => $qp

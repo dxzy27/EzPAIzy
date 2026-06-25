@@ -135,9 +135,9 @@
                                             <td class="text-muted small">{{ $p->date->format('M d, Y H:i') }}</td>
                                             <td>
                                                 @if($p->type === 'Quiz')
-                                                    @if($p->difficulty === 'hard' && $p->status === 'pending')
+                                                    @if(($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'pending')
                                                         <span class="badge bg-secondary">Not Graded Yet</span>
-                                                    @elseif($p->difficulty === 'hard' && $p->status === 'graded')
+                                                    @elseif(($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'graded')
                                                         <span class="badge bg-primary">Graded</span>
                                                     @elseif($p->score_num >= 70)
                                                         <span class="badge bg-success">Passed</span>
@@ -157,7 +157,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($p->type === 'Quiz' && $p->difficulty === 'hard' && $p->status === 'pending')
+                                                @if($p->type === 'Quiz' && ($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'pending')
                                                     <span class="text-muted italic">Pending Review</span>
                                                 @else
                                                     <strong>{{ $p->score }}</strong>
@@ -165,7 +165,7 @@
                                             </td>
                                             <td>
                                                 @if($p->type === 'Quiz')
-                                                    @if($p->difficulty === 'hard' || $p->raw_progress->student_answers)
+                                                    @if($p->difficulty === 'hard' || $p->difficulty === 'medium' || $p->raw_progress->student_answers)
                                                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ $p->id }}">
                                                             <i class="bi bi-eye"></i> Details
                                                         </button>
@@ -173,7 +173,7 @@
                                                         <!-- Feedback Modal -->
                                                         <div class="modal fade" id="feedbackModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
                                                             <div class="modal-dialog modal-lg text-start">
-                                                                @if($p->difficulty === 'hard')
+                                                                @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
                                                                 <form method="POST" action="{{ route('teacher.students.grade', $p->id) }}">
                                                                     @csrf
                                                                 @endif
@@ -263,7 +263,7 @@
                                                                         @endforeach
                                                                     </div>
                                                                     
-                                                                    @if($p->difficulty === 'hard')
+                                                                    @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
                                                                         <div class="modal-body border-top bg-light">
                                                                             <h6 class="fw-bold mb-3"><i class="bi bi-pencil-square text-primary"></i> Teacher Grading</h6>
                                                                             <div class="row g-3">
@@ -290,7 +290,7 @@
                                                                         </div>
                                                                     @endif
                                                                 </div>
-                                                                @if($p->difficulty === 'hard')
+                                                                @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
                                                                 </form>
                                                                 @endif
                                                             </div>

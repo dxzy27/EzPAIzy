@@ -327,7 +327,7 @@ class QuizController extends Controller
             'answers' => 'required|string', // JSON string
         ]);
 
-        $status = $quiz->difficulty === 'hard' ? 'pending' : 'completed';
+        $status = ($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') ? 'pending' : 'completed';
 
         Progress::updateOrCreate(
             ['student_id' => auth()->id(), 'quiz_id' => $quiz->id],
