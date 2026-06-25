@@ -35,7 +35,15 @@ class StudentController extends Controller
             return redirect()->route('student.dashboard');
         }
 
-        $quizzes  = Quiz::where('is_flagged', false)->with('teacher')->get();
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
+        $quizzes  = Quiz::where('is_flagged', false)
+            ->whereIn('teacher_id', $teacherIds)
+            ->with('teacher')
+            ->get();
         $progress = $user->progress()->with('quiz.teacher')->get();
 
         $leaderboard = [];
@@ -91,7 +99,7 @@ class StudentController extends Controller
             $leaderboard = $leaderboardData;
         }
 
-        return view('student.dashboard', compact('quizzes', 'progress', 'leaderboard'));
+        return view('student.dashboard', compact('quizzes', 'progress', 'leaderboard', 'teacherIds'));
     }
 
     /**

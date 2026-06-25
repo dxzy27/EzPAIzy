@@ -100,6 +100,11 @@ class StudentApiController extends Controller
         $profile  = LearningProfile::where('user_id', $user->id)->first();
         $style    = $user->learning_style;
 
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
         // 1. Calculate leaderboard if competitive
         $leaderboard = [];
         if ($style === 'competitive') {
@@ -153,8 +158,8 @@ class StudentApiController extends Controller
         // 2. Fetch new/recommended materials if not competitive
         $newMaterials = [];
         if ($style !== 'competitive') {
-            $recentContents   = Content::where('is_flagged', false)->latest()->take(5)->get();
-            $recentFlashcards = FlashcardSet::where('is_flagged', false)->latest()->take(5)->get();
+            $recentContents   = Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->latest()->take(5)->get();
+            $recentFlashcards = FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->latest()->take(5)->get();
 
             $mappedContents = $recentContents->map(function ($item) {
                 return [
@@ -189,8 +194,8 @@ class StudentApiController extends Controller
             'user'             => $user->only(['id', 'name', 'email', 'learning_style', 'class_name']),
             'persona'          => $profile?->persona,
             'profile'          => $profile,
-            'quiz_count'       => Quiz::where('is_flagged', false)->count(),
-            'materials_count'  => Content::where('is_flagged', false)->count() + FlashcardSet::where('is_flagged', false)->count(),
+            'quiz_count'       => Quiz::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->count(),
+            'materials_count'  => Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->count() + FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->count(),
             'completed_count'  => $progress->count(),
             'best_score'       => ($style === 'competitive' && $progress->count() > 0) ? $progress->max('score') : null,
             'recent_results'   => $progress->take(5)->values(),
@@ -204,7 +209,18 @@ class StudentApiController extends Controller
      */
     public function quizzes()
     {
-        $quizzes = Quiz::with('teacher')->withCount('questions')->latest()->get();
+        $user = auth()->user();
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
+        $quizzes = Quiz::where('is_flagged', false)
+            ->whereIn('teacher_id', $teacherIds)
+            ->with('teacher')
+            ->withCount('questions')
+            ->latest()
+            ->get();
         return response()->json($quizzes);
     }
 
@@ -263,12 +279,21 @@ class StudentApiController extends Controller
     public function contents(Request $request)
     {
         $user             = $request->user();
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
         $favoritedIds     = Favorite::where('student_id', $user->id)
             ->whereNotNull('content_id')
             ->pluck('content_id')
             ->toArray();
 
-        $contents = Content::with('teacher')->latest()->get()
+        $contents = Content::where('is_flagged', false)
+            ->whereIn('teacher_id', $teacherIds)
+            ->with('teacher')
+            ->latest()
+            ->get()
             ->map(function ($c) use ($favoritedIds) {
                 $c->is_favorited = in_array($c->id, $favoritedIds);
                 return $c;
@@ -291,12 +316,21 @@ class StudentApiController extends Controller
     public function flashcards(Request $request)
     {
         $user             = $request->user();
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
         $favoritedIds     = Favorite::where('student_id', $user->id)
             ->whereNotNull('flashcard_set_id')
             ->pluck('flashcard_set_id')
             ->toArray();
 
-        $sets = FlashcardSet::with('flashcards')->latest()->get()
+        $sets = FlashcardSet::where('is_flagged', false)
+            ->whereIn('user_id', $teacherIds)
+            ->with('flashcards')
+            ->latest()
+            ->get()
             ->map(function ($s) use ($favoritedIds) {
                 $s->is_favorited = in_array($s->id, $favoritedIds);
                 return $s;

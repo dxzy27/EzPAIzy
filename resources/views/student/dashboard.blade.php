@@ -124,15 +124,15 @@
     $cfg = $style ? $styleConfig[$style] : null;
 
     // Counts
-    $flashcardCount = \App\Models\FlashcardSet::where('is_flagged', false)->count();
-    $contentCount   = \App\Models\Content::where('is_flagged', false)->count();
+    $flashcardCount = \App\Models\FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->count();
+    $contentCount   = \App\Models\Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->count();
     $quizCount      = $quizzes->count();
     $completedCount = $user->progress()->count();
     $bestScore      = $style === 'competitive' ? $progress->max('score') : null;
 
     // Recent material lists
-    $recentContents   = \App\Models\Content::where('is_flagged', false)->latest()->take(5)->get();
-    $recentFlashcards = \App\Models\FlashcardSet::where('is_flagged', false)->latest()->take(5)->get();
+    $recentContents   = \App\Models\Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->latest()->take(5)->get();
+    $recentFlashcards = \App\Models\FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->latest()->take(5)->get();
     $recentQuizzes    = $quizzes->sortByDesc('created_at')->take(5);
 
     // Style badge data
