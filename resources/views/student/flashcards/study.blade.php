@@ -372,10 +372,10 @@
                         <h2>You're all caught up!</h2>
                         <p class="text-muted fs-5">There are no cards due for review right now. Great job!</p>
                         <div class="d-flex justify-content-center gap-3 mt-4">
-                            <a href="{{ route('student.flashcards.index') }}" class="btn btn-primary">Back to Flashcards</a>
+                            <a href="javascript:history.back()" class="btn btn-primary">Back to Flashcards</a>
                             <form action="{{ route('student.flashcards.reset', $flashcardSet->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to reset your progress for this set? All spaced repetition data will be deleted.')">
+                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to reset your progress for this set?')">
                                     <i class="bi bi-arrow-counterclockwise"></i> Reset Progress
                                 </button>
                             </form>
