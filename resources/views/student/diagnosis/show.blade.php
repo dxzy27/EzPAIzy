@@ -175,11 +175,16 @@
 
 {{-- Header --}}
 <div class="d-flex align-items-center justify-content-between mb-4">
-    <div>
-        <h4 class="mb-0 fw-bold">Your Learning Profile</h4>
-        <p class="text-muted mb-0" style="font-size:.875rem;">
-            Diagnosed on {{ $profile->updated_at->format('d M Y') }}
-        </p>
+    <div class="d-flex align-items-center gap-3">
+        <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+            <i class="bi bi-arrow-left fs-5"></i>
+        </a>
+        <div>
+            <h4 class="mb-0 fw-bold">Your Learning Profile</h4>
+            <p class="text-muted mb-0" style="font-size:.875rem;">
+                Diagnosed on {{ $profile->updated_at->format('d M Y') }}
+            </p>
+        </div>
     </div>
     <div class="d-flex align-items-center gap-2">
         <form action="{{ route('student.diagnosis.reset') }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to reset your learning style and return to the Basic UI?');">

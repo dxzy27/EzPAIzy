@@ -2,10 +2,17 @@
 
 @section('content')
 <div class="container">
-    <div class="row mb-4">
+    <div class="row mb-4 align-items-center">
         <div class="col-md-12">
-            <h1>My Progress</h1>
-            <p class="text-muted">Track your quiz scores and performance</p>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+                    <i class="bi bi-arrow-left fs-5"></i>
+                </a>
+                <div>
+                    <h1 class="h2 fw-bold text-dark mb-0">My Progress</h1>
+                    <p class="text-muted mb-0">Track your quiz scores and performance</p>
+                </div>
+            </div>
         </div>
     </div>
 

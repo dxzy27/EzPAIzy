@@ -2,12 +2,18 @@
 
 @section('content')
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1 class="h2 fw-bold text-dark">Other Materials</h1>
-            <p class="text-muted">Browse available course content and study guides</p>
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-12">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+                    <i class="bi bi-arrow-left fs-5"></i>
+                </a>
+                <div>
+                    <h1 class="h2 fw-bold text-dark mb-0">Other Materials</h1>
+                    <p class="text-muted mb-0">Browse available course content and study guides</p>
+                </div>
+            </div>
         </div>
-
     </div>
 
     <!-- Topics Folders -->

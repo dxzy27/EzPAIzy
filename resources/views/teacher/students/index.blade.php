@@ -2,18 +2,16 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 @section('content')
 <div class="container mt-5">
-    <div class="d-flex flex-column mb-4">
-        <div class="align-self-start mb-3">
-            <a href="{{ route('teacher.dashboard') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Dashboard
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ route('teacher.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+                <i class="bi bi-arrow-left fs-5"></i>
             </a>
+            <h2 class="mb-0 fw-bold">Manage Students</h2>
         </div>
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">Manage Students</h2>
-            <a href="{{ route('teacher.students.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Add New Student
-            </a>
-        </div>
+        <a href="{{ route('teacher.students.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Student
+        </a>
     </div>
 
 

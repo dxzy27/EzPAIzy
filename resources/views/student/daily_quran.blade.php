@@ -5,9 +5,14 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="d-flex justify-content-between align-items-center mb-5">
-                <div>
-                    <h1 class="display-5 fw-bold text-dark mb-0">Daily Quran</h1>
-                    <p class="text-muted lead">Your daily dose of wisdom and guidance.</p>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+                        <i class="bi bi-arrow-left fs-5"></i>
+                    </a>
+                    <div>
+                        <h1 class="h2 fw-bold text-dark mb-0">Daily Quran</h1>
+                        <p class="text-muted mb-0">Your daily dose of wisdom and guidance.</p>
+                    </div>
                 </div>
                 <div class="text-end text-muted small">
                     <i class="bi bi-calendar-event me-1"></i> {{ now()->format('l, M d, Y') }}
