@@ -5,14 +5,27 @@
 @php $isAuditory = auth()->user()?->learning_style === 'auditory'; @endphp
 
 <div class="container">
-    <div class="row mb-4">
+    <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h1>{{ $content->title }}</h1>
-            <p class="text-muted">Created: {{ $content->created_at->format('M d, Y H:i') }}</p>
+            <div class="d-flex align-items-center gap-3">
+                @if(auth()->user()->role === 'teacher')
+                    <a href="{{ route('teacher.contents.folder', $content->topic) }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
+                        <i class="bi bi-arrow-left fs-5"></i>
+                    </a>
+                @else
+                    <a href="{{ route('student.contents.folder', $content->topic) }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
+                        <i class="bi bi-arrow-left fs-5"></i>
+                    </a>
+                @endif
+                <div>
+                    <h1 class="h2 fw-bold text-dark mb-0">{{ $content->title }}</h1>
+                    <p class="text-muted mb-0">Created: {{ $content->created_at->format('M d, Y H:i') }}</p>
+                </div>
+            </div>
 
             {{-- ── Auditory Mode Badge ── --}}
             @if($isAuditory)
-            <span class="badge d-inline-flex align-items-center gap-1"
+            <span class="badge d-inline-flex align-items-center gap-1 mt-2"
                   style="background:#e0f2fe;color:#0c4a6e;font-size:.78rem;font-weight:700;border-radius:20px;padding:5px 12px;">
                 <i class="bi bi-ear-fill"></i> Auditory Mode — TTS active
             </span>
@@ -200,15 +213,6 @@
     </script>
     @endif
 
-    <div class="row mt-4">
-        <div class="col-md-12">
-            @if(auth()->user()->role === 'teacher')
-                <a href="{{ route('teacher.contents.index') }}" class="btn btn-secondary">Back to Contents</a>
-            @else
-                <a href="{{ route('student.contents.index') }}" class="btn btn-secondary">Back to Contents</a>
-            @endif
-        </div>
-    </div>
 </div>
 
 {{-- ── TTS Floating Audio Bar (Auditory students only) ── --}}
