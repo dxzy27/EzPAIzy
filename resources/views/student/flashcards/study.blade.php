@@ -74,13 +74,13 @@
     }
     
     .flashcard-front {
-        background-color: #C0E1D2 !important;
+        background-color: #DDDDDD !important;
         border: 1px solid #cbd5e1;
         transform: rotateY(0deg) translateZ(1px);
     }
     
     .flashcard-back {
-        background-color: #E5EEE4 !important; /* Light green/mint for Student Back */
+        background-color: #EDE9E6 !important; /* Lighter warm gray for Student Back */
         color: #0f172a !important; /* Dark slate text */
         transform: rotateY(180deg) translateZ(1px);
         border: 1px solid #cbd5e1;
