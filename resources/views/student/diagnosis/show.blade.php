@@ -177,7 +177,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4">
     <div class="d-flex align-items-center gap-3">
         <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
-            <i class="bi bi-arrow-left fs-5"></i>
+            <i class="bi bi-house-door fs-5"></i>
         </a>
         <div>
             <h4 class="mb-0 fw-bold">Your Learning Profile</h4>

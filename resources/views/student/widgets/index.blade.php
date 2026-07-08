@@ -3,15 +3,17 @@
 
 @section('content')
 <div class="container mt-5">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2>Customize Your Dashboard</h2>
-            <p class="text-muted">Add or remove widgets to personalize your learning experience</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
-                <i class="bi bi-arrow-left fs-5"></i>
-            </a>
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-12">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+                    <i class="bi bi-house-door fs-5"></i>
+                </a>
+                <div>
+                    <h2 class="mb-0">Customize Your Dashboard</h2>
+                    <p class="text-muted mb-0">Add or remove widgets to personalize your learning experience</p>
+                </div>
+            </div>
         </div>
     </div>
 

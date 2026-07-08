@@ -7,7 +7,7 @@
             <div class="d-flex justify-content-between align-items-center mb-5">
                 <div class="d-flex align-items-center gap-3">
                     <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
-                        <i class="bi bi-arrow-left fs-5"></i>
+                        <i class="bi bi-house-door fs-5"></i>
                     </a>
                     <div>
                         <h1 class="h2 fw-bold text-dark mb-0">Daily Quran</h1>

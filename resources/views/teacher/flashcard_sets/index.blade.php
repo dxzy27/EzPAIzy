@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center gap-3">
             <a href="{{ route('teacher.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
-                <i class="bi bi-arrow-left fs-5"></i>
+                <i class="bi bi-house-door fs-5"></i>
             </a>
             <h4 class="fw-bold mb-0">My Flashcard Sets</h4>
         </div>
