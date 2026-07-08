@@ -9,7 +9,7 @@ class Content extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['title', 'content', 'teacher_id', 'topic', 'file_path', 'file_type', 'is_flagged'];
+    protected $fillable = ['title', 'content', 'teacher_id', 'topic', 'file_path', 'file_type', 'is_flagged', 'original_filename'];
     
     
     public function teacher()

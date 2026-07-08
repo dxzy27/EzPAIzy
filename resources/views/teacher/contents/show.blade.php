@@ -65,13 +65,13 @@
                                 <div class="p-4 bg-light border rounded w-100 text-center">
                                     <div class="mb-3">
                                         <i class="bi bi-file-earmark-pdf display-4 text-danger"></i>
-                                        <h5 class="mt-2 fw-bold text-dark">{{ basename($content->file_path) }}</h5>
+                                        <h5 class="mt-2 fw-bold text-dark">{{ $content->original_filename ?? ($content->title . '.pdf') }}</h5>
                                     </div>
                                     <div class="d-flex justify-content-center gap-3">
                                         <button class="btn btn-primary d-inline-flex align-items-center gap-2" onclick="togglePdfViewer()">
                                             <i class="bi bi-book"></i> Read
                                         </button>
-                                        <a href="{{ asset('storage/' . $content->file_path) }}" class="btn btn-outline-primary d-inline-flex align-items-center gap-2" download>
+                                        <a href="{{ asset('storage/' . $content->file_path) }}" class="btn btn-outline-primary d-inline-flex align-items-center gap-2" download="{{ $content->original_filename ?? ($content->title . '.pdf') }}">
                                             <i class="bi bi-download"></i> Get PDF
                                         </a>
                                     </div>

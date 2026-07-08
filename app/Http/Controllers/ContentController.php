@@ -70,6 +70,7 @@ class ContentController extends Controller
             $path = $request->file('file')->store('contents', 'public');
             $validated['file_path'] = $path;
             $validated['file_type'] = $request->file('file')->getClientOriginalExtension();
+            $validated['original_filename'] = $request->file('file')->getClientOriginalName();
         }
 
         /** @var \App\Models\User $user */
@@ -123,6 +124,7 @@ class ContentController extends Controller
             $path = $request->file('file')->store('contents', 'public');
             $validated['file_path'] = $path;
             $validated['file_type'] = $request->file('file')->getClientOriginalExtension();
+            $validated['original_filename'] = $request->file('file')->getClientOriginalName();
         }
 
         $content->update($validated);
