@@ -70,7 +70,7 @@
                                         </a>
                                     </div>
                                     <div id="pdf-viewer-container" class="d-none mt-4 border rounded shadow-sm bg-white p-2">
-                                        <iframe src="{{ asset('storage/' . $content->file_path) }}#navpanes=0" width="100%" height="700px" style="border: none;"></iframe>
+                                        <iframe src="{{ asset('storage/' . $content->file_path) }}#toolbar=0&navpanes=0" width="100%" height="700px" style="border: none;"></iframe>
                                     </div>
                                 </div>
                                 <script>
