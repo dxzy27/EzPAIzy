@@ -220,6 +220,16 @@ class ApiService {
         headers: await _headers());
   }
 
+  static Future<void> addFlashcardFavorite(int setId) async {
+    await http.post(Uri.parse('$baseUrl/student/favorites/flashcard/$setId'),
+        headers: await _headers());
+  }
+
+  static Future<void> removeFlashcardFavorite(int setId) async {
+    await http.delete(Uri.parse('$baseUrl/student/favorites/flashcard/$setId'),
+        headers: await _headers());
+  }
+
   static Future<Map<String, dynamic>> getDailyQuran() async {
     final res = await http.get(Uri.parse('$baseUrl/student/daily-quran'),
         headers: await _headers());

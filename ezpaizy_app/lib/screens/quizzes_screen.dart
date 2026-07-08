@@ -11,7 +11,8 @@ class QuizzesScreen extends StatefulWidget {
 
 class _QuizzesScreenState extends State<QuizzesScreen> {
   List<dynamic> quizzes = [];
-  List<dynamic> filtered = [];
+  List<String> topics = [];
+  List<String> filteredTopics = [];
   bool loading = true;
   final _search = TextEditingController();
 
@@ -32,7 +33,17 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
     setState(() => loading = true);
     try {
       quizzes = await ApiService.getQuizzes();
-      filtered = quizzes;
+      // Extract unique topics
+      final Set<String> uniqueTopics = {};
+      for (var q in quizzes) {
+        if (q['topic'] != null && q['topic'].toString().trim().isNotEmpty) {
+          uniqueTopics.add(q['topic'].toString().trim());
+        } else {
+          uniqueTopics.add('General');
+        }
+      }
+      topics = uniqueTopics.toList()..sort();
+      filteredTopics = topics;
     } catch (_) {}
     setState(() => loading = false);
   }
@@ -40,147 +51,126 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
   void _filter() {
     final q = _search.text.toLowerCase();
     setState(() {
-      filtered = quizzes
-          .where((quiz) =>
-              (quiz['title'] ?? '').toLowerCase().contains(q) ||
-              (quiz['topic'] ?? '').toLowerCase().contains(q))
+      filteredTopics = topics
+          .where((topic) => topic.toLowerCase().contains(q))
           .toList();
     });
-  }
-
-  Color _diffColor(String? diff) {
-    switch (diff) {
-      case 'easy':
-        return Colors.green;
-      case 'medium':
-        return Colors.orange;
-      case 'hard':
-        return Colors.red;
-      default:
-        return Colors.blue;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Available Quizzes')),
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        title: const Text('Quizzes'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
+      ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             child: TextField(
               controller: _search,
               decoration: InputDecoration(
-                hintText: 'Search quizzes...',
-                prefixIcon: const Icon(Icons.search),
+                hintText: 'Search topics...',
+                hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+                prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: const Color(0xFFF1F5F9),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
               ),
             ),
           ),
           Expanded(
             child: loading
                 ? const Center(child: CircularProgressIndicator())
-                : filtered.isEmpty
+                : filteredTopics.isEmpty
                     ? const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.quiz, size: 64, color: Colors.grey),
+                            Icon(Icons.folder_off, size: 64, color: Color(0xFFCBD5E1)),
                             SizedBox(height: 12),
-                            Text('No quizzes found',
-                                style: TextStyle(color: Colors.grey)),
+                            Text('No topics found', style: TextStyle(color: Color(0xFF64748B))),
                           ],
                         ),
                       )
                     : RefreshIndicator(
                         onRefresh: _load,
-                        child: ListView.separated(
-                          padding: const EdgeInsets.all(12),
-                          itemCount: filtered.length,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(height: 10),
-                          itemBuilder: (_, i) {
-                            final q = filtered[i];
-                            final diff = q['difficulty'] ?? 'easy';
-                            final count = q['questions_count'] ?? 0;
-                            return Card(
-                              child: Padding(
+                        child: GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.9,
+                          ),
+                          itemCount: filteredTopics.length,
+                          itemBuilder: (context, index) {
+                            final topic = filteredTopics[index];
+                            final count = quizzes.where((q) {
+                              final t = q['topic']?.toString().trim();
+                              return t == topic || (topic == 'General' && (t == null || t.isEmpty));
+                            }).length;
+
+                            return InkWell(
+                              onTap: () => context.push('/quizzes/folder/${Uri.encodeComponent(topic)}'),
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.02),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            q['title'] ?? '',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
-                                          ),
-                                        ),
-                                        Chip(
-                                          label: Text(
-                                            diff[0].toUpperCase() +
-                                                diff.substring(1),
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 11),
-                                          ),
-                                          backgroundColor: _diffColor(diff),
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.person_outline,
-                                            size: 14, color: Colors.grey),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          q['teacher']?['name'] ?? 'Teacher',
-                                          style: const TextStyle(
-                                              fontSize: 12, color: Colors.grey),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        const Icon(Icons.help_outline,
-                                            size: 14, color: Colors.grey),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '$count question${count != 1 ? 's' : ''}',
-                                          style: const TextStyle(
-                                              fontSize: 12, color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                    if (q['topic'] != null) ...[
-                                      const SizedBox(height: 6),
-                                      Chip(
-                                        label: Text(q['topic'],
-                                            style:
-                                                const TextStyle(fontSize: 11)),
-                                        backgroundColor: Colors.blue.shade50,
-                                        padding: EdgeInsets.zero,
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFEFF6FF),
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
-                                    ],
-                                    const SizedBox(height: 12),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton.icon(
-                                        onPressed: count > 0
-                                            ? () => context.push(
-                                                '/quiz/${q['id']}')
-                                            : null,
-                                        icon: const Icon(Icons.play_arrow),
-                                        label: Text(count > 0
-                                            ? 'Take Quiz'
-                                            : 'No Questions Yet'),
+                                      child: const Icon(
+                                        Icons.folder,
+                                        size: 40,
+                                        color: Color(0xFF3B82F6),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      topic,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Color(0xFF1E293B),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '$count Quiz${count != 1 ? 'zes' : ''}',
+                                      style: const TextStyle(
+                                        color: Color(0xFF64748B),
+                                        fontSize: 12,
                                       ),
                                     ),
                                   ],

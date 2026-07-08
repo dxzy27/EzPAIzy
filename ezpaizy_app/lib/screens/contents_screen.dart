@@ -11,41 +11,62 @@ class ContentsScreen extends StatefulWidget {
 
 class _ContentsScreenState extends State<ContentsScreen> {
   List<dynamic> contents = [];
+  List<String> topics = [];
+  List<String> filteredTopics = [];
   bool loading = true;
+  final _search = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _load();
+    _search.addListener(_filter);
+  }
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
     setState(() => loading = true);
     try {
       contents = await ApiService.getContents();
+      
+      final Set<String> uniqueTopics = {};
+      for (var c in contents) {
+        if (c['topic'] != null && c['topic'].toString().trim().isNotEmpty) {
+          uniqueTopics.add(c['topic'].toString().trim());
+        } else {
+          uniqueTopics.add('General');
+        }
+      }
+      topics = uniqueTopics.toList()..sort();
+      filteredTopics = topics;
     } catch (_) {}
     setState(() => loading = false);
   }
 
-  Future<void> _toggleFavorite(Map<String, dynamic> item) async {
-    final isFav = item['is_favorited'] == true;
-    setState(() => item['is_favorited'] = !isFav);
-    try {
-      if (isFav) {
-        await ApiService.removeFavorite(item['id']);
-      } else {
-        await ApiService.addFavorite(item['id']);
-      }
-    } catch (_) {
-      setState(() => item['is_favorited'] = isFav);
-    }
+  void _filter() {
+    final q = _search.text.toLowerCase();
+    setState(() {
+      filteredTopics = topics
+          .where((topic) => topic.toLowerCase().contains(q))
+          .toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text('Learning Materials'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.star, color: Colors.amber),
@@ -54,93 +75,122 @@ class _ContentsScreenState extends State<ContentsScreen> {
           ),
         ],
       ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : contents.isEmpty
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.menu_book, size: 64, color: Colors.grey),
-                      SizedBox(height: 12),
-                      Text('No materials yet',
-                          style: TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _load,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: contents.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (_, i) {
-                      final c = contents[i];
-                      final body = (c['content'] ?? '') as String;
-                      return Card(
-                        child: Padding(
+      body: Column(
+        children: [
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: TextField(
+              controller: _search,
+              decoration: InputDecoration(
+                hintText: 'Search topics...',
+                hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+                prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
+                filled: true,
+                fillColor: const Color(0xFFF1F5F9),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              ),
+            ),
+          ),
+          Expanded(
+            child: loading
+                ? const Center(child: CircularProgressIndicator())
+                : filteredTopics.isEmpty
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.folder_off, size: 64, color: Color(0xFFCBD5E1)),
+                            SizedBox(height: 12),
+                            Text('No topics found', style: TextStyle(color: Color(0xFF64748B))),
+                          ],
+                        ),
+                      )
+                    : RefreshIndicator(
+                        onRefresh: _load,
+                        child: GridView.builder(
                           padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      c['title'] ?? '',
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.9,
+                          ),
+                          itemCount: filteredTopics.length,
+                          itemBuilder: (context, index) {
+                            final topic = filteredTopics[index];
+                            final count = contents.where((c) {
+                              final t = c['topic']?.toString().trim();
+                              return t == topic || (topic == 'General' && (t == null || t.isEmpty));
+                            }).length;
+
+                            return InkWell(
+                              onTap: () => context.push('/contents/folder/${Uri.encodeComponent(topic)}'),
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.02),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF0FDF4),
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: const Icon(
+                                        Icons.folder,
+                                        size: 40,
+                                        color: Color(0xFF22C55E),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      topic,
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Color(0xFF1E293B),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      c['is_favorited'] == true
-                                          ? Icons.star
-                                          : Icons.star_border,
-                                      color: Colors.amber,
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '$count Material${count != 1 ? 's' : ''}',
+                                      style: const TextStyle(
+                                        color: Color(0xFF64748B),
+                                        fontSize: 12,
+                                      ),
                                     ),
-                                    onPressed: () => _toggleFavorite(c),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                body.length > 120
-                                    ? '${body.substring(0, 120)}...'
-                                    : body,
-                                style: const TextStyle(
-                                    color: Colors.grey, fontSize: 13),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Icon(Icons.person_outline,
-                                      size: 13, color: Colors.grey),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    c['teacher']?['name'] ?? 'Teacher',
-                                    style: const TextStyle(
-                                        fontSize: 12, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton.icon(
-                                  onPressed: () =>
-                                      context.push('/contents/${c['id']}'),
-                                  icon: const Icon(Icons.visibility, size: 16),
-                                  label: const Text('Read Content'),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+          ),
+        ],
+      ),
     );
   }
 }
+

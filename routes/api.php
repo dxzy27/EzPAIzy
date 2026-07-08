@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/student/revision',                      [StudentApiController::class, 'revision']);
     Route::post('/student/favorites/{content}',          [StudentApiController::class, 'addFavorite']);
     Route::delete('/student/favorites/{content}',        [StudentApiController::class, 'removeFavorite']);
+    Route::post('/student/favorites/flashcard/{flashcardSet}',   [StudentApiController::class, 'addFlashcardFavorite']);
+    Route::delete('/student/favorites/flashcard/{flashcardSet}', [StudentApiController::class, 'removeFlashcardFavorite']);
 
     // Daily Quran
     Route::get('/student/daily-quran',           [StudentApiController::class, 'dailyQuran']);

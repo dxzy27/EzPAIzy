@@ -218,10 +218,56 @@ class StudentApiController extends Controller
         $quizzes = Quiz::where('is_flagged', false)
             ->whereIn('teacher_id', $teacherIds)
             ->with('teacher')
+            ->with(['progress' => function($q) use ($user) {
+                $q->where('student_id', $user->id);
+            }])
             ->withCount('questions')
             ->latest()
             ->get();
-        return response()->json($quizzes);
+
+        // Group by topic to calculate locks
+        $quizzesByTopic = $quizzes->groupBy('topic');
+
+        $result = $quizzes->map(function ($quiz) use ($quizzesByTopic) {
+            $topicQuizzes = $quizzesByTopic[$quiz->topic ?? ''] ?? collect();
+            
+            $easyQuizzes = $topicQuizzes->where('difficulty', 'easy');
+            $mediumQuizzes = $topicQuizzes->where('difficulty', 'medium');
+
+            $easyAllPassed = true;
+            if ($easyQuizzes->count() > 0) {
+                foreach ($easyQuizzes as $eq) {
+                    $prog = $eq->progress->first();
+                    if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
+                        $easyAllPassed = false;
+                        break;
+                    }
+                }
+            }
+
+            $mediumAllPassed = true;
+            if ($mediumQuizzes->count() > 0) {
+                foreach ($mediumQuizzes as $mq) {
+                    $prog = $mq->progress->first();
+                    if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
+                        $mediumAllPassed = false;
+                        break;
+                    }
+                }
+            }
+
+            $isLocked = false;
+            if ($quiz->difficulty === 'medium' && !$easyAllPassed) {
+                $isLocked = true;
+            } elseif ($quiz->difficulty === 'hard' && (!$easyAllPassed || !$mediumAllPassed)) {
+                $isLocked = true;
+            }
+
+            $quiz->is_locked = $isLocked;
+            return $quiz;
+        });
+
+        return response()->json($result);
     }
 
     /**
@@ -331,9 +377,32 @@ class StudentApiController extends Controller
             ->with('flashcards')
             ->latest()
             ->get()
-            ->map(function ($s) use ($favoritedIds) {
-                $s->is_favorited = in_array($s->id, $favoritedIds);
-                return $s;
+            ->map(function ($set) use ($user, $favoritedIds) {
+                $set->is_favorited = in_array($set->id, $favoritedIds);
+
+                $total = $set->flashcards->count();
+                $cardIds = $set->flashcards->pluck('id')->toArray();
+                
+                $progressRecords = FlashcardProgress::where('user_id', $user->id)
+                    ->whereIn('flashcard_id', $cardIds)
+                    ->get();
+                    
+                $mastered = $progressRecords->where('status', 'mastered')->count();
+                $review = $progressRecords->where('status', 'review')->count();
+                $learning = $progressRecords->where('status', 'learning')->count();
+                
+                $recordedCount = $progressRecords->count();
+                $new = $progressRecords->where('status', 'new')->count() + ($total - $recordedCount);
+                
+                $set->stats = [
+                    'total' => $total,
+                    'mastered' => $mastered,
+                    'review' => $review,
+                    'learning' => $learning,
+                    'new' => $new,
+                ];
+
+                return $set;
             });
 
         return response()->json($sets);
@@ -394,6 +463,31 @@ class StudentApiController extends Controller
     {
         Favorite::where('student_id', $request->user()->id)
             ->where('content_id', $content->id)
+            ->delete();
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Add flashcard set to favorites.
+     */
+    public function addFlashcardFavorite(Request $request, FlashcardSet $flashcardSet)
+    {
+        Favorite::firstOrCreate([
+            'student_id' => $request->user()->id,
+            'flashcard_set_id' => $flashcardSet->id,
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Remove flashcard set from favorites.
+     */
+    public function removeFlashcardFavorite(Request $request, FlashcardSet $flashcardSet)
+    {
+        Favorite::where('student_id', $request->user()->id)
+            ->where('flashcard_set_id', $flashcardSet->id)
             ->delete();
 
         return response()->json(['success' => true]);

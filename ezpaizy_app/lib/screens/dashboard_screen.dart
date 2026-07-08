@@ -86,6 +86,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
       tipIcon = '🎵';
       tipTitle = 'Auditory Study Tip';
       tipText = 'After reading any material today, close it and say aloud — in your own words — what you just learned. If you can explain it, you have truly encoded it.';
+    } else if (style == 'visual') {
+      accentColor = const Color(0xFFD946EF);
+      accentLightColor = const Color(0xFFFDF4FF);
+      accentTextColor = const Color(0xFF701A75);
+      styleLabel = 'Visual Learner';
+      tipIcon = '👁️';
+      tipTitle = 'Visual Study Tip';
+      tipText = 'Use mental pictures of postures (Rukuk, Sujud) and Wudhu sequences. Visualizing these processes is your strongest memory tool.';
+    } else if (style == 'kinesthetic') {
+      accentColor = const Color(0xFF06B6D4);
+      accentLightColor = const Color(0xFFECFEFF);
+      accentTextColor = const Color(0xFF083344);
+      styleLabel = 'Kinaesthetic Learner';
+      tipIcon = '🤸';
+      tipTitle = 'Kinaesthetic Study Tip';
+      tipText = 'Practice using swipe flashcards and timed challenges — kinaesthetic learners learn best through active, physical actions.';
     } else if (style == 'competitive') {
       accentColor = const Color(0xFFEF9086);
       accentLightColor = const Color(0xFFFEF2F2);
@@ -101,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Build the 3 stats cards
     final materialsCard = _buildStatCard(
-      isPrimary: style == 'read_write' || style == 'auditory',
+      isPrimary: style == 'read_write' || style == 'auditory' || style == 'visual' || style == 'kinesthetic',
       accentColor: accentColor,
       accentLightColor: accentLightColor,
       accentTextColor: accentTextColor,
@@ -188,7 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
 
     List<Widget> orderedCards;
-    if (style == 'read_write' || style == 'auditory') {
+    if (style == 'read_write' || style == 'auditory' || style == 'visual' || style == 'kinesthetic') {
       orderedCards = [materialsCard, quizzesCard, completedCard];
     } else {
       orderedCards = [quizzesCard, materialsCard, completedCard];
@@ -397,6 +413,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       fg = const Color(0xFF7C2D12);
       border = const Color(0xFFE5B181);
       icon = Icons.hearing;
+    } else if (style == 'visual') {
+      bg = const Color(0xFFFDF4FF);
+      fg = const Color(0xFF701A75);
+      border = const Color(0xFFD946EF);
+      icon = Icons.visibility;
+    } else if (style == 'kinesthetic') {
+      bg = const Color(0xFFECFEFF);
+      fg = const Color(0xFF083344);
+      border = const Color(0xFF06B6D4);
+      icon = Icons.sports_handball;
     } else if (style == 'competitive') {
       bg = const Color(0xFFFEF2F2);
       fg = const Color(0xFF991B1B);
@@ -869,6 +895,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       cardTitle = '✨ Recommended: Your Saved Notes & Materials';
     } else if (style == 'auditory') {
       cardTitle = '✨ Recent Listenable Materials';
+    } else if (style == 'visual') {
+      cardTitle = '✨ Visual Study Materials';
+    } else if (style == 'kinesthetic') {
+      cardTitle = '✨ Hands-On Practice Materials';
     }
 
     return Container(
@@ -890,7 +920,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
             child: Row(
               children: [
-                if (style == 'competitive' || style == 'read_write' || style == 'auditory')
+                if (style != null)
                   Container(
                     width: 3,
                     height: 18,
@@ -899,7 +929,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                if (style == 'competitive' || style == 'read_write' || style == 'auditory')
+                if (style != null)
                   const SizedBox(width: 8),
                 Expanded(
                   child: Text(

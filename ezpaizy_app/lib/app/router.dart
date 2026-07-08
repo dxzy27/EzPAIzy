@@ -4,10 +4,13 @@ import '../providers/auth_provider.dart';
 import '../screens/login_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/quizzes_screen.dart';
+import '../screens/quiz_folder_screen.dart';
 import '../screens/take_quiz_screen.dart';
 import '../screens/contents_screen.dart';
+import '../screens/content_folder_screen.dart';
 import '../screens/content_detail_screen.dart';
 import '../screens/flashcards_screen.dart';
+import '../screens/flashcard_folder_screen.dart';
 import '../screens/flashcard_practice_screen.dart';
 import '../screens/flashcard_study_screen.dart';
 import '../screens/progress_screen.dart';
@@ -51,6 +54,12 @@ class AppRouter {
                 builder: (_, _) => const QuizzesScreen(),
               ),
               GoRoute(
+                path: '/quizzes/folder/:topic',
+                builder: (_, state) => QuizFolderScreen(
+                  topic: Uri.decodeComponent(state.pathParameters['topic']!),
+                ),
+              ),
+              GoRoute(
                 path: '/quiz/:id',
                 builder: (_, state) => TakeQuizScreen(
                   quizId: int.parse(state.pathParameters['id']!),
@@ -61,6 +70,12 @@ class AppRouter {
                 builder: (_, _) => const ContentsScreen(),
               ),
               GoRoute(
+                path: '/contents/folder/:topic',
+                builder: (_, state) => ContentFolderScreen(
+                  topic: Uri.decodeComponent(state.pathParameters['topic']!),
+                ),
+              ),
+              GoRoute(
                 path: '/contents/:id',
                 builder: (_, state) => ContentDetailScreen(
                   contentId: int.parse(state.pathParameters['id']!),
@@ -69,6 +84,12 @@ class AppRouter {
               GoRoute(
                 path: '/flashcards',
                 builder: (_, _) => const FlashcardsScreen(),
+              ),
+              GoRoute(
+                path: '/flashcards/folder/:topic',
+                builder: (_, state) => FlashcardFolderScreen(
+                  topic: Uri.decodeComponent(state.pathParameters['topic']!),
+                ),
               ),
               GoRoute(
                 path: '/flashcards/:id',
