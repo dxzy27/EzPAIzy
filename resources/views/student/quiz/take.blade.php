@@ -595,4 +595,245 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 @endif
+
+@if(auth()->user()?->learning_style === 'visual')
+<style>
+    .visual-hl {
+        border-radius: 3px;
+        padding: 1px 0;
+    }
+    #visual-highlighter-toolbar button:hover {
+        transform: scale(1.15);
+        transition: transform 0.1s ease;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let toolbarEl = null;
+
+        function initHighlighter() {
+            toolbarEl = document.createElement('div');
+            toolbarEl.id = 'visual-highlighter-toolbar';
+            toolbarEl.style.position = 'absolute';
+            toolbarEl.style.display = 'none';
+            toolbarEl.style.zIndex = '99999';
+            toolbarEl.style.background = '#ffffff';
+            toolbarEl.style.border = '1px solid #dee2e6';
+            toolbarEl.style.borderRadius = '30px';
+            toolbarEl.style.padding = '6px 12px';
+            toolbarEl.style.boxShadow = '0 4px 15px rgba(0,0,0,0.15)';
+            toolbarEl.style.alignItems = 'center';
+            toolbarEl.style.gap = '8px';
+            
+            const highlights = [
+                { color: '#fef08a', name: 'Yellow' },
+                { color: '#bbf7d0', name: 'Green' },
+                { color: '#bfdbfe', name: 'Blue' },
+                { color: '#fbcfe8', name: 'Pink' }
+            ];
+            
+            const underlines = [
+                { color: '#ef4444', name: 'Red Underline' },
+                { color: '#3b82f6', name: 'Blue Underline' },
+                { color: '#10b981', name: 'Green Underline' }
+            ];
+            
+            highlights.forEach(hl => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.style.width = '20px';
+                btn.style.height = '20px';
+                btn.style.borderRadius = '50%';
+                btn.style.backgroundColor = hl.color;
+                btn.style.border = '1px solid rgba(0,0,0,0.15)';
+                btn.style.cursor = 'pointer';
+                btn.title = `Highlight ${hl.name}`;
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    highlightSelection(hl.color, false);
+                };
+                toolbarEl.appendChild(btn);
+            });
+            
+            const divider1 = document.createElement('div');
+            divider1.style.width = '1px';
+            divider1.style.height = '16px';
+            divider1.style.backgroundColor = '#dee2e6';
+            toolbarEl.appendChild(divider1);
+            
+            underlines.forEach(ul => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.style.width = '20px';
+                btn.style.height = '20px';
+                btn.style.backgroundColor = 'transparent';
+                btn.style.border = 'none';
+                btn.style.cursor = 'pointer';
+                btn.style.display = 'flex';
+                btn.style.alignItems = 'center';
+                btn.style.justifyContent = 'center';
+                btn.title = ul.name;
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    highlightSelection(ul.color, true);
+                };
+                
+                const icon = document.createElement('span');
+                icon.innerHTML = 'U';
+                icon.style.textDecoration = 'underline';
+                icon.style.fontWeight = 'bold';
+                icon.style.color = ul.color;
+                icon.style.fontSize = '12px';
+                btn.appendChild(icon);
+                
+                toolbarEl.appendChild(btn);
+            });
+
+            const divider2 = document.createElement('div');
+            divider2.style.width = '1px';
+            divider2.style.height = '16px';
+            divider2.style.backgroundColor = '#dee2e6';
+            toolbarEl.appendChild(divider2);
+            
+            const clearBtn = document.createElement('button');
+            clearBtn.type = 'button';
+            clearBtn.style.width = '20px';
+            clearBtn.style.height = '20px';
+            clearBtn.style.border = 'none';
+            clearBtn.style.background = 'transparent';
+            clearBtn.style.cursor = 'pointer';
+            clearBtn.title = 'Remove Highlights';
+            clearBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                clearSelectionHighlights();
+            };
+            clearBtn.innerHTML = '<i class="bi bi-eraser" style="font-size: 12px; color: #6c757d;"></i>';
+            toolbarEl.appendChild(clearBtn);
+            
+            document.body.appendChild(toolbarEl);
+            
+            document.addEventListener('mouseup', handleTextSelection);
+            document.addEventListener('keyup', handleTextSelection);
+            
+            document.addEventListener('mousedown', function(e) {
+                if (toolbarEl && !toolbarEl.contains(e.target)) {
+                    setTimeout(() => {
+                        const selection = window.getSelection();
+                        if (selection.isCollapsed) {
+                            hideHighlighterToolbar();
+                        }
+                    }, 150);
+                }
+            });
+        }
+
+        function highlightSelection(color, isUnderline) {
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            const range = selection.getRangeAt(0);
+            
+            if (selection.toString().trim() === '') return;
+            
+            let container = range.commonAncestorContainer;
+            if (container.nodeType === 3) container = container.parentNode;
+            
+            if (!container.closest('.question-card') && !container.closest('.option-card') && !container.closest('.quiz-container')) {
+                return;
+            }
+
+            try {
+                const span = document.createElement('span');
+                if (isUnderline) {
+                    span.style.borderBottom = `3px solid ${color}`;
+                    span.style.paddingBottom = '1px';
+                } else {
+                    span.style.backgroundColor = color;
+                }
+                span.className = 'visual-hl';
+                range.surroundContents(span);
+            } catch (e) {
+                try {
+                    const span = document.createElement('span');
+                    if (isUnderline) {
+                        span.style.borderBottom = `3px solid ${color}`;
+                        span.style.paddingBottom = '1px';
+                    } else {
+                        span.style.backgroundColor = color;
+                    }
+                    span.className = 'visual-hl';
+                    span.appendChild(range.extractContents());
+                    range.insertNode(span);
+                } catch (err) {
+                    console.error('Highlight failed:', err);
+                }
+            }
+            
+            selection.removeAllRanges();
+            hideHighlighterToolbar();
+        }
+
+        function clearSelectionHighlights() {
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            const range = selection.getRangeAt(0);
+            
+            let container = range.commonAncestorContainer;
+            if (container.nodeType === 3) container = container.parentNode;
+            
+            const parentHl = container.closest('.visual-hl');
+            if (parentHl) {
+                const parent = parentHl.parentNode;
+                while (parentHl.firstChild) {
+                    parent.insertBefore(parentHl.firstChild, parentHl);
+                }
+                parent.removeChild(parentHl);
+            }
+            
+            selection.removeAllRanges();
+            hideHighlighterToolbar();
+        }
+
+        function handleTextSelection() {
+            const selection = window.getSelection();
+            if (selection.isCollapsed || !selection.rangeCount) {
+                setTimeout(() => {
+                    if (window.getSelection().isCollapsed) {
+                        hideHighlighterToolbar();
+                    }
+                }, 100);
+                return;
+            }
+            
+            const range = selection.getRangeAt(0);
+            let container = range.commonAncestorContainer;
+            if (container.nodeType === 3) container = container.parentNode;
+            
+            if (!container.closest('.question-card') && !container.closest('.option-card') && !container.closest('.quiz-container')) {
+                hideHighlighterToolbar();
+                return;
+            }
+            
+            const rect = range.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            
+            toolbarEl.style.display = 'flex';
+            toolbarEl.style.top = `${rect.top + scrollTop - toolbarEl.offsetHeight - 10}px`;
+            toolbarEl.style.left = `${rect.left + scrollLeft + (rect.width / 2) - (toolbarEl.offsetWidth / 2)}px`;
+        }
+
+        function hideHighlighterToolbar() {
+            if (toolbarEl) {
+                toolbarEl.style.display = 'none';
+            }
+        }
+
+        initHighlighter();
+    });
+</script>
+@endif
+
 @endsection
