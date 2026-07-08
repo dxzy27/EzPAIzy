@@ -22,6 +22,20 @@
             'rgb'         => '229, 177, 129',
             'border'      => '#e5b181',
         ],
+        'visual' => [
+            'accent'      => '#06b6d4',
+            'accentLight' => '#ecfeff',
+            'accentText'  => '#0891b2',
+            'rgb'         => '6, 182, 212',
+            'border'      => '#06b6d4',
+        ],
+        'kinesthetic' => [
+            'accent'      => '#d946ef',
+            'accentLight' => '#fdf4ff',
+            'accentText'  => '#c026d3',
+            'rgb'         => '217, 70, 239',
+            'border'      => '#d946ef',
+        ],
         'competitive' => [
             'accent'      => '#EF9086',
             'accentLight' => '#fef2f2',
@@ -39,15 +53,31 @@
         'border'      => '#14b8a6',
     ];
 
-    $icons = ['read_write' => 'bi-pencil-square', 'auditory' => 'bi-ear-fill', 'competitive' => 'bi-trophy-fill'];
+    $icons = [
+        'read_write'  => 'bi-pencil-square',
+        'auditory'    => 'bi-ear-fill',
+        'visual'      => 'bi-eye-fill',
+        'kinesthetic' => 'bi-hand-index-thumb-fill',
+        'competitive' => 'bi-trophy-fill',
+    ];
     $icon = $icons[$style] ?? 'bi-person-fill';
-    $typeLabels = ['read_write' => 'Read/Write Learner', 'auditory' => 'Auditory Learner', 'competitive' => 'Competitive Learner'];
+
+    $typeLabels = [
+        'read_write'  => 'Read/Write Learner',
+        'auditory'    => 'Auditory Learner',
+        'visual'      => 'Visual Learner',
+        'kinesthetic' => 'Kinaesthetic Learner',
+        'competitive' => 'Competitive Learner',
+    ];
+
     $descriptions = [
         'read_write'  => 'You process and retain information most effectively through active textual manipulation — note-taking, acronyms, and summarizing key written details are your strongest memory anchors.',
         'auditory'    => 'You learn best through sound and verbal processing — listening, speaking, reciting, and discussing are your strongest pathways to retaining information.',
+        'visual'      => 'You absorb information best by seeing it. Diagrams, layout, formatting, and posture/Wudhu images help you construct a strong mental map of concepts.',
+        'kinesthetic' => 'You learn best by physical touch, actions, and concrete examples. Timed challenges and swiping flashcards directly engage your active memory pathways.',
         'competitive' => 'You are driven by challenge and performance — pressure, scoring, and the drive to beat your own record are the most powerful motivators for your learning.',
     ];
-    $totalScore = max(1, $profile->score_read_write + $profile->score_auditory + $profile->score_competitive);
+    $totalScore = max(1, $profile->score_read_write + $profile->score_auditory + $profile->score_visual + $profile->score_kinesthetic + $profile->score_competitive);
 @endphp
 
 @push('styles')
@@ -103,7 +133,7 @@
     .score-bar-wrap {
         display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
     }
-    .score-bar-label { font-size: .82rem; font-weight: 600; width: 100px; flex-shrink: 0; color: var(--text-main, #111827); }
+    .score-bar-label { font-size: .82rem; font-weight: 600; width: 110px; flex-shrink: 0; color: var(--text-main, #111827); }
     .score-bar-track {
         flex: 1; height: 10px; background: #f3f4f6;
         border-radius: 99px; overflow: hidden;
@@ -137,6 +167,8 @@
     /* ── Gradient classes ── */
     .grad-read_write  { background: linear-gradient(135deg, #7d6867, #9b8786); }
     .grad-auditory    { background: linear-gradient(135deg, #e5b181, #f3cca6); }
+    .grad-visual      { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+    .grad-kinesthetic { background: linear-gradient(135deg, #d946ef, #f472b6); }
     .grad-competitive { background: linear-gradient(135deg, #EF9086, #f7b2aa); }
 </style>
 @endpush
@@ -187,7 +219,7 @@
     <div class="col-md-6">
         <div class="card p-4 h-100">
             <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-line me-2 text-primary"></i>Evidence Score Breakdown</h6>
-            <p class="text-muted small mb-4">Raw weighted evidence accumulated from your 10 answers across all learning dimensions.</p>
+            <p class="text-muted small mb-4">Raw weighted evidence accumulated from your answers across all learning dimensions.</p>
 
             <div class="score-bar-wrap">
                 <span class="score-bar-label"><i class="bi bi-pencil-square me-1" style="color:#7d6867;"></i>Read/Write</span>
@@ -202,6 +234,20 @@
                     <div class="score-bar-fill" style="width:{{ round(($profile->score_auditory/$totalScore)*100) }}%;background:#e5b181;"></div>
                 </div>
                 <span class="score-bar-value">{{ $profile->score_auditory }}</span>
+            </div>
+            <div class="score-bar-wrap">
+                <span class="score-bar-label"><i class="bi bi-eye me-1" style="color:#06b6d4;"></i>Visual</span>
+                <div class="score-bar-track">
+                    <div class="score-bar-fill" style="width:{{ round(($profile->score_visual/$totalScore)*100) }}%;background:#06b6d4;"></div>
+                </div>
+                <span class="score-bar-value">{{ $profile->score_visual }}</span>
+            </div>
+            <div class="score-bar-wrap">
+                <span class="score-bar-label"><i class="bi bi-hand-index-thumb me-1" style="color:#d946ef;"></i>Kinaesthetic</span>
+                <div class="score-bar-track">
+                    <div class="score-bar-fill" style="width:{{ round(($profile->score_kinesthetic/$totalScore)*100) }}%;background:#d946ef;"></div>
+                </div>
+                <span class="score-bar-value">{{ $profile->score_kinesthetic }}</span>
             </div>
             <div class="score-bar-wrap">
                 <span class="score-bar-label"><i class="bi bi-trophy me-1" style="color:#EF9086;"></i>Competitive</span>
@@ -224,6 +270,25 @@
     </div>
 </div>
 
+{{-- Recommendations --}}
+<div class="card p-4 mb-4">
+    <h6 class="fw-bold mb-3"><i class="bi bi-lightbulb me-2 text-warning"></i>Study Recommendations For You</h6>
+    <div class="row">
+        @foreach($profile->recommendations as $rec)
+            <div class="col-12">
+                <div class="rec-card">
+                    <div class="rec-icon" style="background-color: var(--diag-accent-light); color: var(--diag-accent);">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <div class="small text-muted flex-grow-1" style="line-height:1.5;">
+                        {{ $rec }}
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
+
 {{-- CTA --}}
 <div class="card p-4 text-center" style="background:var(--diag-accent-light);border-color:{{ $cfg['border'] }};">
     <div class="fw-bold mb-1" style="color:{{ $cfg['accentText'] }};">Ready to study your way?</div>
@@ -241,12 +306,14 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['Read/Write', 'Auditory', 'Competitive'],
+            labels: ['Read/Write', 'Auditory', 'Visual', 'Kinaesthetic', 'Competitive'],
             datasets: [{
                 label: 'Your Profile',
                 data: [
                     {{ $profile->score_read_write }},
                     {{ $profile->score_auditory }},
+                    {{ $profile->score_visual }},
+                    {{ $profile->score_kinesthetic }},
                     {{ $profile->score_competitive }}
                 ],
                 fill: true,
