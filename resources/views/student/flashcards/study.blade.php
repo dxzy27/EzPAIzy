@@ -1066,8 +1066,17 @@
         speechSynthesis.onvoiceschanged = loadVoices;
     }
 
+    let lastSpokenText = null;
+
     window.speakText = function(text) {
+        if (synth.speaking && lastSpokenText === text) {
+            synth.cancel();
+            lastSpokenText = null;
+            return;
+        }
+
         synth.cancel();
+        lastSpokenText = text;
         
         // Ensure browser has cleared old utterances
         setTimeout(() => {
@@ -1110,6 +1119,13 @@
                 }
                 
                 u.rate = 0.95;
+                
+                u.onend = function() {
+                    if (!synth.speaking) {
+                        lastSpokenText = null;
+                    }
+                };
+                
                 synth.speak(u);
             });
         }, 50);
