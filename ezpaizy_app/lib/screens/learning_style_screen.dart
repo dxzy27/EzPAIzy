@@ -254,6 +254,7 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to save assessment. Please try again.')),
       );
+    }
   }
 
   void _next() {
