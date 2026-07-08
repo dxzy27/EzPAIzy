@@ -131,10 +131,11 @@ class StudentManagementController extends Controller
             $latestProgress = $progressRecords->sortByDesc('updated_at')->first();
             $date = $latestProgress ? $latestProgress->updated_at : $set->updated_at;
             
-            $percentage = $total > 0 ? round(($mastered / $total) * 100) : 0;
+            $masteredCount = $mastered + $review;
+            $percentage = $total > 0 ? round(($masteredCount / $total) * 100) : 0;
             
             $status = 'Not Started';
-            if ($mastered === $total && $total > 0) {
+            if ($masteredCount === $total && $total > 0) {
                 $status = 'Mastered';
             } elseif ($progressRecords->count() > 0) {
                 $status = 'Learning';
@@ -148,7 +149,7 @@ class StudentManagementController extends Controller
                 'teacher' => $set->user->name ?? 'Unknown',
                 'date' => $date,
                 'status' => $status,
-                'score' => $mastered . '/' . $total . ' Mastered (' . $percentage . '%)',
+                'score' => $masteredCount . '/' . $total . ' Mastered (' . $percentage . '%)',
                 'score_num' => $percentage,
                 'difficulty' => 'N/A',
                 'raw_progress' => null
