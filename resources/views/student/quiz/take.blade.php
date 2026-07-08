@@ -221,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let score = 0;
     let timerInterval = null;
     let secondsElapsed = 0;
+    let lastSpokenText = null;
 
     function isShortAnswerCorrect(studentAns, correctAns) {
         if (!studentAns || !correctAns) return false;
@@ -253,6 +254,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderQuestion(index) {
+        if (typeof synth !== 'undefined') {
+            synth.cancel();
+        }
+        lastSpokenText = null;
+
         if(index >= questions.length) {
             showResults();
             return;
@@ -527,10 +533,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.speakQuestionAndChoices = function(index) {
-        synth.cancel();
-        if (availableVoices.length === 0) {
-            availableVoices = synth.getVoices();
-        }
         const q = questions[index];
         if (!q) return;
 
@@ -548,6 +550,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clean formatting
         plainText = plainText.replace(/<[^>]*>?/gm, ''); // strip html
         plainText = plainText.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+
+        if (synth.speaking && lastSpokenText === plainText) {
+            synth.cancel();
+            lastSpokenText = null;
+            return;
+        }
+
+        synth.cancel();
+        lastSpokenText = plainText;
+
+        if (availableVoices.length === 0) {
+            availableVoices = synth.getVoices();
+        }
 
         if (!plainText) return;
 
@@ -586,6 +601,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 u.rate = 0.95;
+                
+                u.onend = function() {
+                    if (!synth.speaking) {
+                        lastSpokenText = null;
+                    }
+                };
+
                 synth.speak(u);
             });
         }, 50);
