@@ -78,7 +78,7 @@
     .diag-option {
         position: relative;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         gap: 14px;
         padding: 14px 16px;
         border: 1.5px solid var(--border, #e5e7eb);
@@ -91,6 +91,13 @@
     .diag-option:hover {
         border-color: var(--diag-accent-mid);
         background: var(--diag-accent-light);
+    }
+    .diag-option input[type="checkbox"] {
+        margin: 0;
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
     }
     .diag-option input[type="radio"] {
         position: absolute;
@@ -128,7 +135,7 @@
         font-size: .93rem;
         color: var(--text-main, #111827);
         line-height: 1.45;
-        padding-top: 4px;
+        padding-top: 0;
     }
 
     /* ── Nav Buttons ── */
