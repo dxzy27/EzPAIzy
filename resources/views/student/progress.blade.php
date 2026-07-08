@@ -388,14 +388,27 @@
     @else
         <div class="alert alert-info" role="alert">
             <h4 class="alert-heading">No Progress Yet</h4>
-            <p>You haven't completed any quizzes yet. <a href="{{ route('student.quizzes') }}" class="alert-link">Start taking quizzes</a> to see your progress here.</p>
+            @if($selectedType === 'flashcards')
+                <p>You haven't completed any flashcards yet. <a href="{{ route('student.flashcards.index') }}" class="alert-link">Start studying flashcards</a> to see your progress here.</p>
+            @elseif($selectedType === 'quiz')
+                <p>You haven't completed any quizzes yet. <a href="{{ route('student.quizzes') }}" class="alert-link">Start taking quizzes</a> to see your progress here.</p>
+            @else
+                <p>You haven't completed any quizzes or flashcards yet. <a href="{{ route('student.quizzes') }}" class="alert-link">Start taking quizzes</a> or <a href="{{ route('student.flashcards.index') }}" class="alert-link">studying flashcards</a> to see your progress here.</p>
+            @endif
         </div>
     @endif
 
     <div class="row mt-4">
         <div class="col-md-12">
             <a href="{{ route('student.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-            <a href="{{ route('student.quizzes') }}" class="btn btn-primary">Take More Quizzes</a>
+            @if($selectedType === 'flashcards')
+                <a href="{{ route('student.flashcards.index') }}" class="btn btn-primary">Study More Flashcards</a>
+            @elseif($selectedType === 'quiz')
+                <a href="{{ route('student.quizzes') }}" class="btn btn-primary">Take More Quizzes</a>
+            @else
+                <a href="{{ route('student.quizzes') }}" class="btn btn-primary">Take More Quizzes</a>
+                <a href="{{ route('student.flashcards.index') }}" class="btn btn-outline-primary ms-2">Study More Flashcards</a>
+            @endif
         </div>
     </div>
 </div>
