@@ -1083,14 +1083,37 @@
             let plainText = text.replace(/<[^>]*>?/gm, ''); // strip html
             if (!plainText.trim()) return;
 
-            // Split by newlines first
-            let lines = plainText.split(/[\r\n]+/);
-            let safeChunks = [];
+            // Split by newlines and merge non-list lines to prevent random pauses on line wraps
+            let rawLines = plainText.split(/[\r\n]+/);
+            let lines = [];
+            let currentLine = "";
 
-            lines.forEach(line => {
+            rawLines.forEach(line => {
                 line = line.trim();
                 if (!line) return;
 
+                // If line starts with a list number (e.g. "1.") or a bullet (e.g. "-", "*"), it's a new list item chunk
+                if (/^(\d+\.|\-|\*)/.test(line)) {
+                    if (currentLine) {
+                        lines.push(currentLine);
+                    }
+                    currentLine = line;
+                } else {
+                    // Otherwise, merge with current line
+                    if (currentLine) {
+                        currentLine += " " + line;
+                    } else {
+                        currentLine = line;
+                    }
+                }
+            });
+            if (currentLine) {
+                lines.push(currentLine);
+            }
+
+            let safeChunks = [];
+
+            lines.forEach(line => {
                 // Split by punctuation only if the dot is not preceded by a number
                 let parts = line.split(/(?<!\b\d)[.!?]\s+/);
 
