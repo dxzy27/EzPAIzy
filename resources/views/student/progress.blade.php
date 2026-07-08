@@ -355,6 +355,7 @@
         </div>
 
         <!-- Statistics -->
+        @if($selectedType !== 'flashcards')
         <div class="row mt-4">
             <div class="col-md-4">
                 <div class="card">
@@ -385,6 +386,7 @@
                 </div>
             </div>
         </div>
+        @endif
     @else
         <div class="alert alert-info" role="alert">
             <h4 class="alert-heading">No Progress Yet</h4>
