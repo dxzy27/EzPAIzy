@@ -190,8 +190,8 @@
 
 <div class="d-flex align-items-center justify-content-between mb-4">
     <div>
-        <h4 class="mb-0 fw-bold">Learning Style Diagnosis</h4>
-        <p class="text-muted mb-0" style="font-size:.875rem;">10 scenario-based questions · ~4 minutes</p>
+        <h4 class="mb-0 fw-bold">The VARK Questionnaire for Younger People</h4>
+        <p class="text-muted mb-0" style="font-size:.875rem;">16 scenario-based questions · ~6 minutes</p>
     </div>
     <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-x-lg me-1"></i> Skip for now
@@ -202,9 +202,9 @@
 <div class="diag-intro-banner">
     <div class="diag-intro-icon"><i class="bi bi-clipboard-pulse"></i></div>
     <div>
-        <div class="fw-bold" style="color:#4c1d95;font-size:.95rem;">How this works</div>
+        <div class="fw-bold" style="color:#4c1d95;font-size:.95rem;">How Do I Learn Best?</div>
         <div class="text-muted" style="font-size:.84rem;margin-top:3px;">
-            Answer honestly based on how you <em>actually</em> behave — not what you wish you did. Each scenario is designed to reveal patterns across multiple dimensions of your learning behaviour. There are no wrong answers.
+            Choose the answers which best explain your preference. Please click more than one if a single answer does not match your perception. Leave blank any question that does not apply.
         </div>
     </div>
 </div>
@@ -212,11 +212,11 @@
 {{-- Progress --}}
 <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="diag-step-label">Question <span id="currentStep">1</span> of 10</span>
-        <span class="diag-step-label"><span id="progressPct">10</span>% complete</span>
+        <span class="diag-step-label">Question <span id="currentStep">1</span> of 16</span>
+        <span class="diag-step-label"><span id="progressPct">6</span>% complete</span>
     </div>
     <div class="diag-progress-wrap">
-        <div class="diag-progress-bar" id="progressBar" style="width:10%;"></div>
+        <div class="diag-progress-bar" id="progressBar" style="width:6.25%;"></div>
     </div>
 </div>
 
@@ -229,29 +229,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">1</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">I am making a history of the area where I live. I would:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">I need to find the way to a shop that a friend has recommended. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q1_A">
             <input type="checkbox" name="q1[]" id="q1_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">compare historical photos of the area with what is there now.</span>
+            <span class="diag-option-text">find out where the shop is in relation to somewhere I know.</span>
         </label>
         <label class="diag-option" for="q1_B">
             <input type="checkbox" name="q1[]" id="q1_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">record stories from people talking about old times.</span>
+            <span class="diag-option-text">ask my friend to tell me the directions.</span>
         </label>
         <label class="diag-option" for="q1_C">
             <input type="checkbox" name="q1[]" id="q1_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">read articles and other information in old newspapers and documents.</span>
+            <span class="diag-option-text">write down the street directions I need to remember.</span>
         </label>
         <label class="diag-option" for="q1_D">
             <input type="checkbox" name="q1[]" id="q1_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">gather old maps and charts.</span>
+            <span class="diag-option-text">use a map.</span>
         </label>
     </div>
 
@@ -260,7 +260,7 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">2</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">A website has a video showing how to make a special graph or chart. There is a person speaking, some lists and words describing what to do and some diagrams. I would learn most from:</div>
             </div>
         </div>
@@ -291,14 +291,14 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">3</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">I want to find out more about a tour that I am going on. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q3_A">
             <input type="checkbox" name="q3[]" id="q3_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">look at details about the highlights and activities on the tour.</span>
+            <span class="diag-option-text">watch videos to see if there are things I like.</span>
         </label>
         <label class="diag-option" for="q3_B">
             <input type="checkbox" name="q3[]" id="q3_B" value="B">
@@ -322,8 +322,8 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">4</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">When choosing a career or area of study, these are important for me:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">When choosing my subjects to study, these are important for me:</div>
             </div>
         </div>
         <label class="diag-option" for="q4_A">
@@ -353,7 +353,7 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">5</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">When I am learning I:</div>
             </div>
         </div>
@@ -384,29 +384,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">6</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">I want to save more money and to decide between a range of options. I would:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">I want to suggest fund-raising options for a sports team. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q6_A">
             <input type="checkbox" name="q6[]" id="q6_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">consider examples of each option using my financial information.</span>
+            <span class="diag-option-text">focus on fund-raising options that I know will work.</span>
         </label>
         <label class="diag-option" for="q6_B">
             <input type="checkbox" name="q6[]" id="q6_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">read a print brochure that describes the options in detail.</span>
+            <span class="diag-option-text">list details about different options.</span>
         </label>
         <label class="diag-option" for="q6_C">
             <input type="checkbox" name="q6[]" id="q6_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">use graphs showing different options for different time periods.</span>
+            <span class="diag-option-text">compare graphs of different fund-raising options.</span>
         </label>
         <label class="diag-option" for="q6_D">
             <input type="checkbox" name="q6[]" id="q6_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">talk with an expert about the options.</span>
+            <span class="diag-option-text">question others who have been involved with fundraising.</span>
         </label>
     </div>
 
@@ -415,7 +415,7 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">7</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">I want to learn how to play a new board game or card game. I would:</div>
             </div>
         </div>
@@ -446,29 +446,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">8</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">I want to be sure I am doing my physiotherapy exercises correctly. I would:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">I have problem with my knee. I would prefer that the doctor:</div>
             </div>
         </div>
         <label class="diag-option" for="q8_A">
             <input type="checkbox" name="q8[]" id="q8_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">check a list of important aspects of the exercises to get right.</span>
+            <span class="diag-option-text">gave me something to read to explain what was wrong.</span>
         </label>
         <label class="diag-option" for="q8_B">
             <input type="checkbox" name="q8[]" id="q8_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">compare what I am doing with a video demonstration.</span>
+            <span class="diag-option-text">used a plastic model to show me what was wrong.</span>
         </label>
         <label class="diag-option" for="q8_C">
             <input type="checkbox" name="q8[]" id="q8_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">listen to an explanation about how the exercises should be done.</span>
+            <span class="diag-option-text">described what was wrong.</span>
         </label>
         <label class="diag-option" for="q8_D">
             <input type="checkbox" name="q8[]" id="q8_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">study diagrams illustrating the way the exercises should be done.</span>
+            <span class="diag-option-text">showed me a diagram of what was wrong.</span>
         </label>
     </div>
 
@@ -477,7 +477,7 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">9</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">I want to learn to do something new on a computer. I would:</div>
             </div>
         </div>
@@ -499,7 +499,7 @@
         <label class="diag-option" for="q9_D">
             <input type="checkbox" name="q9[]" id="q9_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">follow the diagrams in a book.</span>
+            <span class="diag-option-text">follow the diagrams in a manual or online.</span>
         </label>
     </div>
 
@@ -508,14 +508,14 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">10</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">When learning from the Internet I like:</div>
             </div>
         </div>
         <label class="diag-option" for="q10_A">
             <input type="checkbox" name="q10[]" id="q10_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">videos showing how to do things.</span>
+            <span class="diag-option-text">videos showing how to do or make things.</span>
         </label>
         <label class="diag-option" for="q10_B">
             <input type="checkbox" name="q10[]" id="q10_B" value="B">
@@ -525,12 +525,12 @@
         <label class="diag-option" for="q10_C">
             <input type="checkbox" name="q10[]" id="q10_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">detailed articles.</span>
+            <span class="diag-option-text">interesting written descriptions, lists and explanations.</span>
         </label>
         <label class="diag-option" for="q10_D">
             <input type="checkbox" name="q10[]" id="q10_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">podcasts and videos where I can listen to experts.</span>
+            <span class="diag-option-text">audio channels where I can listen to podcasts or interviews.</span>
         </label>
     </div>
 
@@ -539,29 +539,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">11</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">I want to learn about a new project. I would ask for:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">After reading a play, I need to do a project. I would prefer to:</div>
             </div>
         </div>
         <label class="diag-option" for="q11_A">
             <input type="checkbox" name="q11[]" id="q11_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">diagrams to show the project stages with charts of benefits and costs.</span>
+            <span class="diag-option-text">draw or sketch a scene from the play.</span>
         </label>
         <label class="diag-option" for="q11_B">
             <input type="checkbox" name="q11[]" id="q11_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">a written report describing the main features of the project.</span>
+            <span class="diag-option-text">write about the play.</span>
         </label>
         <label class="diag-option" for="q11_C">
             <input type="checkbox" name="q11[]" id="q11_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">an opportunity to discuss the project.</span>
+            <span class="diag-option-text">read a speech from the play.</span>
         </label>
         <label class="diag-option" for="q11_D">
             <input type="checkbox" name="q11[]" id="q11_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">examples where the project has been used successfully.</span>
+            <span class="diag-option-text">act out a scene from the play.</span>
         </label>
     </div>
 
@@ -570,14 +570,14 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">12</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">I want to learn how to take better photos. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q12_A">
             <input type="checkbox" name="q12[]" id="q12_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">ask questions and talk about the camera and its features.</span>
+            <span class="diag-option-text">ask questions and talk about how to achieve interesting effects.</span>
         </label>
         <label class="diag-option" for="q12_B">
             <input type="checkbox" name="q12[]" id="q12_B" value="B">
@@ -587,7 +587,7 @@
         <label class="diag-option" for="q12_C">
             <input type="checkbox" name="q12[]" id="q12_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">use diagrams showing the camera and what each part does.</span>
+            <span class="diag-option-text">use diagrams showing how different camera settings work.</span>
         </label>
         <label class="diag-option" for="q12_D">
             <input type="checkbox" name="q12[]" id="q12_D" value="D">
@@ -601,7 +601,7 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">13</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
                 <div class="diag-q-text">I prefer a presenter or a teacher who uses:</div>
             </div>
         </div>
@@ -632,8 +632,8 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">14</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">I have finished a competition or test and I would like some feedback:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">I have finished a competition or test and I would like some feedback. I would like to have feedback:</div>
             </div>
         </div>
         <label class="diag-option" for="q14_A">
@@ -654,7 +654,7 @@
         <label class="diag-option" for="q14_D">
             <input type="checkbox" name="q14[]" id="q14_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">using graphs showing how my performance has improved.</span>
+            <span class="diag-option-text">using graphs of my results.</span>
         </label>
     </div>
 
@@ -663,8 +663,8 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">15</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">I want to find out about some accommodation. Before visiting, I would want:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">I want to find out about a house or an apartment. Before visiting it, I would want:</div>
             </div>
         </div>
         <label class="diag-option" for="q15_A">
@@ -675,7 +675,7 @@
         <label class="diag-option" for="q15_B">
             <input type="checkbox" name="q15[]" id="q15_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">a discussion with the owner or manager.</span>
+            <span class="diag-option-text">a discussion with the owner.</span>
         </label>
         <label class="diag-option" for="q15_C">
             <input type="checkbox" name="q15[]" id="q15_C" value="C">
@@ -694,29 +694,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">16</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
-                <div class="diag-q-text">I am having trouble assembling a piece of furniture that came in parts. I would:</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">Younger VARK</span>
+                <div class="diag-q-text">I want to assemble a wooden table that came in parts (kitset). I would learn best from:</div>
             </div>
         </div>
         <label class="diag-option" for="q16_A">
             <input type="checkbox" name="q16[]" id="q16_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">go through the step-by-step diagrams again to see if I missed something.</span>
+            <span class="diag-option-text">diagrams showing each stage of the assembly.</span>
         </label>
         <label class="diag-option" for="q16_B">
             <input type="checkbox" name="q16[]" id="q16_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">ask for advice or help from someone else.</span>
+            <span class="diag-option-text">advice from someone who has done it before.</span>
         </label>
         <label class="diag-option" for="q16_C">
             <input type="checkbox" name="q16[]" id="q16_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">go through the step-by-step written instructions again to see if I missed something.</span>
+            <span class="diag-option-text">written instructions that came with the parts for the table.</span>
         </label>
         <label class="diag-option" for="q16_D">
             <input type="checkbox" name="q16[]" id="q16_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">try arranging the parts to see how they fit together.</span>
+            <span class="diag-option-text">watching a video of a person assembling a similar table.</span>
         </label>
     </div>
 
