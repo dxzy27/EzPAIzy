@@ -40,6 +40,18 @@ Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function
 Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
+    Route::get('/set-visual', function() {
+        $user = auth()->user();
+        if ($user) {
+            $user->update(['learning_style' => 'visual']);
+            \App\Models\LearningProfile::updateOrCreate(
+                ['user_id' => $user->id],
+                ['learning_style' => 'visual']
+            );
+            return 'Learning style set to visual! Go back and test the flashcards/quizzes.';
+        }
+        return 'Please log in first.';
+    })->name('set-visual');
 
     // Quizzes
     Route::get('/quizzes', [StudentController::class, 'quizzes'])->name('quizzes');
