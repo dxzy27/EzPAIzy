@@ -10,8 +10,8 @@
             <p class="text-muted">Learning materials under this folder</p>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{{ route('student.contents.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> All Folders
+            <a href="{{ route('student.contents.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="All Folders">
+                <i class="bi bi-arrow-left fs-5"></i>
             </a>
         </div>
     </div>

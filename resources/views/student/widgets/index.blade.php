@@ -9,8 +9,8 @@
             <p class="text-muted">Add or remove widgets to personalize your learning experience</p>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{{ route('student.dashboard') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+                <i class="bi bi-arrow-left fs-5"></i>
             </a>
         </div>
     </div>

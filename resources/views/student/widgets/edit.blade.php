@@ -8,8 +8,8 @@
             <p class="text-muted">{{ ucfirst(str_replace('_', ' ', $widget->widget_type)) }}</p>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{{ route('student.widgets.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+            <a href="{{ route('student.widgets.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
+                <i class="bi bi-arrow-left fs-5"></i>
             </a>
         </div>
     </div>

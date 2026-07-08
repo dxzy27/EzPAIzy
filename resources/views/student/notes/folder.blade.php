@@ -55,8 +55,8 @@
 <div class="container">
     {{-- Back button & Actions --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+            <i class="bi bi-arrow-left fs-5"></i>
         </a>
     </div>
 
