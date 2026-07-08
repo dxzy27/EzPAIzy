@@ -1081,24 +1081,30 @@
         // Ensure browser has cleared old utterances
         setTimeout(() => {
             let plainText = text.replace(/<[^>]*>?/gm, ''); // strip html
-            plainText = plainText.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
-            
-            if (!plainText) return;
+            if (!plainText.trim()) return;
 
-            // Split by punctuation using lookbehind to not lose trailing text without punctuation
-            let chunks = plainText.split(/(?<=[.!?])\s+/);
-
+            // Split by newlines first
+            let lines = plainText.split(/[\r\n]+/);
             let safeChunks = [];
-            for (let chunk of chunks) {
-                chunk = chunk.trim();
-                if (!chunk) continue;
-                if (chunk.length > 200) {
-                    let parts = chunk.match(/.{1,180}(?:\s|$)/g) || [chunk];
-                    safeChunks.push(...parts);
-                } else {
-                    safeChunks.push(chunk);
-                }
-            }
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
+                // Split by punctuation only if the dot is not preceded by a number
+                let parts = line.split(/(?<!\b\d)[.!?]\s+/);
+
+                parts.forEach(part => {
+                    part = part.trim();
+                    if (!part) return;
+                    if (part.length > 200) {
+                        let subParts = part.match(/.{1,180}(?:\s|$)/g) || [part];
+                        safeChunks.push(...subParts);
+                    } else {
+                        safeChunks.push(part);
+                    }
+                });
+            });
 
             safeChunks.forEach(chunkText => {
                 chunkText = chunkText.trim();
