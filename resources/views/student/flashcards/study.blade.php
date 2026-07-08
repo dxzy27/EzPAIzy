@@ -541,7 +541,7 @@
                         <div class="flashcard-face flashcard-front">
                             <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
                                 <div class="d-flex align-items-center gap-1">
-                                    <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold" onclick="flipCard(event)" style="cursor:pointer;">FRONT</span>
+                                    <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(92, 79, 74, 0.15); color: #5C4F4A; border: 1px solid #5C4F4A;">FRONT</span>
                                     ${getStatusBadgeHtml(currentCard.status)}
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
