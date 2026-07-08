@@ -23,13 +23,7 @@
                 </div>
             </div>
 
-            {{-- ── Auditory Mode Badge ── --}}
-            @if($isAuditory)
-            <span class="badge d-inline-flex align-items-center gap-1 mt-2"
-                  style="background:#e0f2fe;color:#0c4a6e;font-size:.78rem;font-weight:700;border-radius:20px;padding:5px 12px;">
-                <i class="bi bi-ear-fill"></i> Auditory Mode — TTS active
-            </span>
-            @endif
+
         </div>
         <div class="col-md-4 text-end">
             @if(auth()->user()->role === 'teacher')
