@@ -229,29 +229,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">1</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Memory Encoding</span>
-                <div class="diag-q-text">You just learned a new term. What helps you recall it best an hour later?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I am making a history of the area where I live. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q1_A">
-            <input type="radio" name="q1" id="q1_A" value="A">
+            <input type="checkbox" name="q1[]" id="q1_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Writing it down, summarizing it, or making a quick acronym.</span>
+            <span class="diag-option-text">compare historical photos of the area with what is there now.</span>
         </label>
         <label class="diag-option" for="q1_B">
-            <input type="radio" name="q1" id="q1_B" value="B">
+            <input type="checkbox" name="q1[]" id="q1_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Remembering how it sounded, or saying it out loud to yourself.</span>
+            <span class="diag-option-text">record stories from people talking about old times.</span>
         </label>
         <label class="diag-option" for="q1_C">
-            <input type="radio" name="q1" id="q1_C" value="C">
+            <input type="checkbox" name="q1[]" id="q1_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Visualizing a picture, diagram, or the layout of the page.</span>
+            <span class="diag-option-text">read articles and other information in old newspapers and documents.</span>
         </label>
         <label class="diag-option" for="q1_D">
-            <input type="radio" name="q1" id="q1_D" value="D">
+            <input type="checkbox" name="q1[]" id="q1_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Actively practicing with swipe flashcards or taking a test.</span>
+            <span class="diag-option-text">gather old maps and charts.</span>
         </label>
     </div>
 
@@ -260,29 +260,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">2</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Distraction Response</span>
-                <div class="diag-q-text">You lose focus while studying. What helps you get back on track?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">A website has a video showing how to make a special graph or chart. There is a person speaking, some lists and words describing what to do and some diagrams. I would learn most from:</div>
             </div>
         </div>
         <label class="diag-option" for="q2_A">
-            <input type="radio" name="q2" id="q2_A" value="A">
+            <input type="checkbox" name="q2[]" id="q2_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Writing a quick summary list or copying notes.</span>
+            <span class="diag-option-text">seeing the diagrams.</span>
         </label>
         <label class="diag-option" for="q2_B">
-            <input type="radio" name="q2" id="q2_B" value="B">
+            <input type="checkbox" name="q2[]" id="q2_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Listening to background music or speaking thoughts aloud.</span>
+            <span class="diag-option-text">listening.</span>
         </label>
         <label class="diag-option" for="q2_C">
-            <input type="radio" name="q2" id="q2_C" value="C">
+            <input type="checkbox" name="q2[]" id="q2_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Looking at color-coded notes, mind maps, or diagrams.</span>
+            <span class="diag-option-text">reading the words.</span>
         </label>
         <label class="diag-option" for="q2_D">
-            <input type="radio" name="q2" id="q2_D" value="D">
+            <input type="checkbox" name="q2[]" id="q2_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Doing a timed interactive practice quiz or moving around.</span>
+            <span class="diag-option-text">watching the actions.</span>
         </label>
     </div>
 
@@ -291,29 +291,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">3</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">New Topic Approach</span>
-                <div class="diag-q-text">How do you prefer to start learning a newly assigned topic?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to find out more about a tour that I am going on. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q3_A">
-            <input type="radio" name="q3" id="q3_A" value="A">
+            <input type="checkbox" name="q3[]" id="q3_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Reading the text carefully and taking written summary notes.</span>
+            <span class="diag-option-text">look at details about the highlights and activities on the tour.</span>
         </label>
         <label class="diag-option" for="q3_B">
-            <input type="radio" name="q3" id="q3_B" value="B">
+            <input type="checkbox" name="q3[]" id="q3_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Reading the text and explaining difficult parts out loud.</span>
+            <span class="diag-option-text">use a map and see where the places are.</span>
         </label>
         <label class="diag-option" for="q3_C">
-            <input type="radio" name="q3" id="q3_C" value="C">
+            <input type="checkbox" name="q3[]" id="q3_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Examining diagrams, flowcharts, or infographics.</span>
+            <span class="diag-option-text">read about the tour on the itinerary.</span>
         </label>
         <label class="diag-option" for="q3_D">
-            <input type="radio" name="q3" id="q3_D" value="D">
+            <input type="checkbox" name="q3[]" id="q3_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Jumping straight into interactive matching or drag-and-drop exercises.</span>
+            <span class="diag-option-text">talk with the person who planned the tour or others who are going on the tour.</span>
         </label>
     </div>
 
@@ -322,29 +322,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">4</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Exam Preparation</span>
-                <div class="diag-q-text">You have an exam in two days. What is your preparation strategy?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">When choosing a career or area of study, these are important for me:</div>
             </div>
         </div>
         <label class="diag-option" for="q4_A">
-            <input type="radio" name="q4" id="q4_A" value="A">
+            <input type="checkbox" name="q4[]" id="q4_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Writing summary sheets, acronyms, or re-writing notes.</span>
+            <span class="diag-option-text">Applying my knowledge in real situations.</span>
         </label>
         <label class="diag-option" for="q4_B">
-            <input type="radio" name="q4" id="q4_B" value="B">
+            <input type="checkbox" name="q4[]" id="q4_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Recording voice notes, discussing with friends, or explaining concepts out loud.</span>
+            <span class="diag-option-text">Communicating with others through discussion.</span>
         </label>
         <label class="diag-option" for="q4_C">
-            <input type="radio" name="q4" id="q4_C" value="C">
+            <input type="checkbox" name="q4[]" id="q4_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Reviewing color-coded diagrams, charts, and mental images.</span>
+            <span class="diag-option-text">Working with designs, maps or charts.</span>
         </label>
         <label class="diag-option" for="q4_D">
-            <input type="radio" name="q4" id="q4_D" value="D">
+            <input type="checkbox" name="q4[]" id="q4_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Repeatedly practicing with swipe flashcards and timed mock tests.</span>
+            <span class="diag-option-text">Using words well in written communications.</span>
         </label>
     </div>
 
@@ -353,29 +353,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">5</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Group Dynamics</span>
-                <div class="diag-q-text">What type of group study session is most beneficial for you?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">When I am learning I:</div>
             </div>
         </div>
         <label class="diag-option" for="q5_A">
-            <input type="radio" name="q5" id="q5_A" value="A">
+            <input type="checkbox" name="q5[]" id="q5_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Studying quietly together and comparing written notes at the end.</span>
+            <span class="diag-option-text">like to talk things through.</span>
         </label>
         <label class="diag-option" for="q5_B">
-            <input type="radio" name="q5" id="q5_B" value="B">
+            <input type="checkbox" name="q5[]" id="q5_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Discussion-focused sessions explaining concepts verbally.</span>
+            <span class="diag-option-text">see patterns in things.</span>
         </label>
         <label class="diag-option" for="q5_C">
-            <input type="radio" name="q5" id="q5_C" value="C">
+            <input type="checkbox" name="q5[]" id="q5_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Sharing and explaining mind maps, flowcharts, or slides.</span>
+            <span class="diag-option-text">use examples and applications.</span>
         </label>
         <label class="diag-option" for="q5_D">
-            <input type="radio" name="q5" id="q5_D" value="D">
+            <input type="checkbox" name="q5[]" id="q5_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Quizzing each other with flashcards or doing matching games.</span>
+            <span class="diag-option-text">read books, articles and handouts.</span>
         </label>
     </div>
 
@@ -384,29 +384,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">6</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Failure Reaction</span>
-                <div class="diag-q-text">You score poorly on a quiz you prepared for. What is your reaction?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to save more money and to decide between a range of options. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q6_A">
-            <input type="radio" name="q6" id="q6_A" value="A">
+            <input type="checkbox" name="q6[]" id="q6_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Reviewing and re-writing corrected facts in your notes.</span>
+            <span class="diag-option-text">consider examples of each option using my financial information.</span>
         </label>
         <label class="diag-option" for="q6_B">
-            <input type="radio" name="q6" id="q6_B" value="B">
+            <input type="checkbox" name="q6[]" id="q6_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Talking it over and explaining the mistakes out loud.</span>
+            <span class="diag-option-text">read a print brochure that describes the options in detail.</span>
         </label>
         <label class="diag-option" for="q6_C">
-            <input type="radio" name="q6" id="q6_C" value="C">
+            <input type="checkbox" name="q6[]" id="q6_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Drawing a diagram, table, or mind-map of the correct answer.</span>
+            <span class="diag-option-text">use graphs showing different options for different time periods.</span>
         </label>
         <label class="diag-option" for="q6_D">
-            <input type="radio" name="q6" id="q6_D" value="D">
+            <input type="checkbox" name="q6[]" id="q6_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Retaking the quiz or swiping cards immediately to try again.</span>
+            <span class="diag-option-text">talk with an expert about the options.</span>
         </label>
     </div>
 
@@ -415,29 +415,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">7</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Content Preference</span>
-                <div class="diag-q-text">Which type of study material do you prefer most?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to learn how to play a new board game or card game. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q7_A">
-            <input type="radio" name="q7" id="q7_A" value="A">
+            <input type="checkbox" name="q7[]" id="q7_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">A printed text where you can write notes and marginal definitions.</span>
+            <span class="diag-option-text">watch others play the game before joining in.</span>
         </label>
         <label class="diag-option" for="q7_B">
-            <input type="radio" name="q7" id="q7_B" value="B">
+            <input type="checkbox" name="q7[]" id="q7_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">An audio lecture, read-aloud option, or podcast.</span>
+            <span class="diag-option-text">listen to somebody explaining it and ask questions.</span>
         </label>
         <label class="diag-option" for="q7_C">
-            <input type="radio" name="q7" id="q7_C" value="C">
+            <input type="checkbox" name="q7[]" id="q7_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Infographics, video lessons, and labeled diagrams.</span>
+            <span class="diag-option-text">use the diagrams that explain the various stages, moves and strategies in the game.</span>
         </label>
         <label class="diag-option" for="q7_D">
-            <input type="radio" name="q7" id="q7_D" value="D">
+            <input type="checkbox" name="q7[]" id="q7_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Drag-and-drop games, swipe flashcards, and interactive simulations.</span>
+            <span class="diag-option-text">read the instructions.</span>
         </label>
     </div>
 
@@ -446,29 +446,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">8</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Progress Motivation</span>
-                <div class="diag-q-text">What motivates you most to keep studying?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to be sure I am doing my physiotherapy exercises correctly. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q8_A">
-            <input type="radio" name="q8" id="q8_A" value="A">
+            <input type="checkbox" name="q8[]" id="q8_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Looking through folders of your completed written summaries.</span>
+            <span class="diag-option-text">check a list of important aspects of the exercises to get right.</span>
         </label>
         <label class="diag-option" for="q8_B">
-            <input type="radio" name="q8" id="q8_B" value="B">
+            <input type="checkbox" name="q8[]" id="q8_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Hearing verbal praise or encouragement from a teacher or peer.</span>
+            <span class="diag-option-text">compare what I am doing with a video demonstration.</span>
         </label>
         <label class="diag-option" for="q8_C">
-            <input type="radio" name="q8" id="q8_C" value="C">
+            <input type="checkbox" name="q8[]" id="q8_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Seeing progress graphs, charts, and visual milestones.</span>
+            <span class="diag-option-text">listen to an explanation about how the exercises should be done.</span>
         </label>
         <label class="diag-option" for="q8_D">
-            <input type="radio" name="q8" id="q8_D" value="D">
+            <input type="checkbox" name="q8[]" id="q8_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Earning points, completing swipe streaks, or leveling up.</span>
+            <span class="diag-option-text">study diagrams illustrating the way the exercises should be done.</span>
         </label>
     </div>
 
@@ -477,29 +477,29 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">9</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Retention Strategy</span>
-                <div class="diag-q-text">You need to memorize 15 terms for a test. What is your strategy?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to learn to do something new on a computer. I would:</div>
             </div>
         </div>
         <label class="diag-option" for="q9_A">
-            <input type="radio" name="q9" id="q9_A" value="A">
+            <input type="checkbox" name="q9[]" id="q9_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Writing down the terms and definitions multiple times.</span>
+            <span class="diag-option-text">read the written instructions that came with the program.</span>
         </label>
         <label class="diag-option" for="q9_B">
-            <input type="radio" name="q9" id="q9_B" value="B">
+            <input type="checkbox" name="q9[]" id="q9_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Saying the terms and definitions out loud repeatedly.</span>
+            <span class="diag-option-text">talk with people who know about the program.</span>
         </label>
         <label class="diag-option" for="q9_C">
-            <input type="radio" name="q9" id="q9_C" value="C">
+            <input type="checkbox" name="q9[]" id="q9_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Drawing a picture or mind map linking the terms.</span>
+            <span class="diag-option-text">start using it and learn by trial and error.</span>
         </label>
         <label class="diag-option" for="q9_D">
-            <input type="radio" name="q9" id="q9_D" value="D">
+            <input type="checkbox" name="q9[]" id="q9_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Practicing active recall via rapid swiping of flashcards.</span>
+            <span class="diag-option-text">follow the diagrams in a book.</span>
         </label>
     </div>
 
@@ -508,29 +508,215 @@
         <div class="d-flex align-items-start gap-3 mb-3">
             <div class="diag-q-number">10</div>
             <div>
-                <span class="diag-dimension-badge mb-2 d-inline-block">Self-Assessment</span>
-                <div class="diag-q-text">What is your greatest learning strength?</div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">When learning from the Internet I like:</div>
             </div>
         </div>
         <label class="diag-option" for="q10_A">
-            <input type="radio" name="q10" id="q10_A" value="A">
+            <input type="checkbox" name="q10[]" id="q10_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Learning by writing summaries, lists, and notes.</span>
+            <span class="diag-option-text">videos showing how to do things.</span>
         </label>
         <label class="diag-option" for="q10_B">
-            <input type="radio" name="q10" id="q10_B" value="B">
+            <input type="checkbox" name="q10[]" id="q10_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Retaining information by explaining, discussing, or hearing it.</span>
+            <span class="diag-option-text">interesting design and visual features.</span>
         </label>
         <label class="diag-option" for="q10_C">
-            <input type="radio" name="q10" id="q10_C" value="C">
+            <input type="checkbox" name="q10[]" id="q10_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Remembering shapes, layouts, colors, and visuals.</span>
+            <span class="diag-option-text">detailed articles.</span>
         </label>
         <label class="diag-option" for="q10_D">
-            <input type="radio" name="q10" id="q10_D" value="D">
+            <input type="checkbox" name="q10[]" id="q10_D" value="D">
             <span class="diag-option-letter">D</span>
-            <span class="diag-option-text">Retaining concepts by doing, practicing, and interactive movement.</span>
+            <span class="diag-option-text">podcasts and videos where I can listen to experts.</span>
+        </label>
+    </div>
+
+    {{-- Q11 --}}
+    <div class="diag-question-block card p-4" data-question="11">
+        <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="diag-q-number">11</div>
+            <div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to learn about a new project. I would ask for:</div>
+            </div>
+        </div>
+        <label class="diag-option" for="q11_A">
+            <input type="checkbox" name="q11[]" id="q11_A" value="A">
+            <span class="diag-option-letter">A</span>
+            <span class="diag-option-text">diagrams to show the project stages with charts of benefits and costs.</span>
+        </label>
+        <label class="diag-option" for="q11_B">
+            <input type="checkbox" name="q11[]" id="q11_B" value="B">
+            <span class="diag-option-letter">B</span>
+            <span class="diag-option-text">a written report describing the main features of the project.</span>
+        </label>
+        <label class="diag-option" for="q11_C">
+            <input type="checkbox" name="q11[]" id="q11_C" value="C">
+            <span class="diag-option-letter">C</span>
+            <span class="diag-option-text">an opportunity to discuss the project.</span>
+        </label>
+        <label class="diag-option" for="q11_D">
+            <input type="checkbox" name="q11[]" id="q11_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">examples where the project has been used successfully.</span>
+        </label>
+    </div>
+
+    {{-- Q12 --}}
+    <div class="diag-question-block card p-4" data-question="12">
+        <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="diag-q-number">12</div>
+            <div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to learn how to take better photos. I would:</div>
+            </div>
+        </div>
+        <label class="diag-option" for="q12_A">
+            <input type="checkbox" name="q12[]" id="q12_A" value="A">
+            <span class="diag-option-letter">A</span>
+            <span class="diag-option-text">ask questions and talk about the camera and its features.</span>
+        </label>
+        <label class="diag-option" for="q12_B">
+            <input type="checkbox" name="q12[]" id="q12_B" value="B">
+            <span class="diag-option-letter">B</span>
+            <span class="diag-option-text">use the written instructions about what to do.</span>
+        </label>
+        <label class="diag-option" for="q12_C">
+            <input type="checkbox" name="q12[]" id="q12_C" value="C">
+            <span class="diag-option-letter">C</span>
+            <span class="diag-option-text">use diagrams showing the camera and what each part does.</span>
+        </label>
+        <label class="diag-option" for="q12_D">
+            <input type="checkbox" name="q12[]" id="q12_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">use examples of good and poor photos showing how to improve them.</span>
+        </label>
+    </div>
+
+    {{-- Q13 --}}
+    <div class="diag-question-block card p-4" data-question="13">
+        <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="diag-q-number">13</div>
+            <div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I prefer a presenter or a teacher who uses:</div>
+            </div>
+        </div>
+        <label class="diag-option" for="q13_A">
+            <input type="checkbox" name="q13[]" id="q13_A" value="A">
+            <span class="diag-option-letter">A</span>
+            <span class="diag-option-text">demonstrations, models or practical sessions.</span>
+        </label>
+        <label class="diag-option" for="q13_B">
+            <input type="checkbox" name="q13[]" id="q13_B" value="B">
+            <span class="diag-option-letter">B</span>
+            <span class="diag-option-text">question and answer, talk, group discussion, or guest speakers.</span>
+        </label>
+        <label class="diag-option" for="q13_C">
+            <input type="checkbox" name="q13[]" id="q13_C" value="C">
+            <span class="diag-option-letter">C</span>
+            <span class="diag-option-text">handouts, books, or readings.</span>
+        </label>
+        <label class="diag-option" for="q13_D">
+            <input type="checkbox" name="q13[]" id="q13_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">diagrams, charts, maps or graphs.</span>
+        </label>
+    </div>
+
+    {{-- Q14 --}}
+    <div class="diag-question-block card p-4" data-question="14">
+        <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="diag-q-number">14</div>
+            <div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I have finished a competition or test and I would like some feedback:</div>
+            </div>
+        </div>
+        <label class="diag-option" for="q14_A">
+            <input type="checkbox" name="q14[]" id="q14_A" value="A">
+            <span class="diag-option-letter">A</span>
+            <span class="diag-option-text">using examples from what I have done.</span>
+        </label>
+        <label class="diag-option" for="q14_B">
+            <input type="checkbox" name="q14[]" id="q14_B" value="B">
+            <span class="diag-option-letter">B</span>
+            <span class="diag-option-text">using a written description of my results.</span>
+        </label>
+        <label class="diag-option" for="q14_C">
+            <input type="checkbox" name="q14[]" id="q14_C" value="C">
+            <span class="diag-option-letter">C</span>
+            <span class="diag-option-text">from somebody who talks it through with me.</span>
+        </label>
+        <label class="diag-option" for="q14_D">
+            <input type="checkbox" name="q14[]" id="q14_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">using graphs showing how my performance has improved.</span>
+        </label>
+    </div>
+
+    {{-- Q15 --}}
+    <div class="diag-question-block card p-4" data-question="15">
+        <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="diag-q-number">15</div>
+            <div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I want to find out about some accommodation. Before visiting, I would want:</div>
+            </div>
+        </div>
+        <label class="diag-option" for="q15_A">
+            <input type="checkbox" name="q15[]" id="q15_A" value="A">
+            <span class="diag-option-letter">A</span>
+            <span class="diag-option-text">to view a video of the property.</span>
+        </label>
+        <label class="diag-option" for="q15_B">
+            <input type="checkbox" name="q15[]" id="q15_B" value="B">
+            <span class="diag-option-letter">B</span>
+            <span class="diag-option-text">a discussion with the owner or manager.</span>
+        </label>
+        <label class="diag-option" for="q15_C">
+            <input type="checkbox" name="q15[]" id="q15_C" value="C">
+            <span class="diag-option-letter">C</span>
+            <span class="diag-option-text">a printed description of the rooms and features.</span>
+        </label>
+        <label class="diag-option" for="q15_D">
+            <input type="checkbox" name="q15[]" id="q15_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">a plan showing the rooms and a map of the area.</span>
+        </label>
+    </div>
+
+    {{-- Q16 --}}
+    <div class="diag-question-block card p-4" data-question="16">
+        <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="diag-q-number">16</div>
+            <div>
+                <span class="diag-dimension-badge mb-2 d-inline-block">VARK v9.2</span>
+                <div class="diag-q-text">I am having trouble assembling a piece of furniture that came in parts. I would:</div>
+            </div>
+        </div>
+        <label class="diag-option" for="q16_A">
+            <input type="checkbox" name="q16[]" id="q16_A" value="A">
+            <span class="diag-option-letter">A</span>
+            <span class="diag-option-text">go through the step-by-step diagrams again to see if I missed something.</span>
+        </label>
+        <label class="diag-option" for="q16_B">
+            <input type="checkbox" name="q16[]" id="q16_B" value="B">
+            <span class="diag-option-letter">B</span>
+            <span class="diag-option-text">ask for advice or help from someone else.</span>
+        </label>
+        <label class="diag-option" for="q16_C">
+            <input type="checkbox" name="q16[]" id="q16_C" value="C">
+            <span class="diag-option-letter">C</span>
+            <span class="diag-option-text">go through the step-by-step written instructions again to see if I missed something.</span>
+        </label>
+        <label class="diag-option" for="q16_D">
+            <input type="checkbox" name="q16[]" id="q16_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">try arranging the parts to see how they fit together.</span>
         </label>
     </div>
 
@@ -539,7 +725,7 @@
         <button type="button" class="diag-btn-prev" id="btnPrev" style="visibility:hidden;">
             <i class="bi bi-arrow-left me-1"></i> Previous
         </button>
-        <button type="button" class="diag-btn-next" id="btnNext" disabled>
+        <button type="button" class="diag-btn-next" id="btnNext">
             Next <i class="bi bi-arrow-right ms-1"></i>
         </button>
         <button type="submit" class="diag-btn-submit" id="btnSubmit">
@@ -548,24 +734,22 @@
     </div>
 
     @if ($errors->any())
-        <div class="alert alert-danger mt-3">Please answer all questions before submitting.</div>
+        <div class="alert alert-danger mt-3">Please answer at least one question before submitting.</div>
     @endif
 </form>
 
 @push('scripts')
 <script>
 (function () {
-    const TOTAL = 10;
+    const TOTAL = 16;
     let current = 1;
-    const answers = {};
 
     function getBlock(n) {
         return document.querySelector(`.diag-question-block[data-question="${n}"]`);
     }
 
     function isAnswered(n) {
-        const block = getBlock(n);
-        return block && block.querySelector('input[type=radio]:checked') !== null;
+        return true;
     }
 
     function updateUI() {
@@ -590,55 +774,36 @@
 
         btnPrev.style.visibility = current === 1 ? 'hidden' : 'visible';
 
-        const answered = isAnswered(current);
-        btnNext.disabled = !answered;
+        btnNext.disabled = false;
 
         if (current === TOTAL) {
             btnNext.style.display   = 'none';
-            btnSubmit.style.display = answered ? 'flex' : 'none';
+            btnSubmit.style.display = 'flex';
         } else {
             btnNext.style.display   = 'flex';
             btnSubmit.style.display = 'none';
         }
     }
 
-    // 1. Listen for changes on radio buttons using event delegation on document
     document.addEventListener('change', function (event) {
         const target = event.target;
-        if (target && target.type === 'radio' && target.name.startsWith('q')) {
-            const name = target.name;
-            
-            // Remove 'selected' class from all sibling options for this question
-            document.querySelectorAll(`input[name="${name}"]`).forEach(i => {
-                const diagOption = i.closest('.diag-option');
-                if (diagOption) diagOption.classList.remove('selected');
-            });
-            
-            // Add 'selected' class to the checked option's label
-            if (target.checked) {
-                const diagOption = target.closest('.diag-option');
-                if (diagOption) diagOption.classList.add('selected');
-                
-                answers[name] = target.value;
-                
-                // Re-enable Next / Submit button dynamically
-                const btnNext = document.getElementById('btnNext');
-                const btnSubmit = document.getElementById('btnSubmit');
-                if (btnNext) btnNext.disabled = false;
-                if (current === TOTAL && btnSubmit) {
-                    btnSubmit.style.display = 'flex';
+        if (target && target.type === 'checkbox' && target.name.startsWith('q')) {
+            const diagOption = target.closest('.diag-option');
+            if (diagOption) {
+                if (target.checked) {
+                    diagOption.classList.add('selected');
+                } else {
+                    diagOption.classList.remove('selected');
                 }
             }
         }
     });
 
-    // 2. Listen for clicks on Next / Prev buttons using event delegation on document
     document.addEventListener('click', function (event) {
         const nextBtn = event.target.closest('#btnNext');
         const prevBtn = event.target.closest('#btnPrev');
 
         if (nextBtn) {
-            if (!isAnswered(current)) return;
             if (current < TOTAL) {
                 current++;
                 updateUI();
@@ -651,26 +816,22 @@
         }
     });
 
-    // 3. Initialize visual state for pre-selected options (if any) and set initial UI
     function init() {
-        document.querySelectorAll('input[type="radio"]').forEach(inp => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(inp => {
             const diagOption = inp.closest('.diag-option');
             if (inp.checked && diagOption) {
                 diagOption.classList.add('selected');
-                answers[inp.name] = inp.value;
             }
         });
         updateUI();
     }
 
-    // Run init on multiple events to guarantee execution after Vue mounts
     if (document.readyState === 'complete') {
         init();
     } else {
         window.addEventListener('load', init);
     }
     
-    // Also run init after a tiny delay as a foolproof safeguard
     setTimeout(init, 100);
 })();
 </script>

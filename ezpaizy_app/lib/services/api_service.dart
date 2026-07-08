@@ -237,7 +237,7 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>?> storeDiagnosis(Map<String, String> answers) async {
+  static Future<Map<String, dynamic>?> storeDiagnosis(Map<String, dynamic> answers) async {
     try {
       final res = await http.post(
         Uri.parse('$baseUrl/student/diagnosis'),

@@ -549,18 +549,25 @@ class StudentApiController extends Controller
      */
     public function storeDiagnosis(Request $request)
     {
-        $answers = $request->validate([
-            'q1'  => 'required|in:A,B,C,D',
-            'q2'  => 'required|in:A,B,C,D',
-            'q3'  => 'required|in:A,B,C,D',
-            'q4'  => 'required|in:A,B,C,D',
-            'q5'  => 'required|in:A,B,C,D',
-            'q6'  => 'required|in:A,B,C,D',
-            'q7'  => 'required|in:A,B,C,D',
-            'q8'  => 'required|in:A,B,C,D',
-            'q9'  => 'required|in:A,B,C,D',
-            'q10' => 'required|in:A,B,C,D',
-        ]);
+        $validationRules = [];
+        $keys = [];
+        for ($i = 1; $i <= 16; $i++) {
+            $validationRules["q$i"] = 'nullable|array';
+            $validationRules["q$i.*"] = 'in:A,B,C,D';
+            $keys[] = "q$i";
+        }
+        $request->validate($validationRules);
+
+        $answers = $request->only($keys);
+
+        // Filter out empty arrays or nulls to store clean answers
+        $answers = array_filter($answers, function($val) {
+            return is_array($val) && count($val) > 0;
+        });
+
+        if (empty($answers)) {
+            return response()->json(['message' => 'Please answer at least one question.'], 422);
+        }
 
         $result = $this->runInferenceEngine($answers);
         $style  = $result['style'];
@@ -649,14 +656,20 @@ class StudentApiController extends Controller
         $totalWeight = 0;
 
         foreach ($knowledgeBase as $qKey => $rule) {
-            $chosen = $answers[$qKey] ?? null;
-            if (!$chosen || !isset($rule['answers'][$chosen])) continue;
+            $chosenList = $answers[$qKey] ?? [];
+            if (!is_array($chosenList)) {
+                $chosenList = $chosenList ? [$chosenList] : [];
+            }
 
-            $weight = $rule['weight'];
-            $totalWeight += $weight;
+            foreach ($chosenList as $chosen) {
+                if (!$chosen || !isset($rule['answers'][$chosen])) continue;
 
-            foreach ($rule['answers'][$chosen] as $type => $points) {
-                $scores[$type] += $points * $weight;
+                $weight = $rule['weight'];
+                $totalWeight += $weight;
+
+                foreach ($rule['answers'][$chosen] as $type => $points) {
+                    $scores[$type] += $points * $weight;
+                }
             }
         }
 
@@ -672,16 +685,21 @@ class StudentApiController extends Controller
         $conflictThreshold = $totalEvidence * 0.15;
 
         if ($margin < $conflictThreshold) {
-            $strongSignals = ['q1', 'q4', 'q9'];
+            $strongSignals = ['q1', 'q5', 'q9', 'q13'];
             $tieScores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0, 'competitive' => 0];
 
             foreach ($strongSignals as $qKey) {
-                $chosen = $answers[$qKey] ?? null;
-                if (!$chosen || !isset($knowledgeBase[$qKey]['answers'][$chosen])) continue;
+                $chosenList = $answers[$qKey] ?? [];
+                if (!is_array($chosenList)) {
+                    $chosenList = $chosenList ? [$chosenList] : [];
+                }
+                foreach ($chosenList as $chosen) {
+                    if (!$chosen || !isset($knowledgeBase[$qKey]['answers'][$chosen])) continue;
 
-                $rule = $knowledgeBase[$qKey];
-                foreach ($rule['answers'][$chosen] as $type => $points) {
-                    $tieScores[$type] += $points * 2;
+                    $rule = $knowledgeBase[$qKey];
+                    foreach ($rule['answers'][$chosen] as $type => $points) {
+                        $tieScores[$type] += $points * 2;
+                    }
                 }
             }
 
@@ -777,104 +795,148 @@ class StudentApiController extends Controller
     {
         return [
             'q1' => [
-                'weight'  => 3,
-                'dimension' => 'memory_encoding',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['read_write' => 3],
+                    'D' => ['visual' => 3],
+                ]
             ],
             'q2' => [
-                'weight'  => 3,
-                'dimension' => 'distraction_response',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['visual' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['read_write' => 3],
+                    'D' => ['kinesthetic' => 3],
+                ]
             ],
             'q3' => [
-                'weight'  => 2,
-                'dimension' => 'new_topic_approach',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['visual' => 3],
+                    'C' => ['read_write' => 3],
+                    'D' => ['auditory' => 3],
+                ]
             ],
             'q4' => [
-                'weight'  => 3,
-                'dimension' => 'exam_preparation',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['visual' => 3],
+                    'D' => ['read_write' => 3],
+                ]
             ],
             'q5' => [
-                'weight'  => 2,
-                'dimension' => 'group_dynamics',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['auditory' => 3],
+                    'B' => ['visual' => 3],
+                    'C' => ['kinesthetic' => 3],
+                    'D' => ['read_write' => 3],
+                ]
             ],
             'q6' => [
-                'weight'  => 3,
-                'dimension' => 'failure_reaction',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['read_write' => 3],
+                    'C' => ['visual' => 3],
+                    'D' => ['auditory' => 3],
+                ]
             ],
             'q7' => [
-                'weight'  => 2,
-                'dimension' => 'content_preference',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['visual' => 3],
+                    'D' => ['read_write' => 3],
+                ]
             ],
             'q8' => [
-                'weight'  => 2,
-                'dimension' => 'progress_motivation',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['read_write' => 3],
+                    'B' => ['kinesthetic' => 3],
+                    'C' => ['auditory' => 3],
+                    'D' => ['visual' => 3],
+                ]
             ],
             'q9' => [
-                'weight'  => 3,
-                'dimension' => 'retention_strategy',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['read_write' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['kinesthetic' => 3],
+                    'D' => ['visual' => 3],
+                ]
             ],
             'q10' => [
-                'weight'  => 2,
-                'dimension' => 'self_assessment',
+                'weight' => 1,
                 'answers' => [
-                    'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
-                    'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
-                    'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
-                    'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
-                ],
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['visual' => 3],
+                    'C' => ['read_write' => 3],
+                    'D' => ['auditory' => 3],
+                ]
+            ],
+            'q11' => [
+                'weight' => 1,
+                'answers' => [
+                    'A' => ['visual' => 3],
+                    'B' => ['read_write' => 3],
+                    'C' => ['auditory' => 3],
+                    'D' => ['kinesthetic' => 3],
+                ]
+            ],
+            'q12' => [
+                'weight' => 1,
+                'answers' => [
+                    'A' => ['auditory' => 3],
+                    'B' => ['read_write' => 3],
+                    'C' => ['visual' => 3],
+                    'D' => ['kinesthetic' => 3],
+                ]
+            ],
+            'q13' => [
+                'weight' => 1,
+                'answers' => [
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['read_write' => 3],
+                    'D' => ['visual' => 3],
+                ]
+            ],
+            'q14' => [
+                'weight' => 1,
+                'answers' => [
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['read_write' => 3],
+                    'C' => ['auditory' => 3],
+                    'D' => ['visual' => 3],
+                ]
+            ],
+            'q15' => [
+                'weight' => 1,
+                'answers' => [
+                    'A' => ['kinesthetic' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['read_write' => 3],
+                    'D' => ['visual' => 3],
+                ]
+            ],
+            'q16' => [
+                'weight' => 1,
+                'answers' => [
+                    'A' => ['visual' => 3],
+                    'B' => ['auditory' => 3],
+                    'C' => ['read_write' => 3],
+                    'D' => ['kinesthetic' => 3],
+                ]
             ],
         ];
     }

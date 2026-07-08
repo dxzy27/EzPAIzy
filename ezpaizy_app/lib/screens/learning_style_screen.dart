@@ -24,17 +24,23 @@ class LearningStyleScreen extends StatefulWidget {
 }
 
 class _LearningStyleScreenState extends State<LearningStyleScreen> {
-  final Map<String, String?> _answers = {
-    'q1': null,
-    'q2': null,
-    'q3': null,
-    'q4': null,
-    'q5': null,
-    'q6': null,
-    'q7': null,
-    'q8': null,
-    'q9': null,
-    'q10': null,
+  final Map<String, List<String>> _answers = {
+    'q1': [],
+    'q2': [],
+    'q3': [],
+    'q4': [],
+    'q5': [],
+    'q6': [],
+    'q7': [],
+    'q8': [],
+    'q9': [],
+    'q10': [],
+    'q11': [],
+    'q12': [],
+    'q13': [],
+    'q14': [],
+    'q15': [],
+    'q16': [],
   };
 
   int _currentIndex = 0;
@@ -43,124 +49,189 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
   final List<Question> _questions = const [
     Question(
       number: '1',
-      dimension: 'Memory Encoding',
-      text: 'You just learned a new term. What helps you recall it best an hour later?',
+      dimension: 'VARK v9.2',
+      text: 'I am making a history of the area where I live. I would:',
       options: {
-        'A': 'Writing it down, summarizing it, or making a quick acronym.',
-        'B': 'Remembering how it sounded, or saying it out loud to yourself.',
-        'C': 'Visualizing a picture, diagram, or the layout of the page.',
-        'D': 'Actively practicing with swipe flashcards or taking a test.',
+        'A': 'compare historical photos of the area with what is there now.',
+        'B': 'record stories from people talking about old times.',
+        'C': 'read articles and other information in old newspapers and documents.',
+        'D': 'gather old maps and charts.',
       },
     ),
     Question(
       number: '2',
-      dimension: 'Distraction Response',
-      text: 'You lose focus while studying. What helps you get back on track?',
+      dimension: 'VARK v9.2',
+      text: 'A website has a video showing how to make a special graph or chart. There is a person speaking, some lists and words describing what to do and some diagrams. I would learn most from:',
       options: {
-        'A': 'Writing a quick summary list or copying notes.',
-        'B': 'Listening to background music or speaking thoughts aloud.',
-        'C': 'Looking at color-coded notes, mind maps, or diagrams.',
-        'D': 'Doing a timed interactive practice quiz or moving around.',
+        'A': 'seeing the diagrams.',
+        'B': 'listening.',
+        'C': 'reading the words.',
+        'D': 'watching the actions.',
       },
     ),
     Question(
       number: '3',
-      dimension: 'New Topic Approach',
-      text: 'How do you prefer to start learning a newly assigned topic?',
+      dimension: 'VARK v9.2',
+      text: 'I want to find out more about a tour that I am going on. I would:',
       options: {
-        'A': 'Reading the text carefully and taking written summary notes.',
-        'B': 'Reading the text and explaining difficult parts out loud.',
-        'C': 'Examining diagrams, flowcharts, or infographics.',
-        'D': 'Jumping straight into interactive matching or drag-and-drop exercises.',
+        'A': 'look at details about the highlights and activities on the tour.',
+        'B': 'use a map and see where the places are.',
+        'C': 'read about the tour on the itinerary.',
+        'D': 'talk with the person who planned the tour or others who are going on the tour.',
       },
     ),
     Question(
       number: '4',
-      dimension: 'Exam Preparation',
-      text: 'You have an exam in two days. What is your preparation strategy?',
+      dimension: 'VARK v9.2',
+      text: 'When choosing a career or area of study, these are important for me:',
       options: {
-        'A': 'Writing summary sheets, acronyms, or re-writing notes.',
-        'B': 'Recording voice notes, discussing with friends, or explaining concepts out loud.',
-        'C': 'Reviewing color-coded diagrams, charts, and mental images.',
-        'D': 'Repeatedly practicing with swipe flashcards and timed mock tests.',
+        'A': 'Applying my knowledge in real situations.',
+        'B': 'Communicating with others through discussion.',
+        'C': 'Working with designs, maps or charts.',
+        'D': 'Using words well in written communications.',
       },
     ),
     Question(
       number: '5',
-      dimension: 'Group Dynamics',
-      text: 'What type of group study session is most beneficial for you?',
+      dimension: 'VARK v9.2',
+      text: 'When I am learning I:',
       options: {
-        'A': 'Discussion-focused sessions explaining concepts verbally.',
-        'B': 'Competitive quiz tournaments to see who gets the highest score.',
-        'C': 'Studying quietly together and comparing written notes at the end.',
-        'D': 'Quizzing each other with flashcards or doing matching games.',
+        'A': 'like to talk things through.',
+        'B': 'see patterns in things.',
+        'C': 'use examples and applications.',
+        'D': 'read books, articles and handouts.',
       },
     ),
     Question(
       number: '6',
-      dimension: 'Failure Reaction',
-      text: 'You score poorly on a quiz you prepared for. What is your reaction?',
+      dimension: 'VARK v9.2',
+      text: 'I want to save more money and to decide between a range of options. I would:',
       options: {
-        'A': 'Reviewing and re-writing corrected facts in your notes.',
-        'B': 'Talking it over and explaining the mistakes out loud.',
-        'C': 'Drawing a diagram, table, or mind-map of the correct answer.',
-        'D': 'Retaking the quiz or swiping cards immediately to try again.',
+        'A': 'consider examples of each option using my financial information.',
+        'B': 'read a print brochure that describes the options in detail.',
+        'C': 'use graphs showing different options for different time periods.',
+        'D': 'talk with an expert about the options.',
       },
     ),
     Question(
       number: '7',
-      dimension: 'Content Preference',
-      text: 'Which type of study material do you prefer most?',
+      dimension: 'VARK v9.2',
+      text: 'I want to learn how to play a new board game or card game. I would:',
       options: {
-        'A': 'A printed text where you can write notes and marginal definitions.',
-        'B': 'An audio lecture, read-aloud option, or podcast.',
-        'C': 'Infographics, video lessons, and labeled diagrams.',
-        'D': 'Drag-and-drop games, swipe flashcards, and interactive simulations.',
+        'A': 'watch others play the game before joining in.',
+        'B': 'listen to somebody explaining it and ask questions.',
+        'C': 'use the diagrams that explain the various stages, moves and strategies in the game.',
+        'D': 'read the instructions.',
       },
     ),
     Question(
       number: '8',
-      dimension: 'Progress Motivation',
-      text: 'What motivates you most to keep studying?',
+      dimension: 'VARK v9.2',
+      text: 'I want to be sure I am doing my physiotherapy exercises correctly. I would:',
       options: {
-        'A': 'Looking through folders of your completed written summaries.',
-        'B': 'Hearing verbal praise or encouragement from a teacher or peer.',
-        'C': 'Seeing progress graphs, charts, and visual milestones.',
-        'D': 'Earning points, completing swipe streaks, or leveling up.',
+        'A': 'check a list of important aspects of the exercises to get right.',
+        'B': 'compare what I am doing with a video demonstration.',
+        'C': 'listen to an explanation about how the exercises should be done.',
+        'D': 'study diagrams illustrating the way the exercises should be done.',
       },
     ),
     Question(
       number: '9',
-      dimension: 'Retention Strategy',
-      text: 'You need to memorize 15 terms for a test. What is your strategy?',
+      dimension: 'VARK v9.2',
+      text: 'I want to learn to do something new on a computer. I would:',
       options: {
-        'A': 'Writing down the terms and definitions multiple times.',
-        'B': 'Saying the terms and definitions out loud repeatedly.',
-        'C': 'Drawing a picture or mind map linking the terms.',
-        'D': 'Practicing active recall via rapid swiping of flashcards.',
+        'A': 'read the written instructions that came with the program.',
+        'B': 'talk with people who know about the program.',
+        'C': 'start using it and learn by trial and error.',
+        'D': 'follow the diagrams in a book.',
       },
     ),
     Question(
       number: '10',
-      dimension: 'Self-Assessment',
-      text: 'What is your greatest learning strength?',
+      dimension: 'VARK v9.2',
+      text: 'When learning from the Internet I like:',
       options: {
-        'A': 'Learning by writing summaries, lists, and notes.',
-        'B': 'Retaining information by explaining, discussing, or hearing it.',
-        'C': 'Remembering shapes, layouts, colors, and visuals.',
-        'D': 'Retaining concepts by doing, practicing, and interactive movement.',
+        'A': 'videos showing how to do things.',
+        'B': 'interesting design and visual features.',
+        'C': 'detailed articles.',
+        'D': 'podcasts and videos where I can listen to experts.',
+      },
+    ),
+    Question(
+      number: '11',
+      dimension: 'VARK v9.2',
+      text: 'I want to learn about a new project. I would ask for:',
+      options: {
+        'A': 'diagrams to show the project stages with charts of benefits and costs.',
+        'B': 'a written report describing the main features of the project.',
+        'C': 'an opportunity to discuss the project.',
+        'D': 'examples where the project has been used successfully.',
+      },
+    ),
+    Question(
+      number: '12',
+      dimension: 'VARK v9.2',
+      text: 'I want to learn how to take better photos. I would:',
+      options: {
+        'A': 'ask questions and talk about the camera and its features.',
+        'B': 'use the written instructions about what to do.',
+        'C': 'use diagrams showing the camera and what each part does.',
+        'D': 'use examples of good and poor photos showing how to improve them.',
+      },
+    ),
+    Question(
+      number: '13',
+      dimension: 'VARK v9.2',
+      text: 'I prefer a presenter or a teacher who uses:',
+      options: {
+        'A': 'demonstrations, models or practical sessions.',
+        'B': 'question and answer, talk, group discussion, or guest speakers.',
+        'C': 'handouts, books, or readings.',
+        'D': 'diagrams, charts, maps or graphs.',
+      },
+    ),
+    Question(
+      number: '14',
+      dimension: 'VARK v9.2',
+      text: 'I have finished a competition or test and I would like some feedback:',
+      options: {
+        'A': 'using examples from what I have done.',
+        'B': 'using a written description of my results.',
+        'C': 'from somebody who talks it through with me.',
+        'D': 'using graphs showing how my performance has improved.',
+      },
+    ),
+    Question(
+      number: '15',
+      dimension: 'VARK v9.2',
+      text: 'I want to find out about some accommodation. Before visiting, I would want:',
+      options: {
+        'A': 'to view a video of the property.',
+        'B': 'a discussion with the owner or manager.',
+        'C': 'a printed description of the rooms and features.',
+        'D': 'a plan showing the rooms and a map of the area.',
+      },
+    ),
+    Question(
+      number: '16',
+      dimension: 'VARK v9.2',
+      text: 'I am having trouble assembling a piece of furniture that came in parts. I would:',
+      options: {
+        'A': 'go through the step-by-step diagrams again to see if I missed something.',
+        'B': 'ask for advice or help from someone else.',
+        'C': 'go through the step-by-step written instructions again to see if I missed something.',
+        'D': 'try arranging the parts to see how they fit together.',
       },
     ),
   ];
 
-  bool get _currentQuestionAnswered => _answers['q${_currentIndex + 1}'] != null;
-  bool get _allAnswered => _answers.values.every((v) => v != null);
+  bool get _hasAnyAnswer => _answers.values.any((v) => v.isNotEmpty);
 
   Future<void> _submit() async {
-    if (!_allAnswered) {
+    if (!_hasAnyAnswer) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please answer all 10 questions before submitting.'),
+          content: Text('Please answer at least one question before submitting.'),
           backgroundColor: Colors.orange,
         ),
       );
@@ -169,7 +240,11 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
 
     setState(() => _loading = true);
     final res = await ApiService.storeDiagnosis(
-      _answers.map((k, v) => MapEntry(k, v!)),
+      // Filter out empty selections so we only send actual selected ones
+      _answers.entries.where((e) => e.value.isNotEmpty).fold<Map<String, dynamic>>({}, (prev, e) {
+        prev[e.key] = e.value;
+        return prev;
+      }),
     );
     setState(() => _loading = false);
 
@@ -179,7 +254,6 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to save assessment. Please try again.')),
       );
-    }
   }
 
   void _next() {
@@ -395,12 +469,20 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
                               ...currentQuestion.options.entries.map((entry) {
                                 final letter = entry.key;
                                 final optionText = entry.value;
-                                final isSelected = _answers['q${currentQuestion.number}'] == letter;
+                                final selectedList = _answers['q${currentQuestion.number}'] ?? [];
+                                final isSelected = selectedList.contains(letter);
 
                                 return GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _answers['q${currentQuestion.number}'] = letter;
+                                      final qKey = 'q${currentQuestion.number}';
+                                      final currentList = List<String>.from(_answers[qKey] ?? []);
+                                      if (currentList.contains(letter)) {
+                                        currentList.remove(letter);
+                                      } else {
+                                        currentList.add(letter);
+                                      }
+                                      _answers[qKey] = currentList;
                                     });
                                   },
                                   child: Container(
@@ -488,7 +570,7 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
                                 )
                               : const SizedBox.shrink(),
                           ElevatedButton(
-                            onPressed: _currentQuestionAnswered ? _next : null,
+                            onPressed: _next,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF7C3AED),
                               foregroundColor: Colors.white,
