@@ -31,9 +31,9 @@
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         border-radius: 1rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        background-color: #1e293b !important; /* Premium Slate/Navy for Student Front */
-        color: white !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        background-color: #ffffff !important; /* Premium White for Student Front */
+        color: #0f172a !important; /* Dark slate text */
         display: flex;
         flex-direction: column;
         padding: 2rem;
@@ -45,15 +45,15 @@
         width: 8px;
     }
     .flashcard-face::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.05);
         border-radius: 4px;
     }
     .flashcard-face::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.2);
         border-radius: 4px;
     }
     .flashcard-face::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.5);
+        background: rgba(0, 0, 0, 0.3);
     }
     
     .flashcard-content-wrapper {
@@ -74,15 +74,15 @@
     }
     
     .flashcard-front {
-        border: 1px solid #0f172a;
+        border: 1px solid #cbd5e1;
         transform: rotateY(0deg) translateZ(1px);
     }
     
     .flashcard-back {
-        background-color: #334155 !important; /* Lighter Slate for Student Back */
-        color: white !important;
+        background-color: #f8fafc !important; /* Light Slate for Student Back */
+        color: #0f172a !important; /* Dark slate text */
         transform: rotateY(180deg) translateZ(1px);
-        border: 1px solid #1e293b;
+        border: 1px solid #cbd5e1;
     }
 
     /* Pointer events control based on active card face to prevent click-through issues */
@@ -364,33 +364,15 @@
             return html;
         }
 
-        function render() {
+        function renderControls() {
+            const controlsEl = document.querySelector('.controls');
+            if (!controlsEl) return;
             if (cards.length === 0 || currentIndex >= cards.length) {
-                app.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="bi bi-emoji-sunglasses display-1 text-warning mb-3"></i>
-                        <h2>You're all caught up!</h2>
-                        <p class="text-muted fs-5">There are no cards due for review right now. Great job!</p>
-                        <div class="d-flex justify-content-center gap-3 mt-4">
-                            <a href="javascript:history.back()" class="btn btn-primary">Back to Flashcards</a>
-                            <form action="{{ route('student.flashcards.reset', $flashcardSet->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to reset your progress for this set?')">
-                                    <i class="bi bi-arrow-counterclockwise"></i> Reset Progress
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                `;
+                controlsEl.innerHTML = '';
                 return;
             }
-
-            const currentCard = cards[currentIndex];
-            const normalizedDefinition = currentCard.definition.replace(/\s+/g, ' ').trim();
-            const isList = /(?:\s+|^)\d+\.\s/.test(normalizedDefinition);
-            const alignClass = isList ? 'text-start d-inline-block w-100' : 'text-center';
-            const formattedDef = normalizedDefinition.replace(/(?:\s+)(\d+\.)\s/g, '<div style="margin-top: 15px;"></div>$1 ');
             
+            const currentCard = cards[currentIndex];
             let controlsHtml = '';
             
             if (mode === 'review') {
@@ -463,7 +445,37 @@
                     </button>
                 </div>
             `;
+            
+            controlsEl.innerHTML = controlsHtml;
+        }
 
+        function render() {
+            if (cards.length === 0 || currentIndex >= cards.length) {
+                app.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-emoji-sunglasses display-1 text-warning mb-3"></i>
+                        <h2>You're all caught up!</h2>
+                        <p class="text-muted fs-5">There are no cards due for review right now. Great job!</p>
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a href="javascript:history.back()" class="btn btn-primary">Back to Flashcards</a>
+                            <form action="{{ route('student.flashcards.reset', $flashcardSet->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to reset your progress for this set?')">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Reset Progress
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const currentCard = cards[currentIndex];
+            const normalizedDefinition = currentCard.definition.replace(/\s+/g, ' ').trim();
+            const isList = /(?:\s+|^)\d+\.\s/.test(normalizedDefinition);
+            const alignClass = isList ? 'text-start d-inline-block w-100' : 'text-center';
+            const formattedDef = normalizedDefinition.replace(/(?:\s+)(\d+\.)\s/g, '<div style="margin-top: 15px;"></div>$1 ');
+            
             let backFaceHtml = '';
             if (mode === 'read') {
                 backFaceHtml = `
@@ -478,13 +490,13 @@
                                 <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                             </button>
                             @endif
-                            <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
                         </div>
                     </div>
                     <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
                         <div class="flashcard-content">
                             <div class="${alignClass}">
-                                <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
+                                <div class="fs-3 text-dark fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
                             </div>
                         </div>
                     </div>
@@ -506,7 +518,7 @@
                             ${getStatusBadgeHtml(currentCard.status)}
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <button id="show-answer-btn" type="button" class="btn btn-outline-light text-white-50 border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
+                            <button id="show-answer-btn" type="button" class="btn btn-outline-secondary text-muted border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
                                 Show Answer
                             </button>
                             @if(auth()->user()?->learning_style === 'auditory')
@@ -514,7 +526,7 @@
                                 <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                             </button>
                             @endif
-                            <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
                         </div>
                     </div>
                     <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
@@ -524,7 +536,7 @@
                             </div>
                             
                             <input type="text" id="answer-input" class="form-control text-center mt-4 mx-auto ${allDone ? 'd-none' : ''}" 
-                                   style="max-width: 80%; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);" 
+                                   style="max-width: 80%; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1;" 
                                    autocomplete="off" autocorrect="off" spellcheck="false" 
                                    value="${typedAnswer.replace(/"/g, '&quot;')}"
                                    placeholder="Type the exact answer..." oninput="checkTyping(this.value)" onclick="event.stopPropagation()">
@@ -552,12 +564,12 @@
                                         <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
-                                    <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                    <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
                                 </div>
                             </div>
                             <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
                                 <div class="flashcard-content">
-                                    <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${currentCard.term}</div>
+                                    <div class="fs-3 text-dark fw-bold mt-3" style="line-height: 1.4;">${currentCard.term}</div>
                                 </div>
                             </div>
                         </div>
@@ -567,10 +579,10 @@
                     </div>
                 </div>
 
-                <div class="controls">
-                    ${controlsHtml}
-                </div>
+                <div class="controls"></div>
             `;
+
+            renderControls();
 
             if (isFlipped && mode === 'review') {
                 setTimeout(() => {
