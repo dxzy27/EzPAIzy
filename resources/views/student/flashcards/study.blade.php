@@ -385,27 +385,44 @@
             let controlsHtml = '';
             
             if (mode === 'review') {
-                controlsHtml = `
-                    <div id="grading-controls" class="mt-4 text-center">
-                        <div class="d-flex justify-content-center gap-3 mb-2">
-                            <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                <i class="bi bi-x-lg fs-5"></i> Still learning
-                            </button>
-                            <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
-                                <i class="bi bi-check-lg fs-5"></i> Know
-                            </button>
+                if (!isFlipped) {
+                    controlsHtml = `
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-2">Think of the answer, then tap the card to flip and type it.</p>
                         </div>
-                        <p class="text-muted small mb-0">
-                            <span class="badge bg-light text-dark border">
-                                <i class="bi bi-hand-index-thumb"></i> Swipe/Drag Card: Left = Still learning | Right = Know
-                            </span>
-                        </p>
-                    </div>
-                `;
+                    `;
+                } else {
+                    if (!currentCard._parsedItems) {
+                        currentCard._parsedItems = parseDefinitionItems(currentCard.definition);
+                    }
+                    let allDone = currentCard._parsedItems.every(item => item.revealed);
+                    let initialMsg = allDone ? 'Perfect! How easy was that?' : 'How well did you remember this?';
+
+                    controlsHtml = `
+                        <div id="grading-controls" class="mt-4 text-center">
+                            <p class="fw-bold mb-3" id="grading-message">${initialMsg}</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
+                                    <i class="bi bi-x-lg fs-5"></i> Still learning
+                                </button>
+                                <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
+                                    <i class="bi bi-check-lg fs-5"></i> Know
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
             } else {
                 controlsHtml = `
                     <div class="text-center mt-4">
                         <p class="text-muted mb-2">Think of the answer, then tap the card to flip it.</p>
+                        @if(auth()->user()?->learning_style === 'kinesthetic')
+                        <p class="text-muted small mb-0">
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-hand-index-thumb"></i> Swipe/Drag Card: Left = Next | Right = Previous
+                            </span>
+                        </p>
+                        @endif
                     </div>
                 `;
             }
@@ -424,26 +441,67 @@
 
             let backFaceHtml = '';
             if (isFlipped) {
-                backFaceHtml = `
-                    <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
-                        <div class="d-flex align-items-center gap-2">
-                            @if(auth()->user()?->learning_style === 'auditory')
-                            <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
-                                <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
-                            </button>
-                            @endif
-                            <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
-                        </div>
-                    </div>
-                    <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
-                        <div class="flashcard-content">
-                            <div class="${alignClass}">
-                                <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
+                if (mode === 'read') {
+                    backFaceHtml = `
+                        <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
+                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
+                            <div class="d-flex align-items-center gap-2">
+                                @if(auth()->user()?->learning_style === 'auditory')
+                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
+                                </button>
+                                @endif
+                                <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
                             </div>
                         </div>
-                    </div>
-                `;
+                        <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
+                            <div class="flashcard-content">
+                                <div class="${alignClass}">
+                                    <div class="fs-3 text-white fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    if (!currentCard._parsedItems) {
+                        currentCard._parsedItems = parseDefinitionItems(currentCard.definition);
+                    }
+                    currentItems = currentCard._parsedItems;
+
+                    let allDone = currentItems.every(item => item.revealed);
+                    let activeIdx = currentItems.findIndex(item => !item.revealed);
+                    let initialAnswerWords = getPlaceholderHtml(currentItems, activeIdx, typedAnswer);
+                    
+                    backFaceHtml = `
+                        <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
+                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <button id="show-answer-btn" type="button" class="btn btn-outline-light text-white-50 border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
+                                    Show Answer
+                                </button>
+                                @if(auth()->user()?->learning_style === 'auditory')
+                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle ${allDone ? '' : 'd-none'}" style="width:30px;height:30px;padding:0;display:${allDone ? 'flex' : 'none'};align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
+                                </button>
+                                @endif
+                                <small class="text-white-50" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                            </div>
+                        </div>
+                        <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
+                            <div class="flashcard-content">
+                                <div class="w-100">
+                                    <div id="placeholder-text" class="mt-3">${initialAnswerWords}</div>
+                                </div>
+                                
+                                <input type="text" id="answer-input" class="form-control text-center mt-4 mx-auto ${allDone ? 'd-none' : ''}" 
+                                       style="max-width: 80%; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);" 
+                                       autocomplete="off" autocorrect="off" spellcheck="false" 
+                                       value="${typedAnswer.replace(/"/g, '&quot;')}"
+                                       placeholder="Type the exact answer..." oninput="checkTyping(this.value)" onclick="event.stopPropagation()">
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
             app.innerHTML = `
@@ -481,6 +539,13 @@
                     ${controlsHtml}
                 </div>
             `;
+
+            if (isFlipped && mode === 'review') {
+                setTimeout(() => {
+                    const input = document.getElementById('answer-input');
+                    if (input) input.focus();
+                }, 300); // Wait for flip animation
+            }
         }
 
         window.setMode = function(newMode) {
@@ -747,7 +812,7 @@
         const dragThreshold = 120; // px
         
         function handleDragStart(e) {
-            if (mode !== 'review') return;
+            if (mode !== 'read') return;
             if (isSubmitting) return;
             // Prevent text selection or target interactions
             const target = e.target;
@@ -786,10 +851,10 @@
                 const flipClass = isFlipped ? ' rotateY(180deg)' : '';
                 cardInner.style.transform = `translateX(${diffX}px) translateY(${diffY * 0.2}px) rotate(${rotate}deg)${flipClass}`;
                 
-                if (diffX > 20) {
-                    cardInner.style.boxShadow = `0 10px 30px rgba(16, 185, 129, ${Math.min(0.8, diffX / 150)})`;
-                } else if (diffX < -20) {
-                    cardInner.style.boxShadow = `0 10px 30px rgba(239, 68, 68, ${Math.min(0.8, -diffX / 150)})`;
+                if (diffX < -20) {
+                    cardInner.style.boxShadow = `0 10px 30px rgba(6, 182, 212, ${Math.min(0.8, -diffX / 150)})`;
+                } else if (diffX > 20) {
+                    cardInner.style.boxShadow = `0 10px 30px rgba(100, 116, 139, ${Math.min(0.8, diffX / 150)})`;
                 } else {
                     cardInner.style.boxShadow = '';
                 }
@@ -808,20 +873,23 @@
             
             cardInner.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             
-            if (diffX > dragThreshold) {
-                // Swipe right -> Know (quality = 5)
-                const currentCard = cards[currentIndex];
-                cardInner.style.transform = `translateX(1000px) rotate(45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
-                setTimeout(() => {
-                    submitReview(currentCard.id, 5);
-                }, 200);
-            } else if (diffX < -dragThreshold) {
-                // Swipe left -> Still learning (quality = 1)
-                const currentCard = cards[currentIndex];
+            if (diffX < -dragThreshold) {
+                // Swipe Left -> Next Card
                 cardInner.style.transform = `translateX(-1000px) rotate(-45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
                 setTimeout(() => {
-                    submitReview(currentCard.id, 1);
+                    nextCard();
                 }, 200);
+            } else if (diffX > dragThreshold) {
+                // Swipe Right -> Previous Card
+                if (currentIndex > 0) {
+                    cardInner.style.transform = `translateX(1000px) rotate(45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
+                    setTimeout(() => {
+                        prevCard();
+                    }, 200);
+                } else {
+                    cardInner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
+                    cardInner.style.boxShadow = '';
+                }
             } else {
                 cardInner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
                 cardInner.style.boxShadow = '';
