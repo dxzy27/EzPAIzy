@@ -14,6 +14,8 @@ class LearningProfile extends Model
         'answers',          // JSON: {"q1":"read_write","q2":"competitive",...}
         'score_read_write',
         'score_auditory',
+        'score_visual',
+        'score_kinesthetic',
         'score_competitive',
         'confidence',       // float 0–100
         'learning_style',   // read_write | auditory | competitive

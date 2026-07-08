@@ -262,9 +262,8 @@ class ExpertSystemController extends Controller
     private function runInferenceEngine(array $answers): array
     {
         $scores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0, 'competitive' => 0];
-        $totalWeight = 0;
 
-        // ── PASS 1: Weighted Evidence Accumulation ───────────────────────────
+        // ── PASS 1: VARK Scoring Method (Simple Selection Count) ─────────────
         foreach ($this->knowledgeBase as $qKey => $rule) {
             $chosenList = $answers[$qKey] ?? [];
             if (!is_array($chosenList)) {
@@ -274,61 +273,21 @@ class ExpertSystemController extends Controller
             foreach ($chosenList as $chosen) {
                 if (!$chosen || !isset($rule['answers'][$chosen])) continue;
 
-                $weight = $rule['weight'];
-                $totalWeight += $weight;
-
                 foreach ($rule['answers'][$chosen] as $type => $points) {
-                    $scores[$type] += $points * $weight;
+                    // Under the standard VARK scoring chart, each chosen option counts as 1 point
+                    $scores[$type] += 1;
                 }
             }
         }
 
-        $maxScore = max($scores);
-        $totalEvidence = array_sum($scores);
-
-        // ── PASS 2: Conflict Resolution ──────────────────────────────────────
-        // Sort scores descending
+        // Sort scores descending to find the dominant style
         arsort($scores);
-        $types   = array_keys($scores);
-        $first   = $types[0];
-        $second  = $types[1];
-        $margin  = $scores[$first] - $scores[$second];
+        $types = array_keys($scores);
+        $first = $types[0];
 
-        // Conflict threshold: if gap < 15% of total evidence, apply tiebreakers
-        $conflictThreshold = $totalEvidence * 0.15;
-
-        if ($margin < $conflictThreshold) {
-            // Tiebreaker rules using "strong signal" questions
-            $strongSignals = ['q1', 'q5', 'q9', 'q13'];
-            $tieScores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0, 'competitive' => 0];
-
-            foreach ($strongSignals as $qKey) {
-                $chosenList = $answers[$qKey] ?? [];
-                if (!is_array($chosenList)) {
-                    $chosenList = $chosenList ? [$chosenList] : [];
-                }
-                foreach ($chosenList as $chosen) {
-                    if (!$chosen || !isset($this->knowledgeBase[$qKey]['answers'][$chosen])) continue;
-
-                    $rule = $this->knowledgeBase[$qKey];
-                    foreach ($rule['answers'][$chosen] as $type => $points) {
-                        $tieScores[$type] += $points * 2; // Double weight for tiebreakers
-                    }
-                }
-            }
-
-            // Apply tiebreaker deltas
-            foreach ($tieScores as $type => $delta) {
-                $scores[$type] += $delta;
-            }
-            arsort($scores);
-            $types = array_keys($scores);
-            $first = $types[0];
-        }
-
-        // ── PASS 3: Confidence Calculation ───────────────────────────────────
-        $totalFinal   = max(1, array_sum($scores)); // avoid division by zero
-        $confidence   = round(($scores[$first] / $totalFinal) * 100, 1);
+        // ── PASS 2: Confidence Calculation ───────────────────────────────────
+        $totalFinal = max(1, array_sum($scores)); // avoid division by zero
+        $confidence = round(($scores[$first] / $totalFinal) * 100, 1);
 
         return [
             'style'      => $first,

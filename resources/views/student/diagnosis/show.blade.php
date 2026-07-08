@@ -77,7 +77,7 @@
         'kinesthetic' => 'You learn best by physical touch, actions, and concrete examples. Timed challenges and swiping flashcards directly engage your active memory pathways.',
         'competitive' => 'You are driven by challenge and performance — pressure, scoring, and the drive to beat your own record are the most powerful motivators for your learning.',
     ];
-    $totalScore = max(1, $profile->score_read_write + $profile->score_auditory + $profile->score_visual + $profile->score_kinesthetic + $profile->score_competitive);
+    $totalScore = max(1, $profile->score_read_write + $profile->score_auditory + $profile->score_visual + $profile->score_kinesthetic);
 @endphp
 
 @push('styles')
@@ -254,13 +254,6 @@
                 </div>
                 <span class="score-bar-value">{{ $profile->score_kinesthetic }}</span>
             </div>
-            <div class="score-bar-wrap">
-                <span class="score-bar-label"><i class="bi bi-trophy me-1" style="color:#EF9086;"></i>Competitive</span>
-                <div class="score-bar-track">
-                    <div class="score-bar-fill" style="width:{{ round(($profile->score_competitive/$totalScore)*100) }}%;background:#EF9086;"></div>
-                </div>
-                <span class="score-bar-value">{{ $profile->score_competitive }}</span>
-            </div>
         </div>
     </div>
 
@@ -311,15 +304,14 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['Read/Write', 'Auditory', 'Visual', 'Kinaesthetic', 'Competitive'],
+            labels: ['Read/Write', 'Auditory', 'Visual', 'Kinaesthetic'],
             datasets: [{
                 label: 'Your Profile',
                 data: [
                     {{ $profile->score_read_write }},
                     {{ $profile->score_auditory }},
                     {{ $profile->score_visual }},
-                    {{ $profile->score_kinesthetic }},
-                    {{ $profile->score_competitive }}
+                    {{ $profile->score_kinesthetic }}
                 ],
                 fill: true,
                 backgroundColor: 'rgba({{ $cfg['rgb'] }}, 0.15)',
