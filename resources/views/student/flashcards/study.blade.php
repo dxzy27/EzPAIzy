@@ -1109,7 +1109,10 @@
             safeChunks.forEach(chunkText => {
                 chunkText = chunkText.trim();
                 if (!chunkText) return;
-                const u = new SpeechSynthesisUtterance(chunkText);
+                
+                // Add a comma after list numbers to insert a brief pause (e.g. "1. Melepak" -> "1. , Melepak")
+                let textToSpeak = chunkText.replace(/^(\d+\.)\s+/, '$1 , ');
+                const u = new SpeechSynthesisUtterance(textToSpeak);
                 
                 let malayVoice = availableVoices.find(v => v.lang.includes('ms') || v.name.toLowerCase().includes('malay'));
                 let indoVoice = availableVoices.find(v => v.lang.includes('id') || v.name.toLowerCase().includes('indonesia'));
