@@ -2,17 +2,19 @@
 
 @section('content')
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1 class="h2 fw-bold text-dark">
-                <i class="bi bi-folder-fill text-warning me-2"></i>{{ $topic }}
-            </h1>
-            <p class="text-muted">Learning materials under this folder</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ route('student.contents.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="All Folders">
-                <i class="bi bi-arrow-left fs-5"></i>
-            </a>
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-12">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('student.contents.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Folders">
+                    <i class="bi bi-arrow-left fs-5"></i>
+                </a>
+                <div>
+                    <h1 class="h2 fw-bold text-dark mb-0">
+                        <i class="bi bi-folder-fill text-warning me-2"></i>{{ $topic }}
+                    </h1>
+                    <p class="text-muted mb-0">Learning materials under this folder</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -67,12 +69,6 @@
             <p>Your instructor hasn't added any learning materials to the <strong>{{ $topic }}</strong> folder yet.</p>
         </div>
     @endif
-
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <a href="{{ route('student.contents.index') }}" class="btn btn-secondary">Back to Folders</a>
-        </div>
-    </div>
 </div>
 @endsection
 
