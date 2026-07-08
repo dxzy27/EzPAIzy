@@ -343,13 +343,71 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
             // ── Flashcard ──────────────────────────────────────────────────
             cardWidget,
             const SizedBox(height: 20),
-
             // ── Below-card controls ────────────────────────────────────────
             if (isRead) ...[
-              // Read mode: shuffle hint
+              // Read mode: grading buttons when flipped, or swipe hint when not flipped
               if (!isFlipped)
-                const Text('Tap to flip',
-                    style: TextStyle(color: Colors.grey, fontSize: 14)),
+                const Text('Think of the answer, then tap the card to flip it.',
+                    style: TextStyle(color: Colors.grey, fontSize: 14))
+              else ...[
+                const Text(
+                  'How well did you remember this?',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final cardId = card['id'];
+                          try {
+                            await ApiService.submitFlashcardReview(cardId, 1);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Marked: Still Learning 🔴'), duration: Duration(milliseconds: 700)),
+                            );
+                            _next();
+                          } catch (_) {}
+                        },
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        label: const Text('Still learning', style: TextStyle(color: Colors.red)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.shade50,
+                          side: BorderSide(color: Colors.red.shade200),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final cardId = card['id'];
+                          try {
+                            await ApiService.submitFlashcardReview(cardId, 5);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Marked: Know 🟢'), duration: Duration(milliseconds: 700)),
+                            );
+                            _next();
+                          } catch (_) {}
+                        },
+                        icon: const Icon(Icons.check, color: Colors.green),
+                        label: const Text('Know', style: TextStyle(color: Colors.green)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade50,
+                          side: BorderSide(color: Colors.green.shade200),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ] else ...[
               // Revision mode: typing area or grading area
               if (!isFlipped)

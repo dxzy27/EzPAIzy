@@ -413,18 +413,34 @@
                     `;
                 }
             } else {
-                controlsHtml = `
-                    <div class="text-center mt-4">
-                        <p class="text-muted mb-2">Think of the answer, then tap the card to flip it.</p>
-                        @if(auth()->user()?->learning_style === 'kinesthetic')
-                        <p class="text-muted small mb-0">
-                            <span class="badge bg-light text-dark border">
-                                <i class="bi bi-hand-index-thumb"></i> Swipe/Drag Card: Left = Previous | Right = Next
-                            </span>
-                        </p>
-                        @endif
-                    </div>
-                `;
+                if (isFlipped) {
+                    controlsHtml = `
+                        <div id="grading-controls" class="mt-4 text-center">
+                            <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
+                                    <i class="bi bi-x-lg fs-5"></i> Still learning
+                                </button>
+                                <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
+                                    <i class="bi bi-check-lg fs-5"></i> Know
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    controlsHtml = `
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-2">Think of the answer, then tap the card to flip it.</p>
+                            @if(auth()->user()?->learning_style === 'kinesthetic')
+                            <p class="text-muted small mb-0">
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-hand-index-thumb"></i> Swipe/Drag Card: Left = Previous | Right = Next
+                                </span>
+                            </p>
+                            @endif
+                        </div>
+                    `;
+                }
             }
 
             // Always add Next/Prev buttons
