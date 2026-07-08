@@ -816,14 +816,10 @@
                 if (data.success && data.progress) {
                     cards[currentIndex].status = data.progress.status;
                 }
-                render(); // Show the new badge on the card face
-                
-                setTimeout(() => {
-                    isSubmitting = false;
-                    currentIndex++;
-                    isFlipped = false;
-                    render();
-                }, 700); // 700ms transition delay so user can see the mark
+                isSubmitting = false;
+                currentIndex++;
+                isFlipped = false;
+                render();
             })
             .catch(error => {
                 console.error('Error:', error);
