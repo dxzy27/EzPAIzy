@@ -419,7 +419,7 @@
                         @if(auth()->user()?->learning_style === 'kinesthetic')
                         <p class="text-muted small mb-0">
                             <span class="badge bg-light text-dark border">
-                                <i class="bi bi-hand-index-thumb"></i> Swipe/Drag Card: Left = Next | Right = Previous
+                                <i class="bi bi-hand-index-thumb"></i> Swipe/Drag Card: Left = Previous | Right = Next
                             </span>
                         </p>
                         @endif
@@ -852,9 +852,9 @@
                 cardInner.style.transform = `translateX(${diffX}px) translateY(${diffY * 0.2}px) rotate(${rotate}deg)${flipClass}`;
                 
                 if (diffX < -20) {
-                    cardInner.style.boxShadow = `0 10px 30px rgba(6, 182, 212, ${Math.min(0.8, -diffX / 150)})`;
+                    cardInner.style.boxShadow = `0 10px 30px rgba(100, 116, 139, ${Math.min(0.8, -diffX / 150)})`;
                 } else if (diffX > 20) {
-                    cardInner.style.boxShadow = `0 10px 30px rgba(100, 116, 139, ${Math.min(0.8, diffX / 150)})`;
+                    cardInner.style.boxShadow = `0 10px 30px rgba(6, 182, 212, ${Math.min(0.8, diffX / 150)})`;
                 } else {
                     cardInner.style.boxShadow = '';
                 }
@@ -874,15 +874,9 @@
             cardInner.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             
             if (diffX < -dragThreshold) {
-                // Swipe Left -> Next Card
-                cardInner.style.transform = `translateX(-1000px) rotate(-45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
-                setTimeout(() => {
-                    nextCard();
-                }, 200);
-            } else if (diffX > dragThreshold) {
-                // Swipe Right -> Previous Card
+                // Swipe Left -> Previous Card
                 if (currentIndex > 0) {
-                    cardInner.style.transform = `translateX(1000px) rotate(45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
+                    cardInner.style.transform = `translateX(-1000px) rotate(-45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
                     setTimeout(() => {
                         prevCard();
                     }, 200);
@@ -890,6 +884,12 @@
                     cardInner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
                     cardInner.style.boxShadow = '';
                 }
+            } else if (diffX > dragThreshold) {
+                // Swipe Right -> Next Card
+                cardInner.style.transform = `translateX(1000px) rotate(45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
+                setTimeout(() => {
+                    nextCard();
+                }, 200);
             } else {
                 cardInner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
                 cardInner.style.boxShadow = '';
