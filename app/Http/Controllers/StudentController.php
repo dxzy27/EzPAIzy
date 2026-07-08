@@ -181,7 +181,12 @@ class StudentController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
-        return view('student.quiz_folder', compact('topic', 'quizzes', 'mediumLocked', 'hardLocked'));
+        $favoritedQuizIds = Favorite::where('student_id', $user->id)
+            ->whereNotNull('quiz_id')
+            ->pluck('quiz_id')
+            ->toArray();
+
+        return view('student.quiz_folder', compact('topic', 'quizzes', 'mediumLocked', 'hardLocked', 'favoritedQuizIds'));
     }
 
     /**

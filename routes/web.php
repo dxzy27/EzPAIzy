@@ -91,6 +91,8 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::delete('/favorites/{content}', [FavoriteController::class, 'destroy'])->name('favorites.remove');
     Route::post('/favorites/flashcard/{flashcardSet}', [FavoriteController::class, 'storeFlashcard'])->name('favorites.flashcard.add');
     Route::delete('/favorites/flashcard/{flashcardSet}', [FavoriteController::class, 'destroyFlashcard'])->name('favorites.flashcard.remove');
+    Route::post('/favorites/quiz/{quiz}', [FavoriteController::class, 'storeQuiz'])->name('favorites.quiz.add');
+    Route::delete('/favorites/quiz/{quiz}', [FavoriteController::class, 'destroyQuiz'])->name('favorites.quiz.remove');
 });
 
 // Protected Teacher Web Routes

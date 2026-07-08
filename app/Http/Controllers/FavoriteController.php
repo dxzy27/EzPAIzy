@@ -19,7 +19,7 @@ class FavoriteController extends Controller
 
         
         $favorites = \App\Models\Favorite::where('student_id', $user->id)
-            ->with(['content.teacher', 'flashcardSet.user']) // Corrected relationship names
+            ->with(['content.teacher', 'flashcardSet.user', 'quiz.teacher']) // Corrected relationship names
             ->latest()
             ->get();
 
@@ -113,6 +113,46 @@ class FavoriteController extends Controller
         
         $deleted = Favorite::where('student_id', $user->id)
             ->where('flashcard_set_id', $flashcardSet->id)
+            ->delete();
+            
+        if ($deleted) {
+             return response()->json(['success' => true, 'message' => 'Removed from revision']);
+        }
+        return response()->json(['success' => false, 'message' => 'Not found'], 404);
+    }
+
+    /**
+     * Add quiz to favorites (AJAX)
+     */
+    public function storeQuiz(\App\Models\Quiz $quiz)
+    {
+        $user = auth()->user();
+        
+        $exists = Favorite::where('student_id', $user->id)
+            ->where('quiz_id', $quiz->id)
+            ->exists();
+        
+        if ($exists) {
+            return response()->json(['success' => false, 'message' => 'Already in revision'], 400);
+        }
+        
+        Favorite::create([
+            'student_id' => $user->id,
+            'quiz_id' => $quiz->id
+        ]);
+        
+        return response()->json(['success' => true, 'message' => 'Added to revision']);
+    }
+
+    /**
+     * Remove quiz from favorites (AJAX)
+     */
+    public function destroyQuiz(\App\Models\Quiz $quiz)
+    {
+        $user = auth()->user();
+        
+        $deleted = Favorite::where('student_id', $user->id)
+            ->where('quiz_id', $quiz->id)
             ->delete();
             
         if ($deleted) {

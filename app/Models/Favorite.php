@@ -9,7 +9,7 @@ class Favorite extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['student_id', 'content_id', 'flashcard_set_id'];
+    protected $fillable = ['student_id', 'content_id', 'flashcard_set_id', 'quiz_id'];
     
     /**
      * Get the student who favorited this content
@@ -33,5 +33,13 @@ class Favorite extends Model
     public function flashcardSet()
     {
         return $this->belongsTo(FlashcardSet::class);
+    }
+
+    /**
+     * Get the quiz that was favorited
+     */
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
     }
 }

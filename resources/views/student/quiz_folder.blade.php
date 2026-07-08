@@ -61,7 +61,18 @@
                                 </span>
                             </div>
                             
-                            <h5 class="card-title fw-bold text-dark mb-2">{{ $quiz->title }}</h5>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title fw-bold text-dark mb-0" style="font-size: 1.15rem; line-height: 1.3;">{{ $quiz->title }}</h5>
+                                @php
+                                    $isFavorited = in_array($quiz->id, $favoritedQuizIds ?? []);
+                                @endphp
+                                <button class="btn btn-link p-0 text-warning favorite-btn" 
+                                        data-id="{{ $quiz->id }}" 
+                                        data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
+                                        title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}">
+                                    <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
+                                </button>
+                            </div>
                             <p class="text-muted small mb-3">
                                 <i class="bi bi-person-circle me-1"></i> {{ $quiz->teacher->name ?? 'Unknown Teacher' }}
                             </p>
@@ -216,3 +227,51 @@
     }
 </style>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtns = document.querySelectorAll('.favorite-btn');
+    
+    favoriteBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const quizId = this.dataset.id;
+            const isFavorited = this.dataset.favorited === 'true';
+            const icon = this.querySelector('i');
+            
+            // Optimistic UI Update
+            if (isFavorited) {
+                // Remove
+                this.dataset.favorited = 'false';
+                this.title = 'Add to Revision';
+                icon.classList.remove('bi-star-fill');
+                icon.classList.add('bi-star');
+                
+                fetch(`/student/favorites/quiz/${quizId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                });
+            } else {
+                // Add
+                this.dataset.favorited = 'true';
+                this.title = 'Remove from Revision';
+                icon.classList.remove('bi-star');
+                icon.classList.add('bi-star-fill');
+                
+                fetch(`/student/favorites/quiz/${quizId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+@endpush
