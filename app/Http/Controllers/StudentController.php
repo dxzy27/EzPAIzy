@@ -309,6 +309,16 @@ class StudentController extends Controller
     public function showFlashcardSet(FlashcardSet $set)
     {
         $allCards = $set->flashcards()->get(['id', 'term', 'definition']);
+
+        $progressMap = \App\Models\FlashcardProgress::where('user_id', auth()->id())
+            ->whereIn('flashcard_id', $allCards->pluck('id'))
+            ->pluck('status', 'flashcard_id')
+            ->toArray();
+
+        foreach ($allCards as $card) {
+            $card->status = $progressMap[$card->id] ?? 'new';
+        }
+
         return view('student.flashcards.study', [
             'flashcardSet' => $set,
             'dueCards' => $allCards

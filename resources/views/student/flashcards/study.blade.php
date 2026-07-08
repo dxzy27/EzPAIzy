@@ -239,6 +239,15 @@
         let typedAnswer = '';
         let currentItems = [];
 
+        function getStatusBadgeHtml(status) {
+            if (status === 'learning') {
+                return `<span class="badge bg-danger bg-opacity-25 text-danger border border-danger fw-bold ms-2" style="font-size: 0.75rem;"><i class="bi bi-x-circle me-1"></i>Still learning</span>`;
+            } else if (status === 'review' || status === 'mastered') {
+                return `<span class="badge bg-success bg-opacity-25 text-success border border-success fw-bold ms-2" style="font-size: 0.75rem;"><i class="bi bi-check-circle me-1"></i>Know</span>`;
+            }
+            return '';
+        }
+
         function parseDefinitionItems(definition) {
             let normalized = definition.trim();
             // Match standard lists starting with a digit like "1. ", " 2. ", etc.
@@ -460,7 +469,10 @@
                 if (mode === 'read') {
                     backFaceHtml = `
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
+                                \${getStatusBadgeHtml(currentCard.status)}
+                            </div>
                             <div class="d-flex align-items-center gap-2">
                                 @if(auth()->user()?->learning_style === 'auditory')
                                 <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
@@ -490,7 +502,10 @@
                     
                     backFaceHtml = `
                         <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
+                                \${getStatusBadgeHtml(currentCard.status)}
+                            </div>
                             <div class="d-flex align-items-center gap-2">
                                 <button id="show-answer-btn" type="button" class="btn btn-outline-light text-white-50 border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
                                     Show Answer
@@ -529,7 +544,10 @@
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
                         <div class="flashcard-face flashcard-front">
                             <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                                <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold" onclick="flipCard(event)" style="cursor:pointer;">FRONT</span>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold" onclick="flipCard(event)" style="cursor:pointer;">FRONT</span>
+                                    ${getStatusBadgeHtml(currentCard.status)}
+                                </div>
                                 <div class="d-flex align-items-center gap-2">
                                     @if(auth()->user()?->learning_style === 'auditory')
                                     <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentTerm();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
@@ -795,10 +813,17 @@
             })
             .then(response => response.json())
             .then(data => {
-                isSubmitting = false;
-                currentIndex++;
-                isFlipped = false;
-                render();
+                if (data.success && data.progress) {
+                    cards[currentIndex].status = data.progress.status;
+                }
+                render(); // Show the new badge on the card face
+                
+                setTimeout(() => {
+                    isSubmitting = false;
+                    currentIndex++;
+                    isFlipped = false;
+                    render();
+                }, 700); // 700ms transition delay so user can see the mark
             })
             .catch(error => {
                 console.error('Error:', error);
