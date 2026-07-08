@@ -59,10 +59,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer bg-white border-top-0">
-                            <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary w-100">
+                        <div class="card-footer bg-white border-top-0 d-flex gap-2">
+                            <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary flex-grow-1">
                                 <i class="bi bi-play-circle"></i> Open Flashcards
                             </a>
+                            <form action="{{ route('student.flashcards.reset', $set) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset flashcard progress for all users?');" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-secondary" title="Reset Progress" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                                    <i class="bi bi-arrow-clockwise fs-5"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

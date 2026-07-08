@@ -331,11 +331,10 @@ class StudentController extends Controller
     public function resetFlashcardSet(FlashcardSet $set)
     {
         $cardIds = $set->flashcards()->pluck('id')->toArray();
-        FlashcardProgress::where('user_id', auth()->id())
-            ->whereIn('flashcard_id', $cardIds)
+        FlashcardProgress::whereIn('flashcard_id', $cardIds)
             ->delete();
 
-        return redirect()->back()->with('success', 'Progress reset successfully for this flashcard set.');
+        return redirect()->back()->with('success', 'Progress reset successfully for this flashcard set for all users.');
     }
 
     /**
