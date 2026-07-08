@@ -20,90 +20,100 @@ class ExpertSystemController extends Controller
             'weight'  => 3,
             'dimension' => 'memory_encoding',
             'answers' => [
-                'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
-                'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
-                'C' => ['read_write' => 1, 'auditory' => 0, 'competitive' => 2],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q2' => [
             'weight'  => 3,
             'dimension' => 'distraction_response',
             'answers' => [
-                'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
-                'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
-                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q3' => [
             'weight'  => 2,
             'dimension' => 'new_topic_approach',
             'answers' => [
-                'A' => ['read_write' => 2, 'auditory' => 0, 'competitive' => 1],
-                'B' => ['read_write' => 0, 'auditory' => 2, 'competitive' => 1],
-                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q4' => [
             'weight'  => 3,
             'dimension' => 'exam_preparation',
             'answers' => [
-                'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
-                'B' => ['read_write' => 0, 'auditory' => 2, 'competitive' => 1],
-                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q5' => [
             'weight'  => 2,
             'dimension' => 'group_dynamics',
             'answers' => [
-                'A' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
-                'B' => ['read_write' => 1, 'auditory' => 0, 'competitive' => 2],
-                'C' => ['read_write' => 2, 'auditory' => 0, 'competitive' => 1],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q6' => [
             'weight'  => 3,
             'dimension' => 'failure_reaction',
             'answers' => [
-                'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
-                'B' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
-                'C' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q7' => [
             'weight'  => 2,
             'dimension' => 'content_preference',
             'answers' => [
-                'A' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
-                'B' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
-                'C' => ['read_write' => 0, 'auditory' => 1, 'competitive' => 2],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q8' => [
             'weight'  => 2,
             'dimension' => 'progress_motivation',
             'answers' => [
-                'A' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
-                'B' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
-                'C' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q9' => [
             'weight'  => 3,
             'dimension' => 'retention_strategy',
             'answers' => [
-                'A' => ['read_write' => 0, 'auditory' => 3, 'competitive' => 0],
-                'B' => ['read_write' => 3, 'auditory' => 0, 'competitive' => 0],
-                'C' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
         'q10' => [
             'weight'  => 2,
             'dimension' => 'self_assessment',
             'answers' => [
-                'A' => ['read_write' => 2, 'auditory' => 1, 'competitive' => 0],
-                'B' => ['read_write' => 0, 'auditory' => 0, 'competitive' => 3],
-                'C' => ['read_write' => 1, 'auditory' => 2, 'competitive' => 0],
+                'A' => ['read_write' => 3, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0],
+                'B' => ['read_write' => 0, 'auditory' => 3, 'visual' => 0, 'kinesthetic' => 0],
+                'C' => ['read_write' => 0, 'auditory' => 0, 'visual' => 3, 'kinesthetic' => 0],
+                'D' => ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 3],
             ],
         ],
     ];
@@ -137,16 +147,16 @@ class ExpertSystemController extends Controller
     {
         // Validate all 10 answers are present and are A, B, or C
         $request->validate([
-            'q1'  => 'required|in:A,B,C',
-            'q2'  => 'required|in:A,B,C',
-            'q3'  => 'required|in:A,B,C',
-            'q4'  => 'required|in:A,B,C',
-            'q5'  => 'required|in:A,B,C',
-            'q6'  => 'required|in:A,B,C',
-            'q7'  => 'required|in:A,B,C',
-            'q8'  => 'required|in:A,B,C',
-            'q9'  => 'required|in:A,B,C',
-            'q10' => 'required|in:A,B,C',
+            'q1'  => 'required|in:A,B,C,D',
+            'q2'  => 'required|in:A,B,C,D',
+            'q3'  => 'required|in:A,B,C,D',
+            'q4'  => 'required|in:A,B,C,D',
+            'q5'  => 'required|in:A,B,C,D',
+            'q6'  => 'required|in:A,B,C,D',
+            'q7'  => 'required|in:A,B,C,D',
+            'q8'  => 'required|in:A,B,C,D',
+            'q9'  => 'required|in:A,B,C,D',
+            'q10' => 'required|in:A,B,C,D',
         ]);
 
         $answers = $request->only(['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10']);
@@ -164,9 +174,11 @@ class ExpertSystemController extends Controller
             ['user_id' => auth()->id()],
             [
                 'answers'           => $answers,
-                'score_read_write'  => $result['scores']['read_write'],
-                'score_auditory'    => $result['scores']['auditory'],
-                'score_competitive' => $result['scores']['competitive'],
+                'score_read_write'  => $result['scores']['read_write'] ?? 0,
+                'score_auditory'    => $result['scores']['auditory'] ?? 0,
+                'score_visual'      => $result['scores']['visual'] ?? 0,
+                'score_kinesthetic' => $result['scores']['kinesthetic'] ?? 0,
+                'score_competitive' => $result['scores']['competitive'] ?? 0,
                 'confidence'        => $result['confidence'],
                 'learning_style'    => $style,
                 'persona'           => $persona,
@@ -201,7 +213,7 @@ class ExpertSystemController extends Controller
     // ─────────────────────────────────────────────────────────────────────────
     private function runInferenceEngine(array $answers): array
     {
-        $scores = ['read_write' => 0, 'auditory' => 0, 'competitive' => 0];
+        $scores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0, 'competitive' => 0];
         $totalWeight = 0;
 
         // ── PASS 1: Weighted Evidence Accumulation ───────────────────────────
@@ -236,7 +248,7 @@ class ExpertSystemController extends Controller
             // q1 (memory_encoding) and q9 (retention_strategy) are the most
             // diagnostic questions — they get double-weighted in a tie.
             $strongSignals = ['q1', 'q4', 'q9'];
-            $tieScores = ['read_write' => 0, 'auditory' => 0, 'competitive' => 0];
+            $tieScores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0, 'competitive' => 0];
 
             foreach ($strongSignals as $qKey) {
                 $chosen = $answers[$qKey] ?? null;
@@ -277,6 +289,8 @@ class ExpertSystemController extends Controller
         $labels = [
             'read_write'  => 'Read/Write Learner',
             'auditory'    => 'Auditory Learner',
+            'visual'      => 'Visual Learner',
+            'kinesthetic' => 'Kinaesthetic Learner',
             'competitive' => 'Competitive Learner',
         ];
 
@@ -334,20 +348,20 @@ class ExpertSystemController extends Controller
                 $recs[] = 'When you get a quiz question wrong, say the correct answer out loud three times — verbal repetition helps auditory learners correct mistakes faster.';
             }
 
-        } else { // competitive
-            $recs[] = 'Your dashboard highlights Quizzes first — use timed quiz mode to challenge yourself and aim for a higher score each attempt.';
-            $recs[] = 'Track your quiz scores in My Progress and set a personal target — beating your own record is the strongest motivator for your learning style.';
-
-            // Extra rec based on q3 (new topic approach)
-            if ($answers['q3'] === 'C') {
-                $recs[] = 'When encountering a new topic, jump straight into a short quiz to gauge your baseline — then study the gaps you discovered.';
-            } else {
-                $recs[] = 'Use flashcards as rapid-fire self-tests: flip through as many cards as possible in 5 minutes and measure how many you got right.';
+        } elseif ($style === 'visual') {
+            $recs[] = 'Your dashboard highlights Diagrams and Infographics first — make sure to study visual aids to lock in concepts.';
+            $recs[] = 'Use mental pictures of postures (Rukuk, Sujud) and Wudhu sequences. Visualizing these processes is your strongest memory tool.';
+            
+            if ($answers['q5'] === 'C') {
+                $recs[] = 'Try organizing your notes into highly visual mind maps or color-coded folders.';
             }
 
-            // Extra rec based on q6 (failure reaction)
-            if ($answers['q6'] === 'B') {
-                $recs[] = 'When you score below your target, immediately retake the quiz with the intention of beating it — competitive learners thrive on fast recovery cycles.';
+        } else { // kinesthetic
+            $recs[] = 'Your dashboard highlights Flashcard Review Mode and Interactive matching — study by physically interacting with cards.';
+            $recs[] = 'Practice using swipe flashcards and timed challenges — kinaesthetic learners learn best through active, physical actions.';
+
+            if ($answers['q3'] === 'D') {
+                $recs[] = 'Jump straight into active self-testing first, then check the reading materials to fill in what you missed.';
             }
         }
 

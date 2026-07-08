@@ -154,6 +154,7 @@
             <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
                 <div>
                     <h1>Study: {{ $flashcardSet->title }}</h1>
+                    @if(auth()->user()?->learning_style === 'kinesthetic')
                     <div class="btn-group mt-2" role="group" aria-label="Mode toggle">
                         <button type="button" class="btn btn-sm btn-outline-primary active" id="btn-mode-read" onclick="setMode('read')">
                             <i class="bi bi-book"></i> Read Mode
@@ -162,6 +163,7 @@
                             <i class="bi bi-psychology"></i> Review Mode
                         </button>
                     </div>
+                    @endif
                 </div>
                 <!-- Auto-read removed as requested -->
             </div>
@@ -536,6 +538,9 @@
         }
 
         window.setMode = function(newMode) {
+            @if(auth()->user()?->learning_style !== 'kinesthetic')
+                newMode = 'read';
+            @endif
             if (peekTimeout) {
                 clearTimeout(peekTimeout);
                 peekTimeout = null;
@@ -786,6 +791,125 @@
             if (typeof window.speakText === 'function' && cards && cards[currentIndex]) {
                 window.speakText(cards[currentIndex].definition);
             }
+        };
+
+        // ── SWIPE GESTURES FOR KINAESTHETIC LEARNERS ─────────────────────────
+        @if(auth()->user()?->learning_style === 'kinesthetic')
+        let startX = 0;
+        let startY = 0;
+        let isDragging = false;
+        const dragThreshold = 120; // px
+        
+        function handleDragStart(e) {
+            if (mode !== 'review') return;
+            if (isSubmitting) return;
+            // Prevent text selection or target interactions
+            const target = e.target;
+            if (target.closest('button') || target.closest('.btn') || target.closest('input') || target.closest('a') || target.closest('.badge')) return;
+            
+            isDragging = true;
+            const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+            startX = clientX;
+            startY = clientY;
+            
+            const cardInner = document.querySelector('.flashcard-inner');
+            if (cardInner) {
+                cardInner.style.transition = 'none';
+            }
+        }
+        
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+            
+            const diffX = clientX - startX;
+            const diffY = clientY - startY;
+            
+            // If dragging mostly vertically, don't trigger horizontal swipe
+            if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffX) < 10) {
+                return;
+            }
+            
+            e.preventDefault();
+            
+            const cardInner = document.querySelector('.flashcard-inner');
+            if (cardInner) {
+                const rotate = diffX * 0.05;
+                const flipClass = isFlipped ? ' rotateY(180deg)' : '';
+                cardInner.style.transform = `translateX(${diffX}px) translateY(${diffY * 0.2}px) rotate(${rotate}deg)${flipClass}`;
+                
+                if (diffX > 20) {
+                    cardInner.style.boxShadow = `0 10px 30px rgba(16, 185, 129, ${Math.min(0.8, diffX / 150)})`;
+                } else if (diffX < -20) {
+                    cardInner.style.boxShadow = `0 10px 30px rgba(239, 68, 68, ${Math.min(0.8, -diffX / 150)})`;
+                } else {
+                    cardInner.style.boxShadow = '';
+                }
+            }
+        }
+        
+        function handleDragEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const clientX = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
+            const diffX = clientX - startX;
+            
+            const cardInner = document.querySelector('.flashcard-inner');
+            if (!cardInner) return;
+            
+            cardInner.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            
+            if (diffX > dragThreshold) {
+                // Swipe right -> Know (quality = 5)
+                const currentCard = cards[currentIndex];
+                cardInner.style.transform = `translateX(1000px) rotate(45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
+                setTimeout(() => {
+                    submitReview(currentCard.id, 5);
+                }, 200);
+            } else if (diffX < -dragThreshold) {
+                // Swipe left -> Still learning (quality = 1)
+                const currentCard = cards[currentIndex];
+                cardInner.style.transform = `translateX(-1000px) rotate(-45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
+                setTimeout(() => {
+                    submitReview(currentCard.id, 1);
+                }, 200);
+            } else {
+                cardInner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
+                cardInner.style.boxShadow = '';
+            }
+        }
+        
+        function initSwipeGestures() {
+            const container = document.getElementById('flashcard-app');
+            if (!container) return;
+            
+            // Remove existing listeners
+            container.removeEventListener('mousedown', handleDragStart);
+            container.removeEventListener('touchstart', handleDragStart);
+            document.removeEventListener('mousemove', handleDragMove);
+            document.removeEventListener('touchmove', handleDragMove);
+            document.removeEventListener('mouseup', handleDragEnd);
+            document.removeEventListener('touchend', handleDragEnd);
+            
+            // Add listeners
+            container.addEventListener('mousedown', handleDragStart);
+            container.addEventListener('touchstart', handleDragStart, { passive: false });
+            document.addEventListener('mousemove', handleDragMove);
+            document.addEventListener('touchmove', handleDragMove, { passive: false });
+            document.addEventListener('mouseup', handleDragEnd);
+            document.addEventListener('touchend', handleDragEnd);
+        }
+        @endif
+
+        const originalRender = render;
+        render = function() {
+            originalRender();
+            @if(auth()->user()?->learning_style === 'kinesthetic')
+            initSwipeGestures();
+            @endif
         };
 
         render();

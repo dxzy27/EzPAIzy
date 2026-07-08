@@ -48,7 +48,8 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       options: {
         'A': 'Writing it down, summarizing it, or making a quick acronym.',
         'B': 'Remembering how it sounded, or saying it out loud to yourself.',
-        'C': 'Recalling whether you got it right or wrong in a self-test.',
+        'C': 'Visualizing a picture, diagram, or the layout of the page.',
+        'D': 'Actively practicing with swipe flashcards or taking a test.',
       },
     ),
     Question(
@@ -56,9 +57,10 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       dimension: 'Distraction Response',
       text: 'You lose focus while studying. What helps you get back on track?',
       options: {
-        'A': 'Writing a quick summary list or making a flashcard.',
+        'A': 'Writing a quick summary list or copying notes.',
         'B': 'Listening to background music or speaking thoughts aloud.',
-        'C': 'Starting a timed quiz or score-based challenge.',
+        'C': 'Looking at color-coded notes, mind maps, or diagrams.',
+        'D': 'Doing a timed interactive practice quiz or moving around.',
       },
     ),
     Question(
@@ -68,7 +70,8 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       options: {
         'A': 'Reading the text carefully and taking written summary notes.',
         'B': 'Reading the text and explaining difficult parts out loud.',
-        'C': 'Jumping straight into practice questions or self-tests.',
+        'C': 'Examining diagrams, flowcharts, or infographics.',
+        'D': 'Jumping straight into interactive matching or drag-and-drop exercises.',
       },
     ),
     Question(
@@ -78,7 +81,8 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       options: {
         'A': 'Writing summary sheets, acronyms, or re-writing notes.',
         'B': 'Recording voice notes, discussing with friends, or explaining concepts out loud.',
-        'C': 'Practicing as many timed exam questions as possible.',
+        'C': 'Reviewing color-coded diagrams, charts, and mental images.',
+        'D': 'Repeatedly practicing with swipe flashcards and timed mock tests.',
       },
     ),
     Question(
@@ -89,6 +93,7 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
         'A': 'Discussion-focused sessions explaining concepts verbally.',
         'B': 'Competitive quiz tournaments to see who gets the highest score.',
         'C': 'Studying quietly together and comparing written notes at the end.',
+        'D': 'Quizzing each other with flashcards or doing matching games.',
       },
     ),
     Question(
@@ -97,8 +102,9 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       text: 'You score poorly on a quiz you prepared for. What is your reaction?',
       options: {
         'A': 'Reviewing and re-writing corrected facts in your notes.',
-        'B': 'Retaking the quiz immediately to get a higher score.',
-        'C': 'Talking it over and explaining the mistakes out loud.',
+        'B': 'Talking it over and explaining the mistakes out loud.',
+        'C': 'Drawing a diagram, table, or mind-map of the correct answer.',
+        'D': 'Retaking the quiz or swiping cards immediately to try again.',
       },
     ),
     Question(
@@ -107,8 +113,9 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       text: 'Which type of study material do you prefer most?',
       options: {
         'A': 'A printed text where you can write notes and marginal definitions.',
-        'B': 'An audio lecture or podcast explaining the concepts.',
-        'C': 'An interactive quiz bank with instant score feedback.',
+        'B': 'An audio lecture, read-aloud option, or podcast.',
+        'C': 'Infographics, video lessons, and labeled diagrams.',
+        'D': 'Drag-and-drop games, swipe flashcards, and interactive simulations.',
       },
     ),
     Question(
@@ -116,9 +123,10 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       dimension: 'Progress Motivation',
       text: 'What motivates you most to keep studying?',
       options: {
-        'A': 'Seeing your scores improve on a leaderboard or progress graph.',
+        'A': 'Looking through folders of your completed written summaries.',
         'B': 'Hearing verbal praise or encouragement from a teacher or peer.',
-        'C': 'Looking through folders of your completed written summaries.',
+        'C': 'Seeing progress graphs, charts, and visual milestones.',
+        'D': 'Earning points, completing swipe streaks, or leveling up.',
       },
     ),
     Question(
@@ -126,9 +134,10 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       dimension: 'Retention Strategy',
       text: 'You need to memorize 15 terms for a test. What is your strategy?',
       options: {
-        'A': 'Saying the terms and definitions out loud repeatedly.',
-        'B': 'Writing down the terms and definitions multiple times.',
-        'C': 'Practicing active recall via rapid self-quizzing.',
+        'A': 'Writing down the terms and definitions multiple times.',
+        'B': 'Saying the terms and definitions out loud repeatedly.',
+        'C': 'Drawing a picture or mind map linking the terms.',
+        'D': 'Practicing active recall via rapid swiping of flashcards.',
       },
     ),
     Question(
@@ -137,8 +146,9 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
       text: 'What is your greatest learning strength?',
       options: {
         'A': 'Learning by writing summaries, lists, and notes.',
-        'B': 'Performing well under pressure, deadlines, or test scores.',
-        'C': 'Retaining information by explaining, discussing, or hearing it.',
+        'B': 'Retaining information by explaining, discussing, or hearing it.',
+        'C': 'Remembering shapes, layouts, colors, and visuals.',
+        'D': 'Retaining concepts by doing, practicing, and interactive movement.',
       },
     ),
   ];

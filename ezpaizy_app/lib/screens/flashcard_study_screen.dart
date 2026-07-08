@@ -146,6 +146,40 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
   Widget build(BuildContext context) {
     final auth = context.read<AuthProvider>();
     final isReadWrite = auth.user?['learning_style'] == 'read_write';
+    final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
+
+    if (!isKinesthetic) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Review Mode')),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.lock, size: 64, color: Colors.orange),
+                const SizedBox(height: 16),
+                const Text(
+                  'Exclusive Mode',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Active Review Mode is customized specifically for Kinaesthetic Learners to support physical touch and swipe card interactions.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Go Back'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     if (loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -182,6 +216,79 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
 
     final card = _cards[currentIndex];
 
+    Widget cardWidget = SizedBox(
+      height: 300,
+      child: GestureDetector(
+        onTap: _flip,
+        child: AnimatedBuilder(
+          animation: _flipAnim,
+          builder: (_, child) {
+            final angle = _flipAnim.value * 3.14159;
+            final showFront = _flipAnim.value <= 0.5;
+            return Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(angle),
+              child: showFront
+                  ? _cardFace(
+                      label: 'TERM',
+                      text: card['term'] ?? '',
+                      color: AppTheme.primary,
+                      icon: Icons.help_outline,
+                    )
+                  : Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()..rotateY(3.14159),
+                      child: _cardFace(
+                        label: 'DEFINITION',
+                        isTypingMode: true,
+                        text: card['definition'] ?? '',
+                        color: isAnswerRevealed ? Colors.teal.shade700 : Colors.indigo.shade700,
+                        icon: isAnswerRevealed ? Icons.check_circle_outline : Icons.keyboard,
+                      ),
+                    ),
+            );
+          },
+        ),
+      ),
+    );
+
+    if (isKinesthetic && showAnswer) {
+      cardWidget = Dismissible(
+        key: ValueKey<int>(card['id']),
+        direction: DismissDirection.horizontal,
+        onDismissed: (direction) {
+          if (direction == DismissDirection.endToStart) {
+            // Swiped Left: Again (0)
+            _submitReview(0);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Marked: Again 🔴'), duration: Duration(milliseconds: 700)),
+            );
+          } else {
+            // Swiped Right: Easy (5)
+            _submitReview(5);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Marked: Easy 🟢'), duration: Duration(milliseconds: 700)),
+            );
+          }
+        },
+        background: Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: 20),
+          color: Colors.blue.withOpacity(0.2),
+          child: const Icon(Icons.sentiment_very_satisfied, color: Colors.blue, size: 50),
+        ),
+        secondaryBackground: Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: 20),
+          color: Colors.red.withOpacity(0.2),
+          child: const Icon(Icons.sentiment_very_dissatisfied, color: Colors.red, size: 50),
+        ),
+        child: cardWidget,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Study: ${set!['title'] ?? ''}'),
@@ -211,43 +318,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
             const SizedBox(height: 30),
 
             // Flashcard
-            SizedBox(
-              height: 300,
-              child: GestureDetector(
-                onTap: _flip,
-                child: AnimatedBuilder(
-                  animation: _flipAnim,
-                  builder: (_, child) {
-                    final angle = _flipAnim.value * 3.14159;
-                    final showFront = _flipAnim.value <= 0.5;
-                    return Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.001)
-                        ..rotateY(angle),
-                      child: showFront
-                          ? _cardFace(
-                              label: 'TERM',
-                              text: card['term'] ?? '',
-                              color: AppTheme.primary,
-                              icon: Icons.help_outline,
-                            )
-                          : Transform(
-                              alignment: Alignment.center,
-                              transform: Matrix4.identity()..rotateY(3.14159),
-                              child: _cardFace(
-                                label: 'DEFINITION',
-                                isTypingMode: true,
-                                text: card['definition'] ?? '',
-                                color: isAnswerRevealed ? Colors.teal.shade700 : Colors.indigo.shade700,
-                                icon: isAnswerRevealed ? Icons.check_circle_outline : Icons.keyboard,
-                              ),
-                            ),
-                    );
-                  },
-                ),
-              ),
-            ),
+            cardWidget,
 
             const SizedBox(height: 24),
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
 
@@ -201,6 +203,9 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   // ─────────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+    final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
+
     if (loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -214,6 +219,70 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     final card = allCards[currentIndex];
     final isRead = mode == FlashcardMode.read;
 
+    Widget cardWidget = SizedBox(
+      height: 320,
+      child: GestureDetector(
+        onTap: _flip,
+        child: AnimatedBuilder(
+          animation: _flipAnim,
+          builder: (_, _) {
+            final angle = _flipAnim.value * 3.14159;
+            final showFront = _flipAnim.value <= 0.5;
+            return Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(angle),
+              child: showFront
+                  ? _buildFront(card)
+                  : Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()..rotateY(3.14159),
+                      child: _buildBack(card),
+                    ),
+            );
+          },
+        ),
+      ),
+    );
+
+    if (isKinesthetic && !isRead) {
+      cardWidget = Dismissible(
+        key: ValueKey<int>(card['id']),
+        direction: DismissDirection.horizontal,
+        onDismissed: (direction) {
+          final cardId = card['id'];
+          if (direction == DismissDirection.endToStart) {
+            // Swiped Left: Still learning (quality = 1)
+            ApiService.submitFlashcardReview(cardId, 1);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Marked: Still Learning 🔴'), duration: Duration(milliseconds: 700)),
+            );
+          } else {
+            // Swiped Right: Know (quality = 5)
+            ApiService.submitFlashcardReview(cardId, 5);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Marked: Know 🟢'), duration: Duration(milliseconds: 700)),
+            );
+          }
+          _next();
+        },
+        background: Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: 20),
+          color: Colors.green.withOpacity(0.2),
+          child: const Icon(Icons.check_circle, color: Colors.green, size: 50),
+        ),
+        secondaryBackground: Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: 20),
+          color: Colors.red.withOpacity(0.2),
+          child: const Icon(Icons.cancel, color: Colors.red, size: 50),
+        ),
+        child: cardWidget,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(set!['title'] ?? 'Flashcards'),
@@ -224,33 +293,35 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // ── Mode Toggle ────────────────────────────────────────────────
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
+            if (isKinesthetic) ...[
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _modeBtn(
+                      label: 'Read Mode',
+                      icon: Icons.menu_book,
+                      selected: isRead,
+                      onTap: () => _setMode(FlashcardMode.read),
+                      selectedColor: Colors.blue,
+                    ),
+                    _modeBtn(
+                      label: 'Revision Mode',
+                      icon: Icons.psychology,
+                      selected: !isRead,
+                      onTap: () => _setMode(FlashcardMode.revision),
+                      selectedColor: AppTheme.primary,
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _modeBtn(
-                    label: 'Read Mode',
-                    icon: Icons.menu_book,
-                    selected: isRead,
-                    onTap: () => _setMode(FlashcardMode.read),
-                    selectedColor: Colors.blue,
-                  ),
-                  _modeBtn(
-                    label: 'Revision Mode',
-                    icon: Icons.psychology,
-                    selected: !isRead,
-                    onTap: () => _setMode(FlashcardMode.revision),
-                    selectedColor: AppTheme.primary,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
+            ],
 
             // ── Counter Badge ──────────────────────────────────────────────
             Container(
@@ -270,32 +341,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
             const SizedBox(height: 16),
 
             // ── Flashcard ──────────────────────────────────────────────────
-            SizedBox(
-              height: 320,
-              child: GestureDetector(
-                onTap: _flip,
-                child: AnimatedBuilder(
-                  animation: _flipAnim,
-                  builder: (_, _) {
-                    final angle = _flipAnim.value * 3.14159;
-                    final showFront = _flipAnim.value <= 0.5;
-                    return Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.001)
-                        ..rotateY(angle),
-                      child: showFront
-                          ? _buildFront(card)
-                          : Transform(
-                              alignment: Alignment.center,
-                              transform: Matrix4.identity()..rotateY(3.14159),
-                              child: _buildBack(card),
-                            ),
-                    );
-                  },
-                ),
-              ),
-            ),
+            cardWidget,
             const SizedBox(height: 20),
 
             // ── Below-card controls ────────────────────────────────────────

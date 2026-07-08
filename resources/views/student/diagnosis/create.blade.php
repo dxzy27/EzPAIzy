@@ -246,7 +246,12 @@
         <label class="diag-option" for="q1_C">
             <input type="radio" name="q1" id="q1_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Recalling whether you got it right or wrong in a self-test.</span>
+            <span class="diag-option-text">Visualizing a picture, diagram, or the layout of the page.</span>
+        </label>
+        <label class="diag-option" for="q1_D">
+            <input type="radio" name="q1" id="q1_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Actively practicing with swipe flashcards or taking a test.</span>
         </label>
     </div>
 
@@ -262,7 +267,7 @@
         <label class="diag-option" for="q2_A">
             <input type="radio" name="q2" id="q2_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Writing a quick summary list or making a flashcard.</span>
+            <span class="diag-option-text">Writing a quick summary list or copying notes.</span>
         </label>
         <label class="diag-option" for="q2_B">
             <input type="radio" name="q2" id="q2_B" value="B">
@@ -272,7 +277,12 @@
         <label class="diag-option" for="q2_C">
             <input type="radio" name="q2" id="q2_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Starting a timed quiz or score-based challenge.</span>
+            <span class="diag-option-text">Looking at color-coded notes, mind maps, or diagrams.</span>
+        </label>
+        <label class="diag-option" for="q2_D">
+            <input type="radio" name="q2" id="q2_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Doing a timed interactive practice quiz or moving around.</span>
         </label>
     </div>
 
@@ -298,7 +308,12 @@
         <label class="diag-option" for="q3_C">
             <input type="radio" name="q3" id="q3_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Jumping straight into practice questions or self-tests.</span>
+            <span class="diag-option-text">Examining diagrams, flowcharts, or infographics.</span>
+        </label>
+        <label class="diag-option" for="q3_D">
+            <input type="radio" name="q3" id="q3_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Jumping straight into interactive matching or drag-and-drop exercises.</span>
         </label>
     </div>
 
@@ -324,7 +339,12 @@
         <label class="diag-option" for="q4_C">
             <input type="radio" name="q4" id="q4_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Practicing as many timed exam questions as possible.</span>
+            <span class="diag-option-text">Reviewing color-coded diagrams, charts, and mental images.</span>
+        </label>
+        <label class="diag-option" for="q4_D">
+            <input type="radio" name="q4" id="q4_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Repeatedly practicing with swipe flashcards and timed mock tests.</span>
         </label>
     </div>
 
@@ -340,17 +360,22 @@
         <label class="diag-option" for="q5_A">
             <input type="radio" name="q5" id="q5_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Discussion-focused sessions explaining concepts verbally.</span>
+            <span class="diag-option-text">Studying quietly together and comparing written notes at the end.</span>
         </label>
         <label class="diag-option" for="q5_B">
             <input type="radio" name="q5" id="q5_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Competitive quiz tournaments to see who gets the highest score.</span>
+            <span class="diag-option-text">Discussion-focused sessions explaining concepts verbally.</span>
         </label>
         <label class="diag-option" for="q5_C">
             <input type="radio" name="q5" id="q5_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Studying quietly together and comparing written notes at the end.</span>
+            <span class="diag-option-text">Sharing and explaining mind maps, flowcharts, or slides.</span>
+        </label>
+        <label class="diag-option" for="q5_D">
+            <input type="radio" name="q5" id="q5_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Quizzing each other with flashcards or doing matching games.</span>
         </label>
     </div>
 
@@ -371,12 +396,17 @@
         <label class="diag-option" for="q6_B">
             <input type="radio" name="q6" id="q6_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Retaking the quiz immediately to get a higher score.</span>
+            <span class="diag-option-text">Talking it over and explaining the mistakes out loud.</span>
         </label>
         <label class="diag-option" for="q6_C">
             <input type="radio" name="q6" id="q6_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Talking it over and explaining the mistakes out loud.</span>
+            <span class="diag-option-text">Drawing a diagram, table, or mind-map of the correct answer.</span>
+        </label>
+        <label class="diag-option" for="q6_D">
+            <input type="radio" name="q6" id="q6_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Retaking the quiz or swiping cards immediately to try again.</span>
         </label>
     </div>
 
@@ -397,12 +427,17 @@
         <label class="diag-option" for="q7_B">
             <input type="radio" name="q7" id="q7_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">An audio lecture or podcast explaining the concepts.</span>
+            <span class="diag-option-text">An audio lecture, read-aloud option, or podcast.</span>
         </label>
         <label class="diag-option" for="q7_C">
             <input type="radio" name="q7" id="q7_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">An interactive quiz bank with instant score feedback.</span>
+            <span class="diag-option-text">Infographics, video lessons, and labeled diagrams.</span>
+        </label>
+        <label class="diag-option" for="q7_D">
+            <input type="radio" name="q7" id="q7_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Drag-and-drop games, swipe flashcards, and interactive simulations.</span>
         </label>
     </div>
 
@@ -418,7 +453,7 @@
         <label class="diag-option" for="q8_A">
             <input type="radio" name="q8" id="q8_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Seeing your scores improve on a leaderboard or progress graph.</span>
+            <span class="diag-option-text">Looking through folders of your completed written summaries.</span>
         </label>
         <label class="diag-option" for="q8_B">
             <input type="radio" name="q8" id="q8_B" value="B">
@@ -428,7 +463,12 @@
         <label class="diag-option" for="q8_C">
             <input type="radio" name="q8" id="q8_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Looking through folders of your completed written summaries.</span>
+            <span class="diag-option-text">Seeing progress graphs, charts, and visual milestones.</span>
+        </label>
+        <label class="diag-option" for="q8_D">
+            <input type="radio" name="q8" id="q8_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Earning points, completing swipe streaks, or leveling up.</span>
         </label>
     </div>
 
@@ -444,17 +484,22 @@
         <label class="diag-option" for="q9_A">
             <input type="radio" name="q9" id="q9_A" value="A">
             <span class="diag-option-letter">A</span>
-            <span class="diag-option-text">Saying the terms and definitions out loud repeatedly.</span>
+            <span class="diag-option-text">Writing down the terms and definitions multiple times.</span>
         </label>
         <label class="diag-option" for="q9_B">
             <input type="radio" name="q9" id="q9_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Writing down the terms and definitions multiple times.</span>
+            <span class="diag-option-text">Saying the terms and definitions out loud repeatedly.</span>
         </label>
         <label class="diag-option" for="q9_C">
             <input type="radio" name="q9" id="q9_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Practicing active recall via rapid self-quizzing.</span>
+            <span class="diag-option-text">Drawing a picture or mind map linking the terms.</span>
+        </label>
+        <label class="diag-option" for="q9_D">
+            <input type="radio" name="q9" id="q9_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Practicing active recall via rapid swiping of flashcards.</span>
         </label>
     </div>
 
@@ -475,12 +520,17 @@
         <label class="diag-option" for="q10_B">
             <input type="radio" name="q10" id="q10_B" value="B">
             <span class="diag-option-letter">B</span>
-            <span class="diag-option-text">Performing well under pressure, deadlines, or test scores.</span>
+            <span class="diag-option-text">Retaining information by explaining, discussing, or hearing it.</span>
         </label>
         <label class="diag-option" for="q10_C">
             <input type="radio" name="q10" id="q10_C" value="C">
             <span class="diag-option-letter">C</span>
-            <span class="diag-option-text">Retaining information by explaining, discussing, or hearing it.</span>
+            <span class="diag-option-text">Remembering shapes, layouts, colors, and visuals.</span>
+        </label>
+        <label class="diag-option" for="q10_D">
+            <input type="radio" name="q10" id="q10_D" value="D">
+            <span class="diag-option-letter">D</span>
+            <span class="diag-option-text">Retaining concepts by doing, practicing, and interactive movement.</span>
         </label>
     </div>
 

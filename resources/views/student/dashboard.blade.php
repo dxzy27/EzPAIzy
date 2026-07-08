@@ -71,6 +71,8 @@
     }
     .style-badge.read_write  { background: #faf6f6; color: #453938; border: 1px solid #7d6867; }
     .style-badge.auditory    { background: #fff7ed; color: #7c2d12; border: 1px solid #e5b181; }
+    .style-badge.visual      { background: #fdf4ff; color: #701a75; border: 1px solid #d946ef; }
+    .style-badge.kinesthetic { background: #ecfeff; color: #083344; border: 1px solid #06b6d4; }
     .style-badge.competitive { background: #fef2f2; color: #991b1b; border: 1px solid #EF9086; }
 
     /* ── Recommended top-stripe ── */
@@ -82,7 +84,7 @@
 
 @php
     $user  = auth()->user();
-    $style = $user->learning_style; // null | read_write | auditory | competitive
+    $style = $user->learning_style; // null | read_write | auditory | visual | kinesthetic | competitive
 
     // ── Per-style configuration ──────────────────────────────────
     $styleConfig = [
@@ -107,6 +109,28 @@
             'tipTitle'    => 'Auditory Study Tip',
             'tip'         => 'After reading any material today, close it and say aloud — in your own words — what you just learned. If you can explain it, you have truly encoded it.',
             'recTitle'    => '✨ Recent Listenable Materials',
+        ],
+        'visual' => [
+            'accent'      => '#d946ef',
+            'accentLight' => '#fdf4ff',
+            'accentText'  => '#701a75',
+            'icon'        => 'bi-eye-fill',
+            'label'       => 'Visual Learner',
+            'tipIcon'     => '👁️',
+            'tipTitle'    => 'Visual Study Tip',
+            'tip'         => 'The Imagery: Visual learners absorb information by seeing shapes, diagrams, and processes. Presenting them with clear illustrations of prayer postures (Rukuk, Sujud) or the steps of Wudhu allows them to form a mental map of how the ritual looks.',
+            'recTitle'    => '✨ Recommended: Diagrams & Infographics',
+        ],
+        'kinesthetic' => [
+            'accent'      => '#06b6d4',
+            'accentLight' => '#ecfeff',
+            'accentText'  => '#083344',
+            'icon'        => 'bi-activity',
+            'label'       => 'Kinaesthetic Learner',
+            'tipIcon'     => '🤸',
+            'tipTitle'    => 'Kinaesthetic Study Tip',
+            'tip'         => 'Interact directly with your study tools! Use the Swipe Flashcards in Review Mode, and complete interactive exercises to lock in the material.',
+            'recTitle'    => '✨ Recommended: Swipe Flashcards & Exercises',
         ],
         'competitive' => [
             'accent'      => '#EF9086',
@@ -136,8 +160,20 @@
     $recentQuizzes    = $quizzes->sortByDesc('created_at')->take(5);
 
     // Style badge data
-    $styleIcons  = ['read_write'=>'bi-journal-text','auditory'=>'bi-ear-fill','competitive'=>'bi-trophy-fill'];
-    $styleLabels = ['read_write'=>'Read/Write Learner','auditory'=>'Auditory Learner','competitive'=>'Competitive Learner'];
+    $styleIcons  = [
+        'read_write'  => 'bi-journal-text',
+        'auditory'    => 'bi-ear-fill',
+        'visual'      => 'bi-eye-fill',
+        'kinesthetic' => 'bi-activity',
+        'competitive' => 'bi-trophy-fill',
+    ];
+    $styleLabels = [
+        'read_write'  => 'Read/Write Learner',
+        'auditory'    => 'Auditory Learner',
+        'visual'      => 'Visual Learner',
+        'kinesthetic' => 'Kinaesthetic Learner',
+        'competitive' => 'Competitive Learner',
+    ];
 @endphp
 
 <div class="container">
@@ -197,8 +233,8 @@
             'title'     => '📚 Materials',
             'count'     => $contentCount + $flashcardCount,
             'sub'       => 'Available Materials',
-            'color'     => ($style === 'read_write') ? '#7d6867' : (($style === 'auditory') ? '#e5b181' : '#14b8a6'),
-            'isPrimary' => ($style === 'auditory' || $style === 'read_write'),
+            'color'     => ($style === 'read_write') ? '#7d6867' : (($style === 'auditory') ? '#e5b181' : (($style === 'visual') ? '#d946ef' : (($style === 'kinesthetic') ? '#06b6d4' : '#14b8a6'))),
+            'isPrimary' => ($style === 'auditory' || $style === 'read_write' || $style === 'visual' || $style === 'kinesthetic'),
             'type'      => 'materials',
         ];
         $cardQuizzes = [
@@ -219,10 +255,8 @@
         ];
 
         // Card order based on style
-        if ($style === 'read_write' || $style === 'auditory') {
+        if ($style === 'read_write' || $style === 'auditory' || $style === 'visual' || $style === 'kinesthetic') {
             $orderedCards = [$cardMaterials, $cardQuizzes, $cardCompleted];
-        } elseif ($style === 'competitive') {
-            $orderedCards = [$cardQuizzes, $cardMaterials, $cardCompleted];
         } else {
             $orderedCards = [$cardQuizzes, $cardMaterials, $cardCompleted];
         }
