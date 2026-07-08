@@ -148,7 +148,7 @@
 <div class="container">
     <div class="row mb-5">
         <div class="col-12">
-            <a href="{{ route('student.flashcards.index') }}" class="btn btn-outline-secondary btn-sm mb-3">
+            <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="btn btn-outline-secondary btn-sm mb-3">
                 <i class="bi bi-arrow-left"></i> Back to Sets
             </a>
             <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
