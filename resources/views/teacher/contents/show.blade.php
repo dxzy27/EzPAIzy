@@ -61,6 +61,34 @@
                                     <source src="{{ asset('storage/' . $content->file_path) }}" type="video/{{ $content->file_type }}">
                                     Your browser does not support the video tag.
                                 </video>
+                            @elseif(strtolower($content->file_type) === 'pdf')
+                                <div class="p-4 bg-light border rounded w-100 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-file-earmark-pdf display-4 text-danger"></i>
+                                        <h5 class="mt-2 fw-bold text-dark">{{ basename($content->file_path) }}</h5>
+                                    </div>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <button class="btn btn-primary d-inline-flex align-items-center gap-2" onclick="togglePdfViewer()">
+                                            <i class="bi bi-book"></i> Read
+                                        </button>
+                                        <a href="{{ asset('storage/' . $content->file_path) }}" class="btn btn-outline-primary d-inline-flex align-items-center gap-2" download>
+                                            <i class="bi bi-download"></i> Get PDF
+                                        </a>
+                                    </div>
+                                    <div id="pdf-viewer-container" class="d-none mt-4 border rounded shadow-sm bg-white p-2">
+                                        <iframe src="{{ asset('storage/' . $content->file_path) }}" width="100%" height="700px" style="border: none;"></iframe>
+                                    </div>
+                                </div>
+                                <script>
+                                    function togglePdfViewer() {
+                                        const container = document.getElementById('pdf-viewer-container');
+                                        if (container.classList.contains('d-none')) {
+                                            container.classList.remove('d-none');
+                                        } else {
+                                            container.classList.add('d-none');
+                                        }
+                                    }
+                                </script>
                             @else
                                 <div class="p-4 bg-light border rounded d-inline-block">
                                     <i class="bi bi-file-earmark-text display-4 text-primary"></i>
