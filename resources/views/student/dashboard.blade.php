@@ -71,8 +71,8 @@
     }
     .style-badge.read_write  { background: #faf6f6; color: #453938; border: 1px solid #7d6867; }
     .style-badge.auditory    { background: #fff7ed; color: #7c2d12; border: 1px solid #e5b181; }
-    .style-badge.visual      { background: #fdf4ff; color: #701a75; border: 1px solid #d946ef; }
-    .style-badge.kinesthetic { background: #ecfeff; color: #083344; border: 1px solid #06b6d4; }
+    .style-badge.visual      { background: #ecfeff; color: #083344; border: 1px solid #06b6d4; }
+    .style-badge.kinesthetic { background: #fdf4ff; color: #701a75; border: 1px solid #d946ef; }
     .style-badge.competitive { background: #fef2f2; color: #991b1b; border: 1px solid #EF9086; }
 
     /* ── Recommended top-stripe ── */
@@ -111,9 +111,9 @@
             'recTitle'    => '✨ Recent Listenable Materials',
         ],
         'visual' => [
-            'accent'      => '#d946ef',
-            'accentLight' => '#fdf4ff',
-            'accentText'  => '#701a75',
+            'accent'      => '#06b6d4',
+            'accentLight' => '#ecfeff',
+            'accentText'  => '#083344',
             'icon'        => 'bi-eye-fill',
             'label'       => 'Visual Learner',
             'tipIcon'     => '👁️',
@@ -122,9 +122,9 @@
             'recTitle'    => '✨ Recommended: Diagrams & Infographics',
         ],
         'kinesthetic' => [
-            'accent'      => '#06b6d4',
-            'accentLight' => '#ecfeff',
-            'accentText'  => '#083344',
+            'accent'      => '#d946ef',
+            'accentLight' => '#fdf4ff',
+            'accentText'  => '#701a75',
             'icon'        => 'bi-activity',
             'label'       => 'Kinaesthetic Learner',
             'tipIcon'     => '🤸',
@@ -233,7 +233,7 @@
             'title'     => '📚 Materials',
             'count'     => $contentCount + $flashcardCount,
             'sub'       => 'Available Materials',
-            'color'     => ($style === 'read_write') ? '#7d6867' : (($style === 'auditory') ? '#e5b181' : (($style === 'visual') ? '#d946ef' : (($style === 'kinesthetic') ? '#06b6d4' : '#14b8a6'))),
+            'color'     => ($style === 'read_write') ? '#7d6867' : (($style === 'auditory') ? '#e5b181' : (($style === 'visual') ? '#06b6d4' : (($style === 'kinesthetic') ? '#d946ef' : '#14b8a6'))),
             'isPrimary' => ($style === 'auditory' || $style === 'read_write' || $style === 'visual' || $style === 'kinesthetic'),
             'type'      => 'materials',
         ];
