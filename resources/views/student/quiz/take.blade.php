@@ -270,8 +270,8 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBar.style.width = `${progressPct}%`;
         progressText.innerText = `Question ${index + 1} of ${questions.length}`;
 
-        let inputHtml = '';
-        
+        const isKinestheticEasy = (learningStyle === 'kinesthetic' && quizDifficulty === 'easy');
+
         if (type === 'mcq' && q.options) {
             // MCQ Rendering
             const opts = q.options;
@@ -279,8 +279,9 @@ document.addEventListener('DOMContentLoaded', function() {
             ['a', 'b', 'c', 'd'].forEach(key => {
                 if(opts[key]) {
                     const savedOptVal = localStorage.getItem(`hl_quiz_${q.id}_opt_${optIdx}`) || opts[key];
+                    const draggableAttr = isKinestheticEasy ? `draggable="true" ondragstart="handleDragStart(event, '${key}')"` : '';
                     inputHtml += `
-                        <div class="card option-card mb-3" onclick="selectOption('${key}')" id="opt-${key}">
+                        <div class="card option-card mb-3" ${draggableAttr} onclick="selectOption('${key}', true)" id="opt-${key}" style="${isKinestheticEasy ? 'cursor: grab; user-select: none;' : ''}">
                             <div class="card-body d-flex align-items-center">
                                 <div class="btn btn-sm btn-outline-primary me-3 text-uppercase fw-bold" style="width: 32px; height: 32px; padding: 0; line-height: 30px; text-align: center;">${key}</div>
                                 <span class="fs-5">${savedOptVal}</span>
@@ -324,6 +325,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const savedTitle = localStorage.getItem(`hl_quiz_${q.id}_title`) || q.question_text;
 
+        let dropzoneHtml = '';
+        if (type === 'mcq' && isKinestheticEasy) {
+            dropzoneHtml = `
+                <div class="mt-4">
+                    <label class="form-label text-success small text-uppercase fw-bold">Answer :</label>
+                    <div id="answer-dropzone" 
+                         class="border border-success rounded p-3 text-center text-success bg-success bg-opacity-10 d-flex align-items-center justify-content-center" 
+                         style="min-height: 85px; border-style: dashed !important; border-width: 2px !important; transition: all 0.2s ease-in-out;"
+                         ondragover="handleDragOver(event)"
+                         ondragleave="handleDragLeave(event)"
+                         ondrop="handleDrop(event)">
+                         <strong>Drag & drop your answer card here or tap to select</strong>
+                    </div>
+                </div>
+            `;
+        }
+
         const html = `
             <div class="card border-0 shadow-sm question-card animated fadeIn">
                 <div class="card-body p-4 p-md-5">
@@ -339,6 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="options-list">
                         ${inputHtml}
                     </div>
+                    ${dropzoneHtml}
                 </div>
                 <div class="card-footer bg-white border-0 p-4 d-flex justify-content-between">
                     <button class="btn btn-outline-secondary" onclick="prevQuestion()" ${index === 0 ? 'disabled' : ''}>Previous</button>
@@ -372,6 +391,66 @@ document.addEventListener('DOMContentLoaded', function() {
             el.classList.add('selected');
             userAnswers[currentQuestionIndex] = key;
             updateNextButton();
+
+            const dropzone = document.getElementById('answer-dropzone');
+            if (dropzone) {
+                const optText = el.querySelector('.fs-5').innerHTML;
+                dropzone.innerHTML = `
+                    <div class="d-flex align-items-center w-100 justify-content-between p-1 animated bounceIn">
+                        <div class="card option-card selected mb-0 flex-grow-1 border-success bg-success bg-opacity-10" style="border: 1px solid #198754 !important;">
+                            <div class="card-body d-flex align-items-center py-2 px-3">
+                                <div class="btn btn-sm btn-success me-3 text-uppercase fw-bold" style="width: 32px; height: 32px; padding: 0; line-height: 30px; text-align: center; background-color: #198754; border-color: #198754; color: white;">${key}</div>
+                                <span class="fs-5 text-success fw-bold text-start">${optText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                dropzone.style.borderColor = '#198754';
+                dropzone.style.borderStyle = 'solid';
+            }
+        }
+    };
+
+    window.handleDragStart = function(e, key) {
+        e.dataTransfer.setData("text/plain", key);
+        const card = document.getElementById(`opt-${key}`);
+        if (card) {
+            card.style.opacity = '0.5';
+        }
+    };
+
+    document.addEventListener('dragend', function(e) {
+        document.querySelectorAll('.option-card').forEach(el => {
+            el.style.opacity = '';
+        });
+    });
+
+    window.handleDragOver = function(e) {
+        e.preventDefault();
+        const dropzone = document.getElementById('answer-dropzone');
+        if (dropzone) {
+            dropzone.style.backgroundColor = 'rgba(25, 135, 84, 0.2)';
+            dropzone.style.borderColor = '#198754';
+        }
+    };
+
+    window.handleDragLeave = function(e) {
+        const dropzone = document.getElementById('answer-dropzone');
+        if (dropzone) {
+            dropzone.style.backgroundColor = 'rgba(25, 135, 84, 0.1)';
+            dropzone.style.borderColor = '#198754';
+        }
+    };
+
+    window.handleDrop = function(e) {
+        e.preventDefault();
+        const key = e.dataTransfer.getData("text/plain");
+        if (key) {
+            selectOption(key, true);
+        }
+        const dropzone = document.getElementById('answer-dropzone');
+        if (dropzone) {
+            dropzone.style.backgroundColor = 'rgba(25, 135, 84, 0.1)';
         }
     };
     
