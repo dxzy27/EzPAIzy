@@ -35,7 +35,7 @@
                         $item->description = 'Practice questions for ' . $fav->quiz_topic . ' (' . $fav->quiz_difficulty . ')';
                         $item->created_at = $fav->created_at;
                         $item->teacher = new \stdClass();
-                        $item->teacher->name = 'PAI Teacher';
+                        $item->teacher->name = $teacherName ?? 'PAI Teacher';
                     } else {
                         $item = $fav->content ?? $fav->flashcardSet;
                     }

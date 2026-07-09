@@ -15,15 +15,18 @@ class FavoriteController extends Controller
     {
         $user = auth()->user();
         
-        // Get all favorited items directly from Favorite model
-
+        $classTeacher = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->first();
+            
+        $teacherName = $classTeacher ? $classTeacher->name : 'PAI Teacher';
         
         $favorites = \App\Models\Favorite::where('student_id', $user->id)
             ->with(['content.teacher', 'flashcardSet.user']) // Corrected relationship names
             ->latest()
             ->get();
 
-        return view('student.revision', compact('favorites'));
+        return view('student.revision', compact('favorites', 'teacherName'));
     }
     
     /**
