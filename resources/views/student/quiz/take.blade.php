@@ -271,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
         progressText.innerText = `Question ${index + 1} of ${questions.length}`;
 
         const isKinestheticEasy = (learningStyle === 'kinesthetic' && quizDifficulty === 'easy');
+        let inputHtml = '';
 
         if (type === 'mcq' && q.options) {
             // MCQ Rendering
