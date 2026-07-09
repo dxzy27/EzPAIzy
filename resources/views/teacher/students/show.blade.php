@@ -185,7 +185,9 @@
                                                                     <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
                                                                         @php
                                                                             $answers = $p->raw_progress->student_answers ?? [];
-                                                                            $questions = $p->raw_progress->quiz->questions;
+                                                                            $questions = \App\Models\Question::where('topic', $p->raw_progress->topic)
+                                                                                ->where('difficulty', $p->raw_progress->difficulty)
+                                                                                ->get();
                                                                             $notes = $p->raw_progress->teacher_notes ?? [];
                                                                         @endphp
                                                                         
