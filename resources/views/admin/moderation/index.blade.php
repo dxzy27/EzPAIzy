@@ -105,7 +105,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $contents->links('pagination::bootstrap-5') }}</div>
+        <div class="mt-3">{{ $contents->links() }}</div>
 
     @elseif($tab === 'flashcards')
         {{-- Flashcards Moderation Table --}}
@@ -180,64 +180,52 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $flashcardSets->links('pagination::bootstrap-5') }}</div>
+        <div class="mt-3">{{ $flashcardSets->links() }}</div>
 
     @elseif($tab === 'questions')
         {{-- Question Bank Moderation Table --}}
         <div class="table-responsive">
-            <table class="table table-hover align-middle" style="font-size: 0.85rem;">
+            <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>id</th>
-                        <th style="min-width: 250px;">question_text</th>
-                        <th style="min-width: 150px;">options</th>
-                        <th style="min-width: 120px;">correct_answer</th>
-                        <th>topic</th>
-                        <th>difficulty</th>
-                        <th>points</th>
-                        <th>created_at</th>
-                        <th>updated_at</th>
-                        <th>type</th>
-                        <th class="text-end">actions</th>
+                        <th style="width: 45%;">Question Text</th>
+                        <th>Topic</th>
+                        <th>Difficulty</th>
+                        <th>Type</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($questions as $q)
                         <tr>
-                            <td><strong>{{ $q->id }}</strong></td>
                             <td>
-                                <div class="text-wrap" style="max-width: 350px;">{{ $q->question_text }}</div>
-                            </td>
-                            <td>
+                                <div class="fw-bold text-dark text-wrap" style="max-width: 450px;">{{ $q->question_text }}</div>
                                 @if($q->options)
-                                    <code class="small text-muted">{{ json_encode($q->options) }}</code>
-                                @else
-                                    <span class="text-muted small">NULL</span>
+                                    <div class="text-muted small mt-1">
+                                        Options: {{ implode(', ', array_filter((array)$q->options)) }}
+                                    </div>
                                 @endif
+                                <div class="text-success small mt-1">
+                                    <strong>Ans:</strong> {{ $q->correct_answer }}
+                                </div>
                             </td>
                             <td>
-                                <span class="text-success fw-bold">{{ $q->correct_answer }}</span>
+                                <span class="badge bg-light text-dark border px-2 py-1">{{ $q->topic ?? 'General' }}</span>
                             </td>
                             <td>
-                                <span class="badge bg-light text-dark border">{{ $q->topic }}</span>
+                                <span class="badge" style="font-size: 0.85rem; font-weight: 700; padding: 0.35rem 0.7rem; background: {{ $q->difficulty === 'easy' ? '#d1fae5; color:#065f46;' : ($q->difficulty === 'medium' ? '#fef3c7; color:#92400e;' : '#fee2e2; color:#991b1b;') }}">{{ ucfirst($q->difficulty) }}</span>
                             </td>
                             <td>
-                                <span class="badge" style="background: {{ $q->difficulty === 'easy' ? '#d1fae5; color:#065f46;' : ($q->difficulty === 'medium' ? '#fef3c7; color:#92400e;' : '#fee2e2; color:#991b1b;') }}">{{ $q->difficulty }}</span>
-                            </td>
-                            <td>{{ $q->points }}</td>
-                            <td class="text-muted small">{{ $q->created_at ? $q->created_at->format('Y-m-d H:i:s') : 'NULL' }}</td>
-                            <td class="text-muted small">{{ $q->updated_at ? $q->updated_at->format('Y-m-d H:i:s') : 'NULL' }}</td>
-                            <td>
-                                <span class="badge bg-secondary">{{ $q->type }}</span>
+                                <span class="badge bg-secondary text-uppercase">{{ $q->type }}</span>
                             </td>
                             <td>
-                                <div class="d-flex justify-content-end">
+                                <div class="d-flex justify-content-end gap-2">
                                     {{-- Delete Question --}}
                                     <form action="{{ route('admin.moderation.question.destroy', $q) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this question from the Question Bank? This action cannot be undone.');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete Question">
-                                            <i class="bi bi-trash"></i>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Question">
+                                            <i class="bi bi-trash me-1"></i>Delete
                                         </button>
                                     </form>
                                 </div>
@@ -245,7 +233,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="11" class="text-center py-4 text-muted">
+                            <td colspan="5" class="text-center py-4 text-muted">
                                 <i class="bi bi-database display-6 d-block mb-3 text-muted"></i>
                                 No questions found in the Question Bank.
                             </td>
@@ -254,7 +242,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $questions->links('pagination::bootstrap-5') }}</div>
+        <div class="mt-3">{{ $questions->links() }}</div>
     @endif
 </div>
 @endsection
