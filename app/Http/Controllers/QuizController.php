@@ -220,7 +220,7 @@ class QuizController extends Controller
             $request->input('instructions', '')
         );
 
-        $result = $this->callAI($prompt, 'openai/gpt-oss-120b:free', 0.85);
+        $result = $this->callAI($prompt, 'qwen/qwen-2.5-72b-instruct:free', 0.85);
 
         if (isset($result['error'])) {
             return redirect()->back()->with('error', 'AI generation failed: ' . $result['error']);
@@ -272,7 +272,7 @@ class QuizController extends Controller
         $gemini = $this->callAI($prompt, 'google/gemini-2.5-flash-lite-preview-09-2025', 0.85); // OpenRouter supports this
 
         // Fetch GPT questions using actual OpenAI model via OpenRouter
-        $gpt = $this->callAI($prompt, 'openai/gpt-oss-120b:free', 0.9);
+        $gpt = $this->callAI($prompt, 'qwen/qwen-2.5-72b-instruct:free', 0.9);
 
         return view('teacher.quizzes.compare', [
             'gemini' => $gemini,
@@ -419,7 +419,7 @@ class QuizController extends Controller
     /**
      * Call APIFree AI Unified Endpoint
      */
-    private function callAI($prompt, $model = 'openai/gpt-oss-120b:free', $temp = 0.7)
+    private function callAI($prompt, $model = 'qwen/qwen-2.5-72b-instruct:free', $temp = 0.7)
     {
         $key = env('OPENROUTER_API_KEY');
         
