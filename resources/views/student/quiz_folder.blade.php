@@ -33,13 +33,6 @@
                 @php
                     $isLocked = false;
                     $lockMessage = '';
-                    if ($quiz->difficulty === 'medium' && $mediumLocked) {
-                        $isLocked = true;
-                        $lockMessage = 'Score 80%+ on Easy quizzes first';
-                    } elseif ($quiz->difficulty === 'hard' && $hardLocked) {
-                        $isLocked = true;
-                        $lockMessage = 'Score 80%+ on Medium quizzes first';
-                    }
                 @endphp
                 <div class="col-md-6 col-lg-4 col-xl-3 quiz-card-col" data-title="{{ strtolower($quiz->title) }}" data-difficulty="{{ strtolower($quiz->difficulty) }}">
                     <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 12px; overflow: hidden; {{ $isLocked ? 'opacity: 0.7; filter: grayscale(20%);' : '' }}">
