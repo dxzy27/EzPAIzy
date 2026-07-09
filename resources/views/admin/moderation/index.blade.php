@@ -105,7 +105,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $contents->links() }}</div>
+        <div class="mt-3">{{ $contents->links('pagination::bootstrap-5') }}</div>
 
     @elseif($tab === 'flashcards')
         {{-- Flashcards Moderation Table --}}
@@ -180,7 +180,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $flashcardSets->links() }}</div>
+        <div class="mt-3">{{ $flashcardSets->links('pagination::bootstrap-5') }}</div>
 
     @elseif($tab === 'questions')
         {{-- Question Bank Moderation Table --}}
@@ -242,7 +242,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $questions->links() }}</div>
+        <div class="mt-3">{{ $questions->links('pagination::bootstrap-5') }}</div>
     @endif
 </div>
 @endsection
