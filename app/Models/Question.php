@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
-    protected $fillable = ['question_text', 'type', 'options', 'correct_answer', 'points', 'topic', 'difficulty'];
+    protected $fillable = ['question_text', 'type', 'options', 'correct_answer', 'points', 'topic', 'difficulty', 'is_flagged'];
 
     protected $casts = [
         'options' => 'array',

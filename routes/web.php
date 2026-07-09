@@ -188,6 +188,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/moderation/content/{content}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyContent'])->name('moderation.content.destroy');
     Route::post('/moderation/flashcard/{flashcardSet}/toggle-flag', [App\Http\Controllers\Admin\ModerationController::class, 'toggleFlashcardFlag'])->name('moderation.flashcard.toggle-flag');
     Route::delete('/moderation/flashcard/{flashcardSet}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyFlashcardSet'])->name('moderation.flashcard.destroy');
+    Route::post('/moderation/question/{question}/toggle-flag', [App\Http\Controllers\Admin\ModerationController::class, 'toggleQuestionFlag'])->name('moderation.question.toggle-flag');
     Route::delete('/moderation/question/{question}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyQuestion'])->name('moderation.question.destroy');
     // Quiz Moderation Removed because quizzes table is deleted
 });

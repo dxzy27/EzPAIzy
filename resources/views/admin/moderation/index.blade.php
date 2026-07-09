@@ -192,6 +192,7 @@
                         <th>Topic</th>
                         <th>Difficulty</th>
                         <th>Type</th>
+                        <th>Status</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -202,7 +203,16 @@
                                 <div class="fw-bold text-dark text-wrap" style="max-width: 450px;">{{ $q->question_text }}</div>
                                 @if($q->options)
                                     <div class="text-muted small mt-1">
-                                        Options: {{ implode(', ', array_filter((array)$q->options)) }}
+                                        <strong>Options:</strong>
+                                        @php
+                                            $optsArray = [];
+                                            foreach ((array)$q->options as $key => $val) {
+                                                if (!empty($val) && in_array(strtolower($key), ['a', 'b', 'c', 'd'])) {
+                                                    $optsArray[] = strtolower($key) . '. ' . $val;
+                                                }
+                                            }
+                                        @endphp
+                                        {{ implode(', ', $optsArray) }}
                                     </div>
                                 @endif
                                 <div class="text-success small mt-1">
@@ -219,13 +229,32 @@
                                 <span class="badge bg-secondary text-uppercase">{{ $q->type }}</span>
                             </td>
                             <td>
+                                @if($q->is_flagged)
+                                    <span class="badge bg-danger-soft text-danger" style="background:#fee2e2; color:#b91c1c; padding: 5px 10px; border-radius:6px; font-weight:500;">Flagged</span>
+                                @else
+                                    <span class="badge bg-success-soft text-success" style="background:#ecfdf5; color:#047857; padding: 5px 10px; border-radius:6px; font-weight:500;">Approved</span>
+                                @endif
+                            </td>
+                            <td>
                                 <div class="d-flex justify-content-end gap-2">
+                                    {{-- Flag Toggle --}}
+                                    <form action="{{ route('admin.moderation.question.toggle-flag', $q) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm {{ $q->is_flagged ? 'btn-success' : 'btn-outline-danger' }}" title="{{ $q->is_flagged ? 'Approve Question' : 'Flag Question' }}">
+                                            @if($q->is_flagged)
+                                                <i class="bi bi-check-circle me-1"></i>Approve
+                                            @else
+                                                <i class="bi bi-flag-fill me-1"></i>Flag
+                                            @endif
+                                        </button>
+                                    </form>
+
                                     {{-- Delete Question --}}
                                     <form action="{{ route('admin.moderation.question.destroy', $q) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this question from the Question Bank? This action cannot be undone.');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Question">
-                                            <i class="bi bi-trash me-1"></i>Delete
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                 </div>

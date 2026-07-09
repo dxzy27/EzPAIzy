@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Content;
 use App\Models\FlashcardSet;
+use App\Models\Question;
 use Illuminate\Http\Request;
 
 class ModerationController extends Controller
@@ -39,6 +40,16 @@ class ModerationController extends Controller
         $question->delete();
 
         return redirect()->back()->with('success', "Question '{$text}' has been permanently deleted from the Question Bank.");
+    }
+
+    public function toggleQuestionFlag(Question $question)
+    {
+        $question->is_flagged = !$question->is_flagged;
+        $question->save();
+
+        $status = $question->is_flagged ? 'flagged as inappropriate' : 'approved';
+        $text = \Illuminate\Support\Str::limit($question->question_text, 30);
+        return redirect()->back()->with('success', "Question '{$text}' has been {$status}.");
     }
 
     public function toggleContentFlag(Content $content)
