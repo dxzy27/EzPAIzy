@@ -243,10 +243,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('bi-star-fill');
                 icon.classList.add('bi-star');
                 
-                fetch(`/student/favorites/quiz/${topic}/${difficulty}`, {
+                fetch("{{ url('/student/favorites/quiz') }}/" + encodeURIComponent(topic) + "/" + difficulty, {
                     method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Accept': 'application/json'
                     }
                 });
@@ -257,10 +257,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('bi-star');
                 icon.classList.add('bi-star-fill');
                 
-                fetch(`/student/favorites/quiz/${topic}/${difficulty}`, {
+                fetch("{{ url('/student/favorites/quiz') }}/" + encodeURIComponent(topic) + "/" + difficulty, {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Accept': 'application/json'
                     }
                 });
