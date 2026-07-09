@@ -203,7 +203,6 @@
                                 <div class="fw-bold text-dark text-wrap" style="max-width: 450px;">{{ $q->question_text }}</div>
                                 @if($q->options)
                                     <div class="small mt-1">
-                                        <strong>Options:</strong>
                                         <div class="ps-2 mt-1">
                                             @foreach((array)$q->options as $key => $val)
                                                 @if(!empty($val) && in_array(strtolower($key), ['a', 'b', 'c', 'd']))
