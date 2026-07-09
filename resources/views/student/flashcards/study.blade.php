@@ -477,6 +477,7 @@
                             </button>
                             @endif
                             <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                        </div>
                     </div>
                     <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
                         ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
