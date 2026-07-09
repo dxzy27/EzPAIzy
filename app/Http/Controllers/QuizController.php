@@ -94,7 +94,7 @@ class QuizController extends Controller
         // Clear generated questions session
         session()->forget('generated_questions');
 
-        return redirect()->route('quizzes.folder', $validated['topic'])
+        return redirect()->route('teacher.quizzes.folder', $validated['topic'])
             ->with('success', 'Questions added to Question Bank successfully!');
     }
 
@@ -160,7 +160,7 @@ class QuizController extends Controller
             ]);
         }
 
-        return redirect()->route('quizzes.folder', $validated['topic'])
+        return redirect()->route('teacher.quizzes.folder', $validated['topic'])
             ->with('success', 'Questions updated successfully!');
     }
 
@@ -171,7 +171,7 @@ class QuizController extends Controller
     {
         Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
 
-        return redirect()->route('quizzes.folder', $topic)
+        return redirect()->route('teacher.quizzes.folder', $topic)
             ->with('success', 'Questions deleted successfully!');
     }
 
@@ -309,7 +309,7 @@ class QuizController extends Controller
             }
         }
 
-        return redirect()->route('quizzes.folder', $validated['topic'])
+        return redirect()->route('teacher.quizzes.folder', $validated['topic'])
             ->with('success', 'Selected questions saved to Question Bank!');
     }
 
