@@ -68,7 +68,7 @@ class StudentManagementController extends Controller
         $selectedTopic = $request->query('topic');
 
         // Fetch Quiz Progress
-        $quizzesProgress = $student->progress()->with(['quiz.teacher', 'quiz.questions'])->get();
+        $quizzesProgress = $student->progress()->get();
 
         // Fetch Flashcard Progress
         $attemptedSetIds = \App\Models\FlashcardProgress::where('user_id', $student->id)
@@ -81,10 +81,8 @@ class StudentManagementController extends Controller
 
         // Add Quiz Progress
         foreach ($quizzesProgress as $qp) {
-            if (!$qp->quiz) continue;
-            
             // Apply topic filter
-            if ($selectedTopic && $qp->quiz->topic !== $selectedTopic) {
+            if ($selectedTopic && $qp->topic !== $selectedTopic) {
                 continue;
             }
             // Apply type filter
@@ -95,14 +93,14 @@ class StudentManagementController extends Controller
             $unified->push((object)[
                 'id' => $qp->id,
                 'type' => 'Quiz',
-                'topic' => $qp->quiz->topic ?? 'General',
-                'title' => $qp->quiz->title ?? 'Deleted Quiz',
-                'teacher' => $qp->quiz->teacher->name ?? 'Unknown',
+                'topic' => $qp->topic ?? 'General',
+                'title' => ($qp->topic ?? 'General') . ' (' . ucfirst($qp->difficulty ?? 'easy') . ')',
+                'teacher' => $teacher->name ?? 'Unknown',
                 'date' => $qp->updated_at,
                 'status' => $qp->status, 
-                'score' => ($qp->quiz->difficulty === 'hard' || $qp->quiz->difficulty === 'medium') && $qp->status === 'pending' ? 'Pending' : $qp->score . '%',
+                'score' => (($qp->difficulty === 'hard' || $qp->difficulty === 'medium') && $qp->status === 'pending') ? 'Pending' : $qp->score . '%',
                 'score_num' => $qp->score,
-                'difficulty' => $qp->quiz->difficulty ?? 'easy',
+                'difficulty' => $qp->difficulty ?? 'easy',
                 'raw_progress' => $qp
             ]);
         }
