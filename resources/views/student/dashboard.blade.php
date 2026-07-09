@@ -226,6 +226,25 @@
         </div>
     </div>
 
+    {{-- ── Study Tip Card (diagnosed students only) ── --}}
+    @if($style && $cfg)
+    <div class="card mb-4 p-4"
+         style="border-left: 4px solid {{ $cfg['accent'] }}; background: {{ $cfg['accentLight'] }}; border-radius: 14px; border: 1px solid {{ $cfg['accent'] }};">
+        <div class="d-flex align-items-start gap-3">
+            <div style="font-size:1.8rem;flex-shrink:0;">{{ $cfg['tipIcon'] }}</div>
+            <div>
+                <div class="fw-bold mb-1"
+                     style="color:{{ $cfg['accentText'] }};font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;">
+                    {{ $cfg['tipTitle'] }}
+                </div>
+                <div style="font-size:.92rem;color:{{ $cfg['accentText'] }};line-height:1.55;">
+                    {{ $cfg['tip'] }}
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- ── Stats Cards (order + accent changes per style) ── --}}
     {{-- Define the 3 card slots --}}
     @php
@@ -321,25 +340,6 @@
         </div>
         @endforeach
     </div>
-
-    {{-- ── Study Tip Card (diagnosed students only) ── --}}
-    @if($style && $cfg)
-    <div class="card mb-4 p-4"
-         style="border-left: 4px solid {{ $cfg['accent'] }}; background: {{ $cfg['accentLight'] }}; border-radius: 14px; border: 1px solid {{ $cfg['accent'] }};">
-        <div class="d-flex align-items-start gap-3">
-            <div style="font-size:1.8rem;flex-shrink:0;">{{ $cfg['tipIcon'] }}</div>
-            <div>
-                <div class="fw-bold mb-1"
-                     style="color:{{ $cfg['accentText'] }};font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;">
-                    {{ $cfg['tipTitle'] }}
-                </div>
-                <div style="font-size:.92rem;color:{{ $cfg['accentText'] }};line-height:1.55;">
-                    {{ $cfg['tip'] }}
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
 
     {{-- ── Bottom Row: Recent Results + Recommended Materials ── --}}
     <div class="row">
