@@ -352,7 +352,7 @@ class QuizController extends Controller
             ]
         );
 
-        return redirect()->route('student.progress')->with('success', 'Quiz results submitted!');
+        return redirect()->route('student.quizzes.folder', ['topic' => $topic])->with('success', 'Quiz results submitted!');
     }
 
     /**
