@@ -152,8 +152,8 @@
                                         </a>
                                     @endif
                                 @else
-                                    <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#quizModal{{ $quiz->difficulty }}" style="border-radius: 8px;" {{ $isLocked ? 'disabled' : '' }}>
-                                        <i class="bi bi-pencil-square me-1"></i> {{ $p ? 'Retake & Log Score' : 'Log Score' }}
+                                    <button class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;" onclick="alert('There are no available quizzes right now')">
+                                        <i class="bi bi-play-fill me-1"></i> Take Quiz
                                     </button>
                                 @endif
                             </div>
