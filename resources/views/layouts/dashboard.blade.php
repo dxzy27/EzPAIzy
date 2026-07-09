@@ -65,6 +65,22 @@
                     $accent = '#7d6867';
                     $accentSoft = '#faf7f2';
                     $pageBg = '#fcfbfa';
+                } elseif ($style === 'visual') {
+                    $sidebarBg = '#083344'; // dark cyan
+                    $sidebarHover = '#0e465c';
+                    $sidebarActive = '#06b6d4';
+                    $sidebarActiveBg = 'rgba(6,182,212,.18)';
+                    $accent = '#06b6d4';
+                    $accentSoft = '#ecfeff';
+                    $pageBg = '#f0fafd';
+                } elseif ($style === 'kinesthetic') {
+                    $sidebarBg = '#2e1065'; // dark purple
+                    $sidebarHover = '#43148c';
+                    $sidebarActive = '#d946ef';
+                    $sidebarActiveBg = 'rgba(217,70,239,.18)';
+                    $accent = '#d946ef';
+                    $accentSoft = '#fdf4ff';
+                    $pageBg = '#fbf0fd';
                 } else {
                     // Basic UI (default green/teal)
                     $sidebarBg = '#134e4a';
