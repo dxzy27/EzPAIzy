@@ -176,10 +176,15 @@ class StudentController extends Controller
             ->with(['teacher', 'progress' => function($q) use ($user) {
                 $q->where('student_id', $user->id);
             }])
-            ->withCount('questions')
             ->orderByRaw("CASE WHEN difficulty = 'easy' THEN 1 WHEN difficulty = 'medium' THEN 2 WHEN difficulty = 'hard' THEN 3 ELSE 4 END ASC")
             ->orderBy('created_at', 'desc')
             ->paginate(12);
+
+        foreach ($quizzes as $quiz) {
+            $quiz->questions_count = \App\Models\Question::where('topic', $quiz->topic)
+                ->where('difficulty', $quiz->difficulty)
+                ->count();
+        }
 
         $favoritedQuizIds = Favorite::where('student_id', $user->id)
             ->whereNotNull('quiz_id')

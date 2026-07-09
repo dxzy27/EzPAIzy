@@ -38,6 +38,12 @@ class QuizController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
+        foreach ($quizzes as $quiz) {
+            $quiz->questions_count = Question::where('topic', $quiz->topic)
+                ->where('difficulty', $quiz->difficulty)
+                ->count();
+        }
+
         return view('teacher.quizzes.folder', compact('quizzes', 'topic'));
     }
 
@@ -83,6 +89,8 @@ class QuizController extends Controller
                 'options' => $q['options'] ?? null,
                 'correct_answer' => $q['correct'],
                 'points' => 10,
+                'topic' => $quiz->topic,
+                'difficulty' => $quiz->difficulty,
             ]);
         }
 
@@ -143,6 +151,8 @@ class QuizController extends Controller
                 'options' => $q['options'] ?? null,
                 'correct_answer' => $q['correct'],
                 'points' => 10,
+                'topic' => $quiz->topic,
+                'difficulty' => $quiz->difficulty,
             ]);
         }
 
@@ -299,7 +309,9 @@ class QuizController extends Controller
                     'type' => $q['type'] ?? (($quiz->difficulty === 'easy') ? 'mcq' : 'short_answer'),
                     'options' => $q['options'] ?? null,
                     'correct_answer' => $q['correct_answer'] ?? '',
-                    'points' => 10
+                    'points' => 10,
+                    'topic' => $quiz->topic,
+                    'difficulty' => $quiz->difficulty,
                 ]);
             }
         }
@@ -313,7 +325,10 @@ class QuizController extends Controller
      */
     public function take(Quiz $quiz)
     {
-        $quiz->load('questions');
+        $questions = Question::where('topic', $quiz->topic)
+            ->where('difficulty', $quiz->difficulty)
+            ->get();
+        $quiz->setRelation('questions', $questions);
         return view('student.quiz.take', compact('quiz'));
     }
 
@@ -353,14 +368,12 @@ class QuizController extends Controller
             return response()->json([]);
         }
 
-        // Fetch questions where the parent quiz matches the topic and difficulty
-        $questions = \App\Models\Question::whereHas('quiz', function ($query) use ($topic, $difficulty) {
-            $query->where('topic', $topic)
-                  ->where('difficulty', $difficulty);
-        })
-        ->get()
-        ->unique('question_text')
-        ->values();
+        // Fetch questions matching the topic and difficulty directly
+        $questions = \App\Models\Question::where('topic', $topic)
+            ->where('difficulty', $difficulty)
+            ->get()
+            ->unique('question_text')
+            ->values();
 
         return response()->json($questions);
     }
