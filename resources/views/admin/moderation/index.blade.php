@@ -33,6 +33,36 @@
 
     {{-- Tab Contents --}}
     @if($tab === 'materials')
+        {{-- Filters --}}
+        <div class="row mb-4 align-items-end bg-white p-3 rounded shadow-sm border mx-0 g-2">
+            <div class="col-md-8 mt-0">
+                <label for="materials-topic-filter" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Filter Topic</label>
+                <select id="materials-topic-filter" class="form-select form-select-sm" onchange="applyMaterialsFilters()">
+                    <option value="">All Topics</option>
+                    @foreach($materialsTopics as $topic)
+                        <option value="{{ $topic }}" {{ request('topic') === $topic ? 'selected' : '' }}>{{ $topic }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4 mt-0 text-end">
+                @if(request('topic'))
+                    <a href="{{ route('admin.moderation.index', ['tab' => 'materials']) }}" class="btn btn-outline-secondary btn-sm w-100 py-1"><i class="bi bi-x-circle me-1"></i> Clear Filters</a>
+                @endif
+            </div>
+        </div>
+
+        <script>
+            function applyMaterialsFilters() {
+                const topic = document.getElementById('materials-topic-filter').value;
+                let url = new URL(window.location.href);
+                url.searchParams.set('tab', 'materials');
+                if (topic) url.searchParams.set('topic', topic);
+                else url.searchParams.delete('topic');
+                url.searchParams.delete('page');
+                window.location.href = url.toString();
+            }
+        </script>
+
         {{-- Study Materials Moderation Table --}}
         <div class="table-responsive">
             <table class="table table-hover align-middle">
@@ -108,6 +138,36 @@
         <div class="mt-3">{{ $contents->appends(request()->query())->links() }}</div>
 
     @elseif($tab === 'flashcards')
+        {{-- Filters --}}
+        <div class="row mb-4 align-items-end bg-white p-3 rounded shadow-sm border mx-0 g-2">
+            <div class="col-md-8 mt-0">
+                <label for="flashcards-topic-filter" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Filter Topic</label>
+                <select id="flashcards-topic-filter" class="form-select form-select-sm" onchange="applyFlashcardsFilters()">
+                    <option value="">All Topics</option>
+                    @foreach($flashcardsTopics as $topic)
+                        <option value="{{ $topic }}" {{ request('topic') === $topic ? 'selected' : '' }}>{{ $topic }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4 mt-0 text-end">
+                @if(request('topic'))
+                    <a href="{{ route('admin.moderation.index', ['tab' => 'flashcards']) }}" class="btn btn-outline-secondary btn-sm w-100 py-1"><i class="bi bi-x-circle me-1"></i> Clear Filters</a>
+                @endif
+            </div>
+        </div>
+
+        <script>
+            function applyFlashcardsFilters() {
+                const topic = document.getElementById('flashcards-topic-filter').value;
+                let url = new URL(window.location.href);
+                url.searchParams.set('tab', 'flashcards');
+                if (topic) url.searchParams.set('topic', topic);
+                else url.searchParams.delete('topic');
+                url.searchParams.delete('page');
+                window.location.href = url.toString();
+            }
+        </script>
+
         {{-- Flashcards Moderation Table --}}
         <div class="table-responsive">
             <table class="table table-hover align-middle">

@@ -24,11 +24,21 @@ class ModerationController extends Controller
         $questions = [];
         
         $allTopics = \App\Models\Question::select('topic')->distinct()->pluck('topic')->filter()->toArray();
+        $materialsTopics = Content::select('topic')->distinct()->pluck('topic')->filter()->toArray();
+        $flashcardsTopics = FlashcardSet::select('topic')->distinct()->pluck('topic')->filter()->toArray();
 
         if ($tab === 'materials') {
-            $contents = Content::with('teacher')->latest()->paginate(15);
+            $query = Content::with('teacher')->latest();
+            if ($request->filled('topic')) {
+                $query->where('topic', $request->input('topic'));
+            }
+            $contents = $query->paginate(15);
         } elseif ($tab === 'flashcards') {
-            $flashcardSets = FlashcardSet::with('user')->latest()->paginate(15);
+            $query = FlashcardSet::with('user')->latest();
+            if ($request->filled('topic')) {
+                $query->where('topic', $request->input('topic'));
+            }
+            $flashcardSets = $query->paginate(15);
         } elseif ($tab === 'questions') {
             $query = \App\Models\Question::latest();
             
@@ -42,7 +52,7 @@ class ModerationController extends Controller
             $questions = $query->paginate(15);
         }
 
-        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'questions', 'tab', 'allTopics'));
+        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'questions', 'tab', 'allTopics', 'materialsTopics', 'flashcardsTopics'));
     }
 
     public function destroyQuestion(\App\Models\Question $question)
