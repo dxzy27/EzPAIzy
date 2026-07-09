@@ -122,15 +122,7 @@ class User extends Authenticatable
         return $this->hasMany(Progress::class, 'student_id');
     }
     
-    /**
-     * A teacher can have many quizzes.
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function quizzes()
-    {
-        return $this->hasMany(Quiz::class, 'teacher_id');
-    }
-    
+
     /**
      * A teacher can have many contents.
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

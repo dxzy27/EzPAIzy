@@ -144,10 +144,10 @@
                                             {{ ucfirst($d) }}
                                         </span>
                                     </td>
-                                    <td style="color:var(--text-muted);">{{ $quiz->questions->count() }}</td>
+                                    <td style="color:var(--text-muted);">{{ $quiz->questions_count }}</td>
                                     <td style="color:var(--text-muted); font-size:.8rem;">{{ $quiz->created_at->format('d M') }}</td>
                                     <td>
-                                        <a href="{{ route('teacher.quizzes.show', $quiz) }}" class="btn btn-sm btn-outline-secondary" style="font-size:.75rem; padding:3px 10px;">View</a>
+                                        <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-sm btn-outline-secondary" style="font-size:.75rem; padding:3px 10px;">View</a>
                                     </td>
                                 </tr>
                                 @endforeach

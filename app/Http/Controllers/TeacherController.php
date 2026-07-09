@@ -11,9 +11,25 @@ class TeacherController extends Controller
      */
     public function dashboard()
     {
-        /** @var \App\Models\User $user */
         $user = auth()->user();
-        $quizzes = $user->quizzes()->orderBy('updated_at', 'desc')->take(5)->get();
+
+        // Get all unique quiz topics/difficulties that have questions
+        $quizzes = \App\Models\Question::select('topic', 'difficulty')
+            ->selectRaw('count(*) as questions_count, max(updated_at) as latest_update')
+            ->groupBy('topic', 'difficulty')
+            ->orderBy('latest_update', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function ($q) {
+                $quiz = new \stdClass();
+                $quiz->topic = $q->topic;
+                $quiz->difficulty = $q->difficulty;
+                $quiz->title = $q->topic . ' (' . ucfirst($q->difficulty) . ')';
+                $quiz->questions_count = $q->questions_count;
+                $quiz->created_at = \Carbon\Carbon::parse($q->latest_update);
+                $quiz->updated_at = \Carbon\Carbon::parse($q->latest_update);
+                return $quiz;
+            });
         
         $contents = $user->contents()->get();
         $flashcardSets = $user->flashcardSets()->get();
