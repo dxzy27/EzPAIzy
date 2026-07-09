@@ -150,11 +150,11 @@
                                             <i class="bi bi-lock-fill me-1"></i> Locked
                                         </button>
                                     @elseif($p)
-                                        <a href="{{ route('quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-outline-primary w-100 shadow-sm" style="border-radius: 8px;">
+                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-outline-primary w-100 shadow-sm" style="border-radius: 8px;">
                                             <i class="bi bi-arrow-repeat me-1"></i> Retake Quiz
                                         </a>
                                     @else
-                                        <a href="{{ route('quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;">
+                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;">
                                             <i class="bi bi-play-fill me-1"></i> Take Quiz
                                         </a>
                                     @endif

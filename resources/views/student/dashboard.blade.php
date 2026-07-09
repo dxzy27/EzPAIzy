@@ -514,7 +514,7 @@
                                 $isFlash = class_basename($item) === 'FlashcardSet';
                                 $itemUrl = $isFlash
                                     ? route('student.flashcards.show', $item)
-                                    : route('quiz.take', ['topic' => $item->topic, 'difficulty' => $item->difficulty]);
+                                    : route('student.quiz.take', ['topic' => $item->topic, 'difficulty' => $item->difficulty]);
                                 $preview = Str::limit($item->title, 60);
                                 $topicLabel = $item->topic ?? 'General';
                             @endphp
