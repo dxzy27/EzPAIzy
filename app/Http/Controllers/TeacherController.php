@@ -60,7 +60,7 @@ class TeacherController extends Controller
             'quizzes' => $quizzes,
             'recentContents' => $recentContents,
             'totalContentsCount' => $totalContentsCount,
-            'quizzesCount' => $user->quizzes()->count(),
+            'quizzesCount' => \App\Models\Question::select('topic', 'difficulty')->groupBy('topic', 'difficulty')->get()->count(),
             'studentsCount' => $studentsCount,
         ]);
     }
