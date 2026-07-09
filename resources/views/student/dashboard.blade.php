@@ -272,12 +272,7 @@
                 <div class="primary-card-stripe" style="background:{{ $cfg['accent'] }};"></div>
                 @endif
                 <div class="card-body d-flex flex-column text-center pt-3">
-                    @if($card['isPrimary'] && $cfg)
-                    <span class="badge mb-2 align-self-center"
-                          style="background:{{ $cfg['accentLight'] }};color:{{ $cfg['accentText'] }};font-size:.7rem;">
-                        ⭐ Recommended for you
-                    </span>
-                    @endif
+
                     <h5 class="card-title">{{ $card['title'] }}</h5>
                     <h2 style="color:{{ $card['color'] }}">{{ $card['count'] }}</h2>
                     <p class="text-muted">{{ $card['sub'] }}</p>
@@ -510,8 +505,8 @@
                         @endif
 
                     @elseif($style === 'auditory')
-                        {{-- Auditory: reading materials first, with Listen buttons --}}
-                        @php $auditoryList = $recentContents->concat($recentFlashcards)->sortByDesc('created_at')->take(5); @endphp
+                        {{-- Auditory: quizzes and flashcards (both have audio buttons) --}}
+                        @php $auditoryList = $recentFlashcards->concat($recentQuizzes)->sortByDesc('created_at')->take(5); @endphp
                         @if($auditoryList->count() > 0)
                         <div class="d-flex flex-column gap-2">
                             @foreach($auditoryList as $item)
@@ -519,7 +514,7 @@
                                 $isFlash = class_basename($item) === 'FlashcardSet';
                                 $itemUrl = $isFlash
                                     ? route('student.flashcards.show', $item)
-                                    : route('student.contents.show', $item);
+                                    : route('student.quiz.take', $item);
                                 $preview = Str::limit($item->title, 60);
                                 $topicLabel = $item->topic ?? 'General';
                             @endphp
@@ -531,7 +526,7 @@
                                     @if($isFlash)
                                     <span class="badge" style="background:#dcfce7;color:#166534;font-size:.72rem;">🃏 Flashcard</span>
                                     @else
-                                    <span class="badge" style="background:#e0f2fe;color:#0c4a6e;font-size:.72rem;">📄 Material ⭐</span>
+                                    <span class="badge" style="background:#fff3cd;color:#856404;font-size:.72rem;">📝 Quiz</span>
                                     @endif
                                 </div>
                                 {{-- Title --}}
@@ -543,7 +538,7 @@
                                 <a href="{{ $itemUrl }}"
                                    class="btn btn-sm"
                                    style="background:#f0f9ff;border:1px solid #7dd3fc;color:#0c4a6e;font-size:.78rem;flex-shrink:0;">
-                                    {{ $isFlash ? 'Practice' : 'Read' }}
+                                    {{ $isFlash ? 'Practice' : 'Take Quiz' }}
                                 </a>
                             </div>
                             @endforeach
