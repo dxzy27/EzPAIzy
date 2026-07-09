@@ -387,6 +387,17 @@ class QuizController extends Controller
             ? "MCQ questions with exactly 4 options (a, b, c, d) and a single correct option."
             : "Short answer questions requiring textual verification.";
 
+        if ($difficulty === 'hard' || $difficulty === 'medium') {
+            $typeInstruction .= " For these KBAT questions, the suggested correct_answer MUST strictly follow the Malaysian SPM MRSM KBAT format, consisting of exactly 4 sentences:
+            1. First sentence: Isi (marked with '(I)' at the end of the sentence)
+            2. Second sentence: Huraian (marked with '(H)' at the end of the sentence)
+            3. Third sentence: Huraian Lengkap (Contoh / Kesan, marked with '(HL)' at the end of the sentence)
+            4. Fourth sentence: Kesimpulan (marked with '(K)' at the end of the sentence)
+            
+            Example format of correct_answer:
+            'Wanita yang tidak menutup aurat dengan sempurna akan menarik perhatian lelaki. (I) Hal ini kerana pakaian seksi tersebut akan mengundang pandangan rakus mata-mata lelaki berhidung belang. (H) Kesannya akan berlaku kes-kes jenayah seperti rogol dan bunuh. (HL) Kesimpulannya kita hendaklah mengamalkan cara hidup Islam supaya dilindungi Allah di dunia dan di akhirat. (K)'";
+        }
+
         $prompt = "You are an AI specialized in Pendidikan Agama Islam (PAI). Generate exactly {$count} fresh, unique, and newly formulated quiz questions for the topic: '{$topic}' at a '{$difficulty}' difficulty level.
         The questions must be {$typeInstruction}
         IMPORTANT: Avoid repeating standard/generic textbook questions. Ensure they are creative, highly diverse, and fully written in Bahasa Melayu.
@@ -398,7 +409,7 @@ class QuizController extends Controller
                     \"text\": \"The question text\",
                     \"type\": \"" . ($difficulty === 'easy' ? 'mcq' : 'short_answer') . "\",
                     \"options\": " . ($difficulty === 'easy' ? "{\"a\": \"Option A\", \"b\": \"Option B\", \"c\": \"Option C\", \"d\": \"Option D\"}" : "null") . ",
-                    \"correct_answer\": \"" . ($difficulty === 'easy' ? "a/b/c/d" : "The correct text answer") . "\",
+                    \"correct_answer\": \"" . ($difficulty === 'easy' ? "a/b/c/d" : "The correct text answer following the KBAT format") . "\",
                     \"points\": 10
                 }
             ]
