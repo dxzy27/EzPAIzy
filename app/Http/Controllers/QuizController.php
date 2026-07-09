@@ -220,7 +220,7 @@ class QuizController extends Controller
             $request->input('instructions', '')
         );
 
-        $result = $this->callAI($prompt, 'openai/gpt-oss-120b:free');
+        $result = $this->callAI($prompt, 'openai/gpt-oss-120b:free', 0.85);
 
         if (isset($result['error'])) {
             return redirect()->back()->with('error', 'AI generation failed: ' . $result['error']);
@@ -269,7 +269,7 @@ class QuizController extends Controller
         );
 
         // Fetch Gemini questions
-        $gemini = $this->callAI($prompt, 'google/gemini-2.5-flash-lite-preview-09-2025'); // OpenRouter supports this
+        $gemini = $this->callAI($prompt, 'google/gemini-2.5-flash-lite-preview-09-2025', 0.85); // OpenRouter supports this
 
         // Fetch GPT questions using actual OpenAI model via OpenRouter
         $gpt = $this->callAI($prompt, 'openai/gpt-oss-120b:free', 0.9);
@@ -387,9 +387,9 @@ class QuizController extends Controller
             ? "MCQ questions with exactly 4 options (a, b, c, d) and a single correct option."
             : "Short answer questions requiring textual verification.";
 
-        $prompt = "You are an AI specialized in Pendidikan Agama Islam (PAI). Generate exactly {$count} quiz questions for the topic: '{$topic}' at a '{$difficulty}' difficulty level.
+        $prompt = "You are an AI specialized in Pendidikan Agama Islam (PAI). Generate exactly {$count} fresh, unique, and newly formulated quiz questions for the topic: '{$topic}' at a '{$difficulty}' difficulty level.
         The questions must be {$typeInstruction}
-        IMPORTANT: All questions and answers MUST be written in Bahasa Melayu.
+        IMPORTANT: Avoid repeating standard/generic textbook questions. Ensure they are creative, highly diverse, and fully written in Bahasa Melayu.
         
         Enforce output strictly as a JSON object matching this schema:
         {
@@ -419,7 +419,7 @@ class QuizController extends Controller
     /**
      * Call APIFree AI Unified Endpoint
      */
-    private function callAI($prompt, $model = 'openai/gpt-oss-120b:free', $temp = 0.2)
+    private function callAI($prompt, $model = 'openai/gpt-oss-120b:free', $temp = 0.7)
     {
         $key = env('OPENROUTER_API_KEY');
         
