@@ -79,9 +79,10 @@ class QuizController extends Controller
         ]);
 
         foreach ($validated['questions'] as $q) {
+            $qType = ($validated['difficulty'] === 'easy') ? 'mcq' : (($validated['difficulty'] === 'hard') ? 'kbat' : 'short_answer');
             Question::create([
                 'question_text' => $q['text'],
-                'type' => $q['type'],
+                'type' => $qType,
                 'options' => $q['options'] ?? null,
                 'correct_answer' => $q['correct'],
                 'points' => 10,
@@ -296,9 +297,10 @@ class QuizController extends Controller
 
         if (is_array($selectedQuestions)) {
             foreach ($selectedQuestions as $q) {
+                $qType = ($validated['difficulty'] === 'easy') ? 'mcq' : (($validated['difficulty'] === 'hard') ? 'kbat' : 'short_answer');
                 Question::create([
                     'question_text' => $q['text'] ?? $q['question_text'],
-                    'type' => $q['type'] ?? (($validated['difficulty'] === 'easy') ? 'mcq' : 'short_answer'),
+                    'type' => $qType,
                     'options' => $q['options'] ?? null,
                     'correct_answer' => $q['correct_answer'] ?? '',
                     'points' => 10,
@@ -406,7 +408,7 @@ class QuizController extends Controller
             \"questions\": [
                 {
                     \"text\": \"The question text\",
-                    \"type\": \"" . ($difficulty === 'easy' ? 'mcq' : 'short_answer') . "\",
+                    \"type\": \"" . ($difficulty === 'easy' ? 'mcq' : ($difficulty === 'hard' ? 'kbat' : 'short_answer')) . "\",
                     \"options\": " . ($difficulty === 'easy' ? "{\"a\": \"Option A\", \"b\": \"Option B\", \"c\": \"Option C\", \"d\": \"Option D\"}" : "null") . ",
                     \"correct_answer\": \"" . ($difficulty === 'easy' ? "a/b/c/d" : "The correct text answer following the KBAT format") . "\",
                     \"points\": 10
