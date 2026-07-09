@@ -77,7 +77,7 @@
                     <p id="feedback-text" class="mb-4 lead"></p>
                     <p id="time-taken-text" class="text-muted fs-5 d-none mb-4"></p>
                     
-                    <form action="{{ route('student.submit', $quiz) }}" method="POST" id="submit-form">
+                    <form action="{{ route('student.submit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" id="submit-form">
                         @csrf
                         <input type="hidden" name="score" id="score-input">
                         <input type="hidden" name="answers" id="answers-input">
@@ -95,7 +95,8 @@
                 @php
                     $existingNote = \App\Models\StudentNote::where('user_id', auth()->id())
                         ->where('resource_type', 'quiz')
-                        ->where('resource_id', $quiz->id)
+                        ->where('topic', $quiz->topic)
+                        ->where('difficulty', $quiz->difficulty)
                         ->first();
                 @endphp
                 <div class="card border-success shadow-sm sticky-top" style="top: 20px; z-index: 100;">
@@ -162,7 +163,7 @@
                 title: title,
                 content: content,
                 resource_type: 'quiz',
-                resource_id: {{ $quiz->id }}
+                resource_id: null
             })
         })
         .then(res => res.json())
