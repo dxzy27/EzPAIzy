@@ -105,7 +105,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $contents->links() }}</div>
+        <div class="mt-3">{{ $contents->appends(request()->query())->links() }}</div>
 
     @elseif($tab === 'flashcards')
         {{-- Flashcards Moderation Table --}}
@@ -180,7 +180,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $flashcardSets->links() }}</div>
+        <div class="mt-3">{{ $flashcardSets->appends(request()->query())->links() }}</div>
 
     @elseif($tab === 'questions')
         {{-- Question Bank Moderation Table --}}
@@ -242,7 +242,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $questions->links() }}</div>
+        <div class="mt-3">{{ $questions->appends(request()->query())->links() }}</div>
     @endif
 </div>
 @endsection
