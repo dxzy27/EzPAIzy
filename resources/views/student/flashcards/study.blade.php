@@ -376,6 +376,13 @@
             const currentCard = cards[currentIndex];
             let controlsHtml = '';
             
+            let stillArrow = '';
+            let knowArrow = '';
+            @if(auth()->user()?->learning_style === 'kinesthetic')
+            stillArrow = '<i class="bi bi-arrow-left me-2 fw-bold" style="font-size: 1.1rem;"></i>';
+            knowArrow = '<i class="bi bi-arrow-right ms-2 fw-bold" style="font-size: 1.1rem;"></i>';
+            @endif
+
             if (mode === 'review') {
                 if (!isFlipped) {
                     controlsHtml = `
@@ -395,10 +402,10 @@
                             <p class="fw-bold mb-3" id="grading-message">${initialMsg}</p>
                             <div class="d-flex justify-content-center gap-3">
                                 <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                    <i class="bi bi-x-lg fs-5"></i> Still learning
+                                    ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
                                 </button>
                                 <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
-                                    <i class="bi bi-check-lg fs-5"></i> Know
+                                    <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
                                 </button>
                             </div>
                         </div>
@@ -410,10 +417,10 @@
                         <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
                         <div class="d-flex justify-content-center gap-3">
                             <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                <i class="bi bi-x-lg fs-5"></i> Still learning
+                                ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
                             </button>
                             <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
-                                <i class="bi bi-check-lg fs-5"></i> Know
+                                <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
                             </button>
                         </div>
                     </div>
@@ -932,22 +939,27 @@
             cardInner.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             
             if (diffX < -dragThreshold) {
-                // Swipe Left -> Previous Card
-                if (currentIndex > 0) {
+                // Swipe Left -> Still learning
+                if (cards[currentIndex]) {
                     cardInner.style.transform = `translateX(-1000px) rotate(-45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
                     setTimeout(() => {
-                        prevCard();
+                        submitReview(cards[currentIndex].id, 1);
                     }, 200);
                 } else {
                     cardInner.style.transform = '';
                     cardInner.style.boxShadow = '';
                 }
             } else if (diffX > dragThreshold) {
-                // Swipe Right -> Next Card
-                cardInner.style.transform = `translateX(1000px) rotate(45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
-                setTimeout(() => {
-                    nextCard();
-                }, 200);
+                // Swipe Right -> Know
+                if (cards[currentIndex]) {
+                    cardInner.style.transform = `translateX(1000px) rotate(45deg)${isFlipped ? ' rotateY(180deg)' : ''}`;
+                    setTimeout(() => {
+                        submitReview(cards[currentIndex].id, 5);
+                    }, 200);
+                } else {
+                    cardInner.style.transform = '';
+                    cardInner.style.boxShadow = '';
+                }
             } else {
                 cardInner.style.transform = '';
                 cardInner.style.boxShadow = '';
