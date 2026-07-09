@@ -26,13 +26,25 @@
         <div class="row">
             @foreach($favorites as $fav)
                 @php
-                    $item = $fav->content ?? $fav->flashcardSet ?? $fav->quiz;
+                    $isQuiz = !empty($fav->topic) && !empty($fav->difficulty);
+                    if ($isQuiz) {
+                        $item = new \stdClass();
+                        $item->topic = $fav->topic;
+                        $item->difficulty = $fav->difficulty;
+                        $item->title = $fav->topic . ' (' . ucfirst($fav->difficulty) . ')';
+                        $item->description = 'Practice questions for ' . $fav->topic . ' (' . $fav->difficulty . ')';
+                        $item->created_at = $fav->created_at;
+                        $item->teacher = new \stdClass();
+                        $item->teacher->name = 'PAI Teacher';
+                    } else {
+                        $item = $fav->content ?? $fav->flashcardSet;
+                    }
+                    
                     // Skip if item was deleted but favorite record remains (safety check)
                     if(!$item) continue;
                     
                     $isContent = !empty($fav->content);
                     $isFlashcard = !empty($fav->flashcardSet);
-                    $isQuiz = !empty($fav->quiz);
                     
                     $typeLabel = $isContent ? 'Content' : ($isFlashcard ? 'Flashcard Set' : 'Quiz');
                     $icon = $isContent ? 'bi-file-text' : ($isFlashcard ? 'bi-card-list' : 'bi-patch-question');
@@ -41,11 +53,11 @@
                     
                     $viewRoute = $isContent 
                         ? route('student.contents.show', $item) 
-                        : ($isFlashcard ? route('student.flashcards.show', $item) : route('student.quiz.take', $item));
+                        : ($isFlashcard ? route('student.flashcards.show', $item) : route('student.quiz.take', ['topic' => $item->topic, 'difficulty' => $item->difficulty]));
                         
                     $deleteApiUrl = $isContent 
                         ? "/student/favorites/{$item->id}" 
-                        : ($isFlashcard ? "/student/favorites/flashcard/{$item->id}" : "/student/favorites/quiz/{$item->id}");
+                        : ($isFlashcard ? "/student/favorites/flashcard/{$item->id}" : "/student/favorites/quiz/{$item->topic}/{$item->difficulty}");
                 @endphp
                 <div class="col-md-6 mb-4 revision-card-col" data-title="{{ strtolower($item->title) }}">
                     <div class="card h-100 shadow-sm {{ $bgClass }}">

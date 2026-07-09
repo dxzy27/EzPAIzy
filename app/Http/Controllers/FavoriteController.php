@@ -19,7 +19,7 @@ class FavoriteController extends Controller
 
         
         $favorites = \App\Models\Favorite::where('student_id', $user->id)
-            ->with(['content.teacher', 'flashcardSet.user', 'quiz.teacher']) // Corrected relationship names
+            ->with(['content.teacher', 'flashcardSet.user']) // Corrected relationship names
             ->latest()
             ->get();
 
