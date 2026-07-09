@@ -804,8 +804,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const allHls = document.querySelectorAll('.visual-hl');
             allHls.forEach(hl => {
-                const isIntersecting = selection.containsNode(hl, true) || hl.contains(range.commonAncestorContainer);
-                if (isIntersecting) {
+                if (range.intersectsNode(hl)) {
                     const parent = hl.parentNode;
                     while (hl.firstChild) {
                         parent.insertBefore(hl.firstChild, hl);
