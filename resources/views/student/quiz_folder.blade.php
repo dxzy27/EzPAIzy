@@ -105,7 +105,7 @@
                                         @php
                                             $scoreClass = $p->score >= 70 ? 'text-success' : ($p->score >= 50 ? 'text-warning' : 'text-danger');
                                             $barBg = $p->score >= 70 ? 'bg-success' : ($p->score >= 50 ? 'bg-warning' : 'bg-danger');
-                                            $statusText = $p->score >= 70 ? 'Passed' : ($p->score >= 50 ? 'Average' : 'Failed');
+                                            $statusText = $p->score >= 70 ? 'Excellent' : ($p->score >= 50 ? 'Good' : 'Need Practice');
                                         @endphp
                                         <div class="d-flex justify-content-between text-muted small mb-1">
                                             <span>Quiz Score</span>

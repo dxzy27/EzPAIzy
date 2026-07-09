@@ -121,11 +121,11 @@
                                             @elseif(($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'graded')
                                                 <span class="badge bg-primary">Graded</span>
                                             @elseif($p->score_num >= 70)
-                                                <span class="badge bg-success">Passed</span>
+                                                <span class="badge bg-success">Excellent</span>
                                             @elseif($p->score_num >= 50)
-                                                <span class="badge bg-warning">Average</span>
+                                                <span class="badge bg-warning">Good</span>
                                             @else
-                                                <span class="badge bg-danger">Failed</span>
+                                                <span class="badge bg-danger">Need Practice</span>
                                             @endif
                                         @else
                                             @if($p->status === 'Mastered')

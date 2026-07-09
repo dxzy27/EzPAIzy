@@ -144,7 +144,7 @@ class ProgressController extends Controller
         $totalQuizzes = $quizzesOnly->count();
         
         $gradedQuizzes = $quizzesOnly->filter(function($p) {
-            return $p->difficulty !== 'hard' && $p->difficulty !== 'medium';
+            return ($p->difficulty !== 'hard' && $p->difficulty !== 'medium') || ($p->status === 'graded');
         });
         $averageScore = $gradedQuizzes->count() > 0 ? round($gradedQuizzes->avg('score_num'), 1) : 0;
         $highestScore = $gradedQuizzes->count() > 0 ? $gradedQuizzes->max('score_num') : 0;
