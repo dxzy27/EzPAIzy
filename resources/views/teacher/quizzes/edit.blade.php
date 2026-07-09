@@ -16,13 +16,6 @@
                         @csrf
                         @method('PUT')
 
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Quiz Title</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $quiz->title) }}" required>
-                            @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
                         <div class="mb-3">
                             <label for="topic" class="form-label">Topic</label>

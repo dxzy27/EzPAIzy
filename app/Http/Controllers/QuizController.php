@@ -32,17 +32,36 @@ class QuizController extends Controller
      */
     public function folder($topic)
     {
-        $quizzes = Quiz::where('teacher_id', auth()->id())
-            ->where('topic', $topic)
-            ->orderByRaw("CASE WHEN difficulty = 'easy' THEN 1 WHEN difficulty = 'medium' THEN 2 WHEN difficulty = 'hard' THEN 3 ELSE 4 END ASC")
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        $difficulties = ['easy', 'medium', 'hard'];
+        $quizzes = collect();
 
-        foreach ($quizzes as $quiz) {
-            $quiz->questions_count = Question::where('topic', $quiz->topic)
-                ->where('difficulty', $quiz->difficulty)
+        foreach ($difficulties as $diff) {
+            $quiz = Quiz::firstOrCreate(
+                [
+                    'topic' => $topic,
+                    'difficulty' => $diff,
+                ],
+                [
+                    'title' => $topic . ' (' . ucfirst($diff) . ')',
+                    'teacher_id' => auth()->id(),
+                ]
+            );
+
+            $quiz->questions_count = Question::where('topic', $topic)
+                ->where('difficulty', $diff)
                 ->count();
+
+            $quizzes->push($quiz);
         }
+
+        // Return a LengthAwarePaginator to support views using pagination
+        $quizzes = new \Illuminate\Pagination\LengthAwarePaginator(
+            $quizzes,
+            3,
+            12,
+            1,
+            ['path' => request()->url()]
+        );
 
         return view('teacher.quizzes.folder', compact('quizzes', 'topic'));
     }
@@ -64,7 +83,6 @@ class QuizController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string|in:easy,medium,hard',
             'questions' => 'required|array|min:1',
@@ -74,12 +92,16 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
-        $quiz = Quiz::create([
-            'title' => $validated['title'],
-            'topic' => $validated['topic'],
-            'difficulty' => $validated['difficulty'],
-            'teacher_id' => auth()->id(),
-        ]);
+        $quiz = Quiz::firstOrCreate(
+            [
+                'topic' => $validated['topic'],
+                'difficulty' => $validated['difficulty'],
+            ],
+            [
+                'title' => $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ')',
+                'teacher_id' => auth()->id(),
+            ]
+        );
 
         foreach ($validated['questions'] as $q) {
             Question::create([
@@ -126,7 +148,6 @@ class QuizController extends Controller
     public function update(Request $request, Quiz $quiz)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
             'topic' => 'required|string',
             'questions' => 'required|array|min:1',
             'questions.*.text' => 'required|string',
@@ -136,8 +157,8 @@ class QuizController extends Controller
         ]);
 
         $quiz->update([
-            'title' => $validated['title'],
             'topic' => $validated['topic'],
+            'title' => $validated['topic'] . ' (' . ucfirst($quiz->difficulty) . ')',
         ]);
 
         // Delete existing questions and recreate
@@ -286,18 +307,21 @@ class QuizController extends Controller
     public function saveSelected(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string',
             'questions' => 'required|string', // JSON string
         ]);
 
-        $quiz = Quiz::create([
-            'title' => $validated['title'],
-            'topic' => $validated['topic'],
-            'difficulty' => $validated['difficulty'],
-            'teacher_id' => auth()->id()
-        ]);
+        $quiz = Quiz::firstOrCreate(
+            [
+                'topic' => $validated['topic'],
+                'difficulty' => $validated['difficulty'],
+            ],
+            [
+                'title' => $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ')',
+                'teacher_id' => auth()->id()
+            ]
+        );
 
         $selectedQuestions = json_decode($validated['questions'], true);
 

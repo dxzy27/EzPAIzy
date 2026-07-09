@@ -133,14 +133,33 @@ class StudentController extends Controller
             ->pluck('id')
             ->toArray();
 
-        // Get all quizzes in this folder to check locks
-        $allQuizzes = Quiz::where('is_flagged', false)
-            ->where('topic', $topic)
-            ->whereIn('teacher_id', $teacherIds)
-            ->with(['progress' => function($q) use ($user) {
-                $q->where('student_id', $user->id);
-            }])
-            ->get();
+        $difficulties = ['easy', 'medium', 'hard'];
+        $allQuizzes = collect();
+        foreach ($difficulties as $diff) {
+            $quiz = Quiz::firstOrCreate(
+                [
+                    'topic' => $topic,
+                    'difficulty' => $diff,
+                ],
+                [
+                    'title' => $topic . ' (' . ucfirst($diff) . ')',
+                    'teacher_id' => !empty($teacherIds) ? $teacherIds[0] : (auth()->user()->role === 'teacher' ? auth()->id() : \App\Models\User::where('role', 'teacher')->first()?->id ?? 1),
+                ]
+            );
+
+            // Load relation for student progress
+            $quiz->setRelation('progress', $quiz->progress()->where('student_id', $user->id)->get());
+            
+            // Set dynamic questions count
+            $quiz->questions_count = \App\Models\Question::where('topic', $topic)
+                ->where('difficulty', $diff)
+                ->count();
+
+            // Set relation or count of teacher relations if needed
+            $quiz->load('teacher');
+
+            $allQuizzes->push($quiz);
+        }
 
         $easyQuizzes = $allQuizzes->where('difficulty', 'easy');
         $mediumQuizzes = $allQuizzes->where('difficulty', 'medium');
@@ -167,24 +186,17 @@ class StudentController extends Controller
             }
         }
 
-        $mediumLocked = false;
-        $hardLocked = false;
+        $mediumLocked = !$easyAllPassed;
+        $hardLocked = !$mediumAllPassed;
 
-        $quizzes = Quiz::where('is_flagged', false)
-            ->where('topic', $topic)
-            ->whereIn('teacher_id', $teacherIds)
-            ->with(['teacher', 'progress' => function($q) use ($user) {
-                $q->where('student_id', $user->id);
-            }])
-            ->orderByRaw("CASE WHEN difficulty = 'easy' THEN 1 WHEN difficulty = 'medium' THEN 2 WHEN difficulty = 'hard' THEN 3 ELSE 4 END ASC")
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
-
-        foreach ($quizzes as $quiz) {
-            $quiz->questions_count = \App\Models\Question::where('topic', $quiz->topic)
-                ->where('difficulty', $quiz->difficulty)
-                ->count();
-        }
+        // Return a LengthAwarePaginator to support views using pagination
+        $quizzes = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allQuizzes,
+            3,
+            12,
+            1,
+            ['path' => request()->url()]
+        );
 
         $favoritedQuizIds = Favorite::where('student_id', $user->id)
             ->whereNotNull('quiz_id')

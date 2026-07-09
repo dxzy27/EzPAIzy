@@ -214,11 +214,6 @@
         <input type="hidden" name="questions"  id="questions-input" value="[]">
 
         <div class="d-flex align-items-center gap-3 flex-wrap">
-            <div class="flex-grow-1">
-                <input type="text" name="title" class="form-control"
-                    placeholder="Quiz title (e.g. Al-Quran Easy Quiz)" required
-                    style="max-width: 400px;">
-            </div>
             <div class="text-muted small" id="save-summary">No questions selected</div>
             <button type="submit" class="btn btn-success px-4 fw-semibold" id="save-btn" disabled>
                 <i class="bi bi-floppy me-2"></i> Save Selected to Database
