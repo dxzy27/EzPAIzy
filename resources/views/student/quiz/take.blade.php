@@ -275,16 +275,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (type === 'mcq' && q.options) {
             // MCQ Rendering
             const opts = q.options;
+            let optIdx = 0;
             ['a', 'b', 'c', 'd'].forEach(key => {
                 if(opts[key]) {
+                    const savedOptVal = localStorage.getItem(`hl_quiz_${q.id}_opt_${optIdx}`) || opts[key];
                     inputHtml += `
                         <div class="card option-card mb-3" onclick="selectOption('${key}')" id="opt-${key}">
                             <div class="card-body d-flex align-items-center">
                                 <div class="btn btn-sm btn-outline-primary me-3 text-uppercase fw-bold" style="width: 32px; height: 32px; padding: 0; line-height: 30px; text-align: center;">${key}</div>
-                                <span class="fs-5">${opts[key]}</span>
+                                <span class="fs-5">${savedOptVal}</span>
                             </div>
                         </div>
                     `;
+                    optIdx++;
                 }
             });
         } else {
@@ -319,11 +322,13 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
 
+        const savedTitle = localStorage.getItem(`hl_quiz_${q.id}_title`) || q.question_text;
+
         const html = `
             <div class="card border-0 shadow-sm question-card animated fadeIn">
                 <div class="card-body p-4 p-md-5">
                     <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
-                        <h4 class="fw-bold text-dark mb-0" style="line-height: 1.4;">${q.question_text}</h4>
+                        <h4 class="fw-bold text-dark mb-0" style="line-height: 1.4;">${savedTitle}</h4>
                         @if(auth()->user()?->learning_style === 'auditory')
                         <button type="button" class="btn btn-light rounded-circle shadow-sm border d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; padding: 0;" onclick="speakQuestionAndChoices(${index})" title="Listen to question and choices">
                             <i class="bi bi-volume-up-fill text-primary fs-5"></i>
@@ -793,8 +798,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
+            saveCurrentQuizHighlights();
             selection.removeAllRanges();
             hideHighlighterToolbar();
+        }
+
+        function saveCurrentQuizHighlights() {
+            const currentCard = questions[currentQuestionIndex];
+            if (!currentCard) return;
+            const qTitle = document.querySelector('.question-card h4');
+            if (qTitle) {
+                localStorage.setItem(`hl_quiz_${currentCard.id}_title`, qTitle.innerHTML);
+            }
+            const optionSpans = document.querySelectorAll('.option-card .fs-5');
+            optionSpans.forEach((span, idx) => {
+                localStorage.setItem(`hl_quiz_${currentCard.id}_opt_${idx}`, span.innerHTML);
+            });
         }
 
         function clearSelectionHighlights() {
@@ -813,6 +832,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
+            saveCurrentQuizHighlights();
             selection.removeAllRanges();
             hideHighlighterToolbar();
         }

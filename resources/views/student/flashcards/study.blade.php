@@ -477,14 +477,15 @@
                             </button>
                             @endif
                             <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
-                        </div>
                     </div>
                     <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
+                        ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
                         <div class="flashcard-content">
                             <div class="${alignClass}">
                                 <div class="fs-3 text-dark fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
                             </div>
                         </div>
+                        `}
                     </div>
                 `;
             } else {
@@ -554,9 +555,11 @@
                                 </div>
                             </div>
                             <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
+                                ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
                                 <div class="flashcard-content">
                                     <div class="fs-3 text-dark fw-bold mt-3" style="line-height: 1.4;">${currentCard.term}</div>
                                 </div>
+                                `}
                             </div>
                         </div>
                         <div class="flashcard-face flashcard-back">
@@ -1380,8 +1383,22 @@
                 }
             }
             
+            saveCurrentCardHighlights();
             selection.removeAllRanges();
             hideHighlighterToolbar();
+        }
+
+        function saveCurrentCardHighlights() {
+            const currentCard = cards[currentIndex];
+            if (!currentCard) return;
+            const frontWrapper = document.querySelector('.flashcard-front .flashcard-content-wrapper');
+            const backWrapper = document.querySelector('.flashcard-back .flashcard-content-wrapper');
+            if (frontWrapper) {
+                localStorage.setItem(`hl_flash_${currentCard.id}_front`, frontWrapper.innerHTML);
+            }
+            if (backWrapper) {
+                localStorage.setItem(`hl_flash_${currentCard.id}_back`, backWrapper.innerHTML);
+            }
         }
 
         function clearSelectionHighlights() {
@@ -1400,6 +1417,7 @@
                 }
             });
             
+            saveCurrentCardHighlights();
             selection.removeAllRanges();
             hideHighlighterToolbar();
         }
