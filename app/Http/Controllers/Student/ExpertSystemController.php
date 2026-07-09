@@ -310,16 +310,7 @@ class ExpertSystemController extends Controller
             'competitive' => 'Competitive Learner',
         ];
 
-        // Add a qualifier based on confidence strength
-        if ($confidence >= 65) {
-            $prefix = 'Strong ';
-        } elseif ($confidence >= 45) {
-            $prefix = '';
-        } else {
-            $prefix = 'Emerging ';
-        }
-
-        return $prefix . $labels[$style];
+        return $labels[$style];
     }
 
     // ─────────────────────────────────────────────────────────────────────────

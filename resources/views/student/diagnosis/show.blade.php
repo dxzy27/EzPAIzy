@@ -204,19 +204,8 @@
     <div class="result-type-badge">
         <i class="bi {{ $icon }}"></i> {{ strtoupper(str_replace('_', '/', $style)) }} LEARNER
     </div>
-    <div class="result-persona-title">{{ $profile->persona }}</div>
+    <div class="result-persona-title">{{ str_replace(['Emerging ', 'Strong '], '', $profile->persona) }}</div>
     <div class="result-persona-sub">{{ $descriptions[$style] }}</div>
-    <span class="result-confidence-pill">
-        <i class="bi bi-graph-up-arrow"></i>
-        Confidence Score: {{ number_format($profile->confidence, 1) }}%
-        @if($profile->confidence >= 65)
-            — Strong Match
-        @elseif($profile->confidence >= 45)
-            — Moderate Match
-        @else
-            — Emerging Tendencies
-        @endif
-    </span>
 </div>
 
 <div class="row g-4 mb-4">
@@ -268,24 +257,6 @@
     </div>
 </div>
 
-{{-- Recommendations --}}
-<div class="card p-4 mb-4">
-    <h6 class="fw-bold mb-3"><i class="bi bi-lightbulb me-2 text-warning"></i>Study Recommendations For You</h6>
-    <div class="row">
-        @foreach($profile->recommendations as $rec)
-            <div class="col-12">
-                <div class="rec-card">
-                    <div class="rec-icon" style="background-color: var(--diag-accent-light); color: var(--diag-accent);">
-                        <i class="bi bi-check2-circle"></i>
-                    </div>
-                    <div class="small text-muted flex-grow-1" style="line-height:1.5;">
-                        {{ $rec }}
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
-</div>
 
 {{-- CTA --}}
 <div class="card p-4 text-center" style="background:var(--diag-accent-light);border-color:{{ $cfg['border'] }};">

@@ -787,15 +787,7 @@ class StudentApiController extends Controller
             'competitive' => 'Competitive Learner',
         ];
 
-        if ($confidence >= 65) {
-            $prefix = 'Strong ';
-        } elseif ($confidence >= 45) {
-            $prefix = '';
-        } else {
-            $prefix = 'Emerging ';
-        }
-
-        return $prefix . $labels[$style];
+        return $labels[$style];
     }
 
     private function generateRecommendations(string $style, array $result, array $answers): array
