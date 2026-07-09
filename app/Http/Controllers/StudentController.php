@@ -7,7 +7,6 @@ use App\Models\Flashcard;
 use App\Models\FlashcardSet;
 use App\Models\FlashcardProgress;
 use App\Models\Progress;
-use App\Models\Quiz;
 use App\Models\Topic;
 use App\Models\Favorite;
 use Illuminate\Http\Request;

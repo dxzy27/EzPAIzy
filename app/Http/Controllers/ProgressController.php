@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Quiz;
 use App\Models\Topic;
 use App\Models\Progress;
 use App\Models\FlashcardSet;
