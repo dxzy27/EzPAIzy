@@ -397,7 +397,7 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Average Score</h5>
+                        <h5 class="card-title">Average Quiz Score</h5>
                         <h2 class="text-info">
                             {{ $averageScore }}%
                         </h2>
@@ -407,7 +407,7 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Highest Score</h5>
+                        <h5 class="card-title">Highest Quiz Score</h5>
                         <h2 class="text-success">
                             {{ $highestScore }}%
                         </h2>
