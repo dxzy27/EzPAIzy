@@ -387,7 +387,7 @@ class QuizController extends Controller
             ? "MCQ questions with exactly 4 options (a, b, c, d) and a single correct option."
             : "Short answer questions requiring textual verification.";
 
-        if ($difficulty === 'hard' || $difficulty === 'medium') {
+        if ($difficulty === 'hard') {
             $typeInstruction .= " For these KBAT questions, the suggested correct_answer MUST strictly follow the Malaysian SPM MRSM KBAT format, consisting of exactly 4 sentences:
             1. First sentence: Isi (marked with '(I)' at the end of the sentence)
             2. Second sentence: Huraian (marked with '(H)' at the end of the sentence)
