@@ -26,13 +26,13 @@
         <div class="row">
             @foreach($favorites as $fav)
                 @php
-                    $isQuiz = !empty($fav->topic) && !empty($fav->difficulty);
+                    $isQuiz = !empty($fav->quiz_topic) && !empty($fav->quiz_difficulty);
                     if ($isQuiz) {
                         $item = new \stdClass();
-                        $item->topic = $fav->topic;
-                        $item->difficulty = $fav->difficulty;
-                        $item->title = $fav->topic . ' (' . ucfirst($fav->difficulty) . ')';
-                        $item->description = 'Practice questions for ' . $fav->topic . ' (' . $fav->difficulty . ')';
+                        $item->topic = $fav->quiz_topic;
+                        $item->difficulty = $fav->quiz_difficulty;
+                        $item->title = $fav->quiz_topic . ' (' . ucfirst($fav->quiz_difficulty) . ')';
+                        $item->description = 'Practice questions for ' . $fav->quiz_topic . ' (' . $fav->quiz_difficulty . ')';
                         $item->created_at = $fav->created_at;
                         $item->teacher = new \stdClass();
                         $item->teacher->name = 'PAI Teacher';
