@@ -1389,17 +1389,17 @@
             if (!selection.rangeCount) return;
             const range = selection.getRangeAt(0);
             
-            let container = range.commonAncestorContainer;
-            if (container.nodeType === 3) container = container.parentNode;
-            
-            const parentHl = container.closest('.visual-hl');
-            if (parentHl) {
-                const parent = parentHl.parentNode;
-                while (parentHl.firstChild) {
-                    parent.insertBefore(parentHl.firstChild, parentHl);
+            const allHls = document.querySelectorAll('.visual-hl');
+            allHls.forEach(hl => {
+                const isIntersecting = selection.containsNode(hl, true) || hl.contains(range.commonAncestorContainer);
+                if (isIntersecting) {
+                    const parent = hl.parentNode;
+                    while (hl.firstChild) {
+                        parent.insertBefore(hl.firstChild, hl);
+                    }
+                    parent.removeChild(hl);
                 }
-                parent.removeChild(parentHl);
-            }
+            });
             
             selection.removeAllRanges();
             hideHighlighterToolbar();
