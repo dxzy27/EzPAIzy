@@ -385,7 +385,7 @@
                                         </small>
                                     </td>
                                     <td>
-                                        @if($p->quiz->difficulty === 'hard' && $p->status === 'pending')
+                                        @if(($p->quiz->difficulty === 'hard' || $p->quiz->difficulty === 'medium') && $p->status === 'pending')
                                             <span class="badge bg-secondary">Pending</span>
                                         @else
                                             <span class="badge bg-{{ $p->score >= 80 ? 'success' : ($p->score >= 50 ? 'warning' : 'danger') }}">

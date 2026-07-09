@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         let kbatGuideHtml = '';
-        if (quizDifficulty === 'hard') {
+        if (quizDifficulty === 'hard' || quizDifficulty === 'medium') {
             kbatGuideHtml = `
                 <div class="alert alert-info border-0 p-3 mb-4 shadow-sm" style="background-color: #f0f7ff; border-left: 4px solid #0284c7 !important; border-radius: 10px;">
                     <h6 class="fw-bold text-primary mb-2" style="font-size: 0.95rem;"><i class="bi bi-info-circle-fill me-1"></i> How to answer KBAT questions:</h6>
@@ -447,14 +447,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const finalScore = Math.round((correctCount / questions.length) * 100);
         
-        if (quizDifficulty === 'hard') {
+        if (quizDifficulty === 'hard' || quizDifficulty === 'medium') {
             const resultHeader = document.querySelector('#result-screen h4');
             if (resultHeader) {
                 resultHeader.innerHTML = "Answers Submitted for Review";
             }
             document.querySelector('#result-screen h2').innerText = "Quiz Completed!";
             scoreInput.value = 0; 
-            document.getElementById('feedback-text').innerText = "This quiz contains KBAT questions and will be graded manually by your teacher.";
+            document.getElementById('feedback-text').innerText = "This quiz contains subjective questions and will be graded manually by your teacher.";
         } else {
             finalScoreSpan.innerText = finalScore;
             scoreInput.value = finalScore;

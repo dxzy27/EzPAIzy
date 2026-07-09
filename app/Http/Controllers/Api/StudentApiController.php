@@ -257,11 +257,6 @@ class StudentApiController extends Controller
             }
 
             $isLocked = false;
-            if ($quiz->difficulty === 'medium' && !$easyAllPassed) {
-                $isLocked = true;
-            } elseif ($quiz->difficulty === 'hard' && (!$easyAllPassed || !$mediumAllPassed)) {
-                $isLocked = true;
-            }
 
             $quiz->is_locked = $isLocked;
             return $quiz;

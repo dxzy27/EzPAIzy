@@ -89,9 +89,9 @@
                                     <td>{{ $p->date->format('M d, Y H:i') }}</td>
                                     <td>
                                         @if($p->type === 'Quiz')
-                                            @if($p->difficulty === 'hard' && $p->status === 'pending')
+                                            @if(($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'pending')
                                                 <span class="badge bg-secondary">Not Graded Yet</span>
-                                            @elseif($p->difficulty === 'hard' && $p->status === 'graded')
+                                            @elseif(($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'graded')
                                                 <span class="badge bg-primary">Graded</span>
                                             @elseif($p->score_num >= 70)
                                                 <span class="badge bg-success">Passed</span>
@@ -111,7 +111,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($p->type === 'Quiz' && $p->difficulty === 'hard' && $p->status === 'pending')
+                                        @if($p->type === 'Quiz' && ($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'pending')
                                             <span class="text-muted italic">Pending Review</span>
                                         @else
                                             <strong>{{ $p->score }}</strong>
@@ -119,7 +119,7 @@
                                     </td>
                                     <td>
                                         @if($p->type === 'Quiz')
-                                            @if($p->difficulty === 'hard' || $p->raw_progress->student_answers)
+                                            @if($p->difficulty === 'hard' || $p->difficulty === 'medium' || $p->raw_progress->student_answers)
                                                 <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ $p->id }}">
                                                     <i class="bi bi-eye"></i> View Details
                                                 </button>

@@ -167,8 +167,8 @@ class StudentController extends Controller
             }
         }
 
-        $mediumLocked = ($user->learning_style === 'competitive') && !$easyAllPassed;
-        $hardLocked = ($user->learning_style === 'competitive') && (!$easyAllPassed || !$mediumAllPassed);
+        $mediumLocked = false;
+        $hardLocked = false;
 
         $quizzes = Quiz::where('is_flagged', false)
             ->where('topic', $topic)

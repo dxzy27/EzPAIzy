@@ -89,7 +89,7 @@
                             @endphp
                             <div class="mb-3 mt-2">
                                 @if($p)
-                                    @if($quiz->difficulty === 'hard' && $p->status === 'pending')
+                                    @if(($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') && $p->status === 'pending')
                                         <div class="d-flex justify-content-between text-muted small mb-1">
                                             <span>Quiz Progress</span>
                                             <span class="text-warning fw-semibold">Pending Review</span>
