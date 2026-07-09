@@ -43,7 +43,7 @@
         <div class="{{ $isReadWrite ? 'col-lg-8' : 'col-lg-12' }} quiz-container">
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="{{ route('student.quizzes') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Quizzes">
+                <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
                     <i class="bi bi-arrow-left fs-5"></i>
                 </a>
                 <h5 class="text-muted mb-0">{{ $quiz->title }}</h5>
