@@ -202,17 +202,17 @@
                             <td>
                                 <div class="fw-bold text-dark text-wrap" style="max-width: 450px;">{{ $q->question_text }}</div>
                                 @if($q->options)
-                                    <div class="text-muted small mt-1">
+                                    <div class="small mt-1">
                                         <strong>Options:</strong>
-                                        @php
-                                            $optsArray = [];
-                                            foreach ((array)$q->options as $key => $val) {
-                                                if (!empty($val) && in_array(strtolower($key), ['a', 'b', 'c', 'd'])) {
-                                                    $optsArray[] = strtolower($key) . '. ' . $val;
-                                                }
-                                            }
-                                        @endphp
-                                        {{ implode(', ', $optsArray) }}
+                                        <div class="ps-2 mt-1">
+                                            @foreach((array)$q->options as $key => $val)
+                                                @if(!empty($val) && in_array(strtolower($key), ['a', 'b', 'c', 'd']))
+                                                    <div class="text-primary" style="font-size: 0.825rem; font-weight: 500;">
+                                                        <strong>{{ strtolower($key) }}.</strong> {{ $val }}
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endif
                                 <div class="text-success small mt-1">
