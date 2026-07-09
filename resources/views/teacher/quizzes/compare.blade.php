@@ -117,6 +117,9 @@
                                 @if(!empty($q['options']))
                                     <div class="mt-2">
                                     @foreach($q['options'] as $key => $opt)
+                                        @if(in_array(strtolower($key), ['points', 'correct_answer', 'topic', 'difficulty']))
+                                            @continue
+                                        @endif
                                         <div class="option-row {{ strtolower($q['correct_answer'] ?? '') === $key ? 'correct-option' : '' }}">
                                             <span class="option-key">{{ strtoupper($key) }}.</span>
                                             <span>{{ $opt }}
@@ -178,6 +181,9 @@
                                 @if(!empty($q['options']))
                                     <div class="mt-2">
                                     @foreach($q['options'] as $key => $opt)
+                                        @if(in_array(strtolower($key), ['points', 'correct_answer', 'topic', 'difficulty']))
+                                            @continue
+                                        @endif
                                         <div class="option-row {{ strtolower($q['correct_answer'] ?? '') === $key ? 'correct-option' : '' }}">
                                             <span class="option-key">{{ strtoupper($key) }}.</span>
                                             <span>{{ $opt }}

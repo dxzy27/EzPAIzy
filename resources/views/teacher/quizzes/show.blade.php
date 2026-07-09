@@ -68,6 +68,9 @@
                 @if($question->type === 'mcq' && $question->options)
                 <div class="mt-2 ms-3">
                     @foreach($question->options as $key => $option)
+                        @if(in_array(strtolower($key), ['points', 'correct_answer', 'topic', 'difficulty']))
+                            @continue
+                        @endif
                     <div class="d-flex align-items-center gap-2 mb-1">
                         @if($key === $question->correct_answer)
                         <i class="bi bi-check-circle-fill text-success"></i>
