@@ -939,7 +939,7 @@
                         prevCard();
                     }, 200);
                 } else {
-                    cardInner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
+                    cardInner.style.transform = '';
                     cardInner.style.boxShadow = '';
                 }
             } else if (diffX > dragThreshold) {
@@ -949,7 +949,7 @@
                     nextCard();
                 }, 200);
             } else {
-                cardInner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
+                cardInner.style.transform = '';
                 cardInner.style.boxShadow = '';
             }
         }
