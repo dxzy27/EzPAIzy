@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('bi-star-fill');
                 icon.classList.add('bi-star');
                 
-                fetch(`/favorites/quiz/${topic}/${difficulty}`, {
+                fetch(`/student/favorites/quiz/${topic}/${difficulty}`, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('bi-star');
                 icon.classList.add('bi-star-fill');
                 
-                fetch(`/favorites/quiz/${topic}/${difficulty}`, {
+                fetch(`/student/favorites/quiz/${topic}/${difficulty}`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
