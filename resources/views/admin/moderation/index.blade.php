@@ -183,6 +183,52 @@
         <div class="mt-3">{{ $flashcardSets->appends(request()->query())->links() }}</div>
 
     @elseif($tab === 'questions')
+        {{-- Filters --}}
+        <div class="row mb-4 align-items-end bg-white p-3 rounded shadow-sm border mx-0 g-2">
+            <div class="col-md-4 mt-0">
+                <label for="topic-filter" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Filter Topic</label>
+                <select id="topic-filter" class="form-select form-select-sm" onchange="applyFilters()">
+                    <option value="">All Topics</option>
+                    @foreach($allTopics as $topic)
+                        <option value="{{ $topic }}" {{ request('topic') === $topic ? 'selected' : '' }}>{{ $topic }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4 mt-0">
+                <label for="difficulty-filter" class="form-label small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.72rem;">Filter Difficulty</label>
+                <select id="difficulty-filter" class="form-select form-select-sm" onchange="applyFilters()">
+                    <option value="">All Difficulties</option>
+                    <option value="easy" {{ request('difficulty') === 'easy' ? 'selected' : '' }}>Easy</option>
+                    <option value="medium" {{ request('difficulty') === 'medium' ? 'selected' : '' }}>Medium</option>
+                    <option value="hard" {{ request('difficulty') === 'hard' ? 'selected' : '' }}>Hard</option>
+                </select>
+            </div>
+            <div class="col-md-4 mt-0 text-end">
+                @if(request('topic') || request('difficulty'))
+                    <a href="{{ route('admin.moderation.index', ['tab' => 'questions']) }}" class="btn btn-outline-secondary btn-sm w-100 py-1"><i class="bi bi-x-circle me-1"></i> Clear Filters</a>
+                @endif
+            </div>
+        </div>
+
+        <script>
+            function applyFilters() {
+                const topic = document.getElementById('topic-filter').value;
+                const difficulty = document.getElementById('difficulty-filter').value;
+                let url = new URL(window.location.href);
+                
+                url.searchParams.set('tab', 'questions');
+                
+                if (topic) url.searchParams.set('topic', topic);
+                else url.searchParams.delete('topic');
+                
+                if (difficulty) url.searchParams.set('difficulty', difficulty);
+                else url.searchParams.delete('difficulty');
+                
+                url.searchParams.delete('page');
+                window.location.href = url.toString();
+            }
+        </script>
+
         {{-- Question Bank Moderation Table --}}
         <div class="table-responsive">
             <table class="table table-hover align-middle">

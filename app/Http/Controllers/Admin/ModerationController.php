@@ -22,16 +22,27 @@ class ModerationController extends Controller
         $contents = [];
         $flashcardSets = [];
         $questions = [];
+        
+        $allTopics = \App\Models\Question::select('topic')->distinct()->pluck('topic')->filter()->toArray();
 
         if ($tab === 'materials') {
             $contents = Content::with('teacher')->latest()->paginate(15);
         } elseif ($tab === 'flashcards') {
             $flashcardSets = FlashcardSet::with('user')->latest()->paginate(15);
         } elseif ($tab === 'questions') {
-            $questions = \App\Models\Question::latest()->paginate(15);
+            $query = \App\Models\Question::latest();
+            
+            if ($request->filled('topic')) {
+                $query->where('topic', $request->input('topic'));
+            }
+            if ($request->filled('difficulty')) {
+                $query->where('difficulty', $request->input('difficulty'));
+            }
+            
+            $questions = $query->paginate(15);
         }
 
-        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'questions', 'tab'));
+        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'questions', 'tab', 'allTopics'));
     }
 
     public function destroyQuestion(\App\Models\Question $question)
