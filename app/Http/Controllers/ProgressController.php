@@ -27,7 +27,7 @@ class ProgressController extends Controller
         $selectedTopic = $request->query('topic');
 
         // Fetch Quiz Progress
-        $quizzesProgress = $user->progress()->with(['quiz.teacher', 'quiz.questions'])->get();
+        $quizzesProgress = $user->progress()->get();
 
         // Fetch Flashcard Progress
         $attemptedSetIds = FlashcardProgress::where('user_id', $user->id)
@@ -36,14 +36,16 @@ class ProgressController extends Controller
             ->unique();
         $flashcardSets = FlashcardSet::whereIn('id', $attemptedSetIds)->with(['user', 'flashcards'])->get();
 
+        // Get class teacher
+        $classTeacher = User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
+        $teacherName = $classTeacher ? $classTeacher->name : 'Unknown';
+
         $unified = collect();
 
         // Add Quiz Progress
         foreach ($quizzesProgress as $qp) {
-            if (!$qp->quiz) continue;
-            
             // Apply topic filter
-            if ($selectedTopic && $qp->quiz->topic !== $selectedTopic) {
+            if ($selectedTopic && $qp->topic !== $selectedTopic) {
                 continue;
             }
             // Apply type filter
@@ -54,14 +56,14 @@ class ProgressController extends Controller
             $unified->push((object)[
                 'id' => $qp->id,
                 'type' => 'Quiz',
-                'topic' => $qp->quiz->topic ?? 'General',
-                'title' => $qp->quiz->title ?? 'Deleted Quiz',
-                'teacher' => $qp->quiz->teacher->name ?? 'Unknown',
+                'topic' => $qp->topic ?? 'General',
+                'title' => ($qp->topic ?? 'General') . ' (' . ucfirst($qp->difficulty ?? 'easy') . ')',
+                'teacher' => $teacherName,
                 'date' => $qp->updated_at,
                 'status' => $qp->status, 
-                'score' => ($qp->quiz->difficulty === 'hard' || $qp->quiz->difficulty === 'medium') && $qp->status === 'pending' ? 'Pending' : $qp->score . '%',
+                'score' => (($qp->difficulty === 'hard' || $qp->difficulty === 'medium') && $qp->status === 'pending') ? 'Pending' : $qp->score . '%',
                 'score_num' => $qp->score,
-                'difficulty' => $qp->quiz->difficulty ?? 'easy',
+                'difficulty' => $qp->difficulty ?? 'easy',
                 'raw_progress' => $qp
             ]);
         }

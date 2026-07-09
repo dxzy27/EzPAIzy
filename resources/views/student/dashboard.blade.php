@@ -372,15 +372,15 @@
                             <tbody>
                                 @foreach($progress->sortByDesc('created_at')->take(5) as $p)
                                 <tr>
-                                    <td>{{ Str::limit($p->quiz->title, 22) }}</td>
+                                    <td>{{ Str::limit(($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')', 22) }}</td>
                                     <td>
                                         <small class="text-muted">
                                             <i class="bi bi-person-circle me-1"></i>
-                                            {{ $p->quiz->teacher->name ?? 'Unknown' }}
+                                            {{ $teacherName }}
                                         </small>
                                     </td>
                                     <td>
-                                        @if(($p->quiz->difficulty === 'hard' || $p->quiz->difficulty === 'medium') && $p->status === 'pending')
+                                        @if((($p->difficulty === 'hard' || $p->difficulty === 'medium')) && $p->status === 'pending')
                                             <span class="badge bg-secondary">Pending</span>
                                         @else
                                             <span class="badge bg-{{ $p->score >= 80 ? 'success' : ($p->score >= 50 ? 'warning' : 'danger') }}">
@@ -514,7 +514,7 @@
                                 $isFlash = class_basename($item) === 'FlashcardSet';
                                 $itemUrl = $isFlash
                                     ? route('student.flashcards.show', $item)
-                                    : route('student.quiz.take', $item);
+                                    : route('quiz.take', ['topic' => $item->topic, 'difficulty' => $item->difficulty]);
                                 $preview = Str::limit($item->title, 60);
                                 $topicLabel = $item->topic ?? 'General';
                             @endphp

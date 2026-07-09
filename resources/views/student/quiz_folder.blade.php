@@ -64,10 +64,11 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title fw-bold text-dark mb-0" style="font-size: 1.15rem; line-height: 1.3;">{{ $quiz->title }}</h5>
                                 @php
-                                    $isFavorited = in_array($quiz->id, $favoritedQuizIds ?? []);
+                                    $isFavorited = in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []);
                                 @endphp
                                 <button class="btn btn-link p-0 text-warning favorite-btn" 
-                                        data-id="{{ $quiz->id }}" 
+                                        data-topic="{{ $quiz->topic }}" 
+                                        data-difficulty="{{ $quiz->difficulty }}" 
                                         data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
                                         title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}">
                                     <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
@@ -140,7 +141,7 @@
                                     <span class="text-muted small">
                                         <i class="bi bi-question-circle me-1"></i> {{ $quiz->questions_count }} Question{{ $quiz->questions_count !== 1 ? 's' : '' }}
                                     </span>
-                                    <small class="text-muted">{{ $quiz->created_at->diffForHumans() }}</small>
+                                    <small class="text-muted">Dynamic</small>
                                 </div>
                                 
                                 @if($quiz->questions_count > 0)
@@ -149,16 +150,16 @@
                                             <i class="bi bi-lock-fill me-1"></i> Locked
                                         </button>
                                     @elseif($p)
-                                        <a href="{{ route('student.quiz.take', $quiz) }}" class="btn btn-outline-primary w-100 shadow-sm" style="border-radius: 8px;">
+                                        <a href="{{ route('quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-outline-primary w-100 shadow-sm" style="border-radius: 8px;">
                                             <i class="bi bi-arrow-repeat me-1"></i> Retake Quiz
                                         </a>
                                     @else
-                                        <a href="{{ route('student.quiz.take', $quiz) }}" class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;">
+                                        <a href="{{ route('quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;">
                                             <i class="bi bi-play-fill me-1"></i> Take Quiz
                                         </a>
                                     @endif
                                 @else
-                                    <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#quizModal{{ $quiz->id }}" style="border-radius: 8px;" {{ $isLocked ? 'disabled' : '' }}>
+                                    <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#quizModal{{ $quiz->difficulty }}" style="border-radius: 8px;" {{ $isLocked ? 'disabled' : '' }}>
                                         <i class="bi bi-pencil-square me-1"></i> {{ $p ? 'Retake & Log Score' : 'Log Score' }}
                                     </button>
                                 @endif
@@ -168,14 +169,14 @@
 
                     <!-- Manual Score Modal (Legacy) -->
                     @if($quiz->questions_count == 0)
-                    <div class="modal fade" id="quizModal{{ $quiz->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal fade" id="quizModal{{ $quiz->difficulty }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content border-0 shadow">
                                 <div class="modal-header bg-light border-0">
                                     <h5 class="modal-title fw-bold">{{ $quiz->title }}</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('student.submit', $quiz) }}" method="POST">
+                                <form action="{{ route('submit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST">
                                     <div class="modal-body p-4">
                                         @csrf
                                         <div class="alert alert-info d-flex align-items-center mb-3">
@@ -186,9 +187,9 @@
                                         </div>
                                         
                                         <div class="mb-3">
-                                            <label for="score{{ $quiz->id }}" class="form-label fw-bold">Your Score (0-100)</label>
+                                            <label for="score{{ $quiz->difficulty }}" class="form-label fw-bold">Your Score (0-100)</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control form-control-lg" id="score{{ $quiz->id }}" name="score" min="0" max="100" required placeholder="85">
+                                                <input type="number" class="form-control form-control-lg" id="score{{ $quiz->difficulty }}" name="score" min="0" max="100" required placeholder="85">
                                                 <span class="input-group-text bg-light text-muted">/ 100</span>
                                             </div>
                                         </div>
@@ -236,7 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
     favoriteBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            const quizId = this.dataset.id;
+            const topic = this.dataset.topic;
+            const difficulty = this.dataset.difficulty;
             const isFavorited = this.dataset.favorited === 'true';
             const icon = this.querySelector('i');
             
@@ -248,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('bi-star-fill');
                 icon.classList.add('bi-star');
                 
-                fetch(`/student/favorites/quiz/${quizId}`, {
+                fetch(`/favorites/quiz/${topic}/${difficulty}`, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -262,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('bi-star');
                 icon.classList.add('bi-star-fill');
                 
-                fetch(`/student/favorites/quiz/${quizId}`, {
+                fetch(`/favorites/quiz/${topic}/${difficulty}`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

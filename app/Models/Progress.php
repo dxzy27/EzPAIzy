@@ -9,7 +9,7 @@ class Progress extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['student_id', 'quiz_id', 'score', 'student_answers', 'status', 'teacher_notes'];
+    protected $fillable = ['student_id', 'topic', 'difficulty', 'score', 'student_answers', 'status', 'teacher_notes'];
     
     protected $casts = [
         'student_answers' => 'array',
@@ -19,10 +19,5 @@ class Progress extends Model
     public function student()
     {
         return $this->belongsTo(User::class, 'student_id');
-    }
-
-    public function quiz()
-    {
-        return $this->belongsTo(Quiz::class);
     }
 }

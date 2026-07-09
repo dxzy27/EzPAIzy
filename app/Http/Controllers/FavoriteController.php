@@ -124,12 +124,13 @@ class FavoriteController extends Controller
     /**
      * Add quiz to favorites (AJAX)
      */
-    public function storeQuiz(\App\Models\Quiz $quiz)
+    public function storeQuiz(string $topic, string $difficulty)
     {
         $user = auth()->user();
         
         $exists = Favorite::where('student_id', $user->id)
-            ->where('quiz_id', $quiz->id)
+            ->where('quiz_topic', $topic)
+            ->where('quiz_difficulty', $difficulty)
             ->exists();
         
         if ($exists) {
@@ -138,7 +139,8 @@ class FavoriteController extends Controller
         
         Favorite::create([
             'student_id' => $user->id,
-            'quiz_id' => $quiz->id
+            'quiz_topic' => $topic,
+            'quiz_difficulty' => $difficulty
         ]);
         
         return response()->json(['success' => true, 'message' => 'Added to revision']);
@@ -147,12 +149,13 @@ class FavoriteController extends Controller
     /**
      * Remove quiz from favorites (AJAX)
      */
-    public function destroyQuiz(\App\Models\Quiz $quiz)
+    public function destroyQuiz(string $topic, string $difficulty)
     {
         $user = auth()->user();
         
         $deleted = Favorite::where('student_id', $user->id)
-            ->where('quiz_id', $quiz->id)
+            ->where('quiz_topic', $topic)
+            ->where('quiz_difficulty', $difficulty)
             ->delete();
             
         if ($deleted) {

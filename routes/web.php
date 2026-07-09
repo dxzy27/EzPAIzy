@@ -56,8 +56,8 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     // Quizzes
     Route::get('/quizzes', [StudentController::class, 'quizzes'])->name('quizzes');
     Route::get('/quizzes/folder/{topic}', [StudentController::class, 'quizFolder'])->name('quizzes.folder');
-    Route::get('/quiz/{quiz}/take', [QuizController::class, 'take'])->name('quiz.take');
-    Route::post('/quiz/{quiz}/submit', [QuizController::class, 'submit'])->name('submit');
+    Route::get('/quiz/{topic}/{difficulty}/take', [QuizController::class, 'take'])->name('quiz.take');
+    Route::post('/quiz/{topic}/{difficulty}/submit', [QuizController::class, 'submit'])->name('submit');
 
     // Learning Materials
     Route::get('/contents', [StudentController::class, 'contents'])->name('contents.index');
@@ -103,8 +103,8 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::delete('/favorites/{content}', [FavoriteController::class, 'destroy'])->name('favorites.remove');
     Route::post('/favorites/flashcard/{flashcardSet}', [FavoriteController::class, 'storeFlashcard'])->name('favorites.flashcard.add');
     Route::delete('/favorites/flashcard/{flashcardSet}', [FavoriteController::class, 'destroyFlashcard'])->name('favorites.flashcard.remove');
-    Route::post('/favorites/quiz/{quiz}', [FavoriteController::class, 'storeQuiz'])->name('favorites.quiz.add');
-    Route::delete('/favorites/quiz/{quiz}', [FavoriteController::class, 'destroyQuiz'])->name('favorites.quiz.remove');
+    Route::post('/favorites/quiz/{topic}/{difficulty}', [FavoriteController::class, 'storeQuiz'])->name('favorites.quiz.add');
+    Route::delete('/favorites/quiz/{topic}/{difficulty}', [FavoriteController::class, 'destroyQuiz'])->name('favorites.quiz.remove');
 });
 
 // Protected Teacher Web Routes
@@ -119,10 +119,10 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
     Route::get('/quizzes/import-search', [QuizController::class, 'searchQuestions'])->name('quizzes.import_search');
     Route::post('/quizzes/store', [QuizController::class, 'store'])->name('quizzes.store');
-    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
-    Route::get('/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
-    Route::put('/quizzes/{quiz}/update', [QuizController::class, 'update'])->name('quizzes.update');
-    Route::delete('/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+    Route::get('/quizzes/{topic}/{difficulty}', [QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('/quizzes/{topic}/{difficulty}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+    Route::put('/quizzes/{topic}/{difficulty}/update', [QuizController::class, 'update'])->name('quizzes.update');
+    Route::delete('/quizzes/{topic}/{difficulty}/destroy', [QuizController::class, 'destroy'])->name('quizzes.destroy');
 
     // AI Quiz Generation & Comparison
     Route::post('/quizzes/process-generate', [QuizController::class, 'processGenerate'])->name('quizzes.process_generate');
@@ -188,6 +188,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/moderation/content/{content}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyContent'])->name('moderation.content.destroy');
     Route::post('/moderation/flashcard/{flashcardSet}/toggle-flag', [App\Http\Controllers\Admin\ModerationController::class, 'toggleFlashcardFlag'])->name('moderation.flashcard.toggle-flag');
     Route::delete('/moderation/flashcard/{flashcardSet}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyFlashcardSet'])->name('moderation.flashcard.destroy');
-    Route::post('/moderation/quiz/{quiz}/toggle-flag', [App\Http\Controllers\Admin\ModerationController::class, 'toggleQuizFlag'])->name('moderation.quiz.toggle-flag');
-    Route::delete('/moderation/quiz/{quiz}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyQuiz'])->name('moderation.quiz.destroy');
+    // Quiz Moderation Removed because quizzes table is deleted
 });

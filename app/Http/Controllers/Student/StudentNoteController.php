@@ -31,11 +31,11 @@ class StudentNoteController extends Controller
             [
                 'user_id' => auth()->id(),
                 'resource_type' => $validated['resource_type'] ?? null,
-                'resource_id' => $validated['resource_id'] ?? null,
                 'topic' => $validated['topic'],
+                'difficulty' => $validated['difficulty'] ?? null,
             ],
             [
-                'difficulty' => $validated['difficulty'] ?? null,
+                'resource_id' => $validated['resource_id'] ?? null,
                 'title' => $validated['title'],
                 'content' => $validated['content'],
             ]

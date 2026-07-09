@@ -12,7 +12,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('teacher.quizzes.update', $quiz) }}" method="POST">
+                    <form action="{{ route('teacher.quizzes.update', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST">
                         @csrf
                         @method('PUT')
 

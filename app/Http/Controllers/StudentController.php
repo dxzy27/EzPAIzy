@@ -25,6 +25,10 @@ class StudentController extends Controller
      * Display student dashboard.
      * Also handles the "Maybe later" dismissal of the diagnosis banner.
      */
+    /**
+     * Display student dashboard.
+     * Also handles the "Maybe later" dismissal of the diagnosis banner.
+     */
     public function dashboard(Request $request)
     {
         $user = auth()->user();
@@ -40,11 +44,25 @@ class StudentController extends Controller
             ->pluck('id')
             ->toArray();
 
-        $quizzes  = Quiz::where('is_flagged', false)
-            ->whereIn('teacher_id', $teacherIds)
-            ->with('teacher')
-            ->get();
-        $progress = $user->progress()->with('quiz.teacher')->get();
+        // Get class teacher
+        $classTeacher = \App\Models\User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
+        $teacherName = $classTeacher ? $classTeacher->name : 'Unknown';
+
+        // Retrieve unique topic + difficulty combinations that have questions
+        $quizzes = \App\Models\Question::select('topic', 'difficulty')
+            ->groupBy('topic', 'difficulty')
+            ->get()
+            ->map(function($q) use ($classTeacher) {
+                $quiz = new \stdClass();
+                $quiz->topic = $q->topic;
+                $quiz->difficulty = $q->difficulty;
+                $quiz->title = $q->topic . ' (' . ucfirst($q->difficulty) . ')';
+                $quiz->created_at = now();
+                $quiz->teacher = $classTeacher;
+                return $quiz;
+            });
+
+        $progress = $user->progress()->get();
 
         $leaderboard = [];
         if ($user->learning_style === 'competitive') {
@@ -56,17 +74,17 @@ class StudentController extends Controller
             $leaderboardData = [];
             foreach ($classmates as $mate) {
                 // Fetch progress records
-                $mateProgress = $mate->progress()->with('quiz')->get();
+                $mateProgress = $mate->progress()->get();
 
                 $totalPoints = 0;
                 $quizzesCount = 0;
 
                 foreach ($mateProgress as $p) {
-                    if (!$p->quiz || $p->status === 'pending') {
+                    if ($p->status === 'pending') {
                         continue;
                     }
 
-                    $multiplier = match ($p->quiz->difficulty) {
+                    $multiplier = match ($p->difficulty) {
                         'easy' => 1,
                         'medium' => 2,
                         'hard' => 3,
@@ -99,7 +117,7 @@ class StudentController extends Controller
             $leaderboard = $leaderboardData;
         }
 
-        return view('student.dashboard', compact('quizzes', 'progress', 'leaderboard', 'teacherIds'));
+        return view('student.dashboard', compact('quizzes', 'progress', 'leaderboard', 'teacherIds', 'teacherName'));
     }
 
     /**
@@ -128,35 +146,29 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         
-        $teacherIds = \App\Models\User::where('role', 'teacher')
+        $classTeacher = \App\Models\User::where('role', 'teacher')
             ->where('class_name', $user->class_name)
-            ->pluck('id')
-            ->toArray();
+            ->first();
 
         $difficulties = ['easy', 'medium', 'hard'];
         $allQuizzes = collect();
         foreach ($difficulties as $diff) {
-            $quiz = Quiz::firstOrCreate(
-                [
-                    'topic' => $topic,
-                    'difficulty' => $diff,
-                ],
-                [
-                    'title' => $topic . ' (' . ucfirst($diff) . ')',
-                    'teacher_id' => !empty($teacherIds) ? $teacherIds[0] : (auth()->user()->role === 'teacher' ? auth()->id() : \App\Models\User::where('role', 'teacher')->first()?->id ?? 1),
-                ]
-            );
-
-            // Load relation for student progress
-            $quiz->setRelation('progress', $quiz->progress()->where('student_id', $user->id)->get());
+            $quiz = new \stdClass();
+            $quiz->topic = $topic;
+            $quiz->difficulty = $diff;
+            $quiz->title = $topic . ' (' . ucfirst($diff) . ')';
             
-            // Set dynamic questions count
+            // Get student progress record
+            $quiz->progress = Progress::where('student_id', $user->id)
+                ->where('topic', $topic)
+                ->where('difficulty', $diff)
+                ->get();
+            
             $quiz->questions_count = \App\Models\Question::where('topic', $topic)
                 ->where('difficulty', $diff)
                 ->count();
 
-            // Set relation or count of teacher relations if needed
-            $quiz->load('teacher');
+            $quiz->teacher = $classTeacher;
 
             $allQuizzes->push($quiz);
         }
@@ -198,12 +210,15 @@ class StudentController extends Controller
             ['path' => request()->url()]
         );
 
-        $favoritedQuizIds = Favorite::where('student_id', $user->id)
-            ->whereNotNull('quiz_id')
-            ->pluck('quiz_id')
+        $favoritedQuizMap = Favorite::where('student_id', $user->id)
+            ->whereNotNull('quiz_topic')
+            ->get()
+            ->map(function($f) {
+                return $f->quiz_topic . '-' . $f->quiz_difficulty;
+            })
             ->toArray();
 
-        return view('student.quiz_folder', compact('topic', 'quizzes', 'mediumLocked', 'hardLocked', 'favoritedQuizIds'));
+        return view('student.quiz_folder', compact('topic', 'quizzes', 'mediumLocked', 'hardLocked', 'favoritedQuizMap'));
     }
 
     /**

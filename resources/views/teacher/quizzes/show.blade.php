@@ -11,7 +11,7 @@
         <h4 class="d-inline-block mb-0 fw-bold">{{ $quiz->title }}</h4>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('teacher.quizzes.edit', $quiz) }}" class="btn btn-primary btn-sm">
+        <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary btn-sm">
             <i class="bi bi-pencil me-1"></i>Edit Quiz
         </a>
     </div>

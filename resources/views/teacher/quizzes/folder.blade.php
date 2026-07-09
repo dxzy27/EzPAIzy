@@ -57,13 +57,13 @@
                             {{ $quiz->title }}
                             <span class="badge bg-{{ $quiz->difficulty == 'easy' ? 'success' : ($quiz->difficulty == 'medium' ? 'warning' : 'danger') }} ms-2" style="font-size: 0.8rem; padding: 0.35rem 0.7rem; font-weight: 700;">{{ ucfirst($quiz->difficulty) }}</span>
                         </h5>
-                        <p class="text-muted small mb-1">Questions: {{ $quiz->questions_count ?? $quiz->questions()->count() }}</p>
-                        <p class="text-muted small">Created: {{ $quiz->created_at->format('M d, Y') }}</p>
+                        <p class="text-muted small mb-1">Questions: {{ $quiz->questions_count }}</p>
+                        <p class="text-muted small">Topic Bank: Active</p>
                     </div>
                     <div class="card-footer bg-light">
-                        <a href="{{ route('teacher.quizzes.show', $quiz) }}" class="btn btn-sm btn-primary">View</a>
-                        <a href="{{ route('teacher.quizzes.edit', $quiz) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('teacher.quizzes.destroy', $quiz) }}" method="POST" style="display:inline;">
+                        <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-sm btn-primary">View</a>
+                        <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ route('teacher.quizzes.destroy', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>

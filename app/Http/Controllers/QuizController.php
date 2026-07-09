@@ -27,26 +27,16 @@ class QuizController extends Controller
         return view('teacher.quizzes.index', compact('topics'));
     }
 
-    /**
-     * Display quizzes in a specific folder.
-     */
     public function folder($topic)
     {
         $difficulties = ['easy', 'medium', 'hard'];
         $quizzes = collect();
 
         foreach ($difficulties as $diff) {
-            $quiz = Quiz::firstOrCreate(
-                [
-                    'topic' => $topic,
-                    'difficulty' => $diff,
-                ],
-                [
-                    'title' => $topic . ' (' . ucfirst($diff) . ')',
-                    'teacher_id' => auth()->id(),
-                ]
-            );
-
+            $quiz = new \stdClass();
+            $quiz->topic = $topic;
+            $quiz->difficulty = $diff;
+            $quiz->title = $topic . ' (' . ucfirst($diff) . ')';
             $quiz->questions_count = Question::where('topic', $topic)
                 ->where('difficulty', $diff)
                 ->count();
@@ -77,9 +67,6 @@ class QuizController extends Controller
         return view('teacher.quizzes.create', compact('difficulty', 'topics'));
     }
 
-    /**
-     * Store new quiz.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -92,51 +79,53 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
-        $quiz = Quiz::firstOrCreate(
-            [
-                'topic' => $validated['topic'],
-                'difficulty' => $validated['difficulty'],
-            ],
-            [
-                'title' => $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ')',
-                'teacher_id' => auth()->id(),
-            ]
-        );
-
         foreach ($validated['questions'] as $q) {
             Question::create([
-                'quiz_id' => $quiz->id,
                 'question_text' => $q['text'],
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
                 'correct_answer' => $q['correct'],
                 'points' => 10,
-                'topic' => $quiz->topic,
-                'difficulty' => $quiz->difficulty,
+                'topic' => $validated['topic'],
+                'difficulty' => $validated['difficulty'],
             ]);
         }
 
         // Clear generated questions session
         session()->forget('generated_questions');
 
-        return redirect()->route('teacher.quizzes.index', ['topic' => $quiz->topic])
-            ->with('success', 'Quiz created successfully!');
+        return redirect()->route('quizzes.folder', $validated['topic'])
+            ->with('success', 'Questions added to Question Bank successfully!');
     }
 
     /**
      * Show quiz details.
      */
-    public function show(Quiz $quiz)
+    public function show(string $topic, string $difficulty)
     {
-        $quiz->load('questions');
+        $quiz = new \stdClass();
+        $quiz->topic = $topic;
+        $quiz->difficulty = $difficulty;
+        $quiz->title = $topic . ' (' . ucfirst($difficulty) . ')';
+        $quiz->questions = Question::where('topic', $topic)
+            ->where('difficulty', $difficulty)
+            ->get();
         return view('teacher.quizzes.show', compact('quiz'));
     }
 
     /**
      * Show quiz edit form.
      */
-    public function edit(Quiz $quiz)
+    public function edit(string $topic, string $difficulty)
     {
+        $quiz = new \stdClass();
+        $quiz->topic = $topic;
+        $quiz->difficulty = $difficulty;
+        $quiz->title = $topic . ' (' . ucfirst($difficulty) . ')';
+        $quiz->questions = Question::where('topic', $topic)
+            ->where('difficulty', $difficulty)
+            ->get();
+
         $topics = Topic::where('user_id', auth()->id())->where('type', 'quiz')->get();
 
         return view('teacher.quizzes.edit', compact('quiz', 'topics'));
@@ -145,7 +134,7 @@ class QuizController extends Controller
     /**
      * Update quiz.
      */
-    public function update(Request $request, Quiz $quiz)
+    public function update(Request $request, string $topic, string $difficulty)
     {
         $validated = $request->validate([
             'topic' => 'required|string',
@@ -156,42 +145,34 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
-        $quiz->update([
-            'topic' => $validated['topic'],
-            'title' => $validated['topic'] . ' (' . ucfirst($quiz->difficulty) . ')',
-        ]);
-
-        // Delete existing questions and recreate
-        $quiz->questions()->delete();
+        // Delete existing questions in this topic + difficulty
+        Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
 
         foreach ($validated['questions'] as $q) {
             Question::create([
-                'quiz_id' => $quiz->id,
                 'question_text' => $q['text'],
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
                 'correct_answer' => $q['correct'],
                 'points' => 10,
-                'topic' => $quiz->topic,
-                'difficulty' => $quiz->difficulty,
+                'topic' => $validated['topic'],
+                'difficulty' => $difficulty,
             ]);
         }
 
-        return redirect()->route('teacher.quizzes.index', ['topic' => $quiz->topic])
-            ->with('success', 'Quiz updated successfully!');
+        return redirect()->route('quizzes.folder', $validated['topic'])
+            ->with('success', 'Questions updated successfully!');
     }
 
     /**
      * Delete quiz.
      */
-    public function destroy(Quiz $quiz)
+    public function destroy(string $topic, string $difficulty)
     {
-        $topic = $quiz->topic;
-        $quiz->questions()->delete();
-        $quiz->delete();
+        Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
 
-        return redirect()->route('teacher.quizzes.index', ['topic' => $topic])
-            ->with('success', 'Quiz deleted successfully!');
+        return redirect()->route('quizzes.folder', $topic)
+            ->with('success', 'Questions deleted successfully!');
     }
 
     /**
@@ -312,64 +293,59 @@ class QuizController extends Controller
             'questions' => 'required|string', // JSON string
         ]);
 
-        $quiz = Quiz::firstOrCreate(
-            [
-                'topic' => $validated['topic'],
-                'difficulty' => $validated['difficulty'],
-            ],
-            [
-                'title' => $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ')',
-                'teacher_id' => auth()->id()
-            ]
-        );
-
         $selectedQuestions = json_decode($validated['questions'], true);
 
         if (is_array($selectedQuestions)) {
             foreach ($selectedQuestions as $q) {
                 Question::create([
-                    'quiz_id' => $quiz->id,
                     'question_text' => $q['text'] ?? $q['question_text'],
-                    'type' => $q['type'] ?? (($quiz->difficulty === 'easy') ? 'mcq' : 'short_answer'),
+                    'type' => $q['type'] ?? (($validated['difficulty'] === 'easy') ? 'mcq' : 'short_answer'),
                     'options' => $q['options'] ?? null,
                     'correct_answer' => $q['correct_answer'] ?? '',
                     'points' => 10,
-                    'topic' => $quiz->topic,
-                    'difficulty' => $quiz->difficulty,
+                    'topic' => $validated['topic'],
+                    'difficulty' => $validated['difficulty'],
                 ]);
             }
         }
 
-        return redirect()->route('teacher.quizzes.index', ['topic' => $quiz->topic])
-            ->with('success', 'Selected questions saved as a quiz!');
+        return redirect()->route('quizzes.folder', $validated['topic'])
+            ->with('success', 'Selected questions saved to Question Bank!');
     }
 
     /**
      * Show student quiz taking page.
      */
-    public function take(Quiz $quiz)
+    public function take(string $topic, string $difficulty)
     {
-        $questions = Question::where('topic', $quiz->topic)
-            ->where('difficulty', $quiz->difficulty)
+        $quiz = new \stdClass();
+        $quiz->topic = $topic;
+        $quiz->difficulty = $difficulty;
+        $quiz->title = $topic . ' (' . ucfirst($difficulty) . ')';
+        $quiz->questions = Question::where('topic', $topic)
+            ->where('difficulty', $difficulty)
             ->get();
-        $quiz->setRelation('questions', $questions);
         return view('student.quiz.take', compact('quiz'));
     }
 
     /**
      * Submit student quiz results.
      */
-    public function submit(Request $request, Quiz $quiz)
+    public function submit(Request $request, string $topic, string $difficulty)
     {
         $validated = $request->validate([
             'score' => 'required|integer',
             'answers' => 'required|string', // JSON string
         ]);
 
-        $status = ($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') ? 'pending' : 'completed';
+        $status = ($difficulty === 'hard' || $difficulty === 'medium') ? 'pending' : 'completed';
 
         Progress::updateOrCreate(
-            ['student_id' => auth()->id(), 'quiz_id' => $quiz->id],
+            [
+                'student_id' => auth()->id(), 
+                'topic' => $topic,
+                'difficulty' => $difficulty
+            ],
             [
                 'score' => $validated['score'],
                 'student_answers' => json_decode($validated['answers'], true),

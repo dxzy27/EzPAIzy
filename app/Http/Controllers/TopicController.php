@@ -59,8 +59,7 @@ class TopicController extends Controller
             ->where('topic', $topicName)
             ->update(['topic' => $newName]);
 
-        \App\Models\Quiz::where('user_id', auth()->id())
-            ->where('topic', $topicName)
+        \App\Models\Question::where('topic', $topicName)
             ->update(['topic' => $newName]);
 
         \App\Models\Content::where('user_id', auth()->id())
