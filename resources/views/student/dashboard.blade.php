@@ -118,7 +118,7 @@
             'label'       => 'Visual Learner',
             'tipIcon'     => '👁️',
             'tipTitle'    => 'Visual Study Tip',
-            'tip'         => 'The Imagery: Visual learners absorb information by seeing shapes, diagrams, and processes. Presenting them with clear illustrations of prayer postures (Rukuk, Sujud) or the steps of Wudhu allows them to form a mental map of how the ritual looks.',
+            'tip'         => 'You can highlight or underline the text that you read in flashcards, quizzes and other materials.',
             'recTitle'    => '✨ Recommended: Diagrams & Infographics',
         ],
         'kinesthetic' => [

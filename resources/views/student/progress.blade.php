@@ -18,7 +18,7 @@
 
     <!-- Filters -->
     <div class="row mb-4 align-items-end bg-white p-3 rounded shadow-sm border mx-0 g-2">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="type-filter" class="form-label small fw-bold text-uppercase text-muted">Filter Type</label>
             <select id="type-filter" class="form-select" onchange="applyFilters()">
                 <option value="">All (Quiz & Flashcards)</option>
@@ -26,7 +26,7 @@
                 <option value="flashcards" {{ $selectedType === 'flashcards' ? 'selected' : '' }}>Flashcards</option>
             </select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="topic-filter" class="form-label small fw-bold text-uppercase text-muted">Filter Topic</label>
             <select id="topic-filter" class="form-select" onchange="applyFilters()">
                 <option value="">All Topics</option>
@@ -35,9 +35,16 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-4 text-end">
+        <div class="col-md-4">
+            <label for="progress-search" class="form-label small fw-bold text-uppercase text-muted">Search Title / Topic</label>
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="progress-search" class="form-control border-start-0 ps-1" placeholder="Search title or topic...">
+            </div>
+        </div>
+        <div class="col-md-2 text-end">
             @if($selectedType || $selectedTopic)
-                <a href="{{ route('student.progress') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-x-circle me-1"></i> Clear Filters</a>
+                <a href="{{ route('student.progress') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-x-circle me-1"></i> Clear</a>
             @endif
         </div>
     </div>
@@ -56,6 +63,26 @@
             url.searchParams.delete('page');
             window.location.href = url.toString();
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('progress-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    const rows = document.querySelectorAll('.progress-row');
+                    
+                    rows.forEach(row => {
+                        const title = row.dataset.title || '';
+                        const topic = row.dataset.topic || '';
+                        if (title.includes(query) || topic.includes(query)) {
+                            row.style.setProperty('display', '', 'important');
+                        } else {
+                            row.style.setProperty('display', 'none', 'important');
+                        }
+                    });
+                });
+            }
+        });
     </script>
 
     @if($progress->count() > 0)
@@ -77,7 +104,7 @@
                         </thead>
                         <tbody>
                             @foreach($progress as $p)
-                                <tr>
+                                <tr class="progress-row" data-title="{{ strtolower($p->title) }}" data-topic="{{ strtolower($p->topic) }}">
                                     <td><span class="badge bg-light text-dark border">{{ $p->topic }}</span></td>
                                     <td>
                                         <span class="badge {{ $p->type === 'Quiz' ? 'bg-primary' : 'bg-success' }}">

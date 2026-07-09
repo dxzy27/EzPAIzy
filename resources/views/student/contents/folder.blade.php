@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row mb-4 align-items-center">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <div class="d-flex align-items-center gap-3">
                 <a href="{{ route('student.contents.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Folders">
                     <i class="bi bi-arrow-left fs-5"></i>
@@ -16,12 +16,18 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-4 text-end d-none d-md-block">
+             <div class="input-group shadow-sm ms-auto" style="border-radius: 50px; overflow: hidden; width: 300px;">
+                <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="material-search" class="form-control border-0 ps-2" placeholder="Search materials...">
+             </div>
+        </div>
     </div>
 
     @if($contents->count() > 0)
         <div class="row">
             @foreach($contents as $content)
-                <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4 material-card-col" data-title="{{ strtolower($content->title) }}">
                     <div class="card h-100 shadow-sm content-card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
@@ -116,6 +122,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Live Search
+    const searchInput = document.getElementById('material-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.material-card-col');
+            let hasVisible = false;
+            
+            cards.forEach(card => {
+                const title = card.dataset.title || '';
+                if (title.includes(query)) {
+                    card.style.setProperty('display', '', 'important');
+                    hasVisible = true;
+                } else {
+                    card.style.setProperty('display', 'none', 'important');
+                }
+            });
+
+            // Handle no results message
+            let noResultsMsg = document.getElementById('no-results-msg');
+            if (!hasVisible) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.id = 'no-results-msg';
+                    noResultsMsg.className = 'col-12 text-center py-5';
+                    noResultsMsg.innerHTML = `
+                        <i class="bi bi-search display-3 text-muted mb-3"></i>
+                        <h5>No materials match your search.</h5>
+                        <p class="text-muted small">Try checking for typos or searching a different term.</p>
+                    `;
+                    document.querySelector('.row').appendChild(noResultsMsg);
+                }
+            } else {
+                if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            }
+        });
+    }
 });
 </script>
 @endpush
