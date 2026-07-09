@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Content;
 use App\Models\FlashcardSet;
-use App\Models\Quiz;
 use Illuminate\Http\Request;
 
 class ModerationController extends Controller
@@ -27,11 +26,9 @@ class ModerationController extends Controller
             $contents = Content::with('teacher')->latest()->paginate(15);
         } elseif ($tab === 'flashcards') {
             $flashcardSets = FlashcardSet::with('user')->latest()->paginate(15);
-        } elseif ($tab === 'quizzes') {
-            $quizzes = Quiz::with('teacher')->latest()->paginate(15);
         }
 
-        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'quizzes', 'tab'));
+        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'tab'));
     }
 
     public function toggleContentFlag(Content $content)
@@ -66,22 +63,5 @@ class ModerationController extends Controller
         $flashcardSet->delete();
 
         return redirect()->back()->with('success', "Flashcard set '{$title}' has been permanently deleted.");
-    }
-
-    public function toggleQuizFlag(Quiz $quiz)
-    {
-        $quiz->is_flagged = !$quiz->is_flagged;
-        $quiz->save();
-
-        $status = $quiz->is_flagged ? 'flagged as inappropriate' : 'approved';
-        return redirect()->back()->with('success', "Quiz '{$quiz->title}' has been {$status}.");
-    }
-
-    public function destroyQuiz(Quiz $quiz)
-    {
-        $title = $quiz->title;
-        $quiz->delete();
-
-        return redirect()->back()->with('success', "Quiz '{$title}' has been permanently deleted.");
     }
 }

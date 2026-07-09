@@ -136,13 +136,6 @@
                     </div>
                     <span class="badge bg-danger rounded-pill">{{ $stats['flagged_flashcards'] }}</span>
                 </div>
-                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                    <div>
-                        <div class="fw-bold">Flagged Quizzes</div>
-                        <div class="text-muted small">AI-generated and manual quizzes</div>
-                    </div>
-                    <span class="badge bg-danger rounded-pill">{{ $stats['flagged_quizzes'] }}</span>
-                </div>
             </div>
 
             <div class="mt-4 text-center">
