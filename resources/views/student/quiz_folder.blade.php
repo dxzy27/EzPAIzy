@@ -22,7 +22,7 @@
         <div class="d-none d-md-block">
              <div class="input-group shadow-sm" style="border-radius: 50px; overflow: hidden; width: 300px;">
                 <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" class="form-control border-0 ps-2" placeholder="Search quizzes...">
+                <input type="text" id="quiz-search" class="form-control border-0 ps-2" placeholder="Search quizzes...">
              </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
                         $lockMessage = 'Score 80%+ on Medium quizzes first';
                     }
                 @endphp
-                <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="col-md-6 col-lg-4 col-xl-3 quiz-card-col" data-title="{{ strtolower($quiz->title) }}" data-difficulty="{{ strtolower($quiz->difficulty) }}">
                     <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 12px; overflow: hidden; {{ $isLocked ? 'opacity: 0.7; filter: grayscale(20%);' : '' }}">
                         <div class="card-body d-flex flex-column p-4">
                             <div class="d-flex justify-content-between align-items-start mb-3">
@@ -272,6 +272,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Live Search
+    const searchInput = document.getElementById('quiz-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.quiz-card-col');
+            let hasVisible = false;
+            
+            cards.forEach(card => {
+                const title = card.dataset.title || '';
+                const difficulty = card.dataset.difficulty || '';
+                if (title.includes(query) || difficulty.includes(query)) {
+                    card.style.setProperty('display', '', 'important');
+                    hasVisible = true;
+                } else {
+                    card.style.setProperty('display', 'none', 'important');
+                }
+            });
+
+            // Handle no results message
+            let noResultsMsg = document.getElementById('no-results-msg');
+            if (!hasVisible) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.id = 'no-results-msg';
+                    noResultsMsg.className = 'col-12 text-center py-5';
+                    noResultsMsg.innerHTML = `
+                        <i class="bi bi-search display-3 text-muted mb-3"></i>
+                        <h5>No quizzes match your search.</h5>
+                        <p class="text-muted small">Try checking for typos or searching a different term.</p>
+                    `;
+                    document.querySelector('.row.g-4').appendChild(noResultsMsg);
+                }
+            } else {
+                if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            }
+        });
+    }
 });
 </script>
 @endpush
