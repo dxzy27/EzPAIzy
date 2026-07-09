@@ -20,15 +20,25 @@ class ModerationController extends Controller
 
         $contents = [];
         $flashcardSets = [];
-        $quizzes = [];
+        $questions = [];
 
         if ($tab === 'materials') {
             $contents = Content::with('teacher')->latest()->paginate(15);
         } elseif ($tab === 'flashcards') {
             $flashcardSets = FlashcardSet::with('user')->latest()->paginate(15);
+        } elseif ($tab === 'questions') {
+            $questions = \App\Models\Question::latest()->paginate(15);
         }
 
-        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'tab'));
+        return view('admin.moderation.index', compact('contents', 'flashcardSets', 'questions', 'tab'));
+    }
+
+    public function destroyQuestion(\App\Models\Question $question)
+    {
+        $text = \Illuminate\Support\Str::limit($question->question_text, 30);
+        $question->delete();
+
+        return redirect()->back()->with('success', "Question '{$text}' has been permanently deleted from the Question Bank.");
     }
 
     public function toggleContentFlag(Content $content)

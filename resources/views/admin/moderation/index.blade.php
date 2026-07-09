@@ -24,6 +24,11 @@
                 <i class="bi bi-card-text me-2"></i>Flashcard Sets
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ $tab === 'questions' ? 'active fw-bold text-primary border-primary border-bottom border-2' : 'text-muted' }}" href="{{ route('admin.moderation.index', ['tab' => 'questions']) }}">
+                <i class="bi bi-database me-2"></i>Question Bank
+            </a>
+        </li>
     </ul>
 
     {{-- Tab Contents --}}
@@ -177,6 +182,67 @@
         </div>
         <div class="mt-3">{{ $flashcardSets->links() }}</div>
 
+    @elseif($tab === 'questions')
+        {{-- Question Bank Moderation Table --}}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 45%;">Question Text</th>
+                        <th>Topic</th>
+                        <th>Difficulty</th>
+                        <th>Type</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($questions as $q)
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark text-wrap" style="max-width: 450px;">{{ $q->question_text }}</div>
+                                @if($q->options)
+                                    <div class="text-muted small mt-1">
+                                        Options: {{ implode(', ', array_filter((array)$q->options)) }}
+                                    </div>
+                                @endif
+                                <div class="text-success small mt-1">
+                                    <strong>Ans:</strong> {{ $q->correct_answer }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border px-2 py-1">{{ $q->topic ?? 'General' }}</span>
+                            </td>
+                            <td>
+                                <span class="badge" style="font-size: 0.85rem; font-weight: 700; padding: 0.35rem 0.7rem; background: {{ $q->difficulty === 'easy' ? '#d1fae5; color:#065f46;' : ($q->difficulty === 'medium' ? '#fef3c7; color:#92400e;' : '#fee2e2; color:#991b1b;') }}">{{ ucfirst($q->difficulty) }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary text-uppercase">{{ $q->type }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-end gap-2">
+                                    {{-- Delete Question --}}
+                                    <form action="{{ route('admin.moderation.question.destroy', $q) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this question from the Question Bank? This action cannot be undone.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Question">
+                                            <i class="bi bi-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                <i class="bi bi-database display-6 d-block mb-3 text-muted"></i>
+                                No questions found in the Question Bank.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3">{{ $questions->links() }}</div>
     @endif
 </div>
 @endsection
