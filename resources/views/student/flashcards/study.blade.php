@@ -328,7 +328,7 @@
                             }
                         }
                     }
-                    displayHtml = `<span class="text-white fw-bold">${display}</span>`;
+                    displayHtml = `<span class="text-dark fw-bold">${display}</span>`;
                 } else {
                     let underscores = '';
                     let words = item.text.split(/\s+/);
@@ -343,7 +343,7 @@
                         }
                         underscores += wordUnderscores + (wIdx < words.length - 1 ? ' &nbsp; ' : '');
                     });
-                    displayHtml = `<span class="text-white-50">${underscores}</span>`;
+                    displayHtml = `<span class="text-muted">${underscores}</span>`;
                 }
 
                 if (isList && item.number) {
