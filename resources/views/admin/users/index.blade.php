@@ -83,7 +83,7 @@
                             @endif
                         </td>
                         <td>
-                            <div class="small"><i class="bi bi-telephone me-1 text-muted"></i>{{ $user->phone ?? 'N/A' }}</div>
+                            <div class="small"><i class="bi bi-telephone me-1 text-muted"></i>{{ $user->phone_number ?? 'N/A' }}</div>
                             <div class="text-muted small"><i class="bi bi-geo-alt me-1 text-muted"></i>{{ Str::limit($user->address ?? 'No address', 20) }}</div>
                         </td>
                         <td>

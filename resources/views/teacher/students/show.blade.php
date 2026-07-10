@@ -30,7 +30,7 @@
                     <div class="d-flex flex-column align-items-center gap-3 text-center px-4">
                         <div class="mb-3">
                             <small class="text-muted d-block fw-bold text-uppercase">Phone Number</small>
-                            <span>{{ $student->phone_number ?? $student->phone ?? 'Not provided' }}</span>
+                            <span>{{ $student->phone_number ?? 'Not provided' }}</span>
                         </div>
                         <div class="mb-3">
                             <small class="text-muted d-block fw-bold text-uppercase">Class</small>

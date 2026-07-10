@@ -56,7 +56,7 @@
 
                     <div class="mb-4">
                         <label class="form-label text-muted">Phone Number</label>
-                        <h6>{{ $user->phone ?? 'Not provided' }}</h6>
+                        <h6>{{ $user->phone_number ?? 'Not provided' }}</h6>
                     </div>
 
                     <div class="mb-4">

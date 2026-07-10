@@ -50,16 +50,14 @@
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
-
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control @error('phone') is-invalid @enderror" 
-                                   id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
-                            @error('phone')
+                            <label for="phone_number" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control @error('phone_number') is-invalid @enderror" 
+                                   id="phone_number" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}">
+                            @error('phone_number')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
-
                         <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
                             <textarea class="form-control @error('address') is-invalid @enderror" 

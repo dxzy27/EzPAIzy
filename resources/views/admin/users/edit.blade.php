@@ -59,7 +59,7 @@
                     {{-- Phone Number --}}
                     <div class="col-md-6">
                         <label class="form-label small fw-bold">Phone Number</label>
-                        <input type="text" name="phone" class="form-control" placeholder="e.g. +60123456789" value="{{ old('phone', $user->phone) }}">
+                        <input type="text" name="phone_number" class="form-control" placeholder="e.g. +60123456789" value="{{ old('phone_number', $user->phone_number) }}">
                     </div>
 
                     {{-- Address --}}

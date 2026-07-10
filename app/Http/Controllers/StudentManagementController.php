@@ -43,7 +43,7 @@ class StudentManagementController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'phone' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|string|max:20',
             'class_name' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:255',
         ]);
@@ -195,7 +195,7 @@ class StudentManagementController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $student->id,
-            'phone' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|string|max:20',
             'class_name' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:255',
         ]);

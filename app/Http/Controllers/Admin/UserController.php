@@ -48,7 +48,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|string|in:teacher,student,admin',
-            'phone' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'class_name' => 'nullable|string|max:255',
         ]);
@@ -58,7 +58,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
-            'phone' => $validated['phone'] ?? null,
+            'phone_number' => $validated['phone_number'] ?? null,
             'address' => $validated['address'] ?? null,
             'class_name' => $validated['class_name'] ?? null,
             'is_approved' => true, // Manually created users are approved by default
@@ -84,7 +84,7 @@ class UserController extends Controller
                 Rule::unique('users')->ignore($user->id),
             ],
             'role' => 'required|string|in:teacher,student,admin',
-            'phone' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'class_name' => 'nullable|string|max:255',
         ]);
@@ -93,7 +93,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
-            'phone' => $validated['phone'] ?? null,
+            'phone_number' => $validated['phone_number'] ?? null,
             'address' => $validated['address'] ?? null,
             'class_name' => $validated['class_name'] ?? null,
         ]);

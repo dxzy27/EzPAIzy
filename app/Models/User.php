@@ -16,7 +16,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone',
         'phone_number',
         'address',
         'role',
@@ -211,23 +210,5 @@ class User extends Authenticatable
         $index = $this->id % count($colors);
         
         return $colors[$index];
-    }
-
-    /**
-     * Mutator to keep 'phone' and 'phone_number' fields synchronized.
-     */
-    public function setPhoneAttribute($value)
-    {
-        $this->attributes['phone'] = $value;
-        $this->attributes['phone_number'] = $value;
-    }
-
-    /**
-     * Mutator to keep 'phone_number' and 'phone' fields synchronized.
-     */
-    public function setPhoneNumberAttribute($value)
-    {
-        $this->attributes['phone_number'] = $value;
-        $this->attributes['phone'] = $value;
     }
 }

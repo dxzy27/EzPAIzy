@@ -35,7 +35,7 @@
                                 <strong>{{ $student->name }}</strong>
                             </td>
                             <td>{{ $student->email }}</td>
-                            <td>{{ $student->phone ?? 'N/A' }}</td>
+                            <td>{{ $student->phone_number ?? 'N/A' }}</td>
                             <td>{{ $student->class_name ?? 'N/A' }}</td>
                             <td>
                                 <span class="badge bg-info">
