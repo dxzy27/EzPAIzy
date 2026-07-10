@@ -36,13 +36,6 @@
             'rgb'         => '217, 70, 239',
             'border'      => '#d946ef',
         ],
-        'competitive' => [
-            'accent'      => '#EF9086',
-            'accentLight' => '#fef2f2',
-            'accentText'  => '#991b1b',
-            'rgb'         => '239, 144, 134',
-            'border'      => '#EF9086',
-        ],
     ];
 
     $cfg = $styleColors[$style] ?? [
@@ -58,7 +51,6 @@
         'auditory'    => 'bi-ear-fill',
         'visual'      => 'bi-eye-fill',
         'kinesthetic' => 'bi-hand-index-thumb-fill',
-        'competitive' => 'bi-trophy-fill',
     ];
     $icon = $icons[$style] ?? 'bi-person-fill';
 
@@ -67,7 +59,6 @@
         'auditory'    => 'Auditory Learner',
         'visual'      => 'Visual Learner',
         'kinesthetic' => 'Kinaesthetic Learner',
-        'competitive' => 'Competitive Learner',
     ];
 
     $descriptions = [
@@ -75,7 +66,6 @@
         'auditory'    => 'You learn best through sound and verbal processing — listening, speaking, reciting, and discussing are your strongest pathways to retaining information.',
         'visual'      => 'You absorb information best by seeing it. Diagrams, layout, formatting, and posture/Wudhu images help you construct a strong mental map of concepts.',
         'kinesthetic' => 'You learn best by physical touch, actions, and concrete examples. Timed challenges and swiping flashcards directly engage your active memory pathways.',
-        'competitive' => 'You are driven by challenge and performance — pressure, scoring, and the drive to beat your own record are the most powerful motivators for your learning.',
     ];
     $totalScore = max(1, $profile->score_read_write + $profile->score_auditory + $profile->score_visual + $profile->score_kinesthetic);
 @endphp
@@ -169,7 +159,6 @@
     .grad-auditory    { background: linear-gradient(135deg, #e5b181, #f3cca6); }
     .grad-visual      { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
     .grad-kinesthetic { background: linear-gradient(135deg, #d946ef, #f472b6); }
-    .grad-competitive { background: linear-gradient(135deg, #EF9086, #f7b2aa); }
 </style>
 @endpush
 

@@ -9,7 +9,6 @@ use App\Models\FlashcardSet;
 use App\Models\Flashcard;
 use App\Models\FlashcardProgress;
 use App\Models\Progress;
-use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -105,102 +104,49 @@ class StudentApiController extends Controller
             ->pluck('id')
             ->toArray();
 
-        // 1. Calculate leaderboard if competitive
-        $leaderboard = [];
-        if ($style === 'competitive') {
-            $classmates = \App\Models\User::where('role', 'student')
-                ->where('class_name', $user->class_name)
-                ->get();
-
-            $leaderboardData = [];
-            foreach ($classmates as $mate) {
-                $mateProgress = $mate->progress()->with('quiz')->get();
-                $totalPoints = 0;
-                $quizzesCount = 0;
-
-                foreach ($mateProgress as $p) {
-                    if (!$p->quiz || $p->status === 'pending') {
-                        continue;
-                    }
-
-                    $multiplier = match ($p->quiz->difficulty) {
-                        'easy' => 1,
-                        'medium' => 2,
-                        'hard' => 3,
-                        default => 1
-                    };
-
-                    $totalPoints += ($p->score * $multiplier);
-                    $quizzesCount++;
-                }
-
-                $leaderboardData[] = [
-                    'id' => $mate->id,
-                    'name' => $mate->name,
-                    'points' => $totalPoints,
-                    'completed_count' => $quizzesCount,
-                ];
-            }
-
-            usort($leaderboardData, function($a, $b) {
-                if ($b['points'] !== $a['points']) {
-                    return $b['points'] <=> $a['points'];
-                }
-                if ($b['completed_count'] !== $a['completed_count']) {
-                    return $b['completed_count'] <=> $a['completed_count'];
-                }
-                return strcasecmp($a['name'], $b['name']);
-            });
-
-            $leaderboard = $leaderboardData;
-        }
-
-        // 2. Fetch new/recommended materials if not competitive
         $newMaterials = [];
-        if ($style !== 'competitive') {
-            $recentContents   = Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->latest()->take(5)->get();
-            $recentFlashcards = FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->latest()->take(5)->get();
+        $recentContents   = Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->latest()->take(5)->get();
+        $recentFlashcards = FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->latest()->take(5)->get();
 
-            $mappedContents = $recentContents->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'title' => $item->title,
-                    'topic' => $item->topic ?? 'General',
-                    'type' => 'Content',
-                    'action' => 'View',
-                    'created_at' => $item->created_at->toIso8601String(),
-                ];
-            });
+        $mappedContents = $recentContents->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->title,
+                'topic' => $item->topic ?? 'General',
+                'type' => 'Content',
+                'action' => 'View',
+                'created_at' => $item->created_at->toIso8601String(),
+            ];
+        });
 
-            $mappedFlashcards = $recentFlashcards->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'title' => $item->title,
-                    'topic' => $item->topic ?? 'General',
-                    'type' => 'Flashcard',
-                    'action' => 'Practice',
-                    'created_at' => $item->created_at->toIso8601String(),
-                ];
-            });
+        $mappedFlashcards = $recentFlashcards->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->title,
+                'topic' => $item->topic ?? 'General',
+                'type' => 'Flashcard',
+                'action' => 'Practice',
+                'created_at' => $item->created_at->toIso8601String(),
+            ];
+        });
 
-            if ($style === 'read_write') {
-                $newMaterials = $mappedFlashcards->concat($mappedContents)->sortByDesc('created_at')->take(5)->values()->all();
-            } else {
-                $newMaterials = $mappedContents->concat($mappedFlashcards)->sortByDesc('created_at')->take(5)->values()->all();
-            }
+        if ($style === 'read_write') {
+            $newMaterials = $mappedFlashcards->concat($mappedContents)->sortByDesc('created_at')->take(5)->values()->all();
+        } else {
+            $newMaterials = $mappedContents->concat($mappedFlashcards)->sortByDesc('created_at')->take(5)->values()->all();
         }
 
         return response()->json([
             'user'             => $user->only(['id', 'name', 'email', 'learning_style', 'class_name']),
             'persona'          => $profile?->persona,
             'profile'          => $profile,
-            'quiz_count'       => Quiz::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->count(),
+            'quiz_count'       => \App\Models\Question::select('topic', 'difficulty')->groupBy('topic', 'difficulty')->get()->count(),
             'materials_count'  => Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->count() + FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->count(),
             'completed_count'  => $progress->count(),
             'best_score'       => ($style === 'competitive' && $progress->count() > 0) ? $progress->max('score') : null,
             'recent_results'   => $progress->take(5)->values(),
             'new_materials'    => $newMaterials,
-            'leaderboard'      => $leaderboard,
+            'leaderboard'      => [],
         ]);
     }
 
@@ -671,7 +617,6 @@ class StudentApiController extends Controller
                 'score_auditory'    => $result['scores']['auditory'] ?? 0,
                 'score_visual'      => $result['scores']['visual'] ?? 0,
                 'score_kinesthetic' => $result['scores']['kinesthetic'] ?? 0,
-                'score_competitive' => $result['scores']['competitive'] ?? 0,
                 'confidence'        => $result['confidence'],
                 'learning_style'    => $style,
                 'persona'           => $persona,
@@ -741,7 +686,7 @@ class StudentApiController extends Controller
     private function runInferenceEngine(array $answers): array
     {
         $knowledgeBase = $this->getKnowledgeBase();
-        $scores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0, 'competitive' => 0];
+        $scores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0];
 
         // ── PASS 1: VARK Scoring Method (Simple Selection Count) ─────────────
         foreach ($knowledgeBase as $qKey => $rule) {
@@ -784,7 +729,6 @@ class StudentApiController extends Controller
             'auditory'    => 'Auditory Learner',
             'visual'      => 'Visual Learner',
             'kinesthetic' => 'Kinaesthetic Learner',
-            'competitive' => 'Competitive Learner',
         ];
 
         return $labels[$style];

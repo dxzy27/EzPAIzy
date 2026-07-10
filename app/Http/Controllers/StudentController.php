@@ -63,60 +63,7 @@ class StudentController extends Controller
 
         $progress = $user->progress()->get();
 
-        $leaderboard = [];
-        if ($user->learning_style === 'competitive') {
-            // Find all student users in the same class
-            $classmates = \App\Models\User::where('role', 'student')
-                ->where('class_name', $user->class_name)
-                ->get();
-
-            $leaderboardData = [];
-            foreach ($classmates as $mate) {
-                // Fetch progress records
-                $mateProgress = $mate->progress()->get();
-
-                $totalPoints = 0;
-                $quizzesCount = 0;
-
-                foreach ($mateProgress as $p) {
-                    if ($p->status === 'pending') {
-                        continue;
-                    }
-
-                    $multiplier = match ($p->difficulty) {
-                        'easy' => 1,
-                        'medium' => 2,
-                        'hard' => 3,
-                        default => 1
-                    };
-
-                    $totalPoints += ($p->score * $multiplier);
-                    $quizzesCount++;
-                }
-
-                $leaderboardData[] = (object) [
-                    'id' => $mate->id,
-                    'name' => $mate->name,
-                    'points' => $totalPoints,
-                    'completed_count' => $quizzesCount,
-                ];
-            }
-
-            // Sort by points desc, then completed_count desc, then name asc
-            usort($leaderboardData, function($a, $b) {
-                if ($b->points !== $a->points) {
-                    return $b->points <=> $a->points;
-                }
-                if ($b->completed_count !== $a->completed_count) {
-                    return $b->completed_count <=> $a->completed_count;
-                }
-                return strcasecmp($a->name, $b->name);
-            });
-
-            $leaderboard = $leaderboardData;
-        }
-
-        return view('student.dashboard', compact('quizzes', 'progress', 'leaderboard', 'teacherIds', 'teacherName'));
+        return view('student.dashboard', compact('quizzes', 'progress', 'teacherIds', 'teacherName'));
     }
 
     /**

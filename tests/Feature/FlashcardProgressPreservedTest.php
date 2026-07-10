@@ -40,7 +40,6 @@ class FlashcardProgressPreservedTest extends TestCase
             'answers' => ['q1' => 'A', 'q2' => 'A'],
             'score_read_write' => 10,
             'score_auditory' => 2,
-            'score_competitive' => 1,
             'confidence' => 80.0,
             'persona' => 'Read/Write Learner',
             'recommendations' => ['Write summaries.'],

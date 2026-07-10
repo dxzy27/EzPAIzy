@@ -73,7 +73,6 @@
     .style-badge.auditory    { background: #fff7ed; color: #7c2d12; border: 1px solid #e5b181; }
     .style-badge.visual      { background: #ecfeff; color: #083344; border: 1px solid #06b6d4; }
     .style-badge.kinesthetic { background: #fdf4ff; color: #701a75; border: 1px solid #d946ef; }
-    .style-badge.competitive { background: #fef2f2; color: #991b1b; border: 1px solid #EF9086; }
 
     /* ── Recommended top-stripe ── */
     .primary-card-stripe {
@@ -132,17 +131,6 @@
             'tip'         => 'Interact directly with your study tools! Use the Swipe Flashcards in Review Mode, and complete interactive exercises to lock in the material.',
             'recTitle'    => '✨ Recommended: Swipe Flashcards & Exercises',
         ],
-        'competitive' => [
-            'accent'      => '#EF9086',
-            'accentLight' => '#fef2f2',
-            'accentText'  => '#991b1b',
-            'icon'        => 'bi-trophy-fill',
-            'label'       => 'Competitive Learner',
-            'tipIcon'     => '🏆',
-            'tipTitle'    => 'Competitive Study Tip',
-            'tip'         => 'Challenge: Beat your last quiz score today. Check your recent results below and pick a quiz where you scored under 90% — retake it and push for a new personal best.',
-            'recTitle'    => '✨ Recommended: Challenge Yourself',
-        ],
     ];
 
     $cfg = $style ? $styleConfig[$style] : null;
@@ -165,14 +153,12 @@
         'auditory'    => 'bi-ear-fill',
         'visual'      => 'bi-eye-fill',
         'kinesthetic' => 'bi-activity',
-        'competitive' => 'bi-trophy-fill',
     ];
     $styleLabels = [
         'read_write'  => 'Read/Write Learner',
         'auditory'    => 'Auditory Learner',
         'visual'      => 'Visual Learner',
         'kinesthetic' => 'Kinaesthetic Learner',
-        'competitive' => 'Competitive Learner',
     ];
 @endphp
 
@@ -257,11 +243,11 @@
             'type'      => 'materials',
         ];
         $cardQuizzes = [
-            'title'     => $style === 'competitive' ? '🏆 Quizzes' : '📝 Quizzes',
-            'count'     => ($style === 'competitive' && $bestScore !== null) ? $bestScore.'%' : $quizCount,
-            'sub'       => ($style === 'competitive' && $bestScore !== null) ? 'Your Best Score' : 'Available Quizzes',
-            'color'     => ($style === 'competitive') ? '#EF9086' : '#14b8a6',
-            'isPrimary' => $style === 'competitive',
+            'title'     => '📝 Quizzes',
+            'count'     => $quizCount,
+            'sub'       => 'Available Quizzes',
+            'color'     => '#14b8a6',
+            'isPrimary' => false,
             'type'      => 'quiz',
         ];
         $cardCompleted = [
@@ -349,12 +335,6 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Results</h5>
-                    @if($style === 'competitive' && $bestScore !== null)
-                    <span class="badge"
-                          style="background:{{ $cfg['accentLight'] }};color:{{ $cfg['accentText'] }};">
-                        🏆 Best: {{ $bestScore }}%
-                    </span>
-                    @endif
                 </div>
                 <div class="card-body">
                     @if($progress->count() > 0)
@@ -416,61 +396,12 @@
                 <div class="card-header"
                      style="{{ $style && $cfg ? 'border-left: 3px solid '.$cfg['accent'].';' : '' }}">
                     <h5 class="mb-0">
-                        {{ $style === 'competitive' ? '🏆 Class Leaderboard' : ($style && $cfg ? $cfg['recTitle'] : 'New Learning Materials') }}
+                        {{ ($style && $cfg) ? $cfg['recTitle'] : 'New Learning Materials' }}
                     </h5>
                 </div>
                 <div class="card-body">
 
-                    @if($style === 'competitive')
-                        {{-- Class Leaderboard --}}
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead>
-                                    <tr class="table-light">
-                                        <th style="width: 60px;">Rank</th>
-                                        <th>Student</th>
-                                        <th class="text-end">Quizzes</th>
-                                        <th class="text-end">Points</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($leaderboard as $index => $mate)
-                                        @php
-                                            $isSelf = $mate->id === auth()->id();
-                                            $rank = $index + 1;
-                                            $rankBadge = match($rank) {
-                                                1 => '🥇',
-                                                2 => '🥈',
-                                                3 => '🥉',
-                                                default => '#' . $rank
-                                            };
-                                        @endphp
-                                        <tr style="{{ $isSelf ? 'background-color: #fffcf0; font-weight: bold;' : '' }}">
-                                            <td>
-                                                <span class="fs-5">{{ $rankBadge }}</span>
-                                            </td>
-                                            <td>
-                                                {{ $mate->name }}
-                                                @if($isSelf)
-                                                    <span class="badge bg-warning text-dark ms-1">You</span>
-                                                @endif
-                                            </td>
-                                            <td class="text-end text-muted small">
-                                                {{ $mate->completed_count }} Completed
-                                            </td>
-                                            <td class="text-end text-primary fw-bold">
-                                                {{ number_format($mate->points) }} pts
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted py-4">No classmates found.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    @elseif($style === 'read_write')
+                    @if($style === 'read_write')
                         {{-- Read/Write: flashcards first --}}
                         @php $readWriteList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp
                         @if($readWriteList->count() > 0)

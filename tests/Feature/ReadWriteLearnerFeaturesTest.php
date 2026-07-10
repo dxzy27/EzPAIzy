@@ -40,16 +40,16 @@ class ReadWriteLearnerFeaturesTest extends TestCase
         // q9 => B (read_write: 3)
         // q10 => A (read_write: 2)
         $response = $this->actingAs($student)->post(route('student.diagnosis.store'), [
-            'q1' => 'A',
-            'q2' => 'A',
-            'q3' => 'A',
-            'q4' => 'A',
-            'q5' => 'C',
-            'q6' => 'A',
-            'q7' => 'A',
-            'q8' => 'C',
-            'q9' => 'B',
-            'q10' => 'A',
+            'q1' => ['C'],
+            'q2' => ['C'],
+            'q3' => ['C'],
+            'q4' => ['D'],
+            'q5' => ['D'],
+            'q6' => ['B'],
+            'q7' => ['D'],
+            'q8' => ['A'],
+            'q9' => ['A'],
+            'q10' => ['C'],
         ]);
 
         $response->assertRedirect(route('student.diagnosis.show'));
@@ -146,7 +146,7 @@ class ReadWriteLearnerFeaturesTest extends TestCase
     }
 
     /**
-     * Test the notepad widget does not display for Auditory or Competitive students,
+     * Test the notepad widget does not display for Auditory or Visual students,
      * but does display for Read/Write students.
      */
     public function test_notepad_widget_visibility(): void
@@ -174,12 +174,12 @@ class ReadWriteLearnerFeaturesTest extends TestCase
             'learning_style' => 'read_write',
         ]);
 
-        $compStudent = User::create([
-            'name' => 'Comp Notepad',
-            'email' => 'comp_note_' . uniqid() . '@example.com',
+        $audStudent = User::create([
+            'name' => 'Auditory Notepad',
+            'email' => 'aud_note_' . uniqid() . '@example.com',
             'password' => bcrypt('password'),
             'role' => 'student',
-            'learning_style' => 'competitive',
+            'learning_style' => 'auditory',
         ]);
 
         // Act as Read/Write student: should see notepad
@@ -188,15 +188,15 @@ class ReadWriteLearnerFeaturesTest extends TestCase
         $responseRw->assertSee('Study Notepad');
         $responseRw->assertSee('Acronyms');
 
-        // Act as Competitive student: should not see notepad
-        $responseComp = $this->actingAs($compStudent)->get(route('student.contents.show', $content));
-        $responseComp->assertStatus(200);
-        $responseComp->assertDontSee('Study Notepad');
+        // Act as Auditory student: should not see notepad
+        $responseAud = $this->actingAs($audStudent)->get(route('student.contents.show', $content));
+        $responseAud->assertStatus(200);
+        $responseAud->assertDontSee('Study Notepad');
     }
 
     /**
      * Test the notepad widget displays on flashcard study page for Read/Write students,
-     * but not for Competitive students.
+     * but not for Auditory students.
      */
     public function test_flashcard_notepad_widget_visibility(): void
     {
@@ -223,12 +223,12 @@ class ReadWriteLearnerFeaturesTest extends TestCase
             'learning_style' => 'read_write',
         ]);
 
-        $compStudent = User::create([
-            'name' => 'Competitive Student',
-            'email' => 'comp_stud_fc_' . uniqid() . '@example.com',
+        $audStudent = User::create([
+            'name' => 'Auditory Student',
+            'email' => 'aud_stud_fc_' . uniqid() . '@example.com',
             'password' => bcrypt('password'),
             'role' => 'student',
-            'learning_style' => 'competitive',
+            'learning_style' => 'auditory',
         ]);
 
         // Act as Read/Write student: should see notepad
@@ -236,9 +236,9 @@ class ReadWriteLearnerFeaturesTest extends TestCase
         $responseRw->assertStatus(200);
         $responseRw->assertSee('Study Notepad');
 
-        // Act as Competitive student: should not see notepad
-        $responseComp = $this->actingAs($compStudent)->get(route('student.flashcards.show', $set));
-        $responseComp->assertStatus(200);
-        $responseComp->assertDontSee('Study Notepad');
+        // Act as Auditory student: should not see notepad
+        $responseAud = $this->actingAs($audStudent)->get(route('student.flashcards.show', $set));
+        $responseAud->assertStatus(200);
+        $responseAud->assertDontSee('Study Notepad');
     }
 }

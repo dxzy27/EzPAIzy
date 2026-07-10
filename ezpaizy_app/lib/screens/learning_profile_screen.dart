@@ -99,15 +99,6 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
       );
       styleIcon = Icons.hearing;
       styleDesc = 'You learn best through sound and verbal processing — listening, speaking, reciting, and discussing are your strongest pathways to retaining information.';
-    } else if (style == 'competitive') {
-      accentColor = const Color(0xFFEF9086);
-      heroGradient = const LinearGradient(
-        colors: [Color(0xFFEF9086), Color(0xFFF7B2AA)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
-      styleIcon = Icons.emoji_events;
-      styleDesc = 'You are driven by challenge and performance — pressure, scoring, and the drive to beat your own record are the most powerful motivators for your learning.';
     }
 
     return Scaffold(
@@ -328,8 +319,9 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
   Widget _buildBreakdownCard() {
     final rwScore = _profile?['score_read_write'] as int? ?? 0;
     final audScore = _profile?['score_auditory'] as int? ?? 0;
-    final compScore = _profile?['score_competitive'] as int? ?? 0;
-    final total = rwScore + audScore + compScore;
+    final visScore = _profile?['score_visual'] as int? ?? 0;
+    final kinScore = _profile?['score_kinesthetic'] as int? ?? 0;
+    final total = rwScore + audScore + visScore + kinScore;
     final maxTotal = total == 0 ? 1 : total;
 
     return Container(
@@ -367,8 +359,12 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
           _buildProgressBar('Auditory', audScore, maxTotal, const Color(0xFFE5B181)),
           const SizedBox(height: 14),
 
-          // Competitive
-          _buildProgressBar('Competitive', compScore, maxTotal, const Color(0xFFEF9086)),
+          // Visual
+          _buildProgressBar('Visual', visScore, maxTotal, const Color(0xFF06B6D4)),
+          const SizedBox(height: 14),
+
+          // Kinesthetic
+          _buildProgressBar('Kinaesthetic', kinScore, maxTotal, const Color(0xFFD946EF)),
         ],
       ),
     );
@@ -408,7 +404,8 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
   Widget _buildRadarChartCard(Color primaryColor) {
     final rwScore = (_profile?['score_read_write'] as num? ?? 0).toDouble();
     final audScore = (_profile?['score_auditory'] as num? ?? 0).toDouble();
-    final compScore = (_profile?['score_competitive'] as num? ?? 0).toDouble();
+    final visScore = (_profile?['score_visual'] as num? ?? 0).toDouble();
+    final kinScore = (_profile?['score_kinesthetic'] as num? ?? 0).toDouble();
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -443,7 +440,8 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
                     dataEntries: [
                       RadarEntry(value: rwScore),
                       RadarEntry(value: audScore),
-                      RadarEntry(value: compScore),
+                      RadarEntry(value: visScore),
+                      RadarEntry(value: kinScore),
                     ],
                   ),
                 ],
@@ -459,7 +457,9 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
                     case 1:
                       return const RadarChartTitle(text: 'Auditory');
                     case 2:
-                      return const RadarChartTitle(text: 'Competitive');
+                      return const RadarChartTitle(text: 'Visual');
+                    case 3:
+                      return const RadarChartTitle(text: 'Kinaesthetic');
                     default:
                       return const RadarChartTitle(text: '');
                   }

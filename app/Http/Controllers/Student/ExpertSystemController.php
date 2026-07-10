@@ -226,7 +226,6 @@ class ExpertSystemController extends Controller
                 'score_auditory'    => $result['scores']['auditory'] ?? 0,
                 'score_visual'      => $result['scores']['visual'] ?? 0,
                 'score_kinesthetic' => $result['scores']['kinesthetic'] ?? 0,
-                'score_competitive' => $result['scores']['competitive'] ?? 0,
                 'confidence'        => $result['confidence'],
                 'learning_style'    => $style,
                 'persona'           => $persona,
@@ -261,7 +260,7 @@ class ExpertSystemController extends Controller
     // ─────────────────────────────────────────────────────────────────────────
     private function runInferenceEngine(array $answers): array
     {
-        $scores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0, 'competitive' => 0];
+        $scores = ['read_write' => 0, 'auditory' => 0, 'visual' => 0, 'kinesthetic' => 0];
 
         // ── PASS 1: VARK Scoring Method (Simple Selection Count) ─────────────
         foreach ($this->knowledgeBase as $qKey => $rule) {
@@ -307,7 +306,6 @@ class ExpertSystemController extends Controller
             'auditory'    => 'Auditory Learner',
             'visual'      => 'Visual Learner',
             'kinesthetic' => 'Kinaesthetic Learner',
-            'competitive' => 'Competitive Learner',
         ];
 
         return $labels[$style];

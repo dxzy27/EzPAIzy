@@ -53,7 +53,6 @@
             <div class="mb-4">
                 <div class="d-flex justify-content-between small text-muted mb-1">
                     <span id="progress-text">Question 1 of {{ $quiz->questions->count() }}</span>
-                    <span id="timer"></span>
                 </div>
                 <div class="progress" style="height: 6px;">
                     <div class="progress-bar bg-primary" id="progress-bar" role="progressbar" style="width: 0%"></div>
@@ -75,7 +74,6 @@
                     <h4 class="text-muted mb-4">Your Score: <span id="final-score" class="fw-bold text-primary">0</span>/100</h4>
                     
                     <p id="feedback-text" class="mb-4 lead"></p>
-                    <p id="time-taken-text" class="text-muted fs-5 d-none mb-4"></p>
                     
                     <form action="{{ route('student.submit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" id="submit-form">
                         @csrf
@@ -220,39 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentQuestionIndex = 0;
     let userAnswers = {};
     let score = 0;
-    let timerInterval = null;
-    let secondsElapsed = 0;
     let lastSpokenText = null;
-
-    function isShortAnswerCorrect(studentAns, correctAns) {
-        if (!studentAns || !correctAns) return false;
-        const cleanString = (str) => {
-            return str
-                .toLowerCase()
-                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
-                .replace(/\s+/g, " ")
-                .trim();
-        };
-        const cleanStudent = cleanString(studentAns);
-        const alternatives = correctAns.split('|');
-        return alternatives.some(alt => cleanStudent === cleanString(alt));
-    }
-
-    if (learningStyle === 'competitive') {
-        const timerSpan = document.getElementById('timer');
-        if (timerSpan) {
-            timerSpan.innerHTML = '<i class="bi bi-stopwatch me-1"></i> 00:00';
-            timerInterval = setInterval(() => {
-                secondsElapsed++;
-                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-                const secs = String(secondsElapsed % 60).padStart(2, '0');
-                timerSpan.innerHTML = `<i class="bi bi-stopwatch me-1"></i> ${mins}:${secs}`;
-            }, 1000);
-        }
-    } else {
-        const timerSpan = document.getElementById('timer');
-        if (timerSpan) timerSpan.style.display = 'none';
-    }
 
     function renderQuestion(index) {
         if (typeof synth !== 'undefined') {
@@ -311,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         let kbatGuideHtml = '';
-        if (quizDifficulty === 'hard' || quizDifficulty === 'medium') {
+        if (quizDifficulty === 'hard') {
             kbatGuideHtml = `
                 <div class="alert alert-info border-0 p-3 mb-4 shadow-sm" style="background-color: #f0f7ff; border-left: 4px solid #0284c7 !important; border-radius: 10px;">
                     <h6 class="fw-bold text-primary mb-2" style="font-size: 0.95rem;"><i class="bi bi-info-circle-fill me-1"></i> How to answer KBAT questions:</h6>
@@ -488,27 +454,21 @@ document.addEventListener('DOMContentLoaded', function() {
             renderQuestion(currentQuestionIndex);
         }
     };
+    function isShortAnswerCorrect(studentAns, correctAns) {
+        if (!studentAns || !correctAns) return false;
+        const cleanString = (str) => {
+            return str
+                .toLowerCase()
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+        };
+        const cleanStudent = cleanString(studentAns);
+        const alternatives = correctAns.split('|');
+        return alternatives.some(alt => cleanStudent === cleanString(alt));
+    }
 
     function showResults() {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-        }
-        
-        if (learningStyle === 'competitive') {
-            const timeTakenText = document.getElementById('time-taken-text');
-            if (timeTakenText) {
-                const mins = Math.floor(secondsElapsed / 60);
-                const secs = secondsElapsed % 60;
-                let timeStr = '';
-                if (mins > 0) {
-                    timeStr += `${mins}m `;
-                }
-                timeStr += `${secs}s`;
-                timeTakenText.innerHTML = `⏱️ <strong>Time Taken:</strong> ${timeStr}`;
-                timeTakenText.classList.remove('d-none');
-            }
-        }
-
         quizContent.style.display = 'none';
         progressBar.parentElement.parentElement.style.display = 'none'; // Hide progress header
         

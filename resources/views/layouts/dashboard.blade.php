@@ -40,7 +40,6 @@
                 $accentSoft = '#eff6ff';
                 $pageBg = '#f0f7ff';
             } else {
-                // Students (both Basic UI and diagnosed styles)
                 if ($style === 'auditory') {
                     $sidebarBg = '#3c1704'; // dark brown-orange
                     $sidebarHover = '#5a250a';
@@ -49,14 +48,6 @@
                     $accent = '#e5b181';
                     $accentSoft = '#fff7ed';
                     $pageBg = '#fffbf7';
-                } elseif ($style === 'competitive') {
-                    $sidebarBg = '#450a0a'; // dark red
-                    $sidebarHover = '#630c14';
-                    $sidebarActive = '#EF9086';
-                    $sidebarActiveBg = 'rgba(239,144,134,.18)';
-                    $accent = '#EF9086';
-                    $accentSoft = '#fef2f2';
-                    $pageBg = '#fffafb';
                 } elseif ($style === 'read_write') {
                     $sidebarBg = '#383023'; // dark warm gray/tan
                     $sidebarHover = '#4c4130';
