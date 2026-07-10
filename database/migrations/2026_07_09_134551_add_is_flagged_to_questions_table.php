@@ -26,3 +26,5 @@ return new class extends Migration
         });
     }
 };
+
+simplify but dont change the original meaning

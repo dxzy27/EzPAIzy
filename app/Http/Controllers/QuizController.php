@@ -268,7 +268,7 @@ class QuizController extends Controller
         );
 
         // Fetch Gemini questions
-        $gemini = $this->callAI($prompt, 'google/gemini-2.5-flash-lite-preview-09-2025', 0.85); // OpenRouter supports this
+        $gemini = $this->callAI($prompt, 'google/gemini-2.5-flash', 0.85); // OpenRouter supports this
 
         // Fetch GPT questions using actual OpenAI model via OpenRouter
         $gpt = $this->callAI($prompt, 'openai/gpt-4.1-nano', 0.9);

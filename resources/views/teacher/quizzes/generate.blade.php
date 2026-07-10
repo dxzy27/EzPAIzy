@@ -103,7 +103,7 @@
                                 <div class="input-group">
                                     <select name="ai_model" id="ai_model" class="form-select">
                                         <option value="openai/gpt-oss-120b:free">🤖 GPT</option>
-                                        <option value="google/gemini-2.5-flash-lite-preview-09-2025">✨ Gemini</option>
+                                        <option value="google/gemini-2.5-flash">✨ Gemini</option>
                                     </select>
                                     <button type="submit" class="btn btn-primary" id="generate-btn">
                                         <i class="bi bi-cpu me-1"></i> Generate with Selected
