@@ -96,7 +96,7 @@
             'tipIcon'     => '✍️',
             'tipTitle'    => 'Read/Write Study Tip',
             'tip'         => 'Use the Notepad next to your materials and quizzes to jot down summaries and acronyms. You can access all your saved notes from the "My Folders" sidebar section.',
-            'recTitle'    => '✨ Recommended: Your Saved Notes & Materials',
+            'recTitle'    => '✨ Recommended:',
         ],
         'auditory' => [
             'accent'      => '#e5b181',
@@ -107,7 +107,7 @@
             'tipIcon'     => '🎵',
             'tipTitle'    => 'Auditory Study Tip',
             'tip'         => 'After reading any material today, close it and say aloud — in your own words — what you just learned. If you can explain it, you have truly encoded it.',
-            'recTitle'    => '✨ Recent Listenable Materials',
+            'recTitle'    => '✨ Recommended:',
         ],
         'visual' => [
             'accent'      => '#06b6d4',
@@ -118,7 +118,7 @@
             'tipIcon'     => '👁️',
             'tipTitle'    => 'Visual Study Tip',
             'tip'         => 'You can highlight or underline the text that you read in flashcards, quizzes and other materials.',
-            'recTitle'    => '✨ Recommended: Diagrams & Infographics',
+            'recTitle'    => '✨ Recommended:',
         ],
         'kinesthetic' => [
             'accent'      => '#d946ef',
@@ -129,7 +129,7 @@
             'tipIcon'     => '🤸',
             'tipTitle'    => 'Kinaesthetic Study Tip',
             'tip'         => 'Interact directly with your study tools! Use the Swipe Flashcards in Review Mode, and complete interactive exercises to lock in the material.',
-            'recTitle'    => '✨ Recommended: Swipe Flashcards & Exercises',
+            'recTitle'    => '✨ Recommended:',
         ],
     ];
 
