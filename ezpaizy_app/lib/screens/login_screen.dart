@@ -15,7 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passCtrl = TextEditingController();
   bool _obscure = true;
   bool _keepSignedIn = false;
-  String _role = 'Student';
 
   Future<void> _login() async {
     final auth = context.read<AuthProvider>();
@@ -258,18 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Role dropdown
-                          _CustomDropdownField(
-                            value: _role,
-                            items: const ['Student', 'Teacher', 'Administrator'],
-                            prefixIcon: Icons.badge_outlined,
-                            onChanged: (val) {
-                              if (val != null) {
-                                setState(() => _role = val);
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 16),
+                          // Role dropdown (removed for students only)
 
                           // Keep me signed in & Forgot password
                           Row(
@@ -456,51 +444,4 @@ class _CustomInputField extends StatelessWidget {
   }
 }
 
-class _CustomDropdownField extends StatelessWidget {
-  final String value;
-  final List<String> items;
-  final IconData prefixIcon;
-  final ValueChanged<String?> onChanged;
 
-  const _CustomDropdownField({
-    required this.value,
-    required this.items,
-    required this.prefixIcon,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isExpanded: true,
-          icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF94A3B8)),
-          onChanged: onChanged,
-          items: items.map<DropdownMenuItem<String>>((String val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Row(
-                children: [
-                  Icon(prefixIcon, color: const Color(0xFF94A3B8), size: 20),
-                  const SizedBox(width: 12),
-                  Text(
-                    val,
-                    style: const TextStyle(fontSize: 15, color: Color(0xFF334155)),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-}

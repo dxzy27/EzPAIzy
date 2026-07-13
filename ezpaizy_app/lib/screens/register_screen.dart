@@ -17,7 +17,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passCtrl = TextEditingController();
   final _confirmPassCtrl = TextEditingController();
   
-  String? _role;
   String? _className;
   
   bool _isLoading = false;
@@ -42,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passCtrl.text;
     final confirmPassword = _confirmPassCtrl.text;
 
-    if (name.isEmpty || email.isEmpty || phone.isEmpty || address.isEmpty || _role == null || _className == null || password.isEmpty || confirmPassword.isEmpty) {
+    if (name.isEmpty || email.isEmpty || phone.isEmpty || address.isEmpty || _className == null || password.isEmpty || confirmPassword.isEmpty) {
       setState(() {
         _errorMessage = 'All fields are required.';
       });
@@ -81,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: email,
         phoneNumber: phone,
         address: address,
-        role: _role!,
+        role: 'student',
         className: _className!,
         password: password,
         passwordConfirmation: confirmPassword,
@@ -353,39 +352,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Role & Class Row
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _CustomDropdownField(
-                              value: _role,
-                              hintText: 'Register As...',
-                              items: const ['student', 'teacher'],
-                              displayItems: const ['Student', 'Teacher'],
-                              prefixIcon: Icons.badge_outlined,
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() => _role = val);
-                                }
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _CustomDropdownField(
-                              value: _className,
-                              hintText: 'Select Class...',
-                              items: const ['5A1', '5A2', '5A3', '5B1', '5B2', '5B3'],
-                              displayItems: const ['5A1', '5A2', '5A3', '5B1', '5B2', '5B3'],
-                              prefixIcon: Icons.class_outlined,
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() => _className = val);
-                                }
-                              },
-                            ),
-                          ),
-                        ],
+                      // Class Name dropdown
+                      _CustomDropdownField(
+                        value: _className,
+                        hintText: 'Select Class...',
+                        items: const ['5A1', '5A2', '5A3', '5B1', '5B2', '5B3'],
+                        displayItems: const ['5A1', '5A2', '5A3', '5B1', '5B2', '5B3'],
+                        prefixIcon: Icons.class_outlined,
+                        onChanged: (val) {
+                          if (val != null) {
+                            setState(() => _className = val);
+                          }
+                        },
                       ),
                       const SizedBox(height: 16),
 
