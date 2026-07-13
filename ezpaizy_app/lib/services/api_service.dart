@@ -42,6 +42,7 @@ class ApiService {
     required String passwordConfirmation,
     required String phoneNumber,
     required String address,
+    required String role,
     required String className,
   }) async {
     try {
@@ -55,9 +56,11 @@ class ApiService {
           'password_confirmation': passwordConfirmation,
           'phone_number': phoneNumber,
           'address': address,
+          'role': role,
           'class_name': className,
         }),
       );
+
       final decoded = jsonDecode(res.body);
       return (decoded is Map<String, dynamic>) ? decoded : {};
     } catch (_) {
