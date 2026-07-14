@@ -95,7 +95,7 @@ class StudentApiController extends Controller
     public function dashboard(Request $request)
     {
         $user     = $request->user();
-        $progress = $user->progress()->with(['quiz.teacher'])->latest()->get();
+        $progress = $user->progress()->latest()->get();
         $profile  = LearningProfile::where('user_id', $user->id)->first();
         $style    = $user->learning_style;
 
@@ -103,6 +103,35 @@ class StudentApiController extends Controller
             ->where('class_name', $user->class_name)
             ->pluck('id')
             ->toArray();
+
+        $classTeacher = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->first();
+        $teacherName = $classTeacher ? $classTeacher->name : 'Teacher';
+
+        $mappedProgress = $progress->map(function ($p) use ($teacherName, $classTeacher) {
+            return [
+                'id'              => $p->id,
+                'student_id'      => $p->student_id,
+                'topic'           => $p->topic,
+                'difficulty'      => $p->difficulty,
+                'score'           => $p->score,
+                'status'          => $p->status,
+                'student_answers' => $p->student_answers,
+                'teacher_notes'   => $p->teacher_notes,
+                'created_at'      => $p->created_at->toIso8601String(),
+                'updated_at'      => $p->updated_at->toIso8601String(),
+                'quiz'            => [
+                    'id'         => $p->id,
+                    'title'      => ($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')',
+                    'difficulty' => $p->difficulty ?? 'easy',
+                    'teacher'    => [
+                        'id'   => $classTeacher?->id,
+                        'name' => $teacherName,
+                    ],
+                ]
+            ];
+        });
 
         $newMaterials = [];
         $recentContents   = Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->latest()->take(5)->get();
@@ -144,7 +173,7 @@ class StudentApiController extends Controller
             'materials_count'  => Content::where('is_flagged', false)->whereIn('teacher_id', $teacherIds)->count() + FlashcardSet::where('is_flagged', false)->whereIn('user_id', $teacherIds)->count(),
             'completed_count'  => $progress->count(),
             'best_score'       => ($style === 'competitive' && $progress->count() > 0) ? $progress->max('score') : null,
-            'recent_results'   => $progress->take(5)->values(),
+            'recent_results'   => $mappedProgress->take(5)->values(),
             'new_materials'    => $newMaterials,
             'leaderboard'      => [],
         ]);
@@ -362,13 +391,37 @@ class StudentApiController extends Controller
      */
     public function progress(Request $request)
     {
-        $progress = $request->user()
-            ->progress()
-            ->with(['quiz.teacher', 'quiz.questions'])
-            ->latest()
-            ->get();
+        $user = $request->user();
+        $progress = $user->progress()->latest()->get();
 
-        return response()->json($progress);
+        $classTeacher = \App\Models\User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
+        $teacherName = $classTeacher ? $classTeacher->name : 'Teacher';
+
+        $mappedProgress = $progress->map(function ($p) use ($teacherName, $classTeacher) {
+            return [
+                'id'              => $p->id,
+                'student_id'      => $p->student_id,
+                'topic'           => $p->topic,
+                'difficulty'      => $p->difficulty,
+                'score'           => $p->score,
+                'status'          => $p->status,
+                'student_answers' => $p->student_answers,
+                'teacher_notes'   => $p->teacher_notes,
+                'created_at'      => $p->created_at->toIso8601String(),
+                'updated_at'      => $p->updated_at->toIso8601String(),
+                'quiz'            => [
+                    'id'         => $p->id,
+                    'title'      => ($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')',
+                    'difficulty' => $p->difficulty ?? 'easy',
+                    'teacher'    => [
+                        'id'   => $classTeacher?->id,
+                        'name' => $teacherName,
+                    ],
+                ]
+            ];
+        });
+
+        return response()->json($mappedProgress);
     }
 
     /**
@@ -941,7 +994,13 @@ class StudentApiController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        $progress->load(['quiz.questions', 'quiz.teacher']);
+        $user = $request->user();
+        $classTeacher = \App\Models\User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
+        $teacherName = $classTeacher ? $classTeacher->name : 'Teacher';
+
+        $questions = \App\Models\Question::where('topic', $progress->topic)
+            ->where('difficulty', $progress->difficulty)
+            ->get();
 
         return response()->json([
             'id'              => $progress->id,
@@ -950,11 +1009,11 @@ class StudentApiController extends Controller
             'student_answers' => $progress->student_answers,
             'teacher_notes'   => $progress->teacher_notes,
             'quiz'            => [
-                'id'         => $progress->quiz->id,
-                'title'      => $progress->quiz->title,
-                'difficulty' => $progress->quiz->difficulty,
-                'teacher'    => $progress->quiz->teacher?->only(['id', 'name']),
-                'questions'  => $progress->quiz->questions->map(fn($q) => [
+                'id'         => $progress->id,
+                'title'      => ($progress->topic ?? 'General') . ' (' . ucfirst($progress->difficulty ?? 'easy') . ')',
+                'difficulty' => $progress->difficulty,
+                'teacher'    => $classTeacher ? $classTeacher->only(['id', 'name']) : ['id' => null, 'name' => $teacherName],
+                'questions'  => $questions->map(fn($q) => [
                     'question_text'  => $q->question_text,
                     'options'        => $q->options,
                     'correct_answer' => $q->correct_answer,

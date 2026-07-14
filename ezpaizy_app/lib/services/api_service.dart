@@ -23,14 +23,18 @@ class ApiService {
   static Future<Map<String, dynamic>> login(
       String email, String password) async {
     try {
+      print('DEBUG API: Logging in with email: $email');
       final res = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: await _headers(),
         body: jsonEncode({'email': email, 'password': password}),
       );
+      print('DEBUG API: Login Response status: ${res.statusCode}');
+      print('DEBUG API: Login Response body: ${res.body}');
       final decoded = jsonDecode(res.body);
       return (decoded is Map<String, dynamic>) ? decoded : {};
-    } catch (_) {
+    } catch (e) {
+      print('DEBUG API: Login Error: $e');
       return {};
     }
   }
@@ -77,12 +81,20 @@ class ApiService {
 
   static Future<Map<String, dynamic>> getDashboard() async {
     try {
-      final res = await http.get(Uri.parse('$baseUrl/student/dashboard'),
-          headers: await _headers());
-      if (res.statusCode != 200) return {};
+      print('DEBUG API: Fetching dashboard from $baseUrl/student/dashboard');
+      final headers = await _headers();
+      print('DEBUG API: Request headers: $headers');
+      final res = await http.get(
+        Uri.parse('$baseUrl/student/dashboard'),
+        headers: headers,
+      );
+      print('DEBUG API: Response status: ${res.statusCode}');
+      print('DEBUG API: Response body: ${res.body}');
       final decoded = jsonDecode(res.body);
       return (decoded is Map<String, dynamic>) ? decoded : {};
-    } catch (_) {
+    } catch (e, stack) {
+      print('DEBUG API: Error fetching dashboard: $e');
+      print(stack);
       return {};
     }
   }
