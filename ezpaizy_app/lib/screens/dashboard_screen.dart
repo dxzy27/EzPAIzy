@@ -46,12 +46,128 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (d['user'] != null && mounted) {
         Provider.of<AuthProvider>(context, listen: false).setUser(d['user']);
       }
+
+      if (style == null && !sessionDismissed && mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showDiagnosisDialog();
+        });
+      }
     } catch (e) {
       setState(() {
         error = 'Failed to load dashboard';
         loading = false;
       });
     }
+  }
+
+  void _showDiagnosisDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 16,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF7C3AED), Color(0xFF4F46E5)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                const Text(
+                  '🧠',
+                  style: TextStyle(fontSize: 56),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Discover Your Learning Style',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Take a 10-question diagnosis to determine your learning styles to study how you learn best.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    height: 1.5,
+                    fontFamily: 'Outfit',
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      context.go('/learning-style');
+                    },
+                    icon: const Icon(Icons.assignment, color: Color(0xFF5B21B6), size: 18),
+                    label: const Text(
+                      'Start Diagnosis',
+                      style: TextStyle(
+                        color: Color(0xFF5B21B6),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        fontFamily: 'Outfit',
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF5B21B6),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 0,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      sessionDismissed = true;
+                    });
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white70,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                  ),
+                  child: const Text(
+                    'Maybe later',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Outfit',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -178,17 +294,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
       title: '✅ Completed',
       value: '${data?['completed_count'] ?? 0}',
       subtitle: 'Quizzes Completed',
-      actionArea: OutlinedButton.icon(
-        onPressed: () => context.go('/progress'),
-        icon: const Icon(Icons.bar_chart_outlined, size: 16),
-        label: const Text('View Progress', style: TextStyle(fontWeight: FontWeight.bold)),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: const Color(0xFF06B6D4),
-          side: const BorderSide(color: Color(0xFF06B6D4)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-        ),
-      ),
+      actionArea: style == null
+          ? OutlinedButton.icon(
+              onPressed: () => context.go('/learning-style'),
+              icon: const Icon(Icons.assignment_outlined, size: 16),
+              label: const Text('Start Diagnosis', style: TextStyle(fontWeight: FontWeight.bold)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF3B82F6),
+                side: const BorderSide(color: Color(0xFF3B82F6)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              ),
+            )
+          : OutlinedButton.icon(
+              onPressed: () => context.go('/progress'),
+              icon: const Icon(Icons.bar_chart_outlined, size: 16),
+              label: const Text('View Progress', style: TextStyle(fontWeight: FontWeight.bold)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF06B6D4),
+                side: const BorderSide(color: Color(0xFF06B6D4)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              ),
+            ),
     );
 
     List<Widget> orderedCards;
@@ -330,12 +458,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ],
                           ),
                           const SizedBox(height: 20),
-
-                          // ── Diagnosis Banner (For Undiagnosed) ──
-                          if (style == null) ...[
-                            _buildDiagnosisBanner(),
-                            const SizedBox(height: 20),
-                          ],
 
                           // ── Study Tip Card (diagnosed students only) ──
                           if (style != null) ...[
