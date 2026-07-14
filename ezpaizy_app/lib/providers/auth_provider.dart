@@ -8,6 +8,7 @@ class AuthProvider extends ChangeNotifier {
   Map<String, dynamic>? user;
   bool isLoading = false;
   String? error;
+  bool hasDismissedDiagnosis = false;
 
   Future<void> loadToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -28,9 +29,15 @@ class AuthProvider extends ChangeNotifier {
     await prefs.setString('user', jsonEncode(newUser));
   }
 
+  void dismissDiagnosis() {
+    hasDismissedDiagnosis = true;
+    notifyListeners();
+  }
+
   Future<bool> login(String email, String password) async {
     isLoading = true;
     error = null;
+    hasDismissedDiagnosis = false;
     notifyListeners();
 
     try {
@@ -66,6 +73,7 @@ class AuthProvider extends ChangeNotifier {
     await prefs.remove('user');
     token = null;
     user = null;
+    hasDismissedDiagnosis = false;
     notifyListeners();
   }
 }

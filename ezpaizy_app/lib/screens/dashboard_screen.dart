@@ -15,7 +15,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Map<String, dynamic>? data;
   bool loading = true;
   String? error;
-  bool sessionDismissed = false;
   List<dynamic> noteFolders = [];
 
   @override
@@ -47,7 +46,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Provider.of<AuthProvider>(context, listen: false).setUser(d['user']);
       }
 
-      if (style == null && !sessionDismissed && mounted) {
+      final auth = Provider.of<AuthProvider>(context, listen: false);
+      if (style == null && !auth.hasDismissedDiagnosis && mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _showDiagnosisDialog();
         });
@@ -145,9 +145,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    setState(() {
-                      sessionDismissed = true;
-                    });
+                    Provider.of<AuthProvider>(context, listen: false).dismissDiagnosis();
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white70,
@@ -558,91 +556,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDiagnosisBanner() {
-    if (sessionDismissed) return const SizedBox.shrink();
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF7C3AED), Color(0xFF4F46E5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF4F46E5).withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Text('🧠', style: TextStyle(fontSize: 20)),
-                ),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Text(
-                    'Discover Your Learning Style',
-                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Take a 10-question diagnosis to determine your learning styles to study how you learn best.',
-              style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.4),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () => context.go('/learning-style'),
-                  icon: const Icon(Icons.assignment, size: 16, color: Color(0xFF5B21B6)),
-                  label: const Text('Start Diagnosis', style: TextStyle(color: Color(0xFF5B21B6), fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      sessionDismissed = true;
-                    });
-                  },
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    foregroundColor: Colors.white70,
-                  ),
-                  child: const Text('Maybe later', style: TextStyle(fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildTipCard(Color accent, Color bg, Color textAccent, String emoji, String title, String tip) {
     return Container(
