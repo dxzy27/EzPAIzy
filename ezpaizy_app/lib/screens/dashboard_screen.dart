@@ -103,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'Take a 10-question diagnosis to determine your learning styles to study how you learn best.',
+                  'Take a 16-question diagnosis to determine your learning styles to study how you learn best.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white70,
