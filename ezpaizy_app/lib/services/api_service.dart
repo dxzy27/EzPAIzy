@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   // Live server URL
-  static const String baseUrl = 'http://165.245.186.220/api';
+  static const String baseUrl = 'https://ezpaizy.app/api';
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
