@@ -143,6 +143,39 @@
             .Sidebar.mobile-open {
                 transform: translateX(0);
             }
+            /* Override collapsed state for mobile/split drawer views */
+            .Sidebar.collapsed {
+                width: var(--sidebar-w) !important;
+            }
+            .Sidebar.collapsed .sidebar-brand-text {
+                display: block !important;
+            }
+            .Sidebar.collapsed .nav-section-label {
+                opacity: 1 !important;
+            }
+            .Sidebar.collapsed .nav-link {
+                justify-content: flex-start !important;
+                padding: 9px 12px !important;
+            }
+            .Sidebar.collapsed .nav-label {
+                display: block !important;
+            }
+            .Sidebar.collapsed .nav-chevron {
+                display: block !important;
+            }
+            .Sidebar.collapsed .submenu-list {
+                display: block !important;
+            }
+            .Sidebar.collapsed .sidebar-user-info {
+                display: block !important;
+            }
+            .Sidebar.collapsed .sidebar-footer {
+                padding: 12px 14px !important;
+                justify-content: flex-start !important;
+            }
+            .sidebar-toggle-mascot {
+                display: none !important;
+            }
         }
 
         /* ── Sidebar Brand ───────────────────────────── */

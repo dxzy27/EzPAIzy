@@ -219,7 +219,7 @@ class QuizController extends Controller
             $request->input('instructions', '')
         );
 
-        $result = $this->callAI($prompt, 'openai/gpt-4.1-nano', 0.85);
+        $result = $this->callAI($prompt, 'openai/gpt-4o-mini', 0.85);
 
         if (isset($result['error'])) {
             return redirect()->back()->with('error', 'AI generation failed: ' . $result['error']);
@@ -253,7 +253,9 @@ class QuizController extends Controller
             try {
                 $pdfParser = new PdfParser();
                 $pdf = $pdfParser->parseFile($request->file('file')->path());
-                $textContext .= "\n\n" . $pdf->getText();
+                $parsedText = $pdf->getText();
+                $parsedText = mb_convert_encoding($parsedText, 'UTF-8', 'UTF-8');
+                $textContext .= "\n\n" . $parsedText;
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', 'Failed to extract text from PDF: ' . $e->getMessage());
             }
@@ -271,7 +273,7 @@ class QuizController extends Controller
         $gemini = $this->callAI($prompt, 'google/gemini-2.5-flash', 0.85); // OpenRouter supports this
 
         // Fetch GPT questions using actual OpenAI model via OpenRouter
-        $gpt = $this->callAI($prompt, 'openai/gpt-4.1-nano', 0.9);
+        $gpt = $this->callAI($prompt, 'openai/gpt-4o-mini', 0.9);
 
         return view('teacher.quizzes.compare', [
             'gemini' => $gemini,
@@ -383,7 +385,7 @@ class QuizController extends Controller
     private function buildQuizPrompt($topic, $difficulty, $count, $context = '', $instructions = '')
     {
         $typeInstruction = ($difficulty === 'easy') 
-            ? "MCQ questions with exactly 4 options (a, b, c, d) and a single correct option."
+            ? "MCQ questions with exactly 4 options (a, b, c, d) and a single correct option. You MUST populate the 'options' field with a JSON object containing keys 'a', 'b', 'c', and 'd' with their respective option values. Never return null or empty for options when difficulty is easy."
             : "Short answer questions requiring textual verification.";
 
         if ($difficulty === 'hard') {
@@ -429,13 +431,16 @@ class QuizController extends Controller
     /**
      * Call APIFree AI Unified Endpoint
      */
-    private function callAI($prompt, $model = 'openai/gpt-4.1-nano', $temp = 0.7)
+    private function callAI($prompt, $model = 'openai/gpt-4o-mini', $temp = 0.7)
     {
         $key = env('OPENROUTER_API_KEY');
         
         if (empty($key)) {
             return ['error' => 'API Key is not set in the .env file.'];
         }
+
+        // Clean up malformed UTF-8 characters to prevent json_encode exception in HTTP client
+        $prompt = mb_convert_encoding($prompt, 'UTF-8', 'UTF-8');
 
         $url = "https://openrouter.ai/api/v1/chat/completions";
 
