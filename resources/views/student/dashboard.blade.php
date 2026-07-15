@@ -1,6 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
+<style>
     .content-card:hover {
         box-shadow: 0 15px 30px rgba(0,0,0,0.12);
         transform: translateY(-4px); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
