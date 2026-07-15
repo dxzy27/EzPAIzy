@@ -465,7 +465,9 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 28px;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(0, 0, 0, 0.06);
             box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.07);
             position: sticky;
@@ -519,8 +521,10 @@
         /* ── Global Cards ─────────────────────────────── */
         .card {
             border-radius: 16px !important;
-            border: 1px solid rgba(0, 0, 0, 0.05) !important;
-            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
             transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
@@ -587,7 +591,7 @@
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
             color: #64748b !important;
-            background: #f8fafc !important;
+            background: rgba(248, 250, 252, 0.4) !important;
             border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
             padding: 12px 16px !important;
         }
