@@ -521,10 +521,10 @@
         /* ── Global Cards ─────────────────────────────── */
         .card {
             border-radius: 16px !important;
-            border: 1px solid rgba(255, 255, 255, 0.4) !important;
-            background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(31, 110, 104, 0.25) !important;
+            background: rgba(234, 247, 245, 0.85) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
             transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
