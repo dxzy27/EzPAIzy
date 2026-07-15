@@ -135,7 +135,7 @@
         }
 
         /* Mobile: hidden off-screen */
-        @media (max-width: 991px) {
+        @media (max-width: 575px) {
             .Sidebar {
                 transform: translateX(-100%);
                 width: var(--sidebar-w) !important;
@@ -143,7 +143,7 @@
             .Sidebar.mobile-open {
                 transform: translateX(0);
             }
-            /* Override collapsed state for mobile/split drawer views */
+            /* Override collapsed state for mobile drawer views */
             .Sidebar.collapsed {
                 width: var(--sidebar-w) !important;
             }
@@ -436,7 +436,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,.2);
             cursor: pointer;
         }
-        @media (max-width: 991px) {
+        @media (max-width: 575px) {
             .mobile-toggle-btn { display: flex; }
         }
 
@@ -448,12 +448,12 @@
             min-width: 0;
         }
 
-        @media (min-width: 992px) {
+        @media (min-width: 576px) {
             .main-content { margin-left: var(--sidebar-w); }
             .main-content.sidebar-collapsed { margin-left: var(--sidebar-collapsed); }
             .sidebar-overlay { display: none !important; }
         }
-        @media (max-width: 991px) {
+        @media (max-width: 575px) {
             .main-content { margin-left: 0; }
         }
 
@@ -480,7 +480,7 @@
         .page-body {
             padding: 32px 28px;
         }
-        @media (max-width: 991px) {
+        @media (max-width: 575px) {
             .topbar {
                 padding-left: 70px;
             }
@@ -749,8 +749,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (mascotToggle) {
         mascotToggle.addEventListener('click', function (e) {
             e.preventDefault();
-            // Only toggle on desktop
-            if (window.innerWidth >= 992) {
+            // Only toggle on desktop/tablet/split-screen views
+            if (window.innerWidth >= 576) {
                 collapsed = !collapsed;
                 localStorage.setItem(COLLAPSED_KEY, collapsed);
                 applyCollapsed(true);
