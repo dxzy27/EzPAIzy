@@ -334,16 +334,15 @@
         }
     @endphp
 
-    <!-- Stats Slideshow (Carousel) -->
     <div class="row mb-4 justify-content-center">
-        <div class="col-md-8 col-lg-6">
+        <div class="col-md-9 col-lg-8">
             <div id="statsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
                 
-                <!-- Indicators/Dots -->
-                <div class="carousel-indicators" style="bottom: -28px; margin-bottom: 0;">
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Materials" style="background-color: #1F6E68; width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="1" aria-label="Quizzes" style="background-color: #1F6E68; width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="2" aria-label="Completed" style="background-color: #1F6E68; width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
+                <!-- Indicators/Dots (Centered at bottom) -->
+                <div class="carousel-indicators" style="bottom: 15px; margin-bottom: 0;">
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Materials" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="1" aria-label="Quizzes" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="2" aria-label="Completed" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
                 </div>
 
                 <!-- Carousel Items -->
@@ -356,41 +355,47 @@
                             @if($card['isPrimary'] && $cfg)
                             <div class="primary-card-stripe" style="background:{{ $cfg['accent'] }};"></div>
                             @endif
-                            <div class="card-body d-flex flex-column pt-4 px-5 pb-4 text-center">
-                                {{-- Emoji header --}}
-                                <div class="d-flex justify-content-center align-items-center mb-2">
-                                    <span style="font-size: 2.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
-                                        @if($card['type'] === 'materials') 📚 @elseif($card['type'] === 'quiz') 🎯 @else 🏆 @endif
-                                    </span>
-                                </div>
+                            <div class="card-body pt-4 px-4 pb-5">
+                                <div class="row align-items-center justify-content-center">
+                                    <!-- Left Side: Stats and Action Buttons -->
+                                    <div class="col-6 d-flex flex-column justify-content-center align-items-center text-center">
+                                        <h1 class="display-3 fw-bold mb-0" style="color:{{ $card['color'] }}; line-height: 1;">{{ $card['count'] }}</h1>
+                                        <p class="text-dark fw-bold mb-3 mt-1" style="font-size: 1.15rem; line-height: 1.25;">
+                                            @if($card['type'] === 'materials') Available Content @elseif($card['type'] === 'quiz') Available Quizzes @else Quizzes Completed @endif
+                                        </p>
+                                        
+                                        <!-- Actions -->
+                                        <div class="d-flex gap-2 w-100 justify-content-center">
+                                            @if($card['type'] === 'materials')
+                                                <a href="{{ route('student.flashcards.index') }}" class="btn btn-filled-primary py-1 px-3" style="font-size: 0.82rem;">
+                                                    Flashcards
+                                                </a>
+                                                <a href="{{ route('student.contents.index') }}" class="btn btn-filled-secondary py-1 px-3" style="font-size: 0.82rem;">
+                                                    Materials
+                                                </a>
+                                            @elseif($card['type'] === 'quiz')
+                                                <a href="{{ route('student.quizzes') }}" class="btn btn-filled-primary py-1 px-4" style="font-size: 0.82rem;">
+                                                    Browse Quizzes &rarr;
+                                                </a>
+                                            @else
+                                                <a href="{{ route('student.progress') }}" class="btn btn-filled-primary py-1 px-4" style="font-size: 0.82rem;">
+                                                    View Progress &rarr;
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
 
-                                {{-- Count --}}
-                                <div class="my-2">
-                                    <div class="display-4 fw-bold mb-1" style="color:{{ $card['color'] }}">{{ $card['count'] }}</div>
-                                    <div class="text-muted small fw-semibold text-uppercase tracking-wider">{{ $card['sub'] }}</div>
-                                </div>
+                                    <!-- Vertical Dashed Divider -->
+                                    <div class="col-auto px-0 align-self-stretch d-flex align-items-center">
+                                        <div style="border-left: 2px dashed rgba(0, 0, 0, 0.15); height: 90px; margin: auto 0;"></div>
+                                    </div>
 
-                                {{-- Divider --}}
-                                <hr class="my-3" style="opacity: 0.12;">
-
-                                {{-- Actions bottom buttons directly visible --}}
-                                <div class="d-flex gap-2 justify-content-center w-100 mt-2">
-                                    @if($card['type'] === 'materials')
-                                        <a href="{{ route('student.flashcards.index') }}" class="btn btn-filled-primary flex-fill text-center py-2" style="max-width: 140px;">
-                                            Flashcards
-                                        </a>
-                                        <a href="{{ route('student.contents.index') }}" class="btn btn-filled-secondary flex-fill text-center py-2" style="max-width: 140px;">
-                                            Materials
-                                        </a>
-                                    @elseif($card['type'] === 'quiz')
-                                        <a href="{{ route('student.quizzes') }}" class="btn btn-filled-primary text-center py-2 px-4" style="max-width: 240px; width: 100%;">
-                                            Browse Quizzes &rarr;
-                                        </a>
-                                    @else
-                                        <a href="{{ route('student.progress') }}" class="btn btn-filled-primary text-center py-2 px-4" style="max-width: 240px; width: 100%;">
-                                            View Progress &rarr;
-                                        </a>
-                                    @endif
+                                    <!-- Right Side: Graphic illustration -->
+                                    <div class="col-5 d-flex align-items-center justify-content-center">
+                                        <img src="{{ asset('images/' . ($card['type'] === 'materials' ? 'slideshow 1.png' : ($card['type'] === 'quiz' ? 'slideshow 2.png' : 'slideshow 3.png'))) }}"
+                                             alt="Illustration"
+                                             style="max-height: 140px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -398,16 +403,17 @@
                     @endforeach
                 </div>
 
-                <!-- Controls/Arrows -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev" style="left: -50px; width: 40px; height: 40px; top: 50%; transform: translateY(-50%); background: rgba(31, 110, 104, 0.15); border-radius: 50%; border: none;">
-                    <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(34%) sepia(25%) saturate(1048%) hue-rotate(124deg) brightness(91%) contrast(85%);"></span>
+                <!-- Controls/Arrows (Red corners style matching the mockup) -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev"
+                        style="left: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #e11d48; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(225,29,72,0.35);">
+                    <i class="bi bi-chevron-left text-white" style="font-size: 1rem; font-weight: bold;"></i>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#statsCarousel" data-bs-slide="next" style="right: -50px; width: 40px; height: 40px; top: 50%; transform: translateY(-50%); background: rgba(31, 110, 104, 0.15); border-radius: 50%; border: none;">
-                    <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(34%) sepia(25%) saturate(1048%) hue-rotate(124deg) brightness(91%) contrast(85%);"></span>
+                <button class="carousel-control-next" type="button" data-bs-target="#statsCarousel" data-bs-slide="next"
+                        style="right: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #e11d48; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(225,29,72,0.35);">
+                    <i class="bi bi-chevron-right text-white" style="font-size: 1rem; font-weight: bold;"></i>
                     <span class="visually-hidden">Next</span>
                 </button>
-                
             </div>
         </div>
     </div>
