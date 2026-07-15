@@ -326,12 +326,7 @@
             'type'      => 'completed',
         ];
 
-        // Card order based on style
-        if ($style === 'read_write' || $style === 'auditory' || $style === 'visual' || $style === 'kinesthetic') {
-            $orderedCards = [$cardMaterials, $cardQuizzes, $cardCompleted];
-        } else {
-            $orderedCards = [$cardQuizzes, $cardMaterials, $cardCompleted];
-        }
+        $orderedCards = [$cardMaterials, $cardQuizzes, $cardCompleted];
     @endphp
 
     <div class="row mb-4 justify-content-center">
