@@ -1,20 +1,80 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<style>
-    .content-overlay {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background-color: rgba(255, 255, 255, 0.95);
-        display: flex; flex-direction: row;
-        align-items: center; justify-content: center;
-        opacity: 0; transition: opacity 0.3s ease; z-index: 10;
-    }
-    .content-card:hover .content-overlay { opacity: 1; }
     .content-card:hover {
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        transform: translateY(-2px); transition: all 0.3s ease;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        transform: translateY(-4px); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .content-card {
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── Redesigned Filled Buttons ── */
+    .btn-filled-primary {
+        background-color: #1F8A70 !important;
+        border-color: #1F8A70 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 10px rgba(31, 138, 112, 0.18) !important;
+        padding: 10px 18px !important;
+    }
+    .btn-filled-primary:hover {
+        background-color: #166d58 !important;
+        border-color: #166d58 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(31, 138, 112, 0.25) !important;
+    }
+    .btn-filled-secondary {
+        background-color: #f1f5f9 !important;
+        border-color: #f1f5f9 !important;
+        color: #334155 !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        border-radius: 10px !important;
+        padding: 10px 18px !important;
+    }
+    .btn-filled-secondary:hover {
+        background-color: #e2e8f0 !important;
+        border-color: #e2e8f0 !important;
+        color: #1e293b !important;
+        transform: translateY(-1px);
+    }
+
+    /* ── Teal Table Headers ── */
+    .table-teal-header th {
+        background-color: #1F6E68 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        font-size: 0.76rem !important;
+        letter-spacing: 0.5px;
+        border-bottom: none !important;
+        padding: 14px 16px !important;
+    }
+    .table-teal-header th:first-child {
+        border-top-left-radius: 12px;
+    }
+    .table-teal-header th:last-child {
+        border-top-right-radius: 12px;
+    }
+
+    /* ── Teal Card Headers ── */
+    .card-header-teal {
+        background-color: #1F6E68 !important;
+        color: #ffffff !important;
+        border-bottom: none !important;
+        padding: 16px 24px !important;
+        border-top-left-radius: 15px !important;
+        border-top-right-radius: 15px !important;
+    }
+    .card-header-teal h5 {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 1.02rem !important;
+        margin: 0;
     }
 
     /* ── Diagnosis Banner ── */
@@ -271,53 +331,44 @@
         @foreach($orderedCards as $card)
         <div class="col-md-4 mb-3">
             <div class="card content-card position-relative overflow-hidden h-100"
-                 style="{{ $card['isPrimary'] && $cfg ? 'border: 2px solid '.$cfg['accent'].';' : '' }}">
+                 style="{{ $card['isPrimary'] && $cfg ? 'border: 2px solid '.$cfg['accent'].' !important;' : '' }}">
                 {{-- Coloured top stripe for the primary card --}}
                 @if($card['isPrimary'] && $cfg)
                 <div class="primary-card-stripe" style="background:{{ $cfg['accent'] }};"></div>
                 @endif
-                <div class="card-body d-flex flex-column text-center pt-3">
+                <div class="card-body d-flex flex-column pt-4 px-4 pb-4">
+                    {{-- Emoji header --}}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span style="font-size: 2.2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                            @if($card['type'] === 'materials') 📚 @elseif($card['type'] === 'quiz') 🎯 @else 🏆 @endif
+                        </span>
+                    </div>
 
-                    <h5 class="card-title">{{ $card['title'] }}</h5>
-                    <h2 style="color:{{ $card['color'] }}">{{ $card['count'] }}</h2>
-                    <p class="text-muted">{{ $card['sub'] }}</p>
-                </div>
-                {{-- Hover overlay --}}
-                <div class="content-overlay">
-                    <div class="d-flex w-100 justify-content-center align-items-center p-2 gap-2">
-                        @if($card['type'] === 'flashcard')
-                            <a href="{{ route('student.flashcards.index') }}"
-                               class="btn btn-outline-success d-flex flex-column align-items-center justify-content-center p-2"
-                               style="width:80%;height:80px;">
-                                <i class="bi bi-collection-play fs-4 mb-1"></i>
-                                <span class="small">Browse Flashcards</span>
+                    {{-- Count --}}
+                    <div class="my-auto py-2">
+                        <div class="display-5 fw-bold mb-1" style="color:{{ $card['color'] }}">{{ $card['count'] }}</div>
+                        <div class="text-muted small fw-semibold text-uppercase tracking-wider">{{ $card['sub'] }}</div>
+                    </div>
+
+                    {{-- Divider --}}
+                    <hr class="my-3" style="opacity: 0.12;">
+
+                    {{-- Actions bottom buttons directly visible --}}
+                    <div class="d-flex gap-2 w-100 mt-2">
+                        @if($card['type'] === 'materials')
+                            <a href="{{ route('student.flashcards.index') }}" class="btn btn-filled-primary flex-fill text-center py-2">
+                                Flashcards
                             </a>
-                        @elseif($card['type'] === 'materials')
-                            <a href="{{ route('student.flashcards.index') }}"
-                               class="btn btn-outline-success d-flex flex-column align-items-center justify-content-center p-2"
-                               style="width:48%;height:80px;">
-                                <i class="bi bi-collection-play fs-4 mb-1"></i>
-                                <span class="small">Flashcards</span>
-                            </a>
-                            <a href="{{ route('student.contents.index') }}"
-                               class="btn btn-outline-primary d-flex flex-column align-items-center justify-content-center p-2"
-                               style="width:48%;height:80px;">
-                                <i class="bi bi-card-text fs-4 mb-1"></i>
-                                <span class="small">Other Materials</span>
+                            <a href="{{ route('student.contents.index') }}" class="btn btn-filled-secondary flex-fill text-center py-2">
+                                Materials
                             </a>
                         @elseif($card['type'] === 'quiz')
-                            <a href="{{ route('student.quizzes') }}"
-                               class="btn btn-outline-primary d-flex flex-column align-items-center justify-content-center p-2"
-                               style="width:80%;height:80px;">
-                                <i class="bi bi-play-circle fs-4 mb-1"></i>
-                                <span class="small">Browse Quizzes</span>
+                            <a href="{{ route('student.quizzes') }}" class="btn btn-filled-primary w-100 text-center py-2">
+                                Browse Quizzes &rarr;
                             </a>
                         @else
-                            <a href="{{ route('student.progress') }}"
-                               class="btn btn-outline-info d-flex flex-column align-items-center justify-content-center p-2"
-                               style="width:80%;height:80px;">
-                                <i class="bi bi-bar-chart fs-4 mb-1"></i>
-                                <span class="small">View Progress</span>
+                            <a href="{{ route('student.progress') }}" class="btn btn-filled-primary w-100 text-center py-2">
+                                View Progress &rarr;
                             </a>
                         @endif
                     </div>
@@ -333,8 +384,8 @@
         {{-- Recent Quiz Results --}}
         <div class="col-md-6 mb-4 {{ $style === 'auditory' ? 'order-2' : 'order-1' }}">
             <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Results</h5>
+                <div class="card-header card-header-teal d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">📊 Recent Results</h5>
                 </div>
                 <div class="card-body">
                     @if($progress->count() > 0)
@@ -393,10 +444,10 @@
         {{-- Adaptive Recommended Panel --}}
         <div class="col-md-6 mb-4 {{ $style === 'auditory' ? 'order-1' : 'order-2' }}">
             <div class="card h-100">
-                <div class="card-header"
-                     style="{{ $style && $cfg ? 'border-left: 3px solid '.$cfg['accent'].';' : '' }}">
+                <div class="card-header card-header-teal"
+                     style="{{ $style && $cfg ? 'border-left: 5px solid '.$cfg['accent'].' !important;' : '' }}">
                     <h5 class="mb-0">
-                        {{ ($style && $cfg) ? $cfg['recTitle'] : 'New Learning Materials' }}
+                        📖 {{ ($style && $cfg) ? $cfg['recTitle'] : 'New Learning Materials' }}
                     </h5>
                 </div>
                 <div class="card-body">
