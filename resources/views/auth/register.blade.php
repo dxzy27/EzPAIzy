@@ -180,8 +180,8 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        /* Very soft mint — light and welcoming */
-        background: linear-gradient(135deg, #f0fdfb 0%, #e0faf5 50%, #ecfdf5 100%) !important;
+        background: url("{{ asset('images/background wallpaper.png') }}") no-repeat center center fixed !important;
+        background-size: cover !important;
     }
     nav.navbar { display: none !important; }
 

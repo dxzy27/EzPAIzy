@@ -101,7 +101,8 @@
 
         body {
             font-family: 'Outfit', sans-serif;
-            background: var(--page-bg);
+            background: url("{{ asset('images/background wallpaper.png') }}") no-repeat center center fixed;
+            background-size: cover;
             color: #1e293b;
             margin: 0;
         }

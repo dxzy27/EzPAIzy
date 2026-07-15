@@ -143,8 +143,8 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        /* Very soft blue — light and airy */
-        background: linear-gradient(135deg, #f0f7ff 0%, #e0edff 50%, #ede9fe 100%) !important;
+        background: url("{{ asset('images/background wallpaper.png') }}") no-repeat center center fixed !important;
+        background-size: cover !important;
     }
     nav.navbar { display: none !important; }
 
