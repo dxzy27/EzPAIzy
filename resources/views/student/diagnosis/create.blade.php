@@ -196,9 +196,14 @@
 @endpush
 
 <div class="d-flex align-items-center justify-content-between mb-4">
-    <div>
-        <h4 class="mb-0 fw-bold">The VARK Questionnaire for Younger People</h4>
-        <p class="text-muted mb-0" style="font-size:.875rem;">16 scenario-based questions · ~6 minutes</p>
+    <div class="d-flex align-items-center gap-3">
+        <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+            <i class="bi bi-house-door fs-5"></i>
+        </a>
+        <div>
+            <h4 class="mb-0 fw-bold">The VARK Questionnaire for Younger People</h4>
+            <p class="text-muted mb-0" style="font-size:.875rem;">16 scenario-based questions · ~6 minutes</p>
+        </div>
     </div>
     <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-x-lg me-1"></i> Skip for now
