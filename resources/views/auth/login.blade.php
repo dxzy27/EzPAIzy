@@ -143,7 +143,7 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        background: url("{{ asset('images/bg1.png') }}") no-repeat center center fixed !important;
+        background: url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
         background-size: cover !important;
     }
     nav.navbar { display: none !important; }
