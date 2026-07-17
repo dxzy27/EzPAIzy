@@ -432,7 +432,7 @@
                                     <th>By</th>
                                     <th>Score</th>
                                     <th>Date</th>
-                                    <th></th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -493,7 +493,7 @@
                         @if($readWriteList->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead><tr><th>Title</th><th>Type</th><th></th></tr></thead>
+                                <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($readWriteList as $item)
                                     <tr>
@@ -502,14 +502,18 @@
                                             @if(class_basename($item) === 'FlashcardSet')
                                             <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
                                             @else
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Content</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary">Practice</a>
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
+                                                <i class="bi bi-card-text"></i>
+                                            </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
                                             @endif
                                         </td>
                                     </tr>
@@ -570,7 +574,7 @@
                         @if($defaultList->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead><tr><th>Title</th><th>Type</th><th></th></tr></thead>
+                                <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($defaultList as $item)
                                     <tr>
@@ -579,14 +583,18 @@
                                             @if(class_basename($item) === 'FlashcardSet')
                                             <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
                                             @else
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Content</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary">Practice</a>
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
+                                                <i class="bi bi-card-text"></i>
+                                            </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
                                             @endif
                                         </td>
                                     </tr>
