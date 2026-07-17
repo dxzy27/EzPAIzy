@@ -148,25 +148,27 @@
     }
     nav.navbar { display: none !important; }
 
-    /* ── Top Nav ─────────────────────────────────── */
     .ez-topnav {
         position: fixed; top: 0; left: 0; right: 0;
-        height: 64px; background: #fff;
+        height: 64px; 
+        background: rgba(255, 255, 255, 0.4) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 40px; z-index: 100;
-        box-shadow: 0 1px 8px rgba(0,0,0,.06);
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
     }
     .ez-topnav-brand { display: flex; align-items: center; gap: 10px; }
     .brand-mascot    { height: 44px; width: auto; object-fit: contain; }
     .brand-wordmark  { height: 28px; width: auto; object-fit: contain; }
     .ez-topnav-actions { display: flex; align-items: center; }
     .topnav-btn {
-        background: #fff; color: #334155; font-size: .85rem; font-weight: 600;
+        background: rgba(255, 255, 255, 0.6) !important; 
+        color: #1e293b; font-size: .85rem; font-weight: 600;
         text-decoration: none; padding: 6px 18px; border-radius: 6px;
-        border: 1px solid #cbd5e1; transition: all .2s;
+        border: 1px solid rgba(255, 255, 255, 0.5); transition: all .2s;
     }
-    .topnav-btn:hover { background: #f8fafc; border-color: #94a3b8; color: #1e293b; }
+    .topnav-btn:hover { background: rgba(255, 255, 255, 0.95) !important; color: #1e293b; }
 
     /* ── Page Layout ─────────────────────────────── */
     .page-wrap {
