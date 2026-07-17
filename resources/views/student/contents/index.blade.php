@@ -9,7 +9,7 @@
                     <i class="bi bi-house-door fs-5"></i>
                 </a>
                 <div>
-                    <h1 class="h2 fw-bold text-dark mb-0">Other Materials</h1>
+                    <h1 class="h2 fw-bold text-dark mb-0">Other</h1>
                     <p class="text-muted mb-0">Browse available course content and study guides</p>
                 </div>
             </div>

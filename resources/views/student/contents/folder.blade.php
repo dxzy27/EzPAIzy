@@ -54,7 +54,7 @@
                         <div class="card-footer bg-light border-0 d-flex justify-content-between align-items-center">
                             <span class="badge bg-secondary text-white">{{ $content->file_type ?? 'Text' }}</span>
                             <a href="{{ route('student.contents.show', $content) }}" class="btn btn-sm btn-primary">
-                                <i class="bi bi-eye me-1"></i> Read Content
+                                <i class="bi bi-eye me-1"></i> Read
                             </a>
                         </div>
                     </div>

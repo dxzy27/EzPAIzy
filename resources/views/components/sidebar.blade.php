@@ -74,7 +74,7 @@
                             <a href="{{ route('teacher.contents.index') }}"
                                class="nav-link {{ request()->routeIs('teacher.contents.*') ? 'active' : '' }}">
                                 <i class="bi bi-file-earmark-text nav-icon"></i>
-                                <span class="nav-label">Other Materials</span>
+                                <span class="nav-label">Other</span>
                             </a>
                         </li>
                     </ul>
@@ -152,7 +152,7 @@
                             <a href="{{ route('student.contents.index') }}"
                                class="nav-link {{ request()->routeIs('student.contents.*') ? 'active' : '' }}">
                                 <i class="bi bi-journal-text nav-icon"></i>
-                                <span class="nav-label">Other Materials</span>
+                                <span class="nav-label">Other</span>
                             </a>
                         </li>
                     </ul>

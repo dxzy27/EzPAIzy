@@ -46,7 +46,7 @@
                     $isContent = !empty($fav->content);
                     $isFlashcard = !empty($fav->flashcardSet);
                     
-                    $typeLabel = $isContent ? 'Content' : ($isFlashcard ? 'Flashcard Set' : 'Quiz');
+                    $typeLabel = $isContent ? 'Other' : ($isFlashcard ? 'Flashcard Set' : 'Quiz');
                     $icon = $isContent ? 'bi-file-text' : ($isFlashcard ? 'bi-card-list' : 'bi-patch-question');
                     $bgClass = $isContent ? 'border-primary' : ($isFlashcard ? 'border-warning' : 'border-info');
                     $btnClass = $isContent ? 'btn-primary' : ($isFlashcard ? 'btn-warning' : 'btn-info text-white');

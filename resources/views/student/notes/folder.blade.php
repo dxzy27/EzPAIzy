@@ -108,7 +108,7 @@
                                 <option value="">All Note Types</option>
                                 <option value="flashcard">🃏 Flashcards</option>
                                 <option value="quiz">📝 Quizzes</option>
-                                <option value="content">📄 Other Materials</option>
+                                <option value="content">📄 Other</option>
                             </select>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                                         @elseif($note->resource_type === 'flashcard')
                                             🃏 Flashcards
                                         @else
-                                            📄 Other Materials
+                                            📄 Other
                                         @endif
                                     </span>
                                     
