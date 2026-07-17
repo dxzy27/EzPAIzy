@@ -143,17 +143,8 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        background-color: #f4faf8 !important;
-    }
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: url("{{ asset('images/background wallpaper (1).png') }}") no-repeat center center fixed !important;
+        background: url("{{ asset('images/bg1.png') }}") no-repeat center center fixed !important;
         background-size: cover !important;
-        opacity: 0.12;
-        z-index: -1;
-        pointer-events: none;
     }
     nav.navbar { display: none !important; }
 
