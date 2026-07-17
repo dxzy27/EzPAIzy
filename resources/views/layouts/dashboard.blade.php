@@ -101,20 +101,10 @@
 
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: #f4faf8;
-            color: #1e293b;
-            margin: 0;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
             background: url("{{ asset('images/bg1.png') }}") no-repeat center center fixed;
             background-size: cover;
-            opacity: 0.06;
-            z-index: -1;
-            pointer-events: none;
+            color: #1e293b;
+            margin: 0;
         }
 
         /* ── Layout ──────────────────────────────────── */
