@@ -261,7 +261,7 @@
         <div class="col-md-8">
             <h4 class="fw-bold mb-0 text-dark">Student Dashboard</h4>
             <div class="d-flex align-items-center gap-2 mt-1">
-                <span class="text-dark fw-semibold" style="font-size:.875rem; opacity: 0.85;">Welcome, {{ $user->name }}</span>
+                <span class="text-dark fw-bold" style="font-size:.875rem;">Welcome, {{ $user->name }}</span>
                 @if($style)
                 <a href="{{ route('student.diagnosis.show') }}"
                    class="style-badge {{ $style }}"
@@ -447,7 +447,7 @@
                                     </td>
                                     <td>
                                         @if((($p->difficulty === 'hard' || $p->difficulty === 'medium')) && $p->status === 'pending')
-                                            <span class="badge bg-secondary">Pending</span>
+                                            <span class="badge text-white" style="background-color: #f59e0b;">Pending</span>
                                         @else
                                             <span class="badge bg-{{ $p->score >= 70 ? 'success' : ($p->score >= 40 ? 'warning' : 'danger') }}">
                                                 {{ $p->score }}%

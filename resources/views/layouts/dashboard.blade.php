@@ -101,10 +101,20 @@
 
         body {
             font-family: 'Outfit', sans-serif;
-            background: url("{{ asset('images/bg1.png') }}") no-repeat center center fixed;
-            background-size: cover;
+            background-color: #f4faf8;
             color: #1e293b;
             margin: 0;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("{{ asset('images/bg1.png') }}") no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.06;
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* ── Layout ──────────────────────────────────── */
@@ -521,11 +531,11 @@
         /* ── Global Cards ─────────────────────────────── */
         .card {
             border-radius: 16px !important;
-            border: 1px solid rgba(31, 110, 104, 0.25) !important;
-            background: rgba(234, 247, 245, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
+            background: rgba(255, 255, 255, 0.90) !important;
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+            box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.09), 0 2px 4px rgba(0, 0, 0, 0.03) !important;
             transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
         .card:hover {
@@ -599,6 +609,7 @@
             padding: 16px 16px !important;
             border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
             vertical-align: middle !important;
+            height: 64px !important;
         }
         .table tbody tr:last-child td {
             border-bottom: none !important;
