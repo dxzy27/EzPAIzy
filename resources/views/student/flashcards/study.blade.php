@@ -146,7 +146,7 @@
 @endpush
 
 @section('content')
-<div class="container">
+<div class="container-fluid px-4">
     <div class="row mb-5">
         <div class="col-12">
             <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center mb-3" style="width: 36px; height: 36px;" title="Back to Sets">

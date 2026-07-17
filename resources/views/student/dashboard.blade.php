@@ -229,7 +229,7 @@
     ];
 @endphp
 
-<div class="container">
+<div class="container-fluid px-4">
 
     {{-- ── Diagnosis Modal (undiagnosed only) ── --}}
     @if(!$style && !session('diag_banner_dismissed'))

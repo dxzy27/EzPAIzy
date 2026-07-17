@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container">
+<div class="container-fluid px-4">
     <div class="row mb-4 align-items-center">
         <div class="col-md-12">
             <div class="d-flex align-items-center gap-3">
