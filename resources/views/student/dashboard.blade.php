@@ -259,9 +259,9 @@
     {{-- ── Header ── --}}
     <div class="row mb-4">
         <div class="col-md-8">
-            <h4 class="fw-bold mb-0">Student Dashboard</h4>
+            <h4 class="fw-bold mb-0 text-dark">Student Dashboard</h4>
             <div class="d-flex align-items-center gap-2 mt-1">
-                <span class="text-muted" style="font-size:.875rem;">Welcome, {{ $user->name }}</span>
+                <span class="text-dark fw-semibold" style="font-size:.875rem; opacity: 0.85;">Welcome, {{ $user->name }}</span>
                 @if($style)
                 <a href="{{ route('student.diagnosis.show') }}"
                    class="style-badge {{ $style }}"
@@ -273,7 +273,7 @@
             </div>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{{ route('student.progress') }}" class="btn btn-warning">
+            <a href="{{ route('student.progress') }}" class="btn btn-filled-primary">
                 <i class="bi bi-bar-chart-fill me-2"></i>My Progress
             </a>
         </div>
@@ -398,14 +398,14 @@
                     @endforeach
                 </div>
 
-                <!-- Controls/Arrows (Red corners style matching the mockup) -->
+                <!-- Controls/Arrows (Teal corners style matching the mockup) -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev"
-                        style="left: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #e11d48; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(225,29,72,0.35);">
+                        style="left: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #1F6E68; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(31,110,104,0.35);">
                     <i class="bi bi-chevron-left text-white" style="font-size: 1rem; font-weight: bold;"></i>
                     <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#statsCarousel" data-bs-slide="next"
-                        style="right: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #e11d48; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(225,29,72,0.35);">
+                        style="right: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #1F6E68; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(31,110,104,0.35);">
                     <i class="bi bi-chevron-right text-white" style="font-size: 1rem; font-weight: bold;"></i>
                     <span class="visually-hidden">Next</span>
                 </button>
@@ -449,7 +449,7 @@
                                         @if((($p->difficulty === 'hard' || $p->difficulty === 'medium')) && $p->status === 'pending')
                                             <span class="badge bg-secondary">Pending</span>
                                         @else
-                                            <span class="badge bg-{{ $p->score >= 80 ? 'success' : ($p->score >= 50 ? 'warning' : 'danger') }}">
+                                            <span class="badge bg-{{ $p->score >= 70 ? 'success' : ($p->score >= 40 ? 'warning' : 'danger') }}">
                                                 {{ $p->score }}%
                                             </span>
                                         @endif
@@ -500,14 +500,14 @@
                                         <td>{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge" style="background:#ede9fe;color:#6d28d9;">Flashcard ⭐</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
                                             @else
-                                            <span class="badge bg-primary">Content</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Content</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-success">Practice</a>
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary">Practice</a>
                                             @else
                                             <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary">View</a>
                                             @endif
@@ -577,14 +577,14 @@
                                         <td>{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge bg-success">Flashcard</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
                                             @else
-                                            <span class="badge bg-primary">Content</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Content</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-success">Practice</a>
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary">Practice</a>
                                             @else
                                             <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary">View</a>
                                             @endif
