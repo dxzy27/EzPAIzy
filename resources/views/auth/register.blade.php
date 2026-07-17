@@ -214,11 +214,15 @@
 
     /* ── Auth Card ───────────────────────────────── */
     .auth-card {
-        background: #fff; width: 100%; max-width: 520px;
+        background: rgba(235, 244, 255, 0.78) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        width: 100%; max-width: 520px;
         padding: 36px 36px 32px;
         border-radius: 20px;
-        border-top: 5px solid var(--accent);   /* ← teal top stripe */
-        box-shadow: 0 16px 48px rgba(45,212,191,.13);
+        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        border-top: 5px solid var(--accent) !important;   /* ← teal top stripe */
+        box-shadow: 0 15px 35px rgba(20, 184, 166, 0.08) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */

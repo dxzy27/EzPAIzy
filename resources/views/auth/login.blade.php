@@ -178,11 +178,15 @@
     /* ── Auth Card ───────────────────────────────── */
     .auth-card {
         position: relative;
-        background: #fff; width: 100%; max-width: 480px;
+        background: rgba(235, 244, 255, 0.78) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        width: 100%; max-width: 480px;
         padding: 36px 36px 32px;
         border-radius: 20px;
-        border-top: 5px solid var(--accent);   /* ← blue top stripe */
-        box-shadow: 0 16px 48px rgba(96,165,250,.15);
+        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        border-top: 5px solid var(--accent) !important;   /* ← blue top stripe */
+        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.08) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */
