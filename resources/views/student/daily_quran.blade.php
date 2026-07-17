@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container-fluid px-4 py-5" style="min-height: 100vh; background-color: #f8f9fa;">
+<div class="container-fluid px-4 py-5" style="min-height: 100vh; background-color: transparent;">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="d-flex justify-content-between align-items-center mb-5">

@@ -38,7 +38,7 @@
 @section('content')
 @php $isReadWrite = auth()->user()?->learning_style === 'read_write'; @endphp
 
-<div class="container-fluid px-4 py-5" style="min-height: 100vh; background-color: #f8f9fa;">
+<div class="container-fluid px-4 py-5" style="min-height: 100vh; background-color: transparent;">
     <div class="row justify-content-center">
         <div class="{{ $isReadWrite ? 'col-lg-8' : 'col-lg-12' }} quiz-container">
             <!-- Header -->
