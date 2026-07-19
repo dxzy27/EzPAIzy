@@ -12,22 +12,21 @@
 
     /* ── Redesigned Filled Buttons ── */
     .btn-filled-primary {
-        background-color: var(--accent) !important;
-        border-color: var(--accent) !important;
+        background-color: #1F8A70 !important;
+        border-color: #1F8A70 !important;
         color: #ffffff !important;
         font-weight: 600 !important;
         font-size: 0.88rem !important;
         border-radius: 10px !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 0 4px 10px rgba(31, 138, 112, 0.18) !important;
         padding: 10px 18px !important;
-        transition: all 0.2s;
     }
     .btn-filled-primary:hover {
-        background-color: var(--accent-dark) !important;
-        border-color: var(--accent-dark) !important;
+        background-color: #166d58 !important;
+        border-color: #166d58 !important;
         color: #ffffff !important;
         transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15) !important;
+        box-shadow: 0 6px 14px rgba(31, 138, 112, 0.25) !important;
     }
     .btn-filled-secondary {
         background-color: #f1f5f9 !important;
@@ -37,7 +36,6 @@
         font-size: 0.88rem !important;
         border-radius: 10px !important;
         padding: 10px 18px !important;
-        transition: all 0.2s;
     }
     .btn-filled-secondary:hover {
         background-color: #e2e8f0 !important;
@@ -46,9 +44,9 @@
         transform: translateY(-1px);
     }
 
-    /* ── Theme-based Table Headers ── */
-    .table-modern th {
-        background-color: var(--accent) !important;
+    /* ── Teal Table Headers ── */
+    .table-teal-header th {
+        background-color: #1F6E68 !important;
         color: #ffffff !important;
         font-weight: 600 !important;
         text-transform: uppercase;
@@ -57,26 +55,60 @@
         border-bottom: none !important;
         padding: 14px 16px !important;
     }
-    .table-modern th:first-child {
+    .table-teal-header th:first-child {
         border-top-left-radius: 12px;
     }
-    .table-modern th:last-child {
+    .table-teal-header th:last-child {
         border-top-right-radius: 12px;
-    }
-    .table-modern td {
-        padding: 12px 16px !important;
-        vertical-align: middle !important;
     }
 
     /* ── Carousel Responsive Controls ── */
+    .custom-carousel-control {
+        width: 40px !important;
+        height: 40px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: rgba(31, 110, 104, 0.18) !important;
+        border-radius: 50% !important;
+        border: none !important;
+        opacity: 1 !important;
+        transition: all 0.25s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .custom-carousel-control:hover {
+        background: rgba(31, 110, 104, 0.35) !important;
+        transform: translateY(-50%) scale(1.08) !important;
+    }
+    .carousel-control-prev.custom-carousel-control {
+        left: -60px !important;
+    }
+    .carousel-control-next.custom-carousel-control {
+        right: -60px !important;
+    }
+    @media (max-width: 991px) {
+        .carousel-control-prev.custom-carousel-control {
+            left: -40px !important;
+        }
+        .carousel-control-next.custom-carousel-control {
+            right: -40px !important;
+        }
+    }
     @media (max-width: 767px) {
-        .carousel-control-prev { left: 10px !important; }
-        .carousel-control-next { right: 10px !important; }
+        .carousel-control-prev.custom-carousel-control {
+            left: 10px !important;
+            background: rgba(31, 110, 104, 0.35) !important;
+        }
+        .carousel-control-next.custom-carousel-control {
+            right: 10px !important;
+            background: rgba(31, 110, 104, 0.35) !important;
+        }
     }
 
-    /* ── Theme-based Card Headers ── */
+    /* ── Teal Card Headers ── */
     .card-header-teal {
-        background-color: var(--accent) !important;
+        background-color: #1F6E68 !important;
         color: #ffffff !important;
         border-bottom: none !important;
         padding: 16px 24px !important;
@@ -88,31 +120,6 @@
         font-weight: 600 !important;
         font-size: 1.02rem !important;
         margin: 0;
-    }
-
-    /* ── Carousel Arrows ── */
-    .btn-carousel-ctrl {
-        width: 34px !important;
-        height: 34px !important;
-        background: var(--accent) !important;
-        border-radius: 8px !important;
-        border: none !important;
-        opacity: 1 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-        transition: all 0.2s !important;
-    }
-    .btn-carousel-ctrl:hover {
-        background: var(--accent-dark) !important;
-        transform: scale(1.05) !important;
-        opacity: 1 !important;
-    }
-    .btn-carousel-ctrl i {
-        color: #ffffff !important;
-        font-size: 1rem !important;
-        font-weight: bold !important;
     }
 
     /* ── Diagnosis Banner ── */
@@ -366,9 +373,9 @@
                 
                 <!-- Indicators/Dots (Centered at bottom) -->
                 <div class="carousel-indicators" style="bottom: 15px; margin-bottom: 0;">
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Materials" style="background-color: var(--accent); width: 8px; height: 8px; border-radius: 50%; border: none; opacity: 0.5; transition: opacity .15s;"></button>
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="1" aria-label="Quizzes" style="background-color: var(--accent); width: 8px; height: 8px; border-radius: 50%; border: none; opacity: 0.5; transition: opacity .15s;"></button>
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="2" aria-label="Completed" style="background-color: var(--accent); width: 8px; height: 8px; border-radius: 50%; border: none; opacity: 0.5; transition: opacity .15s;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Materials" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="1" aria-label="Quizzes" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="2" aria-label="Completed" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
                 </div>
 
                 <!-- Carousel Items -->
@@ -376,7 +383,7 @@
                     @foreach($orderedCards as $index => $card)
                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                         <div class="card content-card position-relative overflow-hidden"
-                             style="{{ $card['isPrimary'] && $cfg ? 'border-color: '.$cfg['accent'].' !important;' : '' }}">
+                             style="{{ $card['isPrimary'] && $cfg ? 'border: 2px solid '.$cfg['accent'].' !important;' : '' }}">
                             {{-- Coloured top stripe for the primary card --}}
                             @if($card['isPrimary'] && $cfg)
                             <div class="primary-card-stripe" style="background:{{ $cfg['accent'] }};"></div>
@@ -430,14 +437,12 @@
                 </div>
 
                 <!-- Controls/Arrows -->
-                <button class="carousel-control-prev btn-carousel-ctrl" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev"
-                        style="left: 20px; bottom: 15px; top: auto; transform: none; border: none; opacity: 1;">
-                    <i class="bi bi-chevron-left" style="font-size: 1rem; font-weight: bold;"></i>
+                <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(34%) sepia(25%) saturate(1048%) hue-rotate(124deg) brightness(91%) contrast(85%);"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next btn-carousel-ctrl" type="button" data-bs-target="#statsCarousel" data-bs-slide="next"
-                        style="right: 20px; bottom: 15px; top: auto; transform: none; border: none; opacity: 1;">
-                    <i class="bi bi-chevron-right" style="font-size: 1rem; font-weight: bold;"></i>
+                <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#statsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(34%) sepia(25%) saturate(1048%) hue-rotate(124deg) brightness(91%) contrast(85%);"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
@@ -456,7 +461,7 @@
                 <div class="card-body">
                     @if($progress->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-hover table-modern">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Quiz</th>
@@ -488,7 +493,7 @@
                                     <td>{{ $p->created_at->format('M d') }}</td>
                                     <td>
                                         <a href="{{ route('student.progress') }}"
-                                           class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);">
+                                           class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
@@ -523,7 +528,7 @@
                         @php $readWriteList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp
                         @if($readWriteList->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover table-modern">
+                            <table class="table table-hover">
                                 <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($readWriteList as $item)
@@ -531,18 +536,18 @@
                                         <td>{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Flashcard</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
                                             @else
-                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Other</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="Practice">
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
                                                 <i class="bi bi-card-text"></i>
                                             </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="View">
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @endif
@@ -588,8 +593,8 @@
                                 </div>
                                 {{-- Open button --}}
                                 <a href="{{ $itemUrl }}"
-                                   class="btn btn-sm btn-outline-primary"
-                                   style="border-color: var(--accent); color: var(--accent); background: #ffffff; flex-shrink:0;">
+                                   class="btn btn-sm"
+                                   style="background:#f0f9ff;border:1px solid #7dd3fc;color:#0c4a6e;font-size:.78rem;flex-shrink:0;">
                                     {{ $isFlash ? 'Practice' : 'Take Quiz' }}
                                 </a>
                             </div>
@@ -604,7 +609,7 @@
                         @php $defaultList = $recentContents->concat($recentFlashcards)->sortByDesc('created_at')->take(5); @endphp
                         @if($defaultList->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover table-modern">
+                            <table class="table table-hover">
                                 <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($defaultList as $item)
@@ -612,18 +617,18 @@
                                         <td>{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Flashcard</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
                                             @else
-                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Other</span>
+                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="Practice">
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
                                                 <i class="bi bi-card-text"></i>
                                             </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="View">
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @endif

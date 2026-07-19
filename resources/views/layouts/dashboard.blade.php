@@ -83,18 +83,12 @@
                     $pageBg = '#f0fdfb';
                 }
             }
-            list($sr, $sg, $sb) = sscanf($sidebarBg, "#%02x%02x%02x");
-            $sidebarRgb = "$sr, $sg, $sb";
-            list($ar, $ag, $ab) = sscanf($sidebarActive, "#%02x%02x%02x");
-            $sidebarActiveRgb = "$ar, $ag, $ab";
         @endphp
 
         :root {
             --sidebar-bg:        {{ $sidebarBg }};
-            --sidebar-rgb:       {{ $sidebarRgb }};
             --sidebar-hover:     {{ $sidebarHover }};
             --sidebar-active:    {{ $sidebarActive }};
-            --sidebar-active-rgb:{{ $sidebarActiveRgb }};
             --sidebar-active-bg: {{ $sidebarActiveBg }};
             --accent:            {{ $accent }};
             --accent-soft:       {{ $accentSoft }};
@@ -287,7 +281,7 @@
             font-size: .875rem;
             font-weight: 500;
             text-decoration: none;
-            transition: background .25s, color .25s, transform .25s;
+            transition: background .18s, color .18s;
             margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
@@ -298,7 +292,6 @@
             width: 20px;
             text-align: center;
             flex-shrink: 0;
-            transition: transform .25s;
         }
         .nav-link .nav-label {
             transition: opacity .2s;
@@ -465,6 +458,7 @@
             .main-content { margin-left: 0; }
         }
 
+        /* ── Topbar ──────────────────────────────────── */
         .topbar {
             height: 68px;
             display: flex;
