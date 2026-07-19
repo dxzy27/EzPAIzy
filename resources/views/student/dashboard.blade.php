@@ -101,8 +101,8 @@
 
     /* ── Carousel Responsive Controls ── */
     .custom-carousel-control {
-        width: 40px !important;
-        height: 40px !important;
+        width: 48px !important;
+        height: 48px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
         background: rgba(31, 110, 104, 0.18) !important;
@@ -113,6 +113,9 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+    }
+    .custom-carousel-control span {
+        transform: scale(1.25);
     }
     .custom-carousel-control:hover {
         background: rgba(31, 110, 104, 0.35) !important;
@@ -434,7 +437,7 @@
                                                 <a href="{{ route('student.flashcards.index') }}" class="quizlet-btn">
                                                     Flashcards
                                                 </a>
-                                                <a href="{{ route('student.contents.index') }}" class="quizlet-btn-secondary">
+                                                <a href="{{ route('student.contents.index') }}" class="quizlet-btn" style="background-color: #10b981 !important; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;">
                                                     Materials
                                                 </a>
                                             @elseif($card['type'] === 'quiz')
