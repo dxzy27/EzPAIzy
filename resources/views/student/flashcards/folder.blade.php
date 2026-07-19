@@ -48,7 +48,7 @@
                                     <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} text-warning" style="font-size: 1.15rem; line-height: 1; transition: transform 0.15s ease;"></i>
                                 </button>
                             </div>
-                            <span class="badge bg-info mb-2 text-white" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; font-weight: 600;">{{ $set->topic }}</span>
+                             <span class="badge mb-2" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; font-weight: 600; background-color: #ECECEC; color: #4B5563; border-radius: 6px;">{{ $set->topic }}</span>
                             @if(!empty($set->description))
                                 <p class="card-text text-muted small mb-2">{{ Str::limit($set->description, 60) }}</p>
                             @endif
