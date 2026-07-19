@@ -114,14 +114,15 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
-        auth()->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        if ($user->role === 'teacher') {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        $message = $user->role === 'teacher'
-            ? 'Account created! Please wait for admin approval before logging in.'
-            : 'Account created successfully! You can now log in.';
+            return redirect()->route('login')->with('status', 'Account created! Please wait for admin approval before logging in.');
+        }
 
-        return redirect()->route('login')->with('status', $message);
+        // Students remain logged in and are redirected immediately to the email verification page
+        return redirect()->route('verification.notice');
     }
 }
