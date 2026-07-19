@@ -57,7 +57,6 @@ class RegisterController extends Controller
                 'required',
                 'string',
                 'min:8',
-                'max:12',
                 'regex:/[a-z]/',      // at least one lowercase letter
                 'regex:/[A-Z]/',      // at least one uppercase letter
                 'regex:/[0-9]/',      // at least one number
@@ -80,7 +79,6 @@ class RegisterController extends Controller
         ], [
             'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
             'password.min' => 'The password must be at least 8 characters.',
-            'password.max' => 'The password cannot exceed 12 characters.',
         ]);
     }
 
