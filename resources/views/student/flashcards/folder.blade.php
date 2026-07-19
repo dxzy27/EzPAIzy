@@ -76,17 +76,18 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer bg-white border-top-0 p-3 pt-0 d-flex gap-2">
-                            <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary btn-sm flex-grow-1 d-inline-flex align-items-center justify-content-center" style="height: 48px; font-size: 0.95rem; font-weight: 600;">
-                                <i class="bi bi-play-circle me-1.5"></i> Open Flashcards
-                            </a>
-                            <form action="{{ route('student.flashcards.reset', $set) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset this flashcard progress?');" class="m-0">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center" title="Reset Progress" style="height: 48px; width: 48px; padding: 0;">
-                                    <i class="bi bi-arrow-clockwise" style="font-size: 1.1rem;"></i>
-                                </button>
-                            </form>
+                            <hr class="my-3" style="opacity: 0.1; border-color: #000;">
+                            <div class="d-flex flex-column align-items-center gap-2">
+                                <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center" style="height: 42px; font-weight: 600; border-radius: 10px; font-size: 0.9rem;">
+                                    Open Flashcards <i class="bi bi-arrow-right ms-2"></i>
+                                </a>
+                                <form action="{{ route('student.flashcards.reset', $set) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset this flashcard progress?');" class="m-0 w-100 text-center">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link btn-sm text-muted p-0" style="font-size: 0.72rem; text-decoration: none; font-weight: 500;">
+                                        <i class="bi bi-arrow-clockwise me-1"></i> Reset Progress
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
