@@ -4,7 +4,7 @@
     <div class="sidebar-brand">
         <span class="sidebar-brand-text">Ez<span class="brand-accent">PAI</span>zy</span>
         <button class="sidebar-toggle-mascot" id="mascotToggle" title="Collapse sidebar" aria-label="Toggle sidebar">
-            <img src="{{ asset('images/logo.png') }}" alt="Toggle sidebar">
+            <i class="bi bi-list"></i>
         </button>
     </div>
 

@@ -221,15 +221,14 @@
             top: 50%;
             transform: translateY(-50%);
         }
-        .sidebar-toggle-mascot img {
-            height: 42px;
-            width: auto;
-            object-fit: contain;
-            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,.3));
+        .sidebar-toggle-mascot i {
+            font-size: 1.65rem;
+            color: rgba(255, 255, 255, 0.78);
+            transition: transform 0.3s ease, color 0.3s ease;
         }
-        .sidebar-toggle-mascot:hover img {
-            transform: scale(1.12) rotate(-5deg);
+        .sidebar-toggle-mascot:hover i {
+            transform: scale(1.15);
+            color: #fff;
         }
         /* When collapsed, mascot still visible and centered */
         .Sidebar.collapsed .sidebar-brand {
@@ -239,12 +238,6 @@
         .Sidebar.collapsed .sidebar-toggle-mascot {
             position: static;
             transform: none;
-        }
-        .Sidebar.collapsed .sidebar-toggle-mascot img {
-            transform: scaleX(-1); /* Flip to indicate collapsed state */
-        }
-        .Sidebar.collapsed .sidebar-toggle-mascot:hover img {
-            transform: scaleX(-1) scale(1.12);
         }
 
         /* ── Nav Links ───────────────────────────────── */
@@ -463,7 +456,7 @@
             height: 68px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
             padding: 0 28px;
             background: transparent !important;
             border-bottom: none !important;
@@ -476,6 +469,9 @@
             left: 0;
             z-index: 999;
             pointer-events: none;
+        }
+        .topbar-left {
+            pointer-events: auto;
         }
         .topbar-right {
             pointer-events: auto;
@@ -684,6 +680,13 @@
     <div class="main-content" id="mainContent">
         <!-- Topbar -->
         <header class="topbar">
+            <div class="topbar-left">
+                <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : (auth()->user()->role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard')) }}" 
+                   class="d-flex align-items-center gap-2 text-decoration-none">
+                    <img src="{{ asset('images/logo.png') }}" alt="Mascot" style="height: 38px; width: auto; object-fit: contain;">
+                    <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" style="height: 24px; width: auto; object-fit: contain;">
+                </a>
+            </div>
             <h1 class="topbar-title">{{ $sectionTitle }}</h1>
             <div class="topbar-right">
                 <div class="dropdown">
