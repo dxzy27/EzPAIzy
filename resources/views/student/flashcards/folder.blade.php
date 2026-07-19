@@ -83,7 +83,7 @@
                                 </a>
                                 <form action="{{ route('student.flashcards.reset', $set) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset this flashcard progress?');" class="m-0 w-100 text-center">
                                     @csrf
-                                    <button type="submit" class="btn btn-link btn-sm text-muted p-0" style="font-size: 0.72rem; text-decoration: none; font-weight: 500;">
+                                    <button type="submit" class="btn btn-link btn-sm p-0 reset-link">
                                         <i class="bi bi-arrow-clockwise me-1"></i> Reset Progress
                                     </button>
                                 </form>
@@ -199,3 +199,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+<style>
+    .reset-link {
+        color: #7A7A7A !important;
+        font-size: 12px !important;
+        font-weight: 500;
+        text-decoration: none !important;
+        transition: color 0.15s;
+    }
+    .reset-link:hover {
+        text-decoration: underline !important;
+        color: #4a4a4a !important;
+    }
+</style>
