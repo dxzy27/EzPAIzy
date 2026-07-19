@@ -8,16 +8,6 @@
         <img src="{{ asset('images/logo.png') }}"    alt="Mascot"  class="brand-mascot">
         <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" class="brand-wordmark">
     </div>
-    <div class="ez-topnav-actions">
-        {{-- Logout option so they can switch accounts or leave if stuck --}}
-        <a href="{{ route('logout') }}" 
-           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-           class="topnav-btn text-danger">Log out</a>
-        
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
-    </div>
 </nav>
 
 {{-- ── Page Body ────────────────────────────────────────────────── --}}
@@ -67,13 +57,6 @@
                 </svg>
             </button>
         </form>
-
-        <div class="text-center mt-4">
-            <span class="text-muted small">Wrong email address? </span>
-            <a href="{{ route('logout') }}" 
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-               class="accent-link" style="font-size:.85rem;">Sign out</a>
-        </div>
     </div>
 </div>
 
