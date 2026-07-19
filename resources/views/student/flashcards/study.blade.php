@@ -235,6 +235,16 @@
                 </div>
             </div>
         @endif
+    <!-- Undo Toast Notification -->
+    <div id="undo-toast" class="toast align-items-center text-white bg-dark border-0 position-fixed" 
+         style="bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 1050; display: none; min-width: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" 
+         role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex w-100 p-1">
+        <div class="toast-body d-flex align-items-center gap-2" id="undo-toast-body" style="font-size: 0.9rem;">
+          <i class="bi bi-check2"></i> Marked as Know
+        </div>
+        <button type="button" onclick="performUndo()" class="btn btn-sm text-white fw-bold ms-auto me-2 my-auto" style="text-decoration: none;">Undo</button>
+      </div>
     </div>
 </div>
 @endsection
@@ -246,11 +256,35 @@
     let currentIndex = 0;
     let peekTimeout = null;
     let isShuffled = false;
+    let undoTimeout = null;
     
     document.addEventListener('DOMContentLoaded', function() {
         originalCards = {!! json_encode($dueCards) !!};
         cards = [...originalCards];
         const app = document.getElementById('flashcard-app');
+        
+        window.showUndoToast = function(quality) {
+            const toast = document.getElementById('undo-toast');
+            const toastBody = document.getElementById('undo-toast-body');
+            if(quality === 1) {
+                toastBody.innerHTML = '<i class="bi bi-x-lg text-danger"></i> Marked as Still learning';
+            } else {
+                toastBody.innerHTML = '<i class="bi bi-check2 text-success"></i> Marked as Know';
+            }
+            toast.style.display = 'block';
+            
+            if(undoTimeout) clearTimeout(undoTimeout);
+            undoTimeout = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4000);
+        };
+        
+        window.performUndo = function() {
+            const toast = document.getElementById('undo-toast');
+            toast.style.display = 'none';
+            if(undoTimeout) clearTimeout(undoTimeout);
+            prevCard();
+        };
         
         window.toggleShuffle = function() {
             isShuffled = !isShuffled;
@@ -447,7 +481,6 @@
                                     </button>
                                 </div>
                                 <div class="d-flex justify-content-end gap-2" style="flex: 1;">
-                                    ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn-action-icon" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></button>` : `<div style="width: 44px;"></div>`}
                                 </div>
                             </div>
                         </div>
@@ -468,7 +501,6 @@
                                 </button>
                             </div>
                             <div class="d-flex justify-content-end gap-2" style="flex: 1;">
-                                ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn-action-icon" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></button>` : `<div style="width: 44px;"></div>`}
                             </div>
                         </div>
                     </div>
@@ -946,6 +978,7 @@
                 currentIndex++;
                 isFlipped = false;
                 render();
+                showUndoToast(quality);
             })
             .catch(error => {
                 console.error('Error:', error);
