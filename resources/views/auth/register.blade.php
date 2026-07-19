@@ -15,144 +15,157 @@
 
 {{-- ── Page Body ────────────────────────────────────────────────── --}}
 <div class="page-wrap">
-    <div class="auth-card">
-
-        {{-- Badge --}}
-        <div class="page-badge">
-            <i class="bi bi-person-plus-fill me-1"></i> Create Account
+    <div class="auth-container">
+        <!-- Left Side: Welcome Intro -->
+        <div class="auth-intro-side">
+            <h2 class="intro-title">Learn Pendidikan Islam in a <span class="accent-glow">Personalized Way</span></h2>
+            <p class="intro-text">
+                Discover learning materials tailored to your learning style, generate AI-powered quizzes, and track your progress in one place.
+            </p>
         </div>
+        
+        <!-- Right Side: Form Card -->
+        <div class="auth-form-side">
+            <div class="auth-card">
 
-        {{-- MRSM Logo --}}
-        <div class="text-center mb-3">
-            <img src="{{ asset('images/mrsm.png') }}" alt="MRSM Logo" class="auth-center-logo">
+                {{-- Badge --}}
+                <div class="page-badge">
+                    <i class="bi bi-person-plus-fill me-1"></i> Create Account
+                </div>
+
+                {{-- MRSM Logo --}}
+                <div class="text-center mb-3">
+                    <img src="{{ asset('images/mrsm.png') }}" alt="MRSM Logo" class="auth-center-logo">
+                </div>
+
+                {{-- Heading --}}
+                <h1 class="card-heading text-center">
+                    Create an <span class="accent">Account</span>
+                </h1>
+                <p class="auth-subtitle text-center">Join us and start your learning journey</p>
+
+                {{-- Form --}}
+                <form method="POST" action="{{ route('register') }}" class="mt-4">
+                    @csrf
+
+                    {{-- Name --}}
+                    <div class="custom-input-group">
+                        <span class="input-icon"><i class="bi bi-person"></i></span>
+                        <input id="name" type="text" name="name"
+                               class="custom-input has-icon @error('name') is-invalid @enderror"
+                               value="{{ old('name') }}" placeholder="Full Name"
+                               required autocomplete="name" autofocus>
+                        @error('name')
+                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+
+                    {{-- Email --}}
+                    <div class="custom-input-group mt-3">
+                        <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                        <input id="email" type="email" name="email"
+                               class="custom-input has-icon @error('email') is-invalid @enderror"
+                               value="{{ old('email') }}" placeholder="Email Address"
+                               required autocomplete="email">
+                        @error('email')
+                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+
+                    {{-- Phone --}}
+                    <div class="custom-input-group mt-3">
+                        <span class="input-icon"><i class="bi bi-phone"></i></span>
+                        <input id="phone_number" type="text" name="phone_number"
+                               class="custom-input has-icon @error('phone_number') is-invalid @enderror"
+                               value="{{ old('phone_number') }}" placeholder="Phone Number" required>
+                        @error('phone_number')
+                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+
+                    {{-- Address --}}
+                    <div class="custom-input-group mt-3">
+                        <span class="input-icon"><i class="bi bi-house"></i></span>
+                        <input id="address" type="text" name="address"
+                               class="custom-input has-icon @error('address') is-invalid @enderror"
+                               value="{{ old('address') }}" placeholder="Home Address" required>
+                        @error('address')
+                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+
+                    {{-- Role & Class --}}
+                    <div class="row gx-3 mt-3">
+                        <div class="col-6">
+                            <div class="custom-input-group">
+                                <span class="input-icon"><i class="bi bi-person-badge"></i></span>
+                                <select id="role" name="role"
+                                        class="custom-input has-icon @error('role') is-invalid @enderror" required>
+                                    <option value="" disabled {{ old('role') ? '' : 'selected' }}>Register As…</option>
+                                    <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>Student</option>
+                                    <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>Teacher</option>
+                                </select>
+                                @error('role')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="custom-input-group">
+                                <span class="input-icon"><i class="bi bi-journal-bookmark"></i></span>
+                                <select id="class_name" name="class_name"
+                                        class="custom-input has-icon @error('class_name') is-invalid @enderror" required>
+                                    <option value="" disabled {{ old('class_name') ? '' : 'selected' }}>Select Class…</option>
+                                    @foreach(['5A1','5A2','5A3','5B1','5B2','5B3'] as $class)
+                                        <option value="{{ $class }}" {{ old('class_name') == $class ? 'selected' : '' }}>{{ $class }}</option>
+                                    @endforeach
+                                </select>
+                                @error('class_name')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Password & Confirm --}}
+                    <div class="row gx-3 mt-3">
+                        <div class="col-6">
+                            <div class="custom-input-group">
+                                <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                <input id="password" type="password" name="password"
+                                       class="custom-input has-icon @error('password') is-invalid @enderror"
+                                       placeholder="Password" required autocomplete="new-password">
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="custom-input-group">
+                                <span class="input-icon"><i class="bi bi-lock-fill"></i></span>
+                                <input id="password-confirm" type="password" name="password_confirmation"
+                                       class="custom-input has-icon" placeholder="Confirm"
+                                       required autocomplete="new-password">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Submit --}}
+                    <button type="submit" class="btn-submit w-100 mt-4">
+                        <span>CREATE ACCOUNT</span>
+                        <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+
+                    <div class="text-center mt-4">
+                        <span class="text-muted small">Already have an account? </span>
+                        <a href="{{ route('login') }}" class="accent-link" style="font-size:.85rem;">Sign in here</a>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        {{-- Heading --}}
-        <h1 class="card-heading text-center">
-            Create an <span class="accent">Account</span>
-        </h1>
-        <p class="auth-subtitle text-center">Join us and start your learning journey</p>
-
-        {{-- Form --}}
-        <form method="POST" action="{{ route('register') }}" class="mt-4">
-            @csrf
-
-            {{-- Name --}}
-            <div class="custom-input-group">
-                <span class="input-icon"><i class="bi bi-person"></i></span>
-                <input id="name" type="text" name="name"
-                       class="custom-input has-icon @error('name') is-invalid @enderror"
-                       value="{{ old('name') }}" placeholder="Full Name"
-                       required autocomplete="name" autofocus>
-                @error('name')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                @enderror
-            </div>
-
-            {{-- Email --}}
-            <div class="custom-input-group mt-3">
-                <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                <input id="email" type="email" name="email"
-                       class="custom-input has-icon @error('email') is-invalid @enderror"
-                       value="{{ old('email') }}" placeholder="Email Address"
-                       required autocomplete="email">
-                @error('email')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                @enderror
-            </div>
-
-            {{-- Phone --}}
-            <div class="custom-input-group mt-3">
-                <span class="input-icon"><i class="bi bi-phone"></i></span>
-                <input id="phone_number" type="text" name="phone_number"
-                       class="custom-input has-icon @error('phone_number') is-invalid @enderror"
-                       value="{{ old('phone_number') }}" placeholder="Phone Number" required>
-                @error('phone_number')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                @enderror
-            </div>
-
-            {{-- Address --}}
-            <div class="custom-input-group mt-3">
-                <span class="input-icon"><i class="bi bi-house"></i></span>
-                <input id="address" type="text" name="address"
-                       class="custom-input has-icon @error('address') is-invalid @enderror"
-                       value="{{ old('address') }}" placeholder="Home Address" required>
-                @error('address')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                @enderror
-            </div>
-
-            {{-- Role & Class --}}
-            <div class="row gx-3 mt-3">
-                <div class="col-6">
-                    <div class="custom-input-group">
-                        <span class="input-icon"><i class="bi bi-person-badge"></i></span>
-                        <select id="role" name="role"
-                                class="custom-input has-icon @error('role') is-invalid @enderror" required>
-                            <option value="" disabled {{ old('role') ? '' : 'selected' }}>Register As…</option>
-                            <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>Student</option>
-                            <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>Teacher</option>
-                        </select>
-                        @error('role')
-                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="custom-input-group">
-                        <span class="input-icon"><i class="bi bi-journal-bookmark"></i></span>
-                        <select id="class_name" name="class_name"
-                                class="custom-input has-icon @error('class_name') is-invalid @enderror" required>
-                            <option value="" disabled {{ old('class_name') ? '' : 'selected' }}>Select Class…</option>
-                            @foreach(['5A1','5A2','5A3','5B1','5B2','5B3'] as $class)
-                                <option value="{{ $class }}" {{ old('class_name') == $class ? 'selected' : '' }}>{{ $class }}</option>
-                            @endforeach
-                        </select>
-                        @error('class_name')
-                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            {{-- Password & Confirm --}}
-            <div class="row gx-3 mt-3">
-                <div class="col-6">
-                    <div class="custom-input-group">
-                        <span class="input-icon"><i class="bi bi-lock"></i></span>
-                        <input id="password" type="password" name="password"
-                               class="custom-input has-icon @error('password') is-invalid @enderror"
-                               placeholder="Password" required autocomplete="new-password">
-                        @error('password')
-                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="custom-input-group">
-                        <span class="input-icon"><i class="bi bi-lock-fill"></i></span>
-                        <input id="password-confirm" type="password" name="password_confirmation"
-                               class="custom-input has-icon" placeholder="Confirm"
-                               required autocomplete="new-password">
-                    </div>
-                </div>
-            </div>
-
-            {{-- Submit --}}
-            <button type="submit" class="btn-submit w-100 mt-4">
-                <span>CREATE ACCOUNT</span>
-                <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-
-            <div class="text-center mt-4">
-                <span class="text-muted small">Already have an account? </span>
-                <a href="{{ route('login') }}" class="accent-link" style="font-size:.85rem;">Sign in here</a>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -180,51 +193,101 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        background: url("{{ asset('images/signup bg.png') }}") no-repeat center center fixed !important;
+        background: linear-gradient(rgba(10, 102, 90, 0.40), rgba(10, 102, 90, 0.40)), url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
         background-size: cover !important;
     }
     nav.navbar { display: none !important; }
 
     .ez-topnav {
         position: fixed; top: 0; left: 0; right: 0;
-        height: 64px; 
-        background: rgba(255, 255, 255, 0.4) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        height: 54px; 
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 40px; z-index: 100;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
     }
     .ez-topnav-brand { display: flex; align-items: center; gap: 10px; }
-    .brand-mascot    { height: 44px; width: auto; object-fit: contain; }
-    .brand-wordmark  { height: 28px; width: auto; object-fit: contain; }
+    .brand-mascot    { height: 38px; width: auto; object-fit: contain; }
+    .brand-wordmark  { height: 24px; width: auto; object-fit: contain; }
     .ez-topnav-actions { display: flex; align-items: center; }
     .topnav-btn {
         background: rgba(255, 255, 255, 0.6) !important; 
         color: #1e293b; font-size: .85rem; font-weight: 600;
-        text-decoration: none; padding: 6px 18px; border-radius: 6px;
+        text-decoration: none; padding: 4px 16px; border-radius: 6px;
         border: 1px solid rgba(255, 255, 255, 0.5); transition: all .2s;
     }
     .topnav-btn:hover { background: rgba(255, 255, 255, 0.95) !important; color: #1e293b; }
 
     /* ── Page Layout ─────────────────────────────── */
     .page-wrap {
-        min-height: 100vh; padding-top: 64px;
+        min-height: 100vh; padding-top: 54px;
         display: flex; align-items: center; justify-content: center;
         padding: 84px 20px 40px;
     }
 
+    /* ── Split Layout Container ─────────────────── */
+    .auth-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 1040px;
+        padding: 0 20px;
+        gap: 60px;
+    }
+    .auth-intro-side {
+        flex: 1.1;
+        color: #ffffff;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .auth-form-side {
+        flex: 0.9;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    .intro-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
+    .intro-title .accent-glow {
+        color: var(--accent);
+    }
+    .intro-text {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+    
+    @media (max-width: 991px) {
+        .auth-container {
+            flex-direction: column;
+            gap: 30px;
+            max-width: 520px;
+        }
+        .auth-intro-side {
+            display: none;
+        }
+        .auth-form-side {
+            flex: 1;
+        }
+    }
+
     /* ── Auth Card ───────────────────────────────── */
     .auth-card {
-        background: rgba(235, 244, 255, 0.78) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         width: 100%; max-width: 520px;
         padding: 36px 36px 32px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
         border-top: 5px solid var(--accent) !important;   /* ← teal top stripe */
-        box-shadow: 0 15px 35px rgba(20, 184, 166, 0.08) !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 60px rgba(40, 200, 170, 0.15) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */

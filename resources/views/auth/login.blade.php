@@ -15,107 +15,120 @@
 
 {{-- ── Page Body ────────────────────────────────────────────────── --}}
 <div class="page-wrap">
-    <div class="auth-card">
-
-        {{-- Badge --}}
-        <div class="page-badge">
-            <i class="bi bi-shield-lock-fill me-1"></i> Sign In
+    <div class="auth-container">
+        <!-- Left Side: Welcome Intro -->
+        <div class="auth-intro-side">
+            <h2 class="intro-title">Learn Pendidikan Islam in a <span class="accent-glow">Personalized Way</span></h2>
+            <p class="intro-text">
+                Discover learning materials tailored to your learning style, generate AI-powered quizzes, and track your progress in one place.
+            </p>
         </div>
+        
+        <!-- Right Side: Form Card -->
+        <div class="auth-form-side">
+            <div class="auth-card">
 
-        {{-- MRSM Logo --}}
-        <div class="text-center mb-3">
-            <img src="{{ asset('images/mrsm.png') }}" alt="MRSM Logo" class="auth-center-logo">
+                {{-- Badge --}}
+                <div class="page-badge">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Sign In
+                </div>
+
+                {{-- MRSM Logo --}}
+                <div class="text-center mb-3">
+                    <img src="{{ asset('images/mrsm.png') }}" alt="MRSM Logo" class="auth-center-logo">
+                </div>
+
+                {{-- Heading --}}
+                <h1 class="card-heading text-center">
+                    Welcome <span class="accent">back</span>
+                </h1>
+                <p class="auth-subtitle text-center">
+                    Don't have an account?&nbsp;
+                    <a href="{{ route('register') }}" class="accent-link">Sign up</a>
+                </p>
+
+                {{-- Form --}}
+                <form method="POST" action="{{ route('login') }}" class="mt-4">
+                    @csrf
+
+                    {{-- Registration success / pending approval message --}}
+                    @if (session('status'))
+                        <div class="reg-success-alert mb-4">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    {{-- Email --}}
+                    <div class="custom-input-group">
+                        <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                        <input id="email" type="email" name="email"
+                               class="custom-input has-icon @error('email') is-invalid @enderror"
+                               value="{{ old('email') }}" placeholder="Email Address"
+                               required autocomplete="email" autofocus>
+                        @error('email')
+                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+
+                    {{-- Password --}}
+                    <div class="custom-input-group mt-3">
+                        <span class="input-icon"><i class="bi bi-lock"></i></span>
+                        <div class="password-wrapper">
+                            <input id="password" type="password" name="password"
+                                   class="custom-input has-icon @error('password') is-invalid @enderror"
+                                   placeholder="Password"
+                                   required autocomplete="current-password">
+                            <i class="bi bi-eye hide-password-icon" id="passIcon"></i>
+                        </div>
+                        @error('password')
+                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+
+                    {{-- Role --}}
+                    <div class="custom-input-group mt-3">
+                        <span class="input-icon"><i class="bi bi-person-badge"></i></span>
+                        <select id="role" name="role"
+                                class="custom-input has-icon @error('role') is-invalid @enderror" required>
+                            <option value="" disabled {{ old('role') ? '' : 'selected' }}>Login As…</option>
+                            <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>Student</option>
+                            <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>Teacher</option>
+                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
+                        </select>
+                        @error('role')
+                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+
+                    {{-- Remember / Forgot --}}
+                    <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
+                        <label class="d-flex align-items-center gap-2 small text-muted" style="cursor:pointer;">
+                            <input class="form-check-input m-0" type="checkbox" name="remember" id="remember"
+                                   {{ old('remember') ? 'checked' : '' }}>
+                            Keep me signed in
+                        </label>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="accent-link" style="font-size:.82rem;">Forgot password?</a>
+                        @endif
+                    </div>
+
+                    {{-- Submit --}}
+                    <button type="submit" class="btn-submit w-100 mt-3">
+                        <span>LOG IN</span>
+                        <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+
+                    <div class="text-center mt-4">
+                        <span class="text-muted small">New here? </span>
+                        <a href="{{ route('register') }}" class="accent-link" style="font-size:.85rem;">Create an account</a>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        {{-- Heading --}}
-        <h1 class="card-heading text-center">
-            Welcome <span class="accent">back</span>
-        </h1>
-        <p class="auth-subtitle text-center">
-            Don't have an account?&nbsp;
-            <a href="{{ route('register') }}" class="accent-link">Sign up</a>
-        </p>
-
-        {{-- Form --}}
-        <form method="POST" action="{{ route('login') }}" class="mt-4">
-            @csrf
-
-            {{-- Registration success / pending approval message --}}
-            @if (session('status'))
-                <div class="reg-success-alert mb-4">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            {{-- Email --}}
-            <div class="custom-input-group">
-                <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                <input id="email" type="email" name="email"
-                       class="custom-input has-icon @error('email') is-invalid @enderror"
-                       value="{{ old('email') }}" placeholder="Email Address"
-                       required autocomplete="email" autofocus>
-                @error('email')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                @enderror
-            </div>
-
-            {{-- Password --}}
-            <div class="custom-input-group mt-3">
-                <span class="input-icon"><i class="bi bi-lock"></i></span>
-                <div class="password-wrapper">
-                    <input id="password" type="password" name="password"
-                           class="custom-input has-icon @error('password') is-invalid @enderror"
-                           placeholder="Password"
-                           required autocomplete="current-password">
-                    <i class="bi bi-eye hide-password-icon" id="passIcon"></i>
-                </div>
-                @error('password')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                @enderror
-            </div>
-
-            {{-- Role --}}
-            <div class="custom-input-group mt-3">
-                <span class="input-icon"><i class="bi bi-person-badge"></i></span>
-                <select id="role" name="role"
-                        class="custom-input has-icon @error('role') is-invalid @enderror" required>
-                    <option value="" disabled {{ old('role') ? '' : 'selected' }}>Login As…</option>
-                    <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>Student</option>
-                    <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>Teacher</option>
-                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
-                </select>
-                @error('role')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                @enderror
-            </div>
-
-            {{-- Remember / Forgot --}}
-            <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
-                <label class="d-flex align-items-center gap-2 small text-muted" style="cursor:pointer;">
-                    <input class="form-check-input m-0" type="checkbox" name="remember" id="remember"
-                           {{ old('remember') ? 'checked' : '' }}>
-                    Keep me signed in
-                </label>
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="accent-link" style="font-size:.82rem;">Forgot password?</a>
-                @endif
-            </div>
-
-            {{-- Submit --}}
-            <button type="submit" class="btn-submit w-100 mt-3">
-                <span>LOG IN</span>
-                <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-
-            <div class="text-center mt-4">
-                <span class="text-muted small">New here? </span>
-                <a href="{{ route('register') }}" class="accent-link" style="font-size:.85rem;">Create an account</a>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -143,52 +156,102 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        background: url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
+        background: linear-gradient(rgba(12, 65, 80, 0.55), rgba(12, 65, 80, 0.55)), url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
         background-size: cover !important;
     }
     nav.navbar { display: none !important; }
 
     .ez-topnav {
         position: fixed; top: 0; left: 0; right: 0;
-        height: 64px; 
-        background: rgba(255, 255, 255, 0.4) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        height: 54px; 
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 40px; z-index: 100;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
     }
     .ez-topnav-brand { display: flex; align-items: center; gap: 10px; }
-    .brand-mascot    { height: 44px; width: auto; object-fit: contain; }
-    .brand-wordmark  { height: 28px; width: auto; object-fit: contain; }
+    .brand-mascot    { height: 38px; width: auto; object-fit: contain; }
+    .brand-wordmark  { height: 24px; width: auto; object-fit: contain; }
     .ez-topnav-actions { display: flex; align-items: center; }
     .topnav-btn {
         background: rgba(255, 255, 255, 0.6) !important; 
         color: #1e293b; font-size: .85rem; font-weight: 600;
-        text-decoration: none; padding: 6px 18px; border-radius: 6px;
+        text-decoration: none; padding: 4px 16px; border-radius: 6px;
         border: 1px solid rgba(255, 255, 255, 0.5); transition: all .2s;
     }
     .topnav-btn:hover { background: rgba(255, 255, 255, 0.95) !important; color: #1e293b; }
 
     /* ── Page Layout ─────────────────────────────── */
     .page-wrap {
-        min-height: 100vh; padding-top: 64px;
+        min-height: 100vh; padding-top: 54px;
         display: flex; align-items: center; justify-content: center;
         padding-bottom: 40px;
+    }
+
+    /* ── Split Layout Container ─────────────────── */
+    .auth-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 1000px;
+        padding: 0 20px;
+        gap: 60px;
+    }
+    .auth-intro-side {
+        flex: 1.1;
+        color: #ffffff;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .auth-form-side {
+        flex: 0.9;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    .intro-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
+    .intro-title .accent-glow {
+        color: var(--accent);
+    }
+    .intro-text {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+    
+    @media (max-width: 991px) {
+        .auth-container {
+            flex-direction: column;
+            gap: 30px;
+            max-width: 480px;
+        }
+        .auth-intro-side {
+            display: none;
+        }
+        .auth-form-side {
+            flex: 1;
+        }
     }
 
     /* ── Auth Card ───────────────────────────────── */
     .auth-card {
         position: relative;
-        background: rgba(235, 244, 255, 0.78) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         width: 100%; max-width: 480px;
         padding: 36px 36px 32px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
         border-top: 5px solid var(--accent) !important;   /* ← blue top stripe */
-        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.08) !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 60px rgba(70, 120, 255, 0.15) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */
