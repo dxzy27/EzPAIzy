@@ -1,9 +1,9 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container py-5">
     <div class="row mb-4 align-items-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="d-flex align-items-center gap-3">
                 <a href="{{ route('student.flashcards.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Folders">
                     <i class="bi bi-arrow-left fs-5"></i>
@@ -19,15 +19,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 text-end d-none d-md-block">
-             <div class="input-group shadow-sm ms-auto" style="border-radius: 50px; overflow: hidden; width: 300px;">
-                <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" id="set-search" class="form-control border-0 ps-2" placeholder="Search sets...">
-             </div>
-        </div>
     </div>
 
-    <h5 class="text-muted fw-bold mt-2 mb-3">SETS IN {{ strtoupper($topic) }}</h5>
+    <div class="d-flex justify-content-between align-items-center mt-2 mb-3 flex-wrap gap-2">
+         <h5 class="text-muted fw-bold mb-0">SETS IN {{ strtoupper($topic) }}</h5>
+         <div class="input-group shadow-sm" style="border-radius: 50px; overflow: hidden; width: 260px; height: 36px;">
+            <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted" style="font-size: 0.85rem;"></i></span>
+            <input type="text" id="set-search" class="form-control border-0 ps-2" placeholder="Search sets..." style="font-size: 0.85rem;">
+         </div>
+    </div>
 
     @if($flashcardSets->count() > 0)
         <div class="row">
