@@ -3,63 +3,147 @@
 @section('content')
 <style>
     .content-card:hover {
-        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-        transform: translateY(-4px); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 40px rgba(var(--sidebar-active-rgb), 0.08) !important;
+        transform: translateY(-5px);
     }
     .content-card {
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        background: rgba(255, 255, 255, 0.70) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     /* ── Redesigned Filled Buttons ── */
     .btn-filled-primary {
-        background-color: #1F8A70 !important;
-        border-color: #1F8A70 !important;
+        background-color: var(--accent) !important;
+        border-color: var(--accent) !important;
         color: #ffffff !important;
         font-weight: 600 !important;
         font-size: 0.88rem !important;
         border-radius: 10px !important;
-        box-shadow: 0 4px 10px rgba(31, 138, 112, 0.18) !important;
+        box-shadow: 0 4px 15px rgba(var(--sidebar-active-rgb), 0.18) !important;
         padding: 10px 18px !important;
+        transition: all 0.25s ease !important;
     }
     .btn-filled-primary:hover {
-        background-color: #166d58 !important;
-        border-color: #166d58 !important;
+        background-color: var(--accent-dark) !important;
+        border-color: var(--accent-dark) !important;
         color: #ffffff !important;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(31, 138, 112, 0.25) !important;
+        transform: translateY(-1.5px);
+        box-shadow: 0 6px 20px rgba(var(--sidebar-active-rgb), 0.3) !important;
     }
     .btn-filled-secondary {
-        background-color: #f1f5f9 !important;
-        border-color: #f1f5f9 !important;
-        color: #334155 !important;
+        background-color: rgba(255, 255, 255, 0.5) !important;
+        border-color: rgba(255, 255, 255, 0.6) !important;
+        color: #1e293b !important;
         font-weight: 600 !important;
         font-size: 0.88rem !important;
         border-radius: 10px !important;
         padding: 10px 18px !important;
+        transition: all 0.2s !important;
+        backdrop-filter: blur(5px);
     }
     .btn-filled-secondary:hover {
-        background-color: #e2e8f0 !important;
-        border-color: #e2e8f0 !important;
-        color: #1e293b !important;
+        background-color: rgba(255, 255, 255, 0.85) !important;
+        border-color: rgba(255, 255, 255, 0.95) !important;
+        color: #0f172a !important;
         transform: translateY(-1px);
     }
 
-    /* ── Teal Table Headers ── */
-    .table-teal-header th {
-        background-color: #1F6E68 !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
+    /* ── Modern Table Styles ── */
+    .table-modern {
+        width: 100%;
+        margin-bottom: 0;
+        vertical-align: middle;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+    .table-modern th {
+        background: transparent !important;
+        color: #64748b !important;
+        font-weight: 700 !important;
         text-transform: uppercase;
-        font-size: 0.76rem !important;
-        letter-spacing: 0.5px;
-        border-bottom: none !important;
+        font-size: 0.72rem !important;
+        letter-spacing: 0.8px;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.04) !important;
+        padding: 12px 16px !important;
+    }
+    .table-modern tbody tr {
+        background: rgba(255, 255, 255, 0.35) !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+        border-radius: 12px;
+        transition: all 0.25s ease;
+    }
+    .table-modern tbody tr:hover {
+        background: rgba(255, 255, 255, 0.75) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.03);
+    }
+    .table-modern td {
         padding: 14px 16px !important;
+        border: none !important;
     }
-    .table-teal-header th:first-child {
+    .table-modern td:first-child {
         border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
     }
-    .table-teal-header th:last-child {
+    .table-modern td:last-child {
         border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    /* ── Badges ── */
+    .badge-modern {
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        padding: 4px 10px !important;
+        border-radius: 20px !important;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        text-transform: uppercase;
+    }
+    .badge-modern-success {
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        border: 1px solid #bbf7d0 !important;
+    }
+    .badge-modern-warning {
+        background-color: #fef3c7 !important;
+        color: #b45309 !important;
+        border: 1px solid #fde68a !important;
+    }
+    .badge-modern-danger {
+        background-color: #fee2e2 !important;
+        color: #b91c1c !important;
+        border: 1px solid #fecaca !important;
+    }
+    .badge-modern-neutral {
+        background-color: rgba(var(--sidebar-active-rgb), 0.08) !important;
+        color: var(--accent) !important;
+        border: 1px solid rgba(var(--sidebar-active-rgb), 0.15) !important;
+    }
+
+    /* ── Action Buttons ── */
+    .btn-action-view {
+        width: 32px; height: 32px;
+        border-radius: 8px;
+        border: 1px solid rgba(var(--sidebar-active-rgb), 0.2) !important;
+        background: transparent;
+        color: var(--accent) !important;
+        display: inline-flex; align-items: center; justify-content: center;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .btn-action-view:hover {
+        background: var(--accent) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 10px rgba(var(--sidebar-active-rgb), 0.25);
+        transform: translateY(-1px);
     }
 
     /* ── Carousel Responsive Controls ── */
@@ -68,20 +152,36 @@
         .carousel-control-next { right: 10px !important; }
     }
 
-    /* ── Teal Card Headers ── */
+    /* ── Custom Cards headers ── */
     .card-header-teal {
-        background-color: #1F6E68 !important;
-        color: #ffffff !important;
-        border-bottom: none !important;
-        padding: 16px 24px !important;
-        border-top-left-radius: 15px !important;
-        border-top-right-radius: 15px !important;
+        background: transparent !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        padding: 18px 24px !important;
+        border-top-left-radius: 20px !important;
+        border-top-right-radius: 20px !important;
     }
     .card-header-teal h5 {
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        font-size: 1.02rem !important;
-        margin: 0;
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+    }
+
+    /* ── Carousel Arrows ── */
+    .btn-carousel-ctrl {
+        width: 36px; height: 36px;
+        background: rgba(255, 255, 255, 0.5) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        color: var(--accent) !important;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.25s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    .btn-carousel-ctrl:hover {
+        background: var(--accent) !important;
+        color: #fff !important;
+        box-shadow: 0 6px 15px rgba(var(--sidebar-active-rgb), 0.2);
+        transform: scale(1.05);
     }
 
     /* ── Diagnosis Banner ── */
@@ -335,9 +435,9 @@
                 
                 <!-- Indicators/Dots (Centered at bottom) -->
                 <div class="carousel-indicators" style="bottom: 15px; margin-bottom: 0;">
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Materials" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="1" aria-label="Quizzes" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="2" aria-label="Completed" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Materials" style="background-color: var(--accent); width: 8px; height: 8px; border-radius: 50%; border: none; opacity: 0.5; transition: opacity .15s;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="1" aria-label="Quizzes" style="background-color: var(--accent); width: 8px; height: 8px; border-radius: 50%; border: none; opacity: 0.5; transition: opacity .15s;"></button>
+                    <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="2" aria-label="Completed" style="background-color: var(--accent); width: 8px; height: 8px; border-radius: 50%; border: none; opacity: 0.5; transition: opacity .15s;"></button>
                 </div>
 
                 <!-- Carousel Items -->
@@ -345,7 +445,7 @@
                     @foreach($orderedCards as $index => $card)
                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                         <div class="card content-card position-relative overflow-hidden"
-                             style="{{ $card['isPrimary'] && $cfg ? 'border: 2px solid '.$cfg['accent'].' !important;' : '' }}">
+                             style="{{ $card['isPrimary'] && $cfg ? 'border-color: '.$cfg['accent'].' !important;' : '' }}">
                             {{-- Coloured top stripe for the primary card --}}
                             @if($card['isPrimary'] && $cfg)
                             <div class="primary-card-stripe" style="background:{{ $cfg['accent'] }};"></div>
@@ -398,15 +498,15 @@
                     @endforeach
                 </div>
 
-                <!-- Controls/Arrows (Teal corners style matching the mockup) -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev"
-                        style="left: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #1F6E68; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(31,110,104,0.35);">
-                    <i class="bi bi-chevron-left text-white" style="font-size: 1rem; font-weight: bold;"></i>
+                <!-- Controls/Arrows -->
+                <button class="carousel-control-prev btn-carousel-ctrl" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev"
+                        style="left: 20px; bottom: 15px; top: auto; transform: none; border: none; opacity: 1;">
+                    <i class="bi bi-chevron-left" style="font-size: 1rem; font-weight: bold;"></i>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#statsCarousel" data-bs-slide="next"
-                        style="right: 20px; bottom: 15px; top: auto; transform: none; width: 34px; height: 34px; background: #1F6E68; border-radius: 6px; border: none; opacity: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(31,110,104,0.35);">
-                    <i class="bi bi-chevron-right text-white" style="font-size: 1rem; font-weight: bold;"></i>
+                <button class="carousel-control-next btn-carousel-ctrl" type="button" data-bs-target="#statsCarousel" data-bs-slide="next"
+                        style="right: 20px; bottom: 15px; top: auto; transform: none; border: none; opacity: 1;">
+                    <i class="bi bi-chevron-right" style="font-size: 1rem; font-weight: bold;"></i>
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
@@ -425,7 +525,7 @@
                 <div class="card-body">
                     @if($progress->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table-modern">
                             <thead>
                                 <tr>
                                     <th>Quiz</th>
@@ -447,9 +547,9 @@
                                     </td>
                                     <td>
                                         @if((($p->difficulty === 'hard' || $p->difficulty === 'medium')) && $p->status === 'pending')
-                                            <span class="badge text-white" style="background-color: #f59e0b;">Pending</span>
+                                            <span class="badge-modern badge-modern-warning">Pending</span>
                                         @else
-                                            <span class="badge bg-{{ $p->score >= 70 ? 'success' : ($p->score >= 40 ? 'warning' : 'danger') }}">
+                                            <span class="badge-modern badge-modern-{{ $p->score >= 70 ? 'success' : ($p->score >= 40 ? 'warning' : 'danger') }}">
                                                 {{ $p->score }}%
                                             </span>
                                         @endif
@@ -457,7 +557,7 @@
                                     <td>{{ $p->created_at->format('M d') }}</td>
                                     <td>
                                         <a href="{{ route('student.progress') }}"
-                                           class="btn btn-sm btn-outline-primary">
+                                           class="btn-action-view">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
@@ -492,26 +592,26 @@
                         @php $readWriteList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp
                         @if($readWriteList->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table-modern">
                                 <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($readWriteList as $item)
                                     <tr>
-                                        <td>{{ Str::limit($item->title, 24) }}</td>
+                                        <td class="fw-semibold">{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
+                                            <span class="badge-modern badge-modern-neutral">Flashcard</span>
                                             @else
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
+                                            <span class="badge-modern badge-modern-neutral">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn-action-view" title="Practice">
                                                 <i class="bi bi-card-text"></i>
                                             </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn-action-view" title="View">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @endif
@@ -540,26 +640,26 @@
                                 $topicLabel = $item->topic ?? 'General';
                             @endphp
                             <div class="d-flex align-items-center gap-3 p-3 rounded-3"
-                                 style="background:#f0f9ff;border:1px solid #bae6fd;transition:background .15s;"
-                                 onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f9ff'">
+                                 style="background:rgba(255,255,255,0.4);border:1px solid rgba(var(--sidebar-active-rgb),0.15);transition:all .25s;backdrop-filter:blur(5px);"
+                                 onmouseover="this.style.background='rgba(255,255,255,0.85)';this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.4)';this.style.transform='none';">
                                 {{-- Type badge --}}
                                 <div style="flex-shrink:0;">
                                     @if($isFlash)
-                                    <span class="badge" style="background:#dcfce7;color:#166534;font-size:.72rem;">🃏 Flashcard</span>
+                                    <span class="badge-modern badge-modern-success">🃏 Flashcard</span>
                                     @else
-                                    <span class="badge" style="background:#fff3cd;color:#856404;font-size:.72rem;">📝 Quiz</span>
+                                    <span class="badge-modern badge-modern-warning">📝 Quiz</span>
                                     @endif
                                 </div>
                                 {{-- Title --}}
                                 <div style="flex:1;min-width:0;">
-                                    <div class="fw-semibold text-truncate" style="font-size:.88rem;color:#0f172a;">{{ $item->title }}</div>
+                                    <div class="fw-bold text-truncate" style="font-size:.88rem;color:#0f172a;">{{ $item->title }}</div>
                                     <div style="font-size:.75rem;color:#64748b;">{{ $topicLabel }}</div>
                                 </div>
                                 {{-- Open button --}}
                                 <a href="{{ $itemUrl }}"
-                                   class="btn btn-sm"
-                                   style="background:#f0f9ff;border:1px solid #7dd3fc;color:#0c4a6e;font-size:.78rem;flex-shrink:0;">
-                                    {{ $isFlash ? 'Practice' : 'Take Quiz' }}
+                                   class="btn-action-view"
+                                   title="{{ $isFlash ? 'Practice' : 'Take Quiz' }}">
+                                    <i class="bi {{ $isFlash ? 'bi-card-text' : 'bi-clipboard-check' }}"></i>
                                 </a>
                             </div>
                             @endforeach
@@ -573,26 +673,26 @@
                         @php $defaultList = $recentContents->concat($recentFlashcards)->sortByDesc('created_at')->take(5); @endphp
                         @if($defaultList->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table-modern">
                                 <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($defaultList as $item)
                                     <tr>
-                                        <td>{{ Str::limit($item->title, 24) }}</td>
+                                        <td class="fw-semibold">{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
+                                            <span class="badge-modern badge-modern-neutral">Flashcard</span>
                                             @else
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
+                                            <span class="badge-modern badge-modern-neutral">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn-action-view" title="Practice">
                                                 <i class="bi bi-card-text"></i>
                                             </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn-action-view" title="View">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @endif

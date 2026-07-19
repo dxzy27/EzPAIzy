@@ -83,12 +83,18 @@
                     $pageBg = '#f0fdfb';
                 }
             }
+            list($sr, $sg, $sb) = sscanf($sidebarBg, "#%02x%02x%02x");
+            $sidebarRgb = "$sr, $sg, $sb";
+            list($ar, $ag, $ab) = sscanf($sidebarActive, "#%02x%02x%02x");
+            $sidebarActiveRgb = "$ar, $ag, $ab";
         @endphp
 
         :root {
             --sidebar-bg:        {{ $sidebarBg }};
+            --sidebar-rgb:       {{ $sidebarRgb }};
             --sidebar-hover:     {{ $sidebarHover }};
             --sidebar-active:    {{ $sidebarActive }};
+            --sidebar-active-rgb:{{ $sidebarActiveRgb }};
             --sidebar-active-bg: {{ $sidebarActiveBg }};
             --accent:            {{ $accent }};
             --accent-soft:       {{ $accentSoft }};
@@ -120,14 +126,17 @@
             top: 0; left: 0;
             height: 100vh;
             width: var(--sidebar-w);
-            background: var(--sidebar-bg);
+            background: linear-gradient(135deg, rgba(var(--sidebar-rgb), 0.88) 0%, rgba(var(--sidebar-rgb), 0.76) 100%) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
             z-index: 1050;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transition: width 0.3s cubic-bezier(0.4,0,0.2,1),
                         transform 0.3s cubic-bezier(0.4,0,0.2,1);
-            box-shadow: 4px 0 20px rgba(0,0,0,.14);
+            box-shadow: 6px 0 35px rgba(0,0,0,.08);
         }
 
         /* Collapsed state */
@@ -281,7 +290,7 @@
             font-size: .875rem;
             font-weight: 500;
             text-decoration: none;
-            transition: background .18s, color .18s;
+            transition: background .25s, color .25s, transform .25s;
             margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
@@ -292,6 +301,7 @@
             width: 20px;
             text-align: center;
             flex-shrink: 0;
+            transition: transform .25s;
         }
         .nav-link .nav-label {
             transition: opacity .2s;
@@ -302,15 +312,22 @@
         .Sidebar.collapsed .nav-chevron { display: none; }
 
         .nav-link:hover:not(.active) {
-            background: var(--sidebar-hover);
+            background: rgba(255, 255, 255, 0.08);
             color: #fff !important;
         }
+        .Sidebar:not(.collapsed) .nav-link:hover:not(.active) {
+            transform: translateX(4px);
+        }
+        .nav-link:hover .nav-icon {
+            transform: scale(1.1);
+        }
         .nav-link.active {
-            background: var(--sidebar-active-bg) !important;
-            color: var(--sidebar-active) !important;
+            background: linear-gradient(135deg, var(--sidebar-active) 0%, rgba(var(--sidebar-active-rgb), 0.6) 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
             font-weight: 600;
         }
-        .nav-link.active .nav-icon { color: var(--sidebar-active); }
+        .nav-link.active .nav-icon { color: #ffffff !important; }
 
         /* Tooltip on collapsed */
         .Sidebar.collapsed .nav-link::after {
@@ -458,18 +475,17 @@
             .main-content { margin-left: 0; }
         }
 
-        /* ── Topbar ──────────────────────────────────── */
         .topbar {
             height: 68px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 28px;
-            background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.07);
+            background: rgba(255, 255, 255, 0.40) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
             position: sticky;
             top: 0;
             z-index: 999;
@@ -521,15 +537,16 @@
         /* ── Global Cards ─────────────────────────────── */
         .card {
             border-radius: 16px !important;
-            border: 1px solid rgba(255, 255, 255, 0.6) !important;
-            background: rgba(255, 255, 255, 0.90) !important;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.09), 0 2px 4px rgba(0, 0, 0, 0.03) !important;
-            transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.45) !important;
+            background: rgba(255, 255, 255, 0.70) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
         .card:hover {
-            box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.06), 0 3px 10px rgba(0, 0, 0, 0.02) !important;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
         }
         .card-header {
             background: transparent !important;
