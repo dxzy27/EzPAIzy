@@ -36,7 +36,7 @@
         color: #0f172a !important; /* Dark slate text */
         display: flex;
         flex-direction: column;
-        padding: 2rem;
+        padding: 1.5rem;
         font-size: 1.5rem;
         overflow-y: auto;
     }
@@ -472,28 +472,42 @@
             let backFaceHtml = '';
             if (mode === 'read') {
                 backFaceHtml = `
-                    <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                        <div class="d-flex align-items-center gap-1">
-                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
-                            ${getStatusBadgeHtml(currentCard.status)}
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            @if(auth()->user()?->learning_style === 'auditory')
-                            <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
-                                <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
-                            </button>
-                            @endif
-                            <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
-                        </div>
-                    </div>
-                    <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
-                        ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
-                        <div class="flashcard-content">
-                            <div class="${alignClass}">
-                                <div class="fs-3 text-dark fw-bold mt-3" style="line-height: 1.4;">${formattedDef}</div>
+                    <div class="d-flex flex-column h-100 w-100 text-center" style="position: relative;">
+                        <!-- Card Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(245, 158, 11, 0.15); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3);">BACK</span>
+                                ${getStatusBadgeHtml(currentCard.status)}
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                @if(auth()->user()?->learning_style === 'auditory')
+                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
+                                </button>
+                                @endif
+                                <span class="text-muted fw-bold" style="font-size: 0.85rem;">${currentIndex + 1}/${cards.length}</span>
                             </div>
                         </div>
-                        `}
+                        
+                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
+                        
+                        <!-- Card Content -->
+                        <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
+                            ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
+                            <div class="flashcard-content w-100">
+                                <div class="${alignClass}">
+                                    <div class="fs-4 text-dark fw-bold" style="line-height: 1.45;">${formattedDef}</div>
+                                </div>
+                            </div>
+                            `}
+                        </div>
+                        
+                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
+                        
+                        <!-- Card Footer -->
+                        <div class="d-flex justify-content-center align-items-center pt-1" onclick="flipCard(event)" style="cursor:pointer;">
+                            <small class="text-muted fw-bold" style="font-size: 0.8rem;"><i class="bi bi-arrow-left-right me-1"></i> Tap to flip back</small>
+                        </div>
                     </div>
                 `;
             } else {
@@ -507,50 +521,60 @@
                 let initialAnswerWords = getPlaceholderHtml(currentItems, activeIdx, typedAnswer);
                 
                 backFaceHtml = `
-                    <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
-                        <div class="d-flex align-items-center gap-1">
-                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold" onclick="flipCard(event)" style="cursor:pointer;">BACK</span>
-                            ${getStatusBadgeHtml(currentCard.status)}
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <button id="show-answer-btn" type="button" class="btn btn-outline-secondary text-muted border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
-                                Show Answer
-                            </button>
-                            @if(auth()->user()?->learning_style === 'auditory')
-                            <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle ${allDone ? '' : 'd-none'}" style="width:30px;height:30px;padding:0;display:${allDone ? 'flex' : 'none'};align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
-                                <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
-                            </button>
-                            @endif
-                            <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
-                        </div>
-                    </div>
-                    <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
-                        <div class="flashcard-content">
-                            <div class="w-100">
-                                <div id="placeholder-text" class="mt-3">${initialAnswerWords}</div>
+                    <div class="d-flex flex-column h-100 w-100 text-center" style="position: relative;">
+                        <!-- Card Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(245, 158, 11, 0.15); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3);">BACK</span>
+                                ${getStatusBadgeHtml(currentCard.status)}
                             </div>
-                            
-                            <input type="text" id="answer-input" class="form-control text-center mt-4 mx-auto ${allDone ? 'd-none' : ''}" 
-                                   style="max-width: 80%; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1;" 
+                            <div class="d-flex align-items-center gap-2">
+                                <button id="show-answer-btn" type="button" class="btn btn-outline-secondary text-muted border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
+                                    Show Answer
+                                </button>
+                                @if(auth()->user()?->learning_style === 'auditory')
+                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle ${allDone ? '' : 'd-none'}" style="width:30px;height:30px;padding:0;display:${allDone ? 'flex' : 'none'};align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                    <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
+                                </button>
+                                @endif
+                                <span class="text-muted fw-bold" style="font-size: 0.85rem;">${currentIndex + 1}/${cards.length}</span>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
+                        
+                        <!-- Card Content -->
+                        <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" style="overflow-y: auto;">
+                            <div class="flashcard-content w-100">
+                                <div class="w-100">
+                                    <div id="placeholder-text">${initialAnswerWords}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
+                        
+                        <!-- Card Footer -->
+                        <div class="d-flex justify-content-center align-items-center pt-1 w-100">
+                            <input type="text" id="answer-input" class="form-control text-center ${allDone ? 'd-none' : ''}" 
+                                   style="max-width: 80%; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; height: 36px; font-size: 0.9rem;" 
                                    autocomplete="off" autocorrect="off" spellcheck="false" 
                                    value="${typedAnswer.replace(/"/g, '&quot;')}"
                                    placeholder="Type the exact answer..." oninput="checkTyping(this.value)" onclick="event.stopPropagation()">
+                            <small class="text-muted fw-bold ${allDone ? '' : 'd-none'}" onclick="flipCard(event)" style="cursor:pointer; font-size: 0.8rem;"><i class="bi bi-arrow-left-right me-1"></i> Tap to flip back</small>
                         </div>
                     </div>
                 `;
             }
 
             app.innerHTML = `
-                <div class="text-center mb-3">
-                    <span class="badge bg-primary">Reviewing Card ${currentIndex + 1} of ${cards.length}</span>
-                </div>
-                
                 <div class="flashcard-container">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
-                        <div class="flashcard-face flashcard-front">
-                            <div class="d-flex justify-content-between position-absolute w-100" style="top: 1rem; left: 0; padding: 0 1.5rem; z-index: 10;">
+                        <div class="flashcard-face flashcard-front d-flex flex-column h-100 p-4">
+                            <!-- Card Header -->
+                            <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div class="d-flex align-items-center gap-1">
-                                    <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(92, 79, 74, 0.15); color: #5C4F4A; border: 1px solid #5C4F4A;">FRONT</span>
+                                    <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(92, 79, 74, 0.15); color: #5C4F4A; border: 1px solid rgba(92, 79, 74, 0.3);">FRONT</span>
                                     ${getStatusBadgeHtml(currentCard.status)}
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
@@ -559,18 +583,29 @@
                                         <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
-                                    <small class="text-muted" style="font-size: 0.8rem; cursor:pointer;" onclick="flipCard(event)"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                    <span class="text-muted fw-bold" style="font-size: 0.85rem;">${currentIndex + 1}/${cards.length}</span>
                                 </div>
                             </div>
-                            <div class="flashcard-content-wrapper mt-3" onclick="flipCard(event)" style="cursor:pointer;">
+                            
+                            <hr class="my-2" style="opacity: 0.12; border-color: #000;">
+                            
+                            <!-- Card Content -->
+                            <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
                                 ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
-                                <div class="flashcard-content">
-                                    <div class="fs-3 text-dark fw-bold mt-3" style="line-height: 1.4;">${currentCard.term}</div>
+                                <div class="flashcard-content w-100">
+                                    <div class="fs-3 text-dark fw-bold" style="line-height: 1.4;">${currentCard.term}</div>
                                 </div>
                                 `}
                             </div>
+                            
+                            <hr class="my-2" style="opacity: 0.12; border-color: #000;">
+                            
+                            <!-- Card Footer -->
+                            <div class="d-flex justify-content-center align-items-center pt-1" onclick="flipCard(event)" style="cursor:pointer;">
+                                <small class="text-muted fw-bold" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb me-1"></i> Tap to reveal answer</small>
+                            </div>
                         </div>
-                        <div class="flashcard-face flashcard-back">
+                        <div class="flashcard-face flashcard-back d-flex flex-column h-100 p-4">
                             ${backFaceHtml}
                         </div>
                     </div>
