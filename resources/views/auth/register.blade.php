@@ -371,15 +371,13 @@
 
     /* ── Auth Card ───────────────────────────────── */
     .auth-card {
-        background: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: #FAFBFC !important;
         width: 100%; max-width: 540px;
         padding: 36px 36px 32px;
-        border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        border-radius: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
         border-top: 5px solid var(--accent) !important;   /* ← teal top stripe */
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.22), 0 0 60px rgba(45, 212, 191, 0.15) !important;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18), 0 0 60px rgba(45, 212, 191, 0.15) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */
