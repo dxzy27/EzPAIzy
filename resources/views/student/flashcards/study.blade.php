@@ -101,38 +101,62 @@
         pointer-events: auto !important;
     }
 
-    .btn-grade-still {
-        background-color: transparent !important;
-        border: 1px solid #fca5a5 !important;
-        color: #ef4444 !important;
-        font-weight: 600;
-        border-radius: 50px;
+    .btn-grade-circle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 2px solid #e2e8f0;
+        background-color: #ffffff;
         transition: all 0.2s ease-in-out;
-        padding: 0.6rem 1.8rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
     
-    .btn-grade-still:hover:not(:disabled) {
-        background-color: #fee2e2 !important;
-        border-color: #f87171 !important;
-        color: #dc2626 !important;
+    .btn-grade-circle.still {
+        color: #ef4444;
+    }
+    
+    .btn-grade-circle.know {
+        color: #16a34a;
+    }
+    
+    .btn-grade-circle:hover:not(:disabled) {
         transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     }
     
-    .btn-grade-know {
-        background-color: #16a34a !important;
-        border: 1px solid #16a34a !important;
-        color: #ffffff !important;
-        font-weight: 600;
-        border-radius: 50px;
-        transition: all 0.2s ease-in-out;
-        padding: 0.6rem 1.8rem;
+    .btn-grade-circle.still:hover:not(:disabled) {
+        border-color: #fca5a5;
+        background-color: #fee2e2;
     }
     
-    .btn-grade-know:hover:not(:disabled) {
-        background-color: #15803d !important;
-        border-color: #15803d !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    .btn-grade-circle.know:hover:not(:disabled) {
+        border-color: #86efac;
+        background-color: #dcfce7;
+    }
+
+    .btn-action-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: transparent;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        color: #64748b;
+    }
+    .btn-action-icon:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+    .btn-action-icon.active {
+        color: #3b82f6;
+        background: #eff6ff;
     }
 
     .controls {
@@ -217,13 +241,33 @@
 
 @push('scripts')
 <script>
+    let originalCards = [];
     let cards = [];
     let currentIndex = 0;
     let peekTimeout = null;
+    let isShuffled = false;
     
     document.addEventListener('DOMContentLoaded', function() {
-        cards = {!! json_encode($dueCards) !!};
+        originalCards = {!! json_encode($dueCards) !!};
+        cards = [...originalCards];
         const app = document.getElementById('flashcard-app');
+        
+        window.toggleShuffle = function() {
+            isShuffled = !isShuffled;
+            if (isShuffled) {
+                for (let i = cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cards[i], cards[j]] = [cards[j], cards[i]];
+                }
+            } else {
+                cards = [...originalCards];
+            }
+            currentIndex = 0;
+            isFlipped = false;
+            typedAnswer = '';
+            render();
+            renderControls();
+        };
         
         let mode = 'read';
         
@@ -392,13 +436,20 @@
                     controlsHtml = `
                         <div id="grading-controls" class="mt-3 text-center">
                             <p class="fw-bold mb-3" id="grading-message">${initialMsg}</p>
-                            <div class="d-flex justify-content-center gap-3">
-                                <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                    ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
-                                </button>
-                                <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
-                                    <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
-                                </button>
+                            <div class="d-flex align-items-center w-100" style="max-width: 600px; margin: 0 auto;">
+                                <div style="flex: 1;"></div>
+                                <div class="d-flex justify-content-center gap-4">
+                                    <button class="btn btn-grade-circle still" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''} title="Still learning">
+                                        <i class="bi bi-x-lg fs-3"></i>
+                                    </button>
+                                    <button class="btn btn-grade-circle know" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''} title="Know">
+                                        <i class="bi bi-check-lg fs-3"></i>
+                                    </button>
+                                </div>
+                                <div class="d-flex justify-content-end gap-2" style="flex: 1;">
+                                    ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn-action-icon" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></button>` : `<div style="width: 44px;"></div>`}
+                                    <button onclick="toggleShuffle()" class="btn-action-icon ${isShuffled ? 'active' : ''}" title="Shuffle"><i class="bi bi-shuffle fs-5"></i></button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -407,13 +458,20 @@
                 controlsHtml = `
                     <div id="grading-controls" class="mt-3 text-center">
                         <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
-                        <div class="d-flex justify-content-center gap-3">
-                            <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
-                            </button>
-                            <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
-                                <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
-                            </button>
+                        <div class="d-flex align-items-center w-100" style="max-width: 600px; margin: 0 auto;">
+                            <div style="flex: 1;"></div>
+                            <div class="d-flex justify-content-center gap-4">
+                                <button class="btn btn-grade-circle still" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''} title="Still learning">
+                                    <i class="bi bi-x-lg fs-3"></i>
+                                </button>
+                                <button class="btn btn-grade-circle know" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''} title="Know">
+                                    <i class="bi bi-check-lg fs-3"></i>
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2" style="flex: 1;">
+                                ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn-action-icon" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></button>` : `<div style="width: 44px;"></div>`}
+                                <button onclick="toggleShuffle()" class="btn-action-icon ${isShuffled ? 'active' : ''}" title="Shuffle"><i class="bi bi-shuffle fs-5"></i></button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -563,7 +621,6 @@
 
                     <!-- Right: Progress -->
                     <div class="d-flex align-items-center justify-content-end gap-3 flex-grow-1" style="flex-basis: 0;">
-                        ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn btn-sm border d-flex align-items-center text-muted fw-bold shadow-sm" style="font-size: 0.75rem; border-radius: 6px; background-color: #ffffff;"><i class="bi bi-arrow-counterclockwise me-1" style="font-size: 0.85rem;"></i> Undo</button>` : ''}
                         <div class="text-muted fw-bold text-nowrap" style="font-size: 0.85rem;">
                             ${currentIndex + 1} / ${cards.length}
                         </div>
