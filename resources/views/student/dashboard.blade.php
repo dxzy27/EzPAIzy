@@ -306,6 +306,23 @@
 
 <div class="container-fluid px-4" style="max-width: 1040px; margin: 0 auto;">
 
+    {{-- ── Welcoming Greeting Row ── --}}
+    <div class="row justify-content-center mt-4 mb-4">
+        <div class="col-md-9 col-lg-8">
+            <div class="d-flex align-items-start gap-3">
+                <span style="font-size: 2.2rem; line-height: 1.2;">👋</span>
+                <div>
+                    <h3 class="fw-extrabold text-dark mb-1" style="letter-spacing: -0.3px; font-size: 1.6rem; font-weight: 800;">
+                        Assalamualaikum, {{ explode(' ', trim(auth()->user()->name))[0] }}
+                    </h3>
+                    <p class="text-muted mb-0" style="font-size: 0.95rem; font-weight: 500;">
+                        Ready to continue your learning today?
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ── Diagnosis Modal (undiagnosed only) ── --}}
     @if(!$style && !session('diag_banner_dismissed'))
     <div class="modal fade" id="diagnosisModal" tabindex="-1" aria-labelledby="diagnosisModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
