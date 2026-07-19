@@ -565,6 +565,64 @@
             </div>
         </div>
     </div>
+
+    {{-- ── Additional Cards: Today's Progress & Continue Learning ── --}}
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-9 col-lg-8">
+            <div class="row">
+                <!-- Today's Progress Card -->
+                <div class="col-md-6 mb-3">
+                    <div class="card p-4 h-100 d-flex flex-column justify-content-between" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-calendar-check" style="font-size: 1.2rem; color: #10b981;"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">Today's Progress</h5>
+                            </div>
+                            
+                            <p class="text-muted small mb-4">Keep your daily streak active by completing learning content and quizzes.</p>
+                        </div>
+                        
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold text-dark" style="font-size: 0.9rem;">Daily Target</span>
+                                <span class="fw-extrabold text-success" style="font-size: 1rem;">72%</span>
+                            </div>
+                            <div class="progress" style="height: 10px; border-radius: 99px; background: rgba(0,0,0,0.06);">
+                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 72%; border-radius: 99px;" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Continue Learning Card -->
+                <div class="col-md-6 mb-3">
+                    <div class="card p-4 h-100 d-flex flex-column justify-content-between" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(66, 85, 255, 0.15); display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-book" style="font-size: 1.2rem; color: #4255ff;"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">Continue Learning</h5>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">📖 Bab 6: Adab dan Akhlak Islamiah</h6>
+                                <span class="text-muted small">Personalized materials recommended for your style</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <a href="{{ route('student.contents.index') }}" class="quizlet-btn w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.88rem; text-decoration: none !important;">
+                                <span>Continue</span> <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>{{-- /container --}}
 @endsection
 
