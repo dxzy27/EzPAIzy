@@ -4,7 +4,7 @@
 <style>
     .flashcard-container {
         perspective: 1000px;
-        height: 500px;
+        height: 400px;
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
