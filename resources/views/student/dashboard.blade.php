@@ -101,31 +101,36 @@
 
     /* ── Carousel Responsive Controls ── */
     .custom-carousel-control {
-        width: 48px !important;
-        height: 48px !important;
+        width: 36px !important;
+        height: 36px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
-        background: rgba(31, 110, 104, 0.18) !important;
-        border-radius: 50% !important;
+        background: transparent !important;
         border: none !important;
-        opacity: 1 !important;
+        opacity: 0.85 !important;
         transition: all 0.25s ease !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
     }
-    .custom-carousel-control span {
-        transform: scale(1.25);
+    .custom-carousel-control i {
+        color: #1e293b !important;
+        font-size: 1.6rem !important;
+        font-weight: 800 !important;
+        transition: transform 0.22s ease !important;
     }
     .custom-carousel-control:hover {
-        background: rgba(31, 110, 104, 0.35) !important;
-        transform: translateY(-50%) scale(1.08) !important;
+        background: transparent !important;
+        opacity: 1 !important;
+    }
+    .custom-carousel-control:hover i {
+        transform: scale(1.2) !important;
     }
     .carousel-control-prev.custom-carousel-control {
-        left: -60px !important;
+        left: -50px !important;
     }
     .carousel-control-next.custom-carousel-control {
-        right: -60px !important;
+        right: -50px !important;
     }
     @media (max-width: 991px) {
         .carousel-control-prev.custom-carousel-control {
@@ -138,11 +143,13 @@
     @media (max-width: 767px) {
         .carousel-control-prev.custom-carousel-control {
             left: 10px !important;
-            background: rgba(31, 110, 104, 0.35) !important;
+            background: rgba(255, 255, 255, 0.4) !important;
+            border-radius: 50% !important;
         }
         .carousel-control-next.custom-carousel-control {
             right: 10px !important;
-            background: rgba(31, 110, 104, 0.35) !important;
+            background: rgba(255, 255, 255, 0.4) !important;
+            border-radius: 50% !important;
         }
     }
 
@@ -474,11 +481,11 @@
 
                 <!-- Controls/Arrows -->
                 <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(34%) sepia(25%) saturate(1048%) hue-rotate(124deg) brightness(91%) contrast(85%);"></span>
+                    <i class="bi bi-chevron-left"></i>
                     <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#statsCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(34%) sepia(25%) saturate(1048%) hue-rotate(124deg) brightness(91%) contrast(85%);"></span>
+                    <i class="bi bi-chevron-right"></i>
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
