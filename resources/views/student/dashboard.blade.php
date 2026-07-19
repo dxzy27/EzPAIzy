@@ -537,23 +537,55 @@
             <div class="row">
                 @forelse($recents as $r)
                     <div class="col-md-6 mb-3">
-                        <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item flex-row text-decoration-none" style="background: transparent !important; border: none !important; box-shadow: none !important;">
-                            {{-- Icon Container --}}
-                            <div class="recent-icon-box" style="flex-shrink:0; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: {{ $r->type === 'flashcard' ? 'rgba(66, 85, 255, 0.32)' : ($r->type === 'quiz' ? 'rgba(245, 158, 11, 0.32)' : 'rgba(16, 185, 129, 0.32)') }};">
-                                @if($r->type === 'flashcard')
-                                    <i class="bi bi-card-text" style="font-size: 1.3rem; color: #4255ff;"></i>
-                                @elseif($r->type === 'quiz')
-                                    <i class="bi bi-pencil-square" style="font-size: 1.3rem; color: #f59e0b;"></i>
-                                @else
-                                    <i class="bi bi-file-earmark-text" style="font-size: 1.3rem; color: #10b981;"></i>
-                                @endif
+                        <div class="card p-3 h-100 d-flex flex-column justify-content-between" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+                            <div>
+                                {{-- Card header status line --}}
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="fw-bold d-inline-flex align-items-center gap-1.5" style="color: {{ $r->type === 'flashcard' ? '#4255ff' : ($r->type === 'quiz' ? '#f59e0b' : '#10b981') }}; font-size: 0.8rem; letter-spacing: -0.1px;">
+                                        @if($r->type === 'flashcard')
+                                            🃏 Study Flashcard
+                                        @elseif($r->type === 'quiz')
+                                            📝 Practice Quiz
+                                        @else
+                                            📚 Learn Material
+                                        @endif
+                                    </span>
+                                    <i class="bi bi-clock-history text-muted" style="font-size: 0.82rem; opacity: 0.65;"></i>
+                                </div>
+                                
+                                {{-- Title --}}
+                                <h6 class="fw-bold text-dark mb-1" style="font-size: 0.96rem; letter-spacing: -0.2px;">{{ $r->title }}</h6>
+                                
+                                {{-- Subtitle --}}
+                                <span class="text-muted d-block mb-3" style="font-size: 0.78rem;">{{ $r->subtitle }}</span>
                             </div>
-                            {{-- Text Info --}}
-                            <div style="flex: 1; min-width: 0;">
-                                <h6 class="fw-bold mb-0 text-dark text-truncate" style="font-size: 0.92rem; letter-spacing: -0.1px;">{{ $r->title }}</h6>
-                                <span class="text-muted" style="font-size: 0.78rem;">{{ $r->subtitle }}</span>
+                            
+                            {{-- Action Footer --}}
+                            <div class="d-flex align-items-center justify-content-between pt-2" style="border-top: 1px solid rgba(0, 0, 0, 0.04);">
+                                <span class="fw-bold text-muted small" style="font-size: 0.76rem; letter-spacing: 0.2px; text-transform: uppercase;">
+                                    @if($r->type === 'flashcard')
+                                        100% active
+                                    @elseif($r->type === 'quiz')
+                                        65% target
+                                    @else
+                                        in progress
+                                    @endif
+                                </span>
+                                
+                                <a href="{{ $r->url }}" class="text-decoration-none fw-bold d-inline-flex align-items-center gap-1" style="color: {{ $r->type === 'flashcard' ? '#4255ff' : ($r->type === 'quiz' ? '#f59e0b' : '#10b981') }}; font-size: 0.84rem; transition: transform 0.2s;">
+                                    <span>
+                                        @if($r->type === 'flashcard')
+                                            Study
+                                        @elseif($r->type === 'quiz')
+                                            Continue
+                                        @else
+                                            Read
+                                        @endif
+                                    </span>
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 @empty
                     <div class="col-12">
