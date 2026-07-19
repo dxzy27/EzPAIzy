@@ -479,8 +479,6 @@
                             </div>
                         </div>
                         
-                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
-                        
                         <!-- Card Content -->
                         <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
                             ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
@@ -491,8 +489,6 @@
                             </div>
                             `}
                         </div>
-                        
-                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
                         
                         <!-- Card Footer -->
                         <div class="d-flex justify-content-center align-items-center pt-1" onclick="flipCard(event)" style="cursor:pointer;">
@@ -530,8 +526,6 @@
                             </div>
                         </div>
                         
-                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
-                        
                         <!-- Card Content -->
                         <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" style="overflow-y: auto;">
                             <div class="flashcard-content w-100">
@@ -540,8 +534,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <hr class="my-2" style="opacity: 0.12; border-color: #000;">
                         
                         <!-- Card Footer -->
                         <div class="d-flex justify-content-center align-items-center pt-1 w-100">
@@ -590,8 +582,6 @@
                                 </div>
                             </div>
                             
-                            <hr class="my-2" style="opacity: 0.12; border-color: #000;">
-                            
                             <!-- Card Content -->
                             <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
                                 ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
@@ -600,8 +590,6 @@
                                 </div>
                                 `}
                             </div>
-                            
-                            <hr class="my-2" style="opacity: 0.12; border-color: #000;">
                             
                             <!-- Card Footer -->
                             <div class="d-flex justify-content-center align-items-center pt-1" onclick="flipCard(event)" style="cursor:pointer;">
