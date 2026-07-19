@@ -101,9 +101,9 @@
     }
 
     .btn-grade-still {
-        background-color: rgba(239, 68, 68, 0.15) !important;
-        border: 1px solid rgba(239, 68, 68, 0.4) !important;
-        color: #f87171 !important;
+        background-color: #dc2626 !important;
+        border: 1px solid #dc2626 !important;
+        color: #ffffff !important;
         font-weight: 600;
         border-radius: 50px;
         transition: all 0.2s ease-in-out;
@@ -111,16 +111,16 @@
     }
     
     .btn-grade-still:hover:not(:disabled) {
-        background-color: rgba(239, 68, 68, 0.25) !important;
-        border-color: rgba(239, 68, 68, 0.6) !important;
+        background-color: #b91c1c !important;
+        border-color: #b91c1c !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
     }
     
     .btn-grade-know {
-        background-color: rgba(16, 185, 129, 0.15) !important;
-        border: 1px solid rgba(16, 185, 129, 0.4) !important;
-        color: #34d399 !important;
+        background-color: #16a34a !important;
+        border: 1px solid #16a34a !important;
+        color: #ffffff !important;
         font-weight: 600;
         border-radius: 50px;
         transition: all 0.2s ease-in-out;
@@ -128,10 +128,10 @@
     }
     
     .btn-grade-know:hover:not(:disabled) {
-        background-color: rgba(16, 185, 129, 0.25) !important;
-        border-color: rgba(16, 185, 129, 0.6) !important;
+        background-color: #15803d !important;
+        border-color: #15803d !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
     }
 
     .controls {
