@@ -28,10 +28,10 @@
             
             {{-- VARK Learning Styles Badge Section --}}
             <div class="vark-badges d-flex flex-wrap gap-3 mb-4">
-                <span class="vark-badge">👁 Visual</span>
-                <span class="vark-badge">🎧 Auditory</span>
-                <span class="vark-badge">📖 Read/Write</span>
-                <span class="vark-badge">🏃 Competitive</span>
+                <span class="vark-badge badge-visual">👁 Visual</span>
+                <span class="vark-badge badge-auditory">🎧 Auditory</span>
+                <span class="vark-badge badge-readwrite">📖 Read/Write</span>
+                <span class="vark-badge badge-competitive">🏃 Competitive</span>
             </div>
 
             {{-- Feature highlights --}}
@@ -48,6 +48,10 @@
                     <i class="bi bi-check-circle-fill"></i>
                     <span>Track Your Progress</span>
                 </div>
+            </div>
+
+            <div class="cta-text mt-4">
+                Start your personalized learning journey today.
             </div>
         </div>
         
@@ -219,10 +223,15 @@
     .topnav-btn:hover { background: rgba(255, 255, 255, 0.95) !important; color: #1e293b; }
 
     /* ── Page Layout ─────────────────────────────── */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
     .page-wrap {
         min-height: 100vh; padding-top: 60px;
         display: flex; align-items: center; justify-content: center;
         padding-bottom: 40px;
+        animation: fadeIn 0.45s ease-out forwards;
     }
 
     /* ── Split Layout Container ─────────────────── */
@@ -258,7 +267,7 @@
     }
     .intro-text {
         font-size: 1.15rem;
-        line-height: 1.6;
+        line-height: 1.75;
         opacity: 0.9;
     }
     
@@ -274,6 +283,31 @@
         background: rgba(255, 255, 255, 0.05);
         color: rgba(255, 255, 255, 0.9);
         text-shadow: none;
+    }
+    .vark-badge.badge-visual {
+        background: rgba(6, 182, 212, 0.12);
+        border-color: rgba(6, 182, 212, 0.3);
+        color: #67e8f9;
+    }
+    .vark-badge.badge-auditory {
+        background: rgba(249, 115, 22, 0.12);
+        border-color: rgba(249, 115, 22, 0.3);
+        color: #fdba74;
+    }
+    .vark-badge.badge-readwrite {
+        background: rgba(234, 179, 8, 0.1);
+        border-color: rgba(234, 179, 8, 0.25);
+        color: #fef08a;
+    }
+    .vark-badge.badge-competitive {
+        background: rgba(236, 72, 153, 0.1);
+        border-color: rgba(236, 72, 153, 0.25);
+        color: #fbcfe8;
+    }
+    .cta-text {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--accent);
     }
     .feature-item {
         font-size: 1.05rem;
@@ -304,7 +338,7 @@
         background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        width: 100%; max-width: 480px;
+        width: 100%; max-width: 500px;
         padding: 36px 36px 32px;
         border-radius: 24px;
         border: 1px solid rgba(255, 255, 255, 0.6) !important;
