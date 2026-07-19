@@ -82,14 +82,7 @@
         </div>
     </div>
 
-    <!-- Flashcard Sets list -->
-    <div class="row mt-2">
-        <div class="col-md-12 text-center py-3 text-muted">
-            <i class="bi bi-folder2-open display-4 mb-2 d-block text-warning" style="opacity: .65;"></i>
-            <h6 class="fw-bold text-dark">Open a Folder</h6>
-            <p class="small text-muted mb-0">Select one of the folders above to view its flashcard sets.</p>
-        </div>
-    </div>
+
 
 
 </div>
