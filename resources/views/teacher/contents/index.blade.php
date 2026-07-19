@@ -35,12 +35,12 @@
     @if($contents->total() > 0 || request()->has('topic') || $topics->contains('is_system', false))
     <div class="row mb-4">
         @foreach($topics as $topic)
-            <div class="col-md-2 mb-3 position-relative group-action topic-folder-col" data-topic-name="{{ strtolower($topic->name) }}">
+            <div class="col-sm-6 col-md-3 mb-4 position-relative group-action topic-folder-col" data-topic-name="{{ strtolower($topic->name) }}">
                 <a href="{{ route('teacher.contents.folder', ['topic' => $topic->name]) }}" class="text-decoration-none">
                     <div class="card h-100 shadow-sm border-0 {{ request('topic') == $topic->name ? 'bg-primary text-white' : 'bg-light text-dark' }} folder-card">
-                        <div class="card-body text-center d-flex flex-column align-items-center justify-content-center p-3">
-                            <i class="bi bi-folder-fill fs-1 mb-2 {{ request('topic') == $topic->name ? 'text-white' : 'text-warning' }}"></i>
-                            <span class="fw-bold small text-wrap" style="line-height: 1.2;">{{ $topic->name }}</span>
+                        <div class="card-body text-center d-flex flex-column align-items-center justify-content-center p-4">
+                            <i class="bi bi-folder-fill mb-3 {{ request('topic') == $topic->name ? 'text-white' : 'text-warning' }}" style="font-size: 3.2rem;"></i>
+                            <span class="fw-bold text-wrap {{ request('topic') == $topic->name ? 'text-white' : 'text-dark' }}" style="line-height: 1.25; font-size: 0.98rem; letter-spacing: -0.1px;">{{ $topic->name }}</span>
                         </div>
                     </div>
                 </a>
