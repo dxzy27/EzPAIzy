@@ -296,7 +296,7 @@
 
     {{-- ── Header ── --}}
     <div class="row mb-4">
-        <div class="col-md-8">
+        <div class="col-12">
             <h4 class="fw-bold mb-0 text-dark">Student Dashboard</h4>
             <div class="d-flex align-items-center gap-2 mt-1">
                 <span class="text-dark fw-bold" style="font-size:.875rem;">Welcome, {{ $user->name }}</span>
@@ -309,11 +309,6 @@
                 </a>
                 @endif
             </div>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ route('student.progress') }}" class="btn btn-filled-primary">
-                <i class="bi bi-bar-chart-fill me-2"></i>My Progress
-            </a>
         </div>
     </div>
 

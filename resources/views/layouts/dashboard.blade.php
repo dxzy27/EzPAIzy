@@ -699,6 +699,9 @@
                         <li><span class="dropdown-header" style="padding-top:0;font-weight:400;color:#94a3b8;text-transform:capitalize;">{{ auth()->user()->role }}</span></li>
                         <li><hr class="dropdown-divider my-1"></li>
                         <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        @if(auth()->user()->role === 'student')
+                        <li><a class="dropdown-item" href="{{ route('student.progress') }}"><i class="bi bi-bar-chart-fill me-2"></i>My Progress</a></li>
+                        @endif
                         <li>
                             <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
