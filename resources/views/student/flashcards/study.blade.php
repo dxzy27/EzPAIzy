@@ -563,7 +563,7 @@
 
                     <!-- Right: Progress -->
                     <div class="d-flex align-items-center justify-content-end gap-3 flex-grow-1" style="flex-basis: 0;">
-                        ${currentIndex > 0 ? `<a href="javascript:void(0)" onclick="prevCard()" class="text-muted text-decoration-none" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></a>` : ''}
+                        ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn btn-sm border d-flex align-items-center text-muted fw-bold shadow-sm" style="font-size: 0.75rem; border-radius: 6px; background-color: #ffffff;"><i class="bi bi-arrow-counterclockwise me-1" style="font-size: 0.85rem;"></i> Undo</button>` : ''}
                         <div class="text-muted fw-bold text-nowrap" style="font-size: 0.85rem;">
                             ${currentIndex + 1} / ${cards.length}
                         </div>
