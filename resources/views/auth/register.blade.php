@@ -193,7 +193,7 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        background: linear-gradient(rgba(10, 102, 90, 0.40), rgba(10, 102, 90, 0.40)), url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
+        background: linear-gradient(rgba(12, 65, 80, 0.60), rgba(12, 65, 80, 0.60)), url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
         background-size: cover !important;
     }
     nav.navbar { display: none !important; }
