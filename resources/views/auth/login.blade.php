@@ -283,6 +283,11 @@
         background: rgba(255, 255, 255, 0.05);
         color: rgba(255, 255, 255, 0.9);
         text-shadow: none;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+    .vark-badge:hover {
+        opacity: 1;
     }
     .vark-badge.badge-visual {
         background: rgba(6, 182, 212, 0.12);
