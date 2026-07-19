@@ -53,11 +53,34 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:12',
+                'regex:/[a-z]/',      // at least one lowercase letter
+                'regex:/[A-Z]/',      // at least one uppercase letter
+                'regex:/[0-9]/',      // at least one number
+                'regex:/[@$!%*#?&.]/', // at least one special character
+                'confirmed',
+                function ($attribute, $value, $fail) use ($data) {
+                    $name = strtolower($data['name'] ?? '');
+                    if ($name && str_contains(strtolower($value), $name)) {
+                        $fail('The password cannot contain your name.');
+                    }
+                    if (preg_match('/(0123|1234|2345|3456|4567|5678|6789|abcd|bcde|cdef|defg|efgh|fghi|ghij|hijk|ijkl|jklm|klmn|lmno|mnop|nopq|opqr|pqrs|qrst|rstu|stuv|tuvw|uvwx|vwxy|wxyz)/i', $value)) {
+                        $fail('The password cannot contain sequential patterns (e.g., 1234, abcd).');
+                    }
+                }
+            ],
             'role' => ['nullable', 'string', 'in:student,teacher'],
             'phone_number' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string', 'max:255'],
             'class_name' => ['required', 'string', 'in:5A1,5A2,5A3,5B1,5B2,5B3'],
+        ], [
+            'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            'password.min' => 'The password must be at least 8 characters.',
+            'password.max' => 'The password cannot exceed 12 characters.',
         ]);
     }
 
