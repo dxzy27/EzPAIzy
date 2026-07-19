@@ -29,12 +29,12 @@
         transform: translateY(-4px);
     }
     .hover-recent-item {
-        transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), background 0.22s ease, box-shadow 0.22s ease !important;
+        border-radius: 12px !important;
+        transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), background 0.22s ease !important;
     }
     .hover-recent-item:hover {
-        transform: translateY(-3px) !important;
-        background: rgba(255, 255, 255, 0.8) !important;
-        box-shadow: 0 15px 35px rgba(31, 110, 104, 0.12) !important;
+        transform: translateY(-2px) !important;
+        background: rgba(255, 255, 255, 0.35) !important;
     }
 
     /* ── Redesigned Filled Buttons ── */
@@ -513,7 +513,7 @@
     <div class="row mb-5">
         @forelse($recents as $r)
             <div class="col-md-6 mb-3">
-                <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item card h-100 flex-row text-decoration-none" style="border: none !important;">
+                <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item flex-row text-decoration-none" style="background: transparent !important; border: none !important; box-shadow: none !important;">
                     {{-- Icon Container --}}
                     <div class="recent-icon-box" style="flex-shrink:0; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: {{ $r->type === 'flashcard' ? 'rgba(66, 85, 255, 0.12)' : ($r->type === 'quiz' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)') }};">
                         @if($r->type === 'flashcard')
