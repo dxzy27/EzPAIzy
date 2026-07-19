@@ -16,7 +16,7 @@
         width: 100%;
         height: 100%;
         text-align: center;
-        transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: transform 0.35s ease-in-out;
         transform-style: preserve-3d;
     }
     
@@ -147,26 +147,36 @@
 
 @section('content')
 <div class="container-fluid px-4">
-    <div class="row mb-5">
+    <div class="row mb-2 position-relative">
         <div class="col-12">
-            <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center mb-3" style="width: 36px; height: 36px;" title="Back to Sets">
+            <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center mb-3" style="width: 36px; height: 36px; position: absolute; left: 1rem; top: 0;" title="Back to Sets">
                 <i class="bi bi-arrow-left fs-5"></i>
             </a>
-            <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
-                <div>
-                    <h1>Study: {{ $flashcardSet->title }}</h1>
-                    @if(auth()->user()?->learning_style === 'kinesthetic')
-                    <div class="btn-group mt-2" role="group" aria-label="Mode toggle">
-                        <button type="button" class="btn btn-sm btn-outline-primary active" id="btn-mode-read" onclick="setMode('read')">
-                            <i class="bi bi-book"></i> Read Mode
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="btn-mode-review" onclick="setMode('review')">
-                            <i class="bi bi-psychology"></i> Review Mode
-                        </button>
+            
+            <div class="bg-dark text-white p-4 rounded-4 mb-4 mx-auto text-start" style="max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div class="text-white-50 fw-bold mb-2" style="font-size: 0.85rem; letter-spacing: 0.5px;">Study Session</div>
+                <h2 class="fw-bold mb-4">{{ $flashcardSet->title }}</h2>
+                
+                <div class="d-flex align-items-center justify-content-between border-top border-secondary pt-3 mt-2">
+                    <div>
+                        <div class="fs-5 fw-bold">{{ count($dueCards) }} cards</div>
                     </div>
-                    @endif
+                    <div class="text-end">
+                        <div class="text-white-50 fw-bold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Estimated time</div>
+                        <div class="fs-5 fw-bold">{{ max(1, ceil(count($dueCards) * 0.5)) }} min</div>
+                    </div>
                 </div>
-                <!-- Auto-read removed as requested -->
+                
+                @if(auth()->user()?->learning_style === 'kinesthetic')
+                <div class="btn-group w-100 mt-4" role="group" aria-label="Mode toggle">
+                    <button type="button" class="btn btn-outline-light active" id="btn-mode-read" onclick="setMode('read')">
+                        <i class="bi bi-book"></i> Read Mode
+                    </button>
+                    <button type="button" class="btn btn-outline-light" id="btn-mode-review" onclick="setMode('review')">
+                        <i class="bi bi-psychology"></i> Review Mode
+                    </button>
+                </div>
+                @endif
             </div>
         </div>
     </div>
