@@ -223,17 +223,34 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 let currentResetForm = null;
+let resetModalInstance = null;
+
 function confirmReset(btn) {
     currentResetForm = btn.closest('form');
-    const resetModal = new bootstrap.Modal(document.getElementById('resetConfirmModal'));
-    resetModal.show();
+    if (!resetModalInstance) {
+        resetModalInstance = new bootstrap.Modal(document.getElementById('resetConfirmModal'));
+    }
+    
+    // Reset button state just in case it was stuck previously
+    const confirmBtn = document.getElementById('confirmResetBtn');
+    if (confirmBtn) {
+        confirmBtn.innerHTML = 'Reset';
+        confirmBtn.disabled = false;
+    }
+    
+    resetModalInstance.show();
 }
 
-document.getElementById('confirmResetBtn').addEventListener('click', function() {
-    if (currentResetForm) {
-        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Resetting...';
-        this.disabled = true;
-        currentResetForm.submit();
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmBtn = document.getElementById('confirmResetBtn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', function() {
+            if (currentResetForm) {
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Resetting...';
+                this.disabled = true;
+                currentResetForm.submit();
+            }
+        });
     }
 });
 </script>
