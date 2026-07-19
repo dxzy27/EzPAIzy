@@ -577,26 +577,24 @@
             <span class="text-muted fw-bold d-block mb-2" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Personalize your content</span>
             
             <div class="card p-4 position-relative overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
-                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-4">
-                    {{-- Left Side: Logo & Text --}}
-                    <div class="d-flex align-items-center gap-4">
+                <div class="d-flex align-items-start gap-4">
+                    {{-- Left Side: Logo and button underneath --}}
+                    <div class="d-flex flex-column align-items-center gap-3" style="flex-shrink: 0; min-width: 140px;">
                         {{-- Logo / Icon --}}
-                        <div style="flex-shrink: 0; width: 64px; height: 64px; border-radius: 16px; background: rgba(66, 85, 255, 0.1); display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(66, 85, 255, 0.1); display: flex; align-items: center; justify-content: center;">
                             <img src="{{ asset('images/vark.png') }}" alt="VARK logo" style="width: 44px; height: 44px; object-fit: contain;">
                         </div>
                         
-                        {{-- Text Info --}}
-                        <div>
-                            <h5 class="fw-bold text-dark mb-1" style="font-size: 1.15rem; letter-spacing: -0.2px;">🎯 Discover Your Learning Style</h5>
-                            <p class="text-muted mb-0" style="font-size: 0.88rem;">Complete the VARK Questionnaire to customize materials to your personal study method.</p>
-                        </div>
-                    </div>
-                    
-                    {{-- Right Side: Action Button --}}
-                    <div style="flex-shrink: 0;">
-                        <a href="{{ route('student.diagnosis.create') }}" class="quizlet-btn py-2 px-4" style="font-size: 0.85rem; text-decoration: none !important; white-space: nowrap;">
+                        {{-- Action Button --}}
+                        <a href="{{ route('student.diagnosis.create') }}" class="quizlet-btn py-2 px-3 text-center w-100" style="font-size: 0.82rem; text-decoration: none !important; white-space: nowrap;">
                             Start Diagnosis
                         </a>
+                    </div>
+                    
+                    {{-- Right Side: Text Info --}}
+                    <div style="flex: 1; padding-top: 4px;">
+                        <h5 class="fw-bold text-dark mb-1" style="font-size: 1.15rem; letter-spacing: -0.2px;">🎯 Discover Your Learning Style</h5>
+                        <p class="text-muted mb-0" style="font-size: 0.88rem; line-height: 1.5;">Complete the VARK Questionnaire to customize materials to your personal study method.</p>
                     </div>
                 </div>
             </div>
