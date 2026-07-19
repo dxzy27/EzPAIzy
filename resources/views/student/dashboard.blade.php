@@ -304,7 +304,7 @@
     ];
 @endphp
 
-<div class="container-fluid px-4">
+<div class="container-fluid px-4" style="max-width: 1040px; margin: 0 auto;">
 
     {{-- ── Diagnosis Modal (undiagnosed only) ── --}}
     @if(!$style && !session('diag_banner_dismissed'))
