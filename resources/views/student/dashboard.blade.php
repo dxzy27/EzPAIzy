@@ -604,84 +604,57 @@
     </div>
 
     {{-- ── Additional Cards: Today's Progress & Continue Learning ── --}}
+    {{-- ── Revision Card (To-Revise) ── --}}
     <div class="row justify-content-center mb-5">
         <div class="col-md-9 col-lg-8">
-            <div class="row">
-                <!-- Today's Progress Card -->
-                <div class="col-md-6 mb-3">
-                    <div class="card p-4 h-100 d-flex flex-column justify-content-between" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
-                        <div>
-                            <div class="d-flex align-items-center gap-2 mb-3">
-                                <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center;">
-                                    <i class="bi bi-calendar-check" style="font-size: 1.2rem; color: #10b981;"></i>
-                                </div>
-                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">Today's Progress</h5>
-                            </div>
-                            
-                            <p class="text-muted small mb-4">Keep your daily streak active by completing learning content and quizzes.</p>
+            <span class="text-muted fw-bold d-block mb-2" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Revision List</span>
+            
+            <div class="card p-4 position-relative overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-4">
+                    {{-- Left Side: Icon & Text --}}
+                    <div class="d-flex align-items-center gap-4">
+                        {{-- Icon --}}
+                        <div style="flex-shrink: 0; width: 64px; height: 64px; border-radius: 16px; background: rgba(245, 158, 11, 0.12); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-star-fill" style="font-size: 1.6rem; color: #f59e0b;"></i>
                         </div>
                         
+                        {{-- Text Info --}}
+                        @php
+                            $latestFav = \App\Models\Favorite::where('student_id', auth()->id())
+                                ->with(['content', 'flashcardSet'])
+                                ->latest()
+                                ->first();
+                        @endphp
                         <div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="fw-bold text-dark" style="font-size: 0.9rem;">Daily Target</span>
-                                <span class="fw-extrabold text-success" style="font-size: 1rem;">72%</span>
-                            </div>
-                            <div class="progress" style="height: 10px; border-radius: 99px; background: rgba(0,0,0,0.06);">
-                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 72%; border-radius: 99px;" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                            <h5 class="fw-bold text-dark mb-1" style="font-size: 1.15rem; letter-spacing: -0.2px;">To-Revise</h5>
+                            @if($latestFav)
+                                @php
+                                    $favTitle = 'Unknown Title';
+                                    $favType = 'Saved Item';
+                                    
+                                    if ($latestFav->content) {
+                                        $favTitle = '📖 ' . $latestFav->content->title;
+                                        $favType = 'Other Material';
+                                    } elseif ($latestFav->flashcardSet) {
+                                        $favTitle = '🃏 ' . $latestFav->flashcardSet->title;
+                                        $favType = 'Flashcard Set';
+                                    } elseif (!empty($latestFav->quiz_topic)) {
+                                        $favTitle = '📝 ' . $latestFav->quiz_topic . ' (' . ucfirst($latestFav->quiz_difficulty) . ')';
+                                        $favType = 'Quiz';
+                                    }
+                                @endphp
+                                <p class="text-muted mb-0" style="font-size: 0.88rem;">Recently saved: <strong class="text-dark">{{ $favTitle }}</strong> • {{ $favType }}</p>
+                            @else
+                                <p class="text-muted mb-0" style="font-size: 0.88rem;">No saved materials. Mark materials with a star to revise them here.</p>
+                            @endif
                         </div>
                     </div>
-                </div>
-
-                <!-- To-Revise Card -->
-                <div class="col-md-6 mb-3">
-                    <div class="card p-4 h-100 d-flex flex-column justify-content-between" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
-                        <div>
-                            <div class="d-flex align-items-center gap-2 mb-3">
-                                <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); display: flex; align-items: center; justify-content: center;">
-                                    <i class="bi bi-star-fill" style="font-size: 1.15rem; color: #f59e0b;"></i>
-                                </div>
-                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">To-Revise</h5>
-                            </div>
-                            
-                            @php
-                                $latestFav = \App\Models\Favorite::where('student_id', auth()->id())
-                                    ->with(['content', 'flashcardSet'])
-                                    ->latest()
-                                    ->first();
-                            @endphp
-
-                            <div class="mb-3">
-                                @if($latestFav)
-                                    @php
-                                        $favTitle = 'Unknown Title';
-                                        $favType = 'Saved Item';
-                                        
-                                        if ($latestFav->content) {
-                                            $favTitle = '📖 ' . $latestFav->content->title;
-                                            $favType = 'Other Material';
-                                        } elseif ($latestFav->flashcardSet) {
-                                            $favTitle = '🃏 ' . $latestFav->flashcardSet->title;
-                                            $favType = 'Flashcard Set';
-                                        } elseif (!empty($latestFav->quiz_topic)) {
-                                            $favTitle = '📝 ' . $latestFav->quiz_topic . ' (' . ucfirst($latestFav->quiz_difficulty) . ')';
-                                            $favType = 'Quiz';
-                                        }
-                                    @endphp
-                                    <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">{{ $favTitle }}</h6>
-                                    <span class="text-muted small">Recently saved • {{ $favType }}</span>
-                                @else
-                                    <h6 class="fw-bold text-muted mb-1" style="font-size: 0.95rem;">No saved materials</h6>
-                                    <span class="text-muted small">Mark materials with a star to revise them here.</span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <a href="{{ route('student.revision') }}" class="quizlet-btn w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.88rem; text-decoration: none !important; background-color: #f59e0b !important; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25) !important;">
-                                <span>Go to Revision List</span> <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
+                    
+                    {{-- Right Side: Action Button --}}
+                    <div style="flex-shrink: 0;">
+                        <a href="{{ route('student.revision') }}" class="quizlet-btn py-2 px-4" style="font-size: 0.85rem; text-decoration: none !important; white-space: nowrap; background-color: #f59e0b !important; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25) !important;">
+                            Go to Revision List
+                        </a>
                     </div>
                 </div>
             </div>
