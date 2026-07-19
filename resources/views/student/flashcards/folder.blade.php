@@ -40,12 +40,12 @@
                                 @php
                                     $isFavorited = in_array($set->id, $favoritedFlashcardIds ?? []);
                                 @endphp
-                                <button class="btn btn-light favorite-btn p-0 d-flex align-items-center justify-content-center" 
+                                <button class="btn btn-link favorite-btn p-0 d-flex align-items-center justify-content-center border-0 text-decoration-none" 
                                         data-id="{{ $set->id }}" 
                                         data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
                                         title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}"
-                                        style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.06); transition: all 0.2s; background-color: #f8fafc;">
-                                    <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} text-warning" style="font-size: 0.95rem; line-height: 1;"></i>
+                                        style="width: 28px; height: 28px; background: transparent; box-shadow: none;">
+                                    <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} text-warning" style="font-size: 1.15rem; line-height: 1; transition: transform 0.15s ease;"></i>
                                 </button>
                             </div>
                             <span class="badge bg-info mb-2 text-white" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; font-weight: 600;">{{ $set->topic }}</span>
@@ -211,5 +211,8 @@ document.addEventListener('DOMContentLoaded', function() {
     .reset-link:hover {
         text-decoration: underline !important;
         color: #4a4a4a !important;
+    }
+    .favorite-btn:hover i {
+        transform: scale(1.2);
     }
 </style>
