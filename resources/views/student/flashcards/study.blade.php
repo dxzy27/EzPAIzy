@@ -474,10 +474,12 @@
                                 <div style="flex: 1;"></div>
                                 <div class="d-flex justify-content-center gap-4">
                                     <button class="btn btn-grade-circle still" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''} title="Still learning">
+                                        ${stillArrow}
                                         <i class="bi bi-x-lg fs-3"></i>
                                     </button>
                                     <button class="btn btn-grade-circle know" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''} title="Know">
                                         <i class="bi bi-check-lg fs-3"></i>
+                                        ${knowArrow}
                                     </button>
                                 </div>
                                 <div class="d-flex justify-content-end gap-2" style="flex: 1;">
@@ -494,10 +496,12 @@
                             <div style="flex: 1;"></div>
                             <div class="d-flex justify-content-center gap-4">
                                 <button class="btn btn-grade-circle still" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''} title="Still learning">
+                                    ${stillArrow}
                                     <i class="bi bi-x-lg fs-3"></i>
                                 </button>
                                 <button class="btn btn-grade-circle know" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''} title="Know">
                                     <i class="bi bi-check-lg fs-3"></i>
+                                    ${knowArrow}
                                 </button>
                             </div>
                             <div class="d-flex justify-content-end gap-2" style="flex: 1;">
