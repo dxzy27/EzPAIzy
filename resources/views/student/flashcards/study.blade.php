@@ -448,7 +448,6 @@
                                 </div>
                                 <div class="d-flex justify-content-end gap-2" style="flex: 1;">
                                     ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn-action-icon" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></button>` : `<div style="width: 44px;"></div>`}
-                                    <button onclick="toggleShuffle()" class="btn-action-icon ${isShuffled ? 'active' : ''}" title="Shuffle"><i class="bi bi-shuffle fs-5"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -470,7 +469,6 @@
                             </div>
                             <div class="d-flex justify-content-end gap-2" style="flex: 1;">
                                 ${currentIndex > 0 ? `<button onclick="prevCard()" class="btn-action-icon" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></button>` : `<div style="width: 44px;"></div>`}
-                                <button onclick="toggleShuffle()" class="btn-action-icon ${isShuffled ? 'active' : ''}" title="Shuffle"><i class="bi bi-shuffle fs-5"></i></button>
                             </div>
                         </div>
                     </div>
