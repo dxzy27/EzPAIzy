@@ -540,14 +540,14 @@
 
             app.innerHTML = `
                 <div class="bg-white p-3 rounded-4 mb-4 mx-auto border" style="max-width: 600px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #e2e8f0 !important;">
-                    <div class="d-flex align-items-center mb-3">
-                        <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="text-dark text-decoration-none fw-bold fs-5 d-flex align-items-center" style="opacity: 0.9; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
-                            <i class="bi bi-arrow-left me-2 text-muted"></i> {{ addslashes($flashcardSet->title) }}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="text-dark text-decoration-none fw-bold d-flex align-items-center" style="font-size: 0.9rem; opacity: 0.9; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+                            <i class="bi bi-collection-fill me-2" style="color: #94a3b8;"></i> {{ addslashes($flashcardSet->title) }}
                         </a>
+                        <span class="text-muted fw-bold" style="font-size: 0.8rem;">${Math.max(1, Math.ceil(cards.length * 0.5))} min</span>
                     </div>
-                    <div class="d-flex justify-content-between text-muted mt-1 mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
-                        <span>Card ${currentIndex + 1} of ${cards.length}</span>
-                        <span>${Math.max(1, Math.ceil(cards.length * 0.5))} min</span>
+                    <div class="text-muted mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
+                        Card ${currentIndex + 1} of ${cards.length}
                     </div>
                     <div class="progress border-0" style="height: 6px; border-radius: 50px; background-color: #f1f5f9;">
                         <div class="progress-bar bg-primary" role="progressbar" style="width: ${((currentIndex + 1) / cards.length) * 100}%; border-radius: 50px; transition: width 0.3s ease;"></div>
