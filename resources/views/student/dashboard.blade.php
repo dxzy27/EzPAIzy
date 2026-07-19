@@ -610,9 +610,10 @@
                     
                     {{-- Text and Button --}}
                     <div style="flex: 1;">
-                        <h5 class="fw-bold text-dark mb-3" style="font-size: 1.15rem; letter-spacing: -0.2px;">Explore content based on your learning style</h5>
-                        <a href="{{ route('student.diagnosis.create') }}" class="quizlet-btn py-2 px-4" style="font-size: 0.85rem;">
-                            Take VARK Questionnaire
+                        <h5 class="fw-bold text-dark mb-1" style="font-size: 1.15rem; letter-spacing: -0.2px;">🎯 Discover Your Learning Style</h5>
+                        <p class="text-muted mb-3" style="font-size: 0.88rem;">Complete the VARK Questionnaire to customize materials to your personal study method.</p>
+                        <a href="{{ route('student.diagnosis.create') }}" class="quizlet-btn py-2 px-4" style="font-size: 0.85rem; text-decoration: none !important;">
+                            Start Diagnosis
                         </a>
                     </div>
                 </div>
