@@ -504,39 +504,43 @@
         $recents = $combinedRecents->sortByDesc('created_at')->take(4);
     @endphp
 
-    <div class="row mb-3">
-        <div class="col-12">
-            <h4 class="fw-bold text-dark mb-0">Recents</h4>
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-9 col-lg-8">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <h4 class="fw-bold text-dark mb-0">Recents</h4>
+                </div>
+            </div>
+            
+            <div class="row">
+                @forelse($recents as $r)
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item flex-row text-decoration-none" style="background: transparent !important; border: none !important; box-shadow: none !important;">
+                            {{-- Icon Container --}}
+                            <div class="recent-icon-box" style="flex-shrink:0; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: {{ $r->type === 'flashcard' ? 'rgba(66, 85, 255, 0.32)' : ($r->type === 'quiz' ? 'rgba(245, 158, 11, 0.32)' : 'rgba(16, 185, 129, 0.32)') }};">
+                                @if($r->type === 'flashcard')
+                                    <i class="bi bi-card-text" style="font-size: 1.3rem; color: #4255ff;"></i>
+                                @elseif($r->type === 'quiz')
+                                    <i class="bi bi-pencil-square" style="font-size: 1.3rem; color: #f59e0b;"></i>
+                                @else
+                                    <i class="bi bi-file-earmark-text" style="font-size: 1.3rem; color: #10b981;"></i>
+                                @endif
+                            </div>
+                            {{-- Text Info --}}
+                            <div style="flex: 1; min-width: 0;">
+                                <h6 class="fw-bold mb-0 text-dark text-truncate" style="font-size: 0.92rem; letter-spacing: -0.1px;">{{ $r->title }}</h6>
+                                <span class="text-muted" style="font-size: 0.78rem;">{{ $r->subtitle }}</span>
+                            </div>
+                        </a>
+                    </div>
+                @empty
+                    <div class="col-12">
+                        <p class="text-muted text-center py-4 card">No recent activities available.</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
-    
-    <div class="row mb-5">
-        @forelse($recents as $r)
-            <div class="col-md-6 mb-3">
-                <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item flex-row text-decoration-none" style="background: transparent !important; border: none !important; box-shadow: none !important;">
-                    {{-- Icon Container --}}
-                    <div class="recent-icon-box" style="flex-shrink:0; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: {{ $r->type === 'flashcard' ? 'rgba(66, 85, 255, 0.32)' : ($r->type === 'quiz' ? 'rgba(245, 158, 11, 0.32)' : 'rgba(16, 185, 129, 0.32)') }};">
-                        @if($r->type === 'flashcard')
-                            <i class="bi bi-card-text" style="font-size: 1.3rem; color: #4255ff;"></i>
-                        @elseif($r->type === 'quiz')
-                            <i class="bi bi-pencil-square" style="font-size: 1.3rem; color: #f59e0b;"></i>
-                        @else
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.3rem; color: #10b981;"></i>
-                        @endif
-                    </div>
-                    {{-- Text Info --}}
-                    <div style="flex: 1; min-width: 0;">
-                        <h6 class="fw-bold mb-0 text-dark text-truncate" style="font-size: 0.92rem; letter-spacing: -0.1px;">{{ $r->title }}</h6>
-                        <span class="text-muted" style="font-size: 0.78rem;">{{ $r->subtitle }}</span>
-                    </div>
-                </a>
-            </div>
-        @empty
-            <div class="col-12">
-                <p class="text-muted text-center py-4 card">No recent activities available.</p>
-            </div>
-        @endforelse
-    </div>{{-- /row --}}
 </div>{{-- /container --}}
 @endsection
 
