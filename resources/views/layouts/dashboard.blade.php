@@ -458,7 +458,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 28px;
+            padding: 0 28px 0 10px;
             background: transparent !important;
             border-bottom: none !important;
             box-shadow: none !important;
