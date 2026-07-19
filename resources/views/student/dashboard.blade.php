@@ -30,37 +30,47 @@
     }
 
     /* ── Redesigned Filled Buttons ── */
-    .btn-filled-primary {
-        background-color: #1F8A70 !important;
-        border-color: #1F8A70 !important;
+    .quizlet-btn {
+        background-color: #4255ff !important;
+        border: none !important;
         color: #ffffff !important;
         font-weight: 600 !important;
         font-size: 0.88rem !important;
-        border-radius: 10px !important;
-        box-shadow: 0 4px 10px rgba(31, 138, 112, 0.18) !important;
-        padding: 10px 18px !important;
+        border-radius: 99px !important;
+        padding: 10px 24px !important;
+        box-shadow: 0 4px 14px rgba(66, 85, 255, 0.25) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+        cursor: pointer;
     }
-    .btn-filled-primary:hover {
-        background-color: #166d58 !important;
-        border-color: #166d58 !important;
+    .quizlet-btn:hover {
+        background-color: #2b3eff !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(66, 85, 255, 0.35) !important;
         color: #ffffff !important;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(31, 138, 112, 0.25) !important;
     }
-    .btn-filled-secondary {
-        background-color: #f1f5f9 !important;
-        border-color: #f1f5f9 !important;
-        color: #334155 !important;
+    .quizlet-btn-secondary {
+        background-color: rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        color: #475569 !important;
         font-weight: 600 !important;
         font-size: 0.88rem !important;
-        border-radius: 10px !important;
-        padding: 10px 18px !important;
+        border-radius: 99px !important;
+        padding: 9px 24px !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+        cursor: pointer;
     }
-    .btn-filled-secondary:hover {
-        background-color: #e2e8f0 !important;
-        border-color: #e2e8f0 !important;
+    .quizlet-btn-secondary:hover {
+        background-color: rgba(0, 0, 0, 0.12) !important;
         color: #1e293b !important;
-        transform: translateY(-1px);
+        transform: translateY(-2px) !important;
     }
 
     /* ── Teal Table Headers ── */
@@ -396,18 +406,18 @@
                                         <!-- Actions -->
                                         <div class="d-flex gap-2 w-100 justify-content-center">
                                             @if($card['type'] === 'materials')
-                                                <a href="{{ route('student.flashcards.index') }}" class="btn btn-filled-primary py-1 px-3" style="font-size: 0.82rem;">
+                                                <a href="{{ route('student.flashcards.index') }}" class="quizlet-btn">
                                                     Flashcards
                                                 </a>
-                                                <a href="{{ route('student.contents.index') }}" class="btn btn-filled-secondary py-1 px-3" style="font-size: 0.82rem;">
+                                                <a href="{{ route('student.contents.index') }}" class="quizlet-btn-secondary">
                                                     Materials
                                                 </a>
                                             @elseif($card['type'] === 'quiz')
-                                                <a href="{{ route('student.quizzes') }}" class="btn btn-filled-primary py-1 px-4" style="font-size: 0.82rem;">
+                                                <a href="{{ route('student.quizzes') }}" class="quizlet-btn">
                                                     Browse Quizzes &rarr;
                                                 </a>
                                             @else
-                                                <a href="{{ route('student.progress') }}" class="btn btn-filled-primary py-1 px-4" style="font-size: 0.82rem;">
+                                                <a href="{{ route('student.progress') }}" class="quizlet-btn">
                                                     View Progress &rarr;
                                                 </a>
                                             @endif
