@@ -429,12 +429,12 @@
 
             // Always add Next/Prev buttons
             controlsHtml += `
-                <div class="mt-3 text-center d-flex justify-content-center gap-3">
-                    <button class="btn btn-outline-secondary px-4 py-2" onclick="prevCard()" ${currentIndex === 0 ? 'disabled' : ''}>
-                        Previous
+                <div class="mt-4 text-center d-flex justify-content-center gap-3">
+                    <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 fw-bold" style="width: 140px;" onclick="prevCard()" ${currentIndex === 0 ? 'disabled' : ''}>
+                        <i class="bi bi-caret-left-fill"></i> Previous
                     </button>
-                    <button class="btn btn-primary px-4 py-2" onclick="nextCard()">
-                        Next
+                    <button class="btn btn-primary d-flex align-items-center justify-content-center gap-2 fw-bold" style="width: 140px;" onclick="nextCard()">
+                        Next <i class="bi bi-caret-right-fill"></i>
                     </button>
                 </div>
             `;
