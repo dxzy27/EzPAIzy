@@ -147,37 +147,18 @@
 
 @section('content')
 <div class="container-fluid px-4">
-    <div class="row mb-2 position-relative">
-        <div class="col-12">
-            <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center mb-3" style="width: 36px; height: 36px; position: absolute; left: 1rem; top: 0;" title="Back to Sets">
-                <i class="bi bi-arrow-left fs-5"></i>
-            </a>
-            
-            <div class="bg-dark text-white p-4 rounded-4 mb-4 mx-auto text-start" style="max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                <div class="text-white-50 fw-bold mb-2" style="font-size: 0.85rem; letter-spacing: 0.5px;">Study Session</div>
-                <h2 class="fw-bold mb-4">{{ $flashcardSet->title }}</h2>
-                
-                <div class="d-flex align-items-center justify-content-between border-top border-secondary pt-3 mt-2">
-                    <div>
-                        <div class="fs-5 fw-bold">{{ count($dueCards) }} cards</div>
-                    </div>
-                    <div class="text-end">
-                        <div class="text-white-50 fw-bold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Estimated time</div>
-                        <div class="fs-5 fw-bold">{{ max(1, ceil(count($dueCards) * 0.5)) }} min</div>
-                    </div>
-                </div>
-                
-                @if(auth()->user()?->learning_style === 'kinesthetic')
-                <div class="btn-group w-100 mt-4" role="group" aria-label="Mode toggle">
-                    <button type="button" class="btn btn-outline-light active" id="btn-mode-read" onclick="setMode('read')">
-                        <i class="bi bi-book"></i> Read Mode
-                    </button>
-                    <button type="button" class="btn btn-outline-light" id="btn-mode-review" onclick="setMode('review')">
-                        <i class="bi bi-psychology"></i> Review Mode
-                    </button>
-                </div>
-                @endif
+    <div class="row mb-2">
+        <div class="col-12 d-flex justify-content-center">
+            @if(auth()->user()?->learning_style === 'kinesthetic')
+            <div class="btn-group mb-3 shadow-sm" role="group" aria-label="Mode toggle" style="max-width: 600px; width: 100%;">
+                <button type="button" class="btn btn-outline-secondary active" id="btn-mode-read" onclick="setMode('read')">
+                    <i class="bi bi-book"></i> Read Mode
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="btn-mode-review" onclick="setMode('review')">
+                    <i class="bi bi-psychology"></i> Review Mode
+                </button>
             </div>
+            @endif
         </div>
     </div>
 
@@ -576,13 +557,18 @@
             }
 
             app.innerHTML = `
-                <div class="mb-4 mx-auto" style="max-width: 600px;">
-                    <div class="progress bg-light" style="height: 6px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.03);">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: ${((currentIndex + 1) / cards.length) * 100}%; border-radius: 50px; transition: width 0.3s ease;"></div>
+                <div class="bg-dark text-white p-3 rounded-4 mb-4 mx-auto" style="max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <div class="d-flex align-items-center mb-3">
+                        <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="text-white text-decoration-none fw-bold fs-5 d-flex align-items-center" style="opacity: 0.9; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+                            <i class="bi bi-arrow-left me-2"></i> {{ addslashes($flashcardSet->title) }}
+                        </a>
                     </div>
-                    <div class="d-flex justify-content-between text-muted mt-1" style="font-size: 0.75rem; font-weight: 600; padding: 0 2px;">
-                        <span>Progress</span>
-                        <span>${currentIndex + 1} / ${cards.length}</span>
+                    <div class="d-flex justify-content-between text-white-50 mt-1 mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
+                        <span>Card ${currentIndex + 1} of ${cards.length}</span>
+                        <span>${Math.max(1, Math.ceil(cards.length * 0.5))} min</span>
+                    </div>
+                    <div class="progress bg-secondary border-0" style="height: 6px; border-radius: 50px; background-color: rgba(255,255,255,0.1) !important;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: ${((currentIndex + 1) / cards.length) * 100}%; border-radius: 50px; transition: width 0.3s ease;"></div>
                     </div>
                 </div>
 
