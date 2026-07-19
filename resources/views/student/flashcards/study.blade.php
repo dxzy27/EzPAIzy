@@ -485,7 +485,6 @@
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
-                                <span class="text-muted fw-bold" style="font-size: 0.85rem;">${currentIndex + 1}/${cards.length}</span>
                             </div>
                         </div>
                         
@@ -537,7 +536,6 @@
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
-                                <span class="text-muted fw-bold" style="font-size: 0.85rem;">${currentIndex + 1}/${cards.length}</span>
                             </div>
                         </div>
                         
@@ -568,6 +566,16 @@
             }
 
             app.innerHTML = `
+                <div class="mb-4 mx-auto" style="max-width: 600px;">
+                    <div class="progress bg-light" style="height: 6px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.03);">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: ${((currentIndex + 1) / cards.length) * 100}%; border-radius: 50px; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted mt-1" style="font-size: 0.75rem; font-weight: 600; padding: 0 2px;">
+                        <span>Progress</span>
+                        <span>${currentIndex + 1} / ${cards.length}</span>
+                    </div>
+                </div>
+
                 <div class="flashcard-container">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
                         <div class="flashcard-face flashcard-front d-flex flex-column h-100 p-4">
@@ -583,7 +591,6 @@
                                         <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
-                                    <span class="text-muted fw-bold" style="font-size: 0.85rem;">${currentIndex + 1}/${cards.length}</span>
                                 </div>
                             </div>
                             
