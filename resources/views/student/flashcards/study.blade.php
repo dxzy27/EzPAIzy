@@ -557,7 +557,7 @@
                     </div>
 
                     <!-- Center: Title -->
-                    <div class="fw-bold text-dark text-center" style="flex-basis: auto; font-size: 28px; line-height: 1.2;">
+                    <div class="fw-bold text-dark text-center" style="flex-basis: auto; font-size: 20px; line-height: 1.2; opacity: 0.85;">
                         {{ addslashes($flashcardSet->title) }}
                     </div>
 
