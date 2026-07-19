@@ -467,7 +467,7 @@
                         <!-- Card Header -->
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <div class="d-flex align-items-center gap-1">
-                                <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(245, 158, 11, 0.15); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3);">BACK</span>
+                                <span class="badge rounded-pill fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem; padding: 0.35em 0.8em; letter-spacing: 0.5px;">Back</span>
                                 ${getStatusBadgeHtml(currentCard.status)}
                             </div>
                             <div class="d-flex align-items-center gap-2">
@@ -511,7 +511,7 @@
                         <!-- Card Header -->
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <div class="d-flex align-items-center gap-1">
-                                <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(245, 158, 11, 0.15); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3);">BACK</span>
+                                <span class="badge rounded-pill fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem; padding: 0.35em 0.8em; letter-spacing: 0.5px;">Back</span>
                                 ${getStatusBadgeHtml(currentCard.status)}
                             </div>
                             <div class="d-flex align-items-center gap-2">
@@ -570,7 +570,7 @@
                             <!-- Card Header -->
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div class="d-flex align-items-center gap-1">
-                                    <span class="badge fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: rgba(92, 79, 74, 0.15); color: #5C4F4A; border: 1px solid rgba(92, 79, 74, 0.3);">FRONT</span>
+                                    <span class="badge rounded-pill fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem; padding: 0.35em 0.8em; letter-spacing: 0.5px;">Front</span>
                                     ${getStatusBadgeHtml(currentCard.status)}
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
