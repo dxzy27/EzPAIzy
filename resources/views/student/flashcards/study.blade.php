@@ -32,7 +32,7 @@
         backface-visibility: hidden;
         border-radius: 6px;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.08);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
         background-color: #ffffff !important; /* Premium White for Student Front */
         color: #0f172a !important; /* Dark slate text */
         display: flex;
@@ -378,7 +378,7 @@
             if (mode === 'review') {
                 if (!isFlipped) {
                     controlsHtml = `
-                        <div class="text-center mt-4">
+                        <div class="text-center mt-3">
                             <p class="text-muted mb-2">Think of the answer, then tap the card to flip and type it.</p>
                         </div>
                     `;
@@ -390,7 +390,7 @@
                     let initialMsg = allDone ? 'Perfect! How easy was that?' : 'How well did you remember this?';
 
                     controlsHtml = `
-                        <div id="grading-controls" class="mt-4 text-center">
+                        <div id="grading-controls" class="mt-3 text-center">
                             <p class="fw-bold mb-3" id="grading-message">${initialMsg}</p>
                             <div class="d-flex justify-content-center gap-3">
                                 <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
@@ -405,7 +405,7 @@
                 }
             } else {
                 controlsHtml = `
-                    <div id="grading-controls" class="mt-4 text-center">
+                    <div id="grading-controls" class="mt-3 text-center">
                         <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
                         <div class="d-flex justify-content-center gap-3">
                             <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
@@ -476,7 +476,7 @@
                                 ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
                                 <div class="flashcard-content w-100">
                                     <div class="${alignClass}">
-                                        <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${formattedDef}</div>
+                                        <div class="fs-4 text-dark fw-bold" style="line-height: 1.6;">${formattedDef}</div>
                                     </div>
                                 </div>
                                 `}
@@ -525,7 +525,7 @@
                         <div class="flex-grow-1 d-flex flex-column py-2" style="overflow-y: auto;">
                             <div class="w-100" style="margin: auto 0; padding: 0.5rem 0;">
                                 <div class="flashcard-content w-100">
-                                    <div class="w-100 fs-4" style="line-height: 1.5;">
+                                    <div class="w-100 fs-4" style="line-height: 1.6;">
                                         <div id="placeholder-text">${initialAnswerWords}</div>
                                     </div>
                                 </div>
@@ -598,7 +598,7 @@
                                 <div class="w-100" style="margin: auto 0; padding: 0.5rem 0;">
                                     ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
                                     <div class="flashcard-content w-100 text-start">
-                                        <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${currentCard.term}</div>
+                                        <div class="fs-4 text-dark fw-bold" style="line-height: 1.6;">${currentCard.term}</div>
                                     </div>
                                     `}
                                 </div>
