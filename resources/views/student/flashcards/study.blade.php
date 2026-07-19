@@ -102,8 +102,8 @@
     }
 
     .btn-grade-circle {
-        width: 64px;
-        height: 64px;
+        width: 72px;
+        height: 72px;
         border-radius: 50%;
         border: 2px solid #e2e8f0;
         background-color: #ffffff;
