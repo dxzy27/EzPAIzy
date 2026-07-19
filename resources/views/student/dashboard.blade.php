@@ -513,7 +513,7 @@
     <div class="row mb-5">
         @forelse($recents as $r)
             <div class="col-md-6 mb-3">
-                <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item card h-100 flex-row text-decoration-none" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+                <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item card h-100 flex-row text-decoration-none" style="border: none !important;">
                     {{-- Icon Container --}}
                     <div class="recent-icon-box" style="flex-shrink:0; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: {{ $r->type === 'flashcard' ? 'rgba(66, 85, 255, 0.12)' : ($r->type === 'quiz' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)') }};">
                         @if($r->type === 'flashcard')
