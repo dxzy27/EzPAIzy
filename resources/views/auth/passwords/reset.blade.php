@@ -1,65 +1,223 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
-                        @csrf
+{{-- ── Top Navigation Bar ──────────────────────────────────────── --}}
+<nav class="ez-topnav">
+    <div class="ez-topnav-brand">
+        <img src="{{ asset('images/logo.png') }}"    alt="Mascot"  class="brand-mascot">
+        <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" class="brand-wordmark">
+    </div>
+    <div class="ez-topnav-actions">
+        <a href="{{ route('login') }}" class="topnav-btn">Log in</a>
+    </div>
+</nav>
 
-                        <input type="hidden" name="token" value="{{ $token }}">
+{{-- ── Page Body ────────────────────────────────────────────────── --}}
+<div class="page-wrap">
+    <div class="auth-card">
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        {{-- Badge --}}
+        <div class="page-badge">
+            <i class="bi bi-shield-lock-fill me-1"></i> Update Password
         </div>
+
+        {{-- MRSM Logo --}}
+        <div class="text-center mb-3">
+            <img src="{{ asset('images/mrsm.png') }}" alt="MRSM Logo" class="auth-center-logo">
+        </div>
+
+        {{-- Heading --}}
+        <h1 class="card-heading text-center">
+            New <span class="accent">Password</span>
+        </h1>
+        <p class="auth-subtitle text-center mb-4">Set your new account password below</p>
+
+        {{-- Form --}}
+        <form method="POST" action="{{ route('password.update') }}">
+            @csrf
+            <input type="hidden" name="token" value="{{ $token }}">
+
+            {{-- Email --}}
+            <div class="custom-input-group">
+                <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                <input id="email" type="email" name="email"
+                       class="custom-input has-icon @error('email') is-invalid @enderror"
+                       value="{{ $email ?? old('email') }}" placeholder="Email Address"
+                       required autocomplete="email" autofocus>
+                @error('email')
+                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                @enderror
+            </div>
+
+            {{-- Password --}}
+            <div class="custom-input-group mt-3">
+                <span class="input-icon"><i class="bi bi-lock"></i></span>
+                <input id="password" type="password" name="password"
+                       class="custom-input has-icon @error('password') is-invalid @enderror"
+                       placeholder="New Password" required autocomplete="new-password">
+                @error('password')
+                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                @enderror
+            </div>
+
+            {{-- Confirm Password --}}
+            <div class="custom-input-group mt-3">
+                <span class="input-icon"><i class="bi bi-lock-fill"></i></span>
+                <input id="password-confirm" type="password" name="password_confirmation"
+                       class="custom-input has-icon"
+                       placeholder="Confirm New Password" required autocomplete="new-password">
+            </div>
+
+            {{-- Submit --}}
+            <button type="submit" class="btn-submit w-100 mt-4">
+                <span>RESET PASSWORD</span>
+                <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </form>
     </div>
 </div>
+
 @endsection
+
+@push('styles')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+        --accent:      #60a5fa;
+        --accent-dark: #3b82f6;
+        --accent-soft: rgba(96,165,250,.15);
+        --badge-bg:    #eff6ff;
+        --badge-color: #3b82f6;
+        --btn-bg:      #3b82f6;
+        --btn-hover:   #2563eb;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Outfit', sans-serif;
+        background: url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
+        background-size: cover !important;
+    }
+    nav.navbar { display: none !important; }
+
+    /* ── Top Nav ─────────────────────────────────── */
+    .ez-topnav {
+        position: fixed; top: 0; left: 0; right: 0;
+        height: 64px; 
+        background: rgba(255, 255, 255, 0.4) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 40px; z-index: 100;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+    }
+    .ez-topnav-brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mascot    { height: 44px; width: auto; object-fit: contain; }
+    .brand-wordmark  { height: 28px; width: auto; object-fit: contain; }
+    .ez-topnav-actions { display: flex; align-items: center; }
+    .topnav-btn {
+        background: rgba(255, 255, 255, 0.6) !important; 
+        color: #1e293b; font-size: .85rem; font-weight: 600;
+        text-decoration: none; padding: 6px 18px; border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.5); transition: all .2s;
+    }
+    .topnav-btn:hover { background: rgba(255, 255, 255, 0.95) !important; color: #1e293b; }
+
+    /* ── Page Layout ─────────────────────────────── */
+    .page-wrap {
+        min-height: 100vh; padding-top: 64px;
+        display: flex; align-items: center; justify-content: center;
+        padding-bottom: 40px;
+    }
+
+    /* ── Auth Card ───────────────────────────────── */
+    .auth-card {
+        position: relative;
+        background: rgba(235, 244, 255, 0.78) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        width: 100%; max-width: 480px;
+        padding: 36px 36px 32px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        border-top: 5px solid var(--accent) !important;
+        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.08) !important;
+    }
+
+    /* ── Badge ───────────────────────────────────── */
+    .page-badge {
+        display: inline-flex; align-items: center;
+        background: var(--badge-bg); color: var(--badge-color);
+        font-size: .78rem; font-weight: 700; letter-spacing: .5px;
+        padding: 4px 12px; border-radius: 20px;
+        margin-bottom: 16px; text-transform: uppercase;
+    }
+
+    /* ── Logo ────────────────────────────────────── */
+    .auth-center-logo { height: 88px; width: auto; object-fit: contain; display: block; margin: 0 auto; }
+
+    /* ── Heading ─────────────────────────────────── */
+    .card-heading {
+        font-size: 1.9rem; font-weight: 800; color: #1e293b;
+        margin: 12px 0 6px; line-height: 1.2; letter-spacing: -.5px;
+    }
+    .accent { color: var(--accent); }
+
+    .auth-subtitle { color: #64748b; font-size: .9rem; margin: 0; }
+    .accent-link {
+        color: var(--accent); font-weight: 600; text-decoration: none;
+    }
+    .accent-link:hover { text-decoration: underline; }
+
+    /* ── Inputs ──────────────────────────────────── */
+    .custom-input-group { position: relative; }
+
+    .input-icon {
+        position: absolute; left: 14px; top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8; font-size: .95rem; pointer-events: none;
+        z-index: 1;
+    }
+
+    .custom-input {
+        width: 100%; padding: 12px 16px;
+        border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: .93rem; font-family: 'Outfit', sans-serif;
+        color: #334155; background: #f8fafc;
+        outline: none; transition: border-color .2s, box-shadow .2s, background .2s;
+        appearance: none;
+    }
+    .custom-input.has-icon { padding-left: 40px; }
+    .custom-input::placeholder { color: #94a3b8; }
+    .custom-input:focus {
+        border-color: var(--accent);
+        background: #fff;
+        box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .custom-input.is-invalid { border-color: #f87171; background: #fff8f8; }
+
+    .invalid-feedback { font-size: .8rem; color: #ef4444; margin-top: 4px; padding-left: 4px; display: block; }
+
+    /* ── Button ──────────────────────────────────── */
+    .btn-submit {
+        position: relative; background: var(--btn-bg); color: #fff;
+        font-weight: 700; font-size: .95rem; font-family: 'Outfit', sans-serif;
+        padding: 13px 20px; border-radius: 10px; border: none;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        letter-spacing: .5px; transition: background .2s, transform .15s;
+    }
+    .btn-submit span { margin: 0 auto; }
+    .btn-arrow { position: absolute; right: 16px; }
+    .btn-submit:hover { background: var(--btn-hover); transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+</style>
+@endpush
