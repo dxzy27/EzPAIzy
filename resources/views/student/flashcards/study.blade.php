@@ -471,14 +471,16 @@
                         <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
                         
                         <!-- Card Content -->
-                        <div class="flex-grow-1 d-flex flex-column justify-content-center py-4" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
-                            ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
-                            <div class="flashcard-content w-100">
-                                <div class="${alignClass}">
-                                    <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${formattedDef}</div>
+                        <div class="flex-grow-1 d-flex flex-column py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
+                            <div class="w-100" style="margin: auto 0; padding: 0.5rem 0;">
+                                ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
+                                <div class="flashcard-content w-100">
+                                    <div class="${alignClass}">
+                                        <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${formattedDef}</div>
+                                    </div>
                                 </div>
+                                `}
                             </div>
-                            `}
                         </div>
                         
                         <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
@@ -520,10 +522,12 @@
                         <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
                         
                         <!-- Card Content -->
-                        <div class="flex-grow-1 d-flex flex-column justify-content-center py-4" style="overflow-y: auto;">
-                            <div class="flashcard-content w-100">
-                                <div class="w-100 fs-4" style="line-height: 1.5;">
-                                    <div id="placeholder-text">${initialAnswerWords}</div>
+                        <div class="flex-grow-1 d-flex flex-column py-2" style="overflow-y: auto;">
+                            <div class="w-100" style="margin: auto 0; padding: 0.5rem 0;">
+                                <div class="flashcard-content w-100">
+                                    <div class="w-100 fs-4" style="line-height: 1.5;">
+                                        <div id="placeholder-text">${initialAnswerWords}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -590,12 +594,14 @@
                             <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
                             
                             <!-- Card Content -->
-                            <div class="flex-grow-1 d-flex flex-column justify-content-center py-4" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
-                                ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
-                                <div class="flashcard-content w-100 text-start">
-                                    <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${currentCard.term}</div>
+                            <div class="flex-grow-1 d-flex flex-column py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
+                                <div class="w-100" style="margin: auto 0; padding: 0.5rem 0;">
+                                    ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
+                                    <div class="flashcard-content w-100 text-start">
+                                        <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${currentCard.term}</div>
+                                    </div>
+                                    `}
                                 </div>
-                                `}
                             </div>
                             
                             <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
