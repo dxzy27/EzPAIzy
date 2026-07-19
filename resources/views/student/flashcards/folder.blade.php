@@ -77,7 +77,7 @@
                                 </div>
                             </div>
                             <hr class="my-3" style="opacity: 0.1; border-color: #000;">
-                            <div class="d-flex flex-column align-items-center gap-2">
+                            <div class="d-flex flex-column align-items-center gap-1">
                                 <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center" style="height: 42px; font-weight: 600; border-radius: 10px; font-size: 0.9rem;">
                                     Open Flashcards <i class="bi bi-arrow-right ms-2"></i>
                                 </a>
