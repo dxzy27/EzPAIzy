@@ -20,8 +20,14 @@
 
     <!-- Topics Header -->
     <div class="row mb-3">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h5 class="text-muted fw-bold mb-0">TOPICS</h5>
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+                <h5 class="text-muted fw-bold mb-0">TOPICS</h5>
+                <div class="input-group shadow-sm" style="border-radius: 50px; overflow: hidden; width: 220px; height: 32px;">
+                    <span class="input-group-text bg-white border-0 ps-3 py-0"><i class="bi bi-search text-muted" style="font-size: 0.8rem;"></i></span>
+                    <input type="text" id="topics-search" class="form-control border-0 ps-2 py-0" placeholder="Search topics..." style="font-size: 0.8rem;">
+                </div>
+            </div>
             <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createTopicModal">
                 <i class="bi bi-folder-plus me-1"></i> Add Folder
             </button>
@@ -32,7 +38,7 @@
     @if($topics->count() > 0)
     <div class="row mb-4">
         @foreach($topics as $topic)
-            <div class="col-md-2 mb-3 position-relative group-action">
+            <div class="col-md-2 mb-3 position-relative group-action topic-folder-col" data-topic-name="{{ strtolower($topic->name) }}">
                 <a href="{{ route('teacher.quizzes.folder', ['topic' => $topic->name]) }}" class="text-decoration-none">
                     <div class="card h-100 shadow-sm border-0 {{ request('topic') == $topic->name ? 'bg-primary text-white' : 'bg-light text-dark' }} folder-card">
                         <div class="card-body text-center d-flex flex-column align-items-center justify-content-center p-3">
@@ -92,4 +98,25 @@
     
 
 </div>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('topics-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                const folders = document.querySelectorAll('.topic-folder-col');
+                folders.forEach(function(folder) {
+                    const name = folder.getAttribute('data-topic-name');
+                    if (name.includes(query)) {
+                        folder.style.setProperty('display', '', 'important');
+                    } else {
+                        folder.style.setProperty('display', 'none', 'important');
+                    }
+                });
+            });
+        }
+    });
+</script>
+@endpush
 @endsection

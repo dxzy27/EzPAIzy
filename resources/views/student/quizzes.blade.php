@@ -16,12 +16,16 @@
 
     <!-- Topics Folders -->
     @if(count($topics) > 0)
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
          <h5 class="text-muted fw-bold mb-0">TOPICS</h5>
+         <div class="input-group shadow-sm" style="border-radius: 50px; overflow: hidden; width: 260px; height: 36px;">
+            <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted" style="font-size: 0.85rem;"></i></span>
+            <input type="text" id="topics-search" class="form-control border-0 ps-2" placeholder="Search topics..." style="font-size: 0.85rem;">
+         </div>
     </div>
     <div class="row mb-5">
         @foreach($topics as $topic)
-            <div class="col-md-2 mb-3">
+            <div class="col-md-2 mb-3 topic-folder-col" data-topic-name="{{ strtolower($topic->name) }}">
                 <a href="{{ route('student.quizzes.folder', ['topic' => $topic->name]) }}" class="text-decoration-none">
                     <div class="card h-100 shadow-sm border-0 bg-light text-dark folder-card" style="transition: transform 0.2s;">
                         <div class="card-body text-center d-flex flex-column align-items-center justify-content-center p-3">
@@ -60,10 +64,25 @@
     </div>
 </div>
 
-<style>
-    .folder-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-    }
-</style>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('topics-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                const folders = document.querySelectorAll('.topic-folder-col');
+                folders.forEach(function(folder) {
+                    const name = folder.getAttribute('data-topic-name');
+                    if (name.includes(query)) {
+                        folder.style.setProperty('display', '', 'important');
+                    } else {
+                        folder.style.setProperty('display', 'none', 'important');
+                    }
+                });
+            });
+        }
+    });
+</script>
+@endpush
 @endsection
