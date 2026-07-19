@@ -633,26 +633,53 @@
                     </div>
                 </div>
 
-                <!-- Continue Learning Card -->
+                <!-- To-Revise Card -->
                 <div class="col-md-6 mb-3">
                     <div class="card p-4 h-100 d-flex flex-column justify-content-between" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
                         <div>
                             <div class="d-flex align-items-center gap-2 mb-3">
-                                <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(66, 85, 255, 0.15); display: flex; align-items: center; justify-content: center;">
-                                    <i class="bi bi-book" style="font-size: 1.2rem; color: #4255ff;"></i>
+                                <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-star-fill" style="font-size: 1.15rem; color: #f59e0b;"></i>
                                 </div>
-                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">Continue Learning</h5>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">To-Revise</h5>
                             </div>
                             
+                            @php
+                                $latestFav = \App\Models\Favorite::where('student_id', auth()->id())
+                                    ->with(['content', 'flashcardSet'])
+                                    ->latest()
+                                    ->first();
+                            @endphp
+
                             <div class="mb-3">
-                                <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">📖 Bab 6: Adab dan Akhlak Islamiah</h6>
-                                <span class="text-muted small">Personalized materials recommended for your style</span>
+                                @if($latestFav)
+                                    @php
+                                        $favTitle = 'Unknown Title';
+                                        $favType = 'Saved Item';
+                                        
+                                        if ($latestFav->content) {
+                                            $favTitle = '📖 ' . $latestFav->content->title;
+                                            $favType = 'Other Material';
+                                        } elseif ($latestFav->flashcardSet) {
+                                            $favTitle = '🃏 ' . $latestFav->flashcardSet->title;
+                                            $favType = 'Flashcard Set';
+                                        } elseif (!empty($latestFav->quiz_topic)) {
+                                            $favTitle = '📝 ' . $latestFav->quiz_topic . ' (' . ucfirst($latestFav->quiz_difficulty) . ')';
+                                            $favType = 'Quiz';
+                                        }
+                                    @endphp
+                                    <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">{{ $favTitle }}</h6>
+                                    <span class="text-muted small">Recently saved • {{ $favType }}</span>
+                                @else
+                                    <h6 class="fw-bold text-muted mb-1" style="font-size: 0.95rem;">No saved materials</h6>
+                                    <span class="text-muted small">Mark materials with a star to revise them here.</span>
+                                @endif
                             </div>
                         </div>
                         
                         <div>
-                            <a href="{{ route('student.contents.index') }}" class="quizlet-btn w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.88rem; text-decoration: none !important;">
-                                <span>Continue</span> <i class="bi bi-arrow-right"></i>
+                            <a href="{{ route('student.revision') }}" class="quizlet-btn w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.88rem; text-decoration: none !important; background-color: #f59e0b !important; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25) !important;">
+                                <span>Go to Revision List</span> <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
                     </div>
