@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('content')
+@push('styles')
 <style>
     /* ── Blended Card Styling (Quizlet Style) ── */
     .card {
@@ -225,7 +225,9 @@
         margin: -1px -1px 0 -1px;
     }
 </style>
+@endpush
 
+@section('content')
 @php
     $user  = auth()->user();
     $style = $user->learning_style; // null | read_write | auditory | visual | kinesthetic | competitive
