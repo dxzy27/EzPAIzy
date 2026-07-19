@@ -365,7 +365,7 @@
             }
             
             const currentCard = cards[currentIndex];
-            let controlsHtml = '<div class="bg-dark text-white p-4 rounded-4 mx-auto mt-4 text-start" style="max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">';
+            let controlsHtml = '';
             
             let stillArrow = '';
             let knowArrow = '';
@@ -376,9 +376,9 @@
 
             if (mode === 'review') {
                 if (!isFlipped) {
-                    controlsHtml += `
-                        <div class="mb-4">
-                            <p class="text-white-50 mb-0 fw-bold">Think of the answer, then tap the card to flip and type it.</p>
+                    controlsHtml = `
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-2">Think of the answer, then tap the card to flip and type it.</p>
                         </div>
                     `;
                 } else {
@@ -386,14 +386,14 @@
                         currentCard._parsedItems = parseDefinitionItems(currentCard.definition);
                     }
                     let allDone = currentCard._parsedItems.every(item => item.revealed);
-                    let initialMsg = allDone ? 'Perfect! How easy was that?' : 'How well did you remember?';
+                    let initialMsg = allDone ? 'Perfect! How easy was that?' : 'How well did you remember this?';
 
-                    controlsHtml += `
-                        <div id="grading-controls" class="mb-4">
-                            <p class="fw-bold mb-3" id="grading-message" style="font-size: 0.95rem;">${initialMsg}</p>
-                            <div class="d-flex align-items-center gap-3">
+                    controlsHtml = `
+                        <div id="grading-controls" class="mt-4 text-center">
+                            <p class="fw-bold mb-3" id="grading-message">${initialMsg}</p>
+                            <div class="d-flex justify-content-center gap-3">
                                 <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                    ${stillArrow}<i class="bi bi-x-lg fs-6"></i> Still Learning
+                                    ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
                                 </button>
                                 <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
                                     <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
@@ -403,12 +403,12 @@
                     `;
                 }
             } else {
-                controlsHtml += `
-                    <div id="grading-controls" class="mb-4">
-                        <p class="fw-bold mb-3" id="grading-message" style="font-size: 0.95rem;">How well did you remember?</p>
-                        <div class="d-flex align-items-center gap-3">
+                controlsHtml = `
+                    <div id="grading-controls" class="mt-4 text-center">
+                        <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
+                        <div class="d-flex justify-content-center gap-3">
                             <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                ${stillArrow}<i class="bi bi-x-lg fs-6"></i> Still Learning
+                                ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
                             </button>
                             <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
                                 <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
@@ -418,17 +418,7 @@
                 `;
             }
 
-            // Next/Prev buttons
-            controlsHtml += `
-                <div class="d-flex align-items-center gap-4 ${isFlipped && mode === 'review' ? '' : 'pt-2'}">
-                    <button class="btn btn-link text-white-50 text-decoration-none p-0 d-flex align-items-center gap-2 fw-bold" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity: 0.5; pointer-events: none;"' : ''}>
-                        <i class="bi bi-caret-left-fill"></i> Previous
-                    </button>
-                    <button class="btn btn-link text-white text-decoration-none p-0 d-flex align-items-center gap-2 fw-bold" onclick="nextCard()">
-                        Next <i class="bi bi-caret-right-fill"></i>
-                    </button>
-                </div>
-            </div>`;
+
             
             controlsEl.innerHTML = controlsHtml;
         }
@@ -564,7 +554,12 @@
                     </div>
                 </div>
 
-                <div class="flashcard-container">
+                <div class="d-flex align-items-center justify-content-center gap-2 gap-md-4 w-100 mx-auto" style="max-width: 760px;">
+                    <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 50px; height: 50px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity: 0.5;"' : 'onmouseover="this.style.color=\'#0f172a\'; this.style.borderColor=\'#cbd5e1\'" onmouseout="this.style.color=\'#64748b\'; this.style.borderColor=\'#e2e8f0\'"'}>
+                        <i class="bi bi-chevron-left fs-4" style="margin-left: -2px;"></i>
+                    </button>
+
+                    <div class="flashcard-container flex-grow-1" style="margin: 0; min-width: 0;">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
                         <div class="flashcard-face flashcard-front d-flex flex-column h-100 p-4">
                             <!-- Card Header -->
@@ -602,7 +597,12 @@
                     </div>
                 </div>
 
-                <div class="controls"></div>
+                <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 50px; height: 50px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="nextCard()" onmouseover="this.style.color='#0f172a'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.color='#64748b'; this.style.borderColor='#e2e8f0'">
+                    <i class="bi bi-chevron-right fs-4" style="margin-right: -2px;"></i>
+                </button>
+            </div>
+
+            <div class="controls"></div>
             `;
 
             renderControls();
