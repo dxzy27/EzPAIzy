@@ -4,7 +4,7 @@
 <style>
     .flashcard-container {
         perspective: 1000px;
-        height: 400px;
+        height: 320px;
         width: 100%;
         max-width: 600px;
         margin: 0 auto;
@@ -496,7 +496,7 @@
                             ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
                             <div class="flashcard-content w-100">
                                 <div class="${alignClass}">
-                                    <div class="fs-4 text-dark fw-bold" style="line-height: 1.45;">${formattedDef}</div>
+                                    <div class="fs-3 text-dark fw-bold" style="line-height: 1.4;">${formattedDef}</div>
                                 </div>
                             </div>
                             `}
@@ -593,7 +593,7 @@
                             <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
                                 ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
                                 <div class="flashcard-content w-100">
-                                    <div class="fs-3 text-dark fw-bold" style="line-height: 1.4;">${currentCard.term}</div>
+                                    <div class="fs-2 text-dark fw-bold" style="line-height: 1.35;">${currentCard.term}</div>
                                 </div>
                                 `}
                             </div>
