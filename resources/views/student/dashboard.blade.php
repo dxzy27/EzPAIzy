@@ -641,7 +641,9 @@
                                         $favType = 'Quiz';
                                     }
                                 @endphp
-                                <p class="text-muted mb-0" style="font-size: 0.88rem;">Recently saved: <strong class="text-dark">{{ $favTitle }}</strong> • {{ $favType }}</p>
+                                <span class="text-muted d-block mb-1" style="font-size: 0.78rem;">Recently saved:</span>
+                                <h6 class="fw-bold text-dark mb-1" style="font-size: 0.96rem; letter-spacing: -0.1px;">{{ $favTitle }}</h6>
+                                <span class="text-muted small d-block" style="font-size: 0.76rem; opacity: 0.85;">{{ $favType }}</span>
                             @else
                                 <p class="text-muted mb-0" style="font-size: 0.88rem;">No saved materials. Mark materials with a star to revise them here.</p>
                             @endif
