@@ -8,6 +8,15 @@
         <img src="{{ asset('images/logo.png') }}"    alt="Mascot"  class="brand-mascot">
         <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" class="brand-wordmark">
     </div>
+    <div class="ez-topnav-actions">
+        <a href="{{ route('logout') }}" 
+           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+           class="topnav-btn">Log in</a>
+        
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
+    </div>
 </nav>
 
 {{-- ── Page Body ────────────────────────────────────────────────── --}}
