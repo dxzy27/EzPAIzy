@@ -36,7 +36,7 @@
 
     <!-- Topics Folders -->
     @if($topics->count() > 0)
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         @foreach($topics as $topic)
             <div class="col-sm-6 col-md-3 mb-4 position-relative group-action topic-folder-col" data-topic-name="{{ strtolower($topic->name) }}">
                 <a href="{{ route('teacher.quizzes.folder', ['topic' => $topic->name]) }}" class="text-decoration-none">

@@ -25,7 +25,7 @@
             <input type="text" id="topics-search" class="form-control border-0 ps-2" placeholder="Search topics..." style="font-size: 0.85rem;">
          </div>
     </div>
-    <div class="row mb-5">
+    <div class="row g-3 mb-5">
         @foreach($topics as $topic)
             <div class="col-sm-6 col-md-3 mb-4 topic-folder-col" data-topic-name="{{ strtolower($topic->name) }}">
                 <a href="{{ route('student.flashcards.folder', ['topic' => $topic->name]) }}" class="text-decoration-none">
