@@ -268,14 +268,14 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 9px 12px;
+            padding: 11px 14px;
             border-radius: 10px;
             color: rgba(255,255,255,.72) !important;
             font-size: .875rem;
             font-weight: 500;
             text-decoration: none;
             transition: background .18s, color .18s;
-            margin-bottom: 2px;
+            margin-bottom: 6px;
             white-space: nowrap;
             overflow: hidden;
             position: relative;
@@ -290,7 +290,7 @@
             transition: opacity .2s;
             overflow: hidden;
         }
-        .Sidebar.collapsed .nav-link { justify-content: center; padding: 10px 0; }
+        .Sidebar.collapsed .nav-link { justify-content: center; padding: 11px 0; margin-bottom: 6px; }
         .Sidebar.collapsed .nav-label { display: none; }
         .Sidebar.collapsed .nav-chevron { display: none; }
 
@@ -355,7 +355,8 @@
         }
         .submenu-list .nav-link {
             font-size: .85rem;
-            padding: 7px 12px;
+            padding: 8px 12px;
+            margin-bottom: 4px;
         }
         .Sidebar.collapsed .submenu-list { display: none; }
 
