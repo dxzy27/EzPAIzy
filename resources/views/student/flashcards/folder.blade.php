@@ -35,17 +35,17 @@
                 <div class="col-md-4 mb-4 set-card-col" data-title="{{ strtolower($set->title) }}">
                     <div class="card h-100 shadow-sm content-card">
                         <div class="card-body p-3 pb-2">
-                            <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h6 class="card-title mb-0 fw-bold text-dark fs-6">{{ $set->title }}</h6>
                                 @php
                                     $isFavorited = in_array($set->id, $favoritedFlashcardIds ?? []);
                                 @endphp
-                                <button class="btn btn-link p-0 text-warning favorite-btn d-inline-flex align-items-center justify-content-center" 
+                                <button class="btn btn-light favorite-btn p-0 d-flex align-items-center justify-content-center" 
                                         data-id="{{ $set->id }}" 
                                         data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
                                         title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}"
-                                        style="line-height: 1; text-decoration: none;">
-                                    <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
+                                        style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.06); transition: all 0.2s; background-color: #f8fafc;">
+                                    <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} text-warning" style="font-size: 0.95rem; line-height: 1;"></i>
                                 </button>
                             </div>
                             <span class="badge bg-info mb-2 text-white" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; font-weight: 600;">{{ $set->topic }}</span>
