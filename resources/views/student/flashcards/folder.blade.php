@@ -34,9 +34,9 @@
             @foreach($flashcardSets as $set)
                 <div class="col-md-4 mb-4 set-card-col" data-title="{{ strtolower($set->title) }}">
                     <div class="card h-100 shadow-sm content-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0 fw-bold text-dark">{{ $set->title }}</h5>
+                        <div class="card-body p-3 pb-2">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="card-title mb-0 fw-bold text-dark fs-6">{{ $set->title }}</h6>
                                 @php
                                     $isFavorited = in_array($set->id, $favoritedFlashcardIds ?? []);
                                 @endphp
@@ -47,32 +47,34 @@
                                     <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
                                 </button>
                             </div>
-                            <span class="badge bg-info mb-2 text-white" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 600;">{{ $set->topic }}</span>
-                            <p class="card-text text-muted">{{ Str::limit($set->description, 80) }}</p>
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between text-muted small mb-1">
+                            <span class="badge bg-info mb-2 text-white" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; font-weight: 600;">{{ $set->topic }}</span>
+                            @if(!empty($set->description))
+                                <p class="card-text text-muted small mb-2">{{ Str::limit($set->description, 60) }}</p>
+                            @endif
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-muted small mb-1" style="font-size: 0.75rem;">
                                     <span>Mastery Progress</span>
-                                    <span>{{ $set->stats->total > 0 ? round((($set->stats->mastered + $set->stats->review) / $set->stats->total) * 100) : 0 }}%</span>
+                                    <span class="fw-bold text-dark">{{ $set->stats->total > 0 ? round((($set->stats->mastered + $set->stats->review) / $set->stats->total) * 100) : 0 }}%</span>
                                 </div>
-                                <div class="progress" style="height: 6px;">
+                                <div class="progress" style="height: 4px;">
                                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ $set->stats->total > 0 ? (($set->stats->mastered + $set->stats->review) / $set->stats->total) * 100 : 0 }}%" title="Mastered"></div>
                                     <div class="progress-bar" role="progressbar" style="width: {{ $set->stats->total > 0 ? ($set->stats->learning / $set->stats->total) * 100 : 0 }}%; background-color: #f97316;" title="Still Learning"></div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
-                                    <span class="text-secondary"><i class="bi bi-circle-fill text-secondary me-1"></i>{{ $set->stats->new }} New</span>
-                                    <span style="color: #f97316; font-weight: 500;"><i class="bi bi-circle-fill me-1" style="color: #f97316;"></i>{{ $set->stats->learning }} Still Learning</span>
-                                    <span class="text-success" style="font-weight: 500;"><i class="bi bi-circle-fill text-success me-1"></i>{{ $set->stats->mastered + $set->stats->review }} Mastered</span>
+                                <div class="d-flex justify-content-between mt-2" style="font-size: 0.72rem;">
+                                    <span class="text-secondary"><i class="bi bi-circle-fill text-secondary me-1" style="font-size: 0.5rem;"></i>{{ $set->stats->new }} New</span>
+                                    <span style="color: #f97316; font-weight: 500;"><i class="bi bi-circle-fill me-1" style="color: #f97316; font-size: 0.5rem;"></i>{{ $set->stats->learning }} Learning</span>
+                                    <span class="text-success" style="font-weight: 500;"><i class="bi bi-circle-fill text-success me-1" style="font-size: 0.5rem;"></i>{{ $set->stats->mastered + $set->stats->review }} Mastered</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer bg-white border-top-0 d-flex gap-2">
-                            <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary flex-grow-1">
-                                <i class="bi bi-play-circle"></i> Open Flashcards
+                        <div class="card-footer bg-white border-top-0 p-3 pt-0 d-flex gap-2">
+                            <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary btn-sm flex-grow-1 py-2">
+                                <i class="bi bi-play-circle me-1"></i> Open Flashcards
                             </a>
                             <form action="{{ route('student.flashcards.reset', $set) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset this flashcard progress?');" class="m-0">
                                 @csrf
-                                <button type="submit" class="btn btn-outline-secondary" title="Reset Progress" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center; padding: 0;">
-                                    <i class="bi bi-arrow-clockwise fs-5"></i>
+                                <button type="submit" class="btn btn-outline-secondary btn-sm" title="Reset Progress" style="height: 33px; width: 33px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                                    <i class="bi bi-arrow-clockwise"></i>
                                 </button>
                             </form>
                         </div>
