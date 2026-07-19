@@ -4,9 +4,9 @@
 <style>
     .flashcard-container {
         perspective: 1000px;
-        height: 380px;
+        height: 500px;
         width: 100%;
-        max-width: 600px;
+        max-width: 800px;
         margin: 0 auto;
         cursor: pointer;
     }
@@ -30,8 +30,9 @@
         height: 100%;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
-        border-radius: 1rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.08);
         background-color: #ffffff !important; /* Premium White for Student Front */
         color: #0f172a !important; /* Dark slate text */
         display: flex;
@@ -558,7 +559,7 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-center gap-2 w-100 mx-auto" style="max-width: 720px;">
+                <div class="d-flex align-items-center justify-content-center gap-2 w-100 mx-auto" style="max-width: 900px;">
                     <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 44px; height: 44px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity: 0.5;"' : 'onmouseover="this.style.color=\'#0f172a\'; this.style.borderColor=\'#cbd5e1\'" onmouseout="this.style.color=\'#64748b\'; this.style.borderColor=\'#e2e8f0\'"'}>
                         <i class="bi bi-chevron-left fs-4" style="margin-left: -2px;"></i>
                     </button>
