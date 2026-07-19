@@ -4,7 +4,7 @@
 <style>
     /* ── Blended Card Styling (Quizlet Style) ── */
     .card {
-        background: rgba(255, 255, 255, 0.58) !important;
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FBFD 100%) !important;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.5) !important;
@@ -16,7 +16,7 @@
         box-shadow: 0 15px 35px rgba(31, 110, 104, 0.08) !important;
     }
     .content-card {
-        background: rgba(255, 255, 255, 0.58) !important;
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FBFD 100%) !important;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.5) !important;
