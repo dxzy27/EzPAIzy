@@ -483,7 +483,7 @@
             $item = new \stdClass();
             $item->title = $qz->title;
             $item->type = 'quiz';
-            $item->subtitle = 'Practice test • by ' . ($qz->teacher?->name ?? 'Teacher');
+            $item->subtitle = 'Practice quiz • by ' . ($qz->teacher?->name ?? 'Teacher');
             $item->url = route('student.quiz.take', ['topic' => $qz->topic, 'difficulty' => $qz->difficulty]);
             $item->created_at = $qz->created_at;
             $combinedRecents->push($item);
@@ -519,7 +519,7 @@
                         @if($r->type === 'flashcard')
                             <i class="bi bi-card-text" style="font-size: 1.3rem; color: #4255ff;"></i>
                         @elseif($r->type === 'quiz')
-                            <i class="bi bi-card-checklist" style="font-size: 1.3rem; color: #f59e0b;"></i>
+                            <i class="bi bi-pencil-square" style="font-size: 1.3rem; color: #f59e0b;"></i>
                         @else
                             <i class="bi bi-file-earmark-text" style="font-size: 1.3rem; color: #10b981;"></i>
                         @endif
