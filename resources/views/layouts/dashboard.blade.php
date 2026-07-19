@@ -275,7 +275,7 @@
             font-weight: 500;
             text-decoration: none;
             transition: background .18s, color .18s;
-            margin-bottom: 6px;
+            margin-bottom: 12px;
             white-space: nowrap;
             overflow: hidden;
             position: relative;
@@ -290,7 +290,7 @@
             transition: opacity .2s;
             overflow: hidden;
         }
-        .Sidebar.collapsed .nav-link { justify-content: center; padding: 11px 0; margin-bottom: 6px; }
+        .Sidebar.collapsed .nav-link { justify-content: center; padding: 11px 0; margin-bottom: 12px; }
         .Sidebar.collapsed .nav-label { display: none; }
         .Sidebar.collapsed .nav-chevron { display: none; }
 
