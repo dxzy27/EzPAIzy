@@ -31,7 +31,7 @@
                 <span class="vark-badge badge-visual">👁 Visual</span>
                 <span class="vark-badge badge-auditory">🎧 Auditory</span>
                 <span class="vark-badge badge-readwrite">📖 Read/Write</span>
-                <span class="vark-badge badge-competitive">🏃 Competitive</span>
+                <span class="vark-badge badge-kinesthetic">🏃 Kinaesthetic</span>
             </div>
 
             {{-- Feature highlights --}}
@@ -336,7 +336,7 @@
         border-color: rgba(234, 179, 8, 0.25);
         color: #fef08a;
     }
-    .vark-badge.badge-competitive {
+    .vark-badge.badge-kinesthetic {
         background: rgba(236, 72, 153, 0.1);
         border-color: rgba(236, 72, 153, 0.25);
         color: #fbcfe8;
