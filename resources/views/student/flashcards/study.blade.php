@@ -544,19 +544,28 @@
             }
 
             app.innerHTML = `
-                <div class="bg-white p-3 rounded-4 mb-4 mx-auto border" style="max-width: 600px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #e2e8f0 !important;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="text-dark text-decoration-none fw-bold d-flex align-items-center" style="font-size: 0.9rem; opacity: 0.9; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
-                            <i class="bi bi-collection-fill me-2" style="color: #94a3b8;"></i> {{ addslashes($flashcardSet->title) }}
+                <div class="d-flex justify-content-between align-items-center mb-3 mx-auto px-2" style="max-width: 800px; min-height: 50px;">
+                    <!-- Left: Exit -->
+                    <div class="flex-grow-1" style="flex-basis: 0;">
+                        <a href="{{ $flashcardSet->topic ? route('student.flashcards.folder', $flashcardSet->topic) : route('student.flashcards.index') }}" class="text-muted text-decoration-none fw-bold d-inline-flex align-items-center" style="transition: color 0.2s;" onmouseover="this.style.color='#0f172a'" onmouseout="this.style.color='#64748b'">
+                            <i class="bi bi-arrow-left me-2"></i> <span class="d-none d-sm-inline">Exit Study</span>
                         </a>
-                        <span class="text-muted fw-bold" style="font-size: 0.8rem;">${Math.max(1, Math.ceil(cards.length * 0.5))} min</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
-                        <span class="text-muted">Card ${currentIndex + 1} of ${cards.length}</span>
-                        ${currentIndex > 0 ? `<a href="javascript:void(0)" onclick="prevCard()" class="text-muted text-decoration-none" style="transition: color 0.2s;" onmouseover="this.style.color='#0f172a'" onmouseout="this.style.color='#64748b'"><i class="bi bi-arrow-counterclockwise me-1"></i>Undo</a>` : ''}
+
+                    <!-- Center: Title -->
+                    <div class="fw-bold text-dark text-center" style="flex-basis: auto;">
+                        {{ addslashes($flashcardSet->title) }}
                     </div>
-                    <div class="progress border-0" style="height: 6px; border-radius: 50px; background-color: #f1f5f9;">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: ${((currentIndex + 1) / cards.length) * 100}%; border-radius: 50px; transition: width 0.3s ease;"></div>
+
+                    <!-- Right: Progress -->
+                    <div class="d-flex align-items-center justify-content-end gap-3 flex-grow-1" style="flex-basis: 0;">
+                        ${currentIndex > 0 ? `<a href="javascript:void(0)" onclick="prevCard()" class="text-muted text-decoration-none" title="Undo"><i class="bi bi-arrow-counterclockwise fs-5"></i></a>` : ''}
+                        <div class="text-muted fw-bold text-nowrap" style="font-size: 0.85rem;">
+                            ${currentIndex + 1} / ${cards.length}
+                        </div>
+                        <div class="progress border-0 d-none d-sm-flex" style="width: 80px; height: 6px; border-radius: 50px; background-color: #e2e8f0;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: ${((currentIndex + 1) / cards.length) * 100}%; border-radius: 50px; transition: width 0.3s ease;"></div>
+                        </div>
                     </div>
                 </div>
 
