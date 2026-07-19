@@ -62,8 +62,8 @@
                                     <div class="progress-bar" role="progressbar" style="width: {{ $set->stats->total > 0 ? ($set->stats->learning / $set->stats->total) * 100 : 0 }}%; background-color: #f97316;" title="Still Learning"></div>
                                 </div>
                                 <div class="d-flex flex-wrap gap-2 mt-2">
-                                    <span class="badge bg-light text-secondary border d-inline-flex align-items-center gap-1 py-1 px-2" style="border-radius: 30px; font-weight: 500; font-size: 0.7rem;">
-                                        <span style="width: 5px; height: 5px; border-radius: 50%; background-color: #6c757d; display: inline-block;"></span>
+                                    <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2" style="border-radius: 30px; font-weight: 500; font-size: 0.7rem; background-color: #F3F4F6; border: 1px solid #E5E7EB; color: #6B7280;">
+                                        <span style="width: 5px; height: 5px; border-radius: 50%; background-color: #6B7280; display: inline-block;"></span>
                                         {{ $set->stats->new }} New
                                     </span>
                                     <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2" style="background-color: rgba(249, 115, 22, 0.08); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.15); border-radius: 30px; font-weight: 500; font-size: 0.7rem;">
