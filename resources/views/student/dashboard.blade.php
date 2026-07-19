@@ -422,11 +422,11 @@
                                                 </a>
                                             @elseif($card['type'] === 'quiz')
                                                 <a href="{{ route('student.quizzes') }}" class="quizlet-btn">
-                                                    Browse Quizzes &rarr;
+                                                    Browse Quizzes
                                                 </a>
                                             @else
                                                 <a href="{{ route('student.progress') }}" class="quizlet-btn">
-                                                    View Progress &rarr;
+                                                    View Progress
                                                 </a>
                                             @endif
                                         </div>
