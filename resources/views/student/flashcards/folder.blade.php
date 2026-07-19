@@ -56,7 +56,7 @@
                                     <span>Mastery Progress</span>
                                     <span class="fw-bold text-dark">{{ $set->stats->total > 0 ? round((($set->stats->mastered + $set->stats->review) / $set->stats->total) * 100) : 0 }}%</span>
                                 </div>
-                                <div class="progress" style="height: 4px;">
+                                <div class="progress" style="height: 8px; border-radius: 50px;">
                                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ $set->stats->total > 0 ? (($set->stats->mastered + $set->stats->review) / $set->stats->total) * 100 : 0 }}%" title="Mastered"></div>
                                     <div class="progress-bar" role="progressbar" style="width: {{ $set->stats->total > 0 ? ($set->stats->learning / $set->stats->total) * 100 : 0 }}%; background-color: #f97316;" title="Still Learning"></div>
                                 </div>
