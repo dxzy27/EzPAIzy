@@ -455,34 +455,36 @@
                 backFaceHtml = `
                     <div class="d-flex flex-column h-100 w-100 text-center" style="position: relative;">
                         <!-- Card Header -->
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <div class="d-flex align-items-center gap-1">
-                                <span class="badge rounded-pill fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem; padding: 0.35em 0.8em; letter-spacing: 0.5px;">Back</span>
-                                ${getStatusBadgeHtml(currentCard.status)}
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center pb-2">
+                            <div class="text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">ANSWER</div>
                             <div class="d-flex align-items-center gap-2">
+                                ${getStatusBadgeHtml(currentCard.status)}
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:28px;height:28px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
                             </div>
                         </div>
                         
+                        <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
+                        
                         <!-- Card Content -->
-                        <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
+                        <div class="flex-grow-1 d-flex flex-column justify-content-center py-4" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
                             ${localStorage.getItem(`hl_flash_${currentCard.id}_back`) || `
                             <div class="flashcard-content w-100">
                                 <div class="${alignClass}">
-                                    <div class="fs-3 text-dark fw-bold" style="line-height: 1.4;">${formattedDef}</div>
+                                    <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${formattedDef}</div>
                                 </div>
                             </div>
                             `}
                         </div>
                         
+                        <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
+                        
                         <!-- Card Footer -->
-                        <div class="d-flex justify-content-center align-items-center pt-1" onclick="flipCard(event)" style="cursor:pointer;">
-                            <small class="text-muted fw-bold" style="font-size: 0.8rem;"><i class="bi bi-arrow-left-right me-1"></i> Tap to flip back</small>
+                        <div class="pt-2 text-center" onclick="flipCard(event)" style="cursor:pointer;">
+                            <small class="text-muted fw-bold" style="font-size: 0.75rem;">Click anywhere to flip back</small>
                         </div>
                     </div>
                 `;
@@ -499,40 +501,42 @@
                 backFaceHtml = `
                     <div class="d-flex flex-column h-100 w-100 text-center" style="position: relative;">
                         <!-- Card Header -->
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <div class="d-flex align-items-center gap-1">
-                                <span class="badge rounded-pill fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem; padding: 0.35em 0.8em; letter-spacing: 0.5px;">Back</span>
-                                ${getStatusBadgeHtml(currentCard.status)}
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center pb-2">
+                            <div class="text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">ANSWER</div>
                             <div class="d-flex align-items-center gap-2">
-                                <button id="show-answer-btn" type="button" class="btn btn-outline-secondary text-muted border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.75rem; border-radius: 4px; line-height: 1.2; height: 26px;" onclick="event.stopPropagation(); revealAnswer();">
-                                    Show Answer
+                                ${getStatusBadgeHtml(currentCard.status)}
+                                <button id="show-answer-btn" type="button" class="btn btn-outline-secondary text-muted border-secondary px-2 py-0.5 d-flex align-items-center justify-content-center ${allDone ? 'd-none' : ''}" style="font-size: 0.7rem; border-radius: 4px; line-height: 1.2; height: 24px;" onclick="event.stopPropagation(); revealAnswer();">
+                                    Reveal
                                 </button>
                                 @if(auth()->user()?->learning_style === 'auditory')
-                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle ${allDone ? '' : 'd-none'}" style="width:30px;height:30px;padding:0;display:${allDone ? 'flex' : 'none'};align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Answer">
+                                <button id="review-speak-btn" type="button" class="btn btn-sm btn-light rounded-circle ${allDone ? '' : 'd-none'}" style="width:28px;height:28px;padding:0;display:${allDone ? 'flex' : 'none'};align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentDefinition();" title="Read Answer">
                                     <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                 </button>
                                 @endif
                             </div>
                         </div>
                         
+                        <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
+                        
                         <!-- Card Content -->
-                        <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" style="overflow-y: auto;">
+                        <div class="flex-grow-1 d-flex flex-column justify-content-center py-4" style="overflow-y: auto;">
                             <div class="flashcard-content w-100">
-                                <div class="w-100">
+                                <div class="w-100 fs-4" style="line-height: 1.5;">
                                     <div id="placeholder-text">${initialAnswerWords}</div>
                                 </div>
                             </div>
                         </div>
                         
+                        <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
+                        
                         <!-- Card Footer -->
-                        <div class="d-flex justify-content-center align-items-center pt-1 w-100">
-                            <input type="text" id="answer-input" class="form-control text-center ${allDone ? 'd-none' : ''}" 
-                                   style="max-width: 80%; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; height: 36px; font-size: 0.9rem;" 
+                        <div class="pt-2 text-center w-100">
+                            <input type="text" id="answer-input" class="form-control text-center mx-auto ${allDone ? 'd-none' : ''}" 
+                                   style="max-width: 80%; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; height: 32px; font-size: 0.85rem;" 
                                    autocomplete="off" autocorrect="off" spellcheck="false" 
                                    value="${typedAnswer.replace(/"/g, '&quot;')}"
                                    placeholder="Type the exact answer..." oninput="checkTyping(this.value)" onclick="event.stopPropagation()">
-                            <small class="text-muted fw-bold ${allDone ? '' : 'd-none'}" onclick="flipCard(event)" style="cursor:pointer; font-size: 0.8rem;"><i class="bi bi-arrow-left-right me-1"></i> Tap to flip back</small>
+                            <small class="text-muted fw-bold ${allDone ? '' : 'd-none'}" onclick="flipCard(event)" style="cursor:pointer; font-size: 0.75rem;">Click anywhere to flip back</small>
                         </div>
                     </div>
                 `;
@@ -561,34 +565,36 @@
 
                     <div class="flashcard-container flex-grow-1" style="margin: 0; min-width: 0;">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
-                        <div class="flashcard-face flashcard-front d-flex flex-column h-100 p-4">
+                        <div class="flashcard-face flashcard-front d-flex flex-column h-100 p-4 text-start">
                             <!-- Card Header -->
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <div class="d-flex align-items-center gap-1">
-                                    <span class="badge rounded-pill fw-bold" onclick="flipCard(event)" style="cursor:pointer; background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem; padding: 0.35em 0.8em; letter-spacing: 0.5px;">Front</span>
-                                    ${getStatusBadgeHtml(currentCard.status)}
-                                </div>
+                            <div class="d-flex justify-content-between align-items-center pb-2">
+                                <div class="text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">QUESTION</div>
                                 <div class="d-flex align-items-center gap-2">
+                                    ${getStatusBadgeHtml(currentCard.status)}
                                     @if(auth()->user()?->learning_style === 'auditory')
-                                    <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentTerm();" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" title="Read Question">
+                                    <button type="button" class="btn btn-sm btn-light rounded-circle" style="width:28px;height:28px;padding:0;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation(); speakCurrentTerm();" title="Read Question">
                                         <i class="bi bi-volume-up-fill text-primary" style="pointer-events:none;"></i>
                                     </button>
                                     @endif
                                 </div>
                             </div>
                             
+                            <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
+                            
                             <!-- Card Content -->
-                            <div class="flex-grow-1 d-flex align-items-center justify-content-center py-2" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
+                            <div class="flex-grow-1 d-flex flex-column justify-content-center py-4" onclick="flipCard(event)" style="cursor:pointer; overflow-y: auto;">
                                 ${localStorage.getItem(`hl_flash_${currentCard.id}_front`) || `
-                                <div class="flashcard-content w-100">
-                                    <div class="fs-2 text-dark fw-bold" style="line-height: 1.35;">${currentCard.term}</div>
+                                <div class="flashcard-content w-100 text-start">
+                                    <div class="fs-4 text-dark fw-bold" style="line-height: 1.5;">${currentCard.term}</div>
                                 </div>
                                 `}
                             </div>
                             
+                            <hr class="m-0" style="opacity: 0.15; border-color: #0f172a;">
+                            
                             <!-- Card Footer -->
-                            <div class="d-flex justify-content-center align-items-center pt-1" onclick="flipCard(event)" style="cursor:pointer;">
-                                <small class="text-muted fw-bold" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb me-1"></i> Tap to reveal answer</small>
+                            <div class="pt-2 text-center" onclick="flipCard(event)" style="cursor:pointer;">
+                                <small class="text-muted fw-bold" style="font-size: 0.75rem;">Click anywhere to reveal</small>
                             </div>
                         </div>
                         <div class="flashcard-face flashcard-back d-flex flex-column h-100 p-4">
