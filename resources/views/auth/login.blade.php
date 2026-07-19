@@ -4,12 +4,14 @@
 
 {{-- ── Top Navigation Bar ──────────────────────────────────────── --}}
 <nav class="ez-topnav">
-    <div class="ez-topnav-brand">
-        <img src="{{ asset('images/logo.png') }}"    alt="Mascot"  class="brand-mascot">
-        <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" class="brand-wordmark">
-    </div>
-    <div class="ez-topnav-actions">
-        <a href="{{ route('register') }}" class="topnav-btn">Sign up</a>
+    <div class="ez-topnav-container">
+        <div class="ez-topnav-brand">
+            <img src="{{ asset('images/logo.png') }}"    alt="Mascot"  class="brand-mascot">
+            <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" class="brand-wordmark">
+        </div>
+        <div class="ez-topnav-actions">
+            <a href="{{ route('register') }}" class="topnav-btn">Sign up</a>
+        </div>
     </div>
 </nav>
 
@@ -25,7 +27,7 @@
             </p>
             
             {{-- VARK Learning Styles Badge Section --}}
-            <div class="vark-badges d-flex flex-wrap gap-2 mb-4">
+            <div class="vark-badges d-flex flex-wrap gap-3 mb-4">
                 <span class="vark-badge visual"><i class="bi bi-eye"></i> Visual</span>
                 <span class="vark-badge auditory"><i class="bi bi-ear"></i> Auditory</span>
                 <span class="vark-badge read-write"><i class="bi bi-journal-text"></i> Read/Write</span>
@@ -181,7 +183,7 @@
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        background: linear-gradient(rgba(12, 65, 80, 0.60), rgba(12, 65, 80, 0.60)), url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
+        background: linear-gradient(rgba(12, 65, 80, 0.70), rgba(12, 65, 80, 0.70)), url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
         background-size: cover !important;
     }
     nav.navbar { display: none !important; }
@@ -192,9 +194,17 @@
         background: rgba(255, 255, 255, 0.15) !important;
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 40px; z-index: 100;
+        display: flex; align-items: center; justify-content: center;
+        z-index: 100;
         border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+    .ez-topnav-container {
+        width: 100%;
+        max-width: 1040px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
     }
     .ez-topnav-brand { display: flex; align-items: center; gap: 10px; }
     .brand-mascot    { height: 46px; width: auto; object-fit: contain; }
@@ -255,14 +265,15 @@
     .vark-badge {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 14px;
+        gap: 8px;
+        padding: 8px 18px;
         border-radius: 99px;
-        font-size: 0.85rem;
+        font-size: 0.88rem;
         font-weight: 600;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.08);
         color: #ffffff;
+        text-shadow: none;
     }
     .vark-badge i {
         font-size: 0.95rem;
@@ -301,7 +312,7 @@
         border-radius: 24px;
         border: 1px solid rgba(255, 255, 255, 0.6) !important;
         border-top: 5px solid var(--accent) !important;   /* ← blue top stripe */
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18), 0 0 60px rgba(96, 165, 250, 0.15) !important;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.18), 0 0 60px rgba(96, 165, 250, 0.15) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */
