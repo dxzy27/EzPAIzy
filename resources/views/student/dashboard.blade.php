@@ -28,6 +28,14 @@
         box-shadow: 0 15px 35px rgba(31, 110, 104, 0.08) !important;
         transform: translateY(-4px);
     }
+    .hover-recent-item {
+        transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), background 0.22s ease, box-shadow 0.22s ease !important;
+    }
+    .hover-recent-item:hover {
+        transform: translateY(-3px) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 15px 35px rgba(31, 110, 104, 0.12) !important;
+    }
 
     /* ── Redesigned Filled Buttons ── */
     .quizlet-btn {
@@ -455,204 +463,79 @@
         </div>
     </div>
 
-    {{-- ── Bottom Row: Recent Results + Recommended Materials ── --}}
-    <div class="row">
+    {{-- ── Bottom Row: Combined Recents (Quizlet Style) ── --}}
+    @php
+        $combinedRecents = collect();
+        
+        // Add Flashcards
+        foreach($recentFlashcards as $fc) {
+            $item = new \stdClass();
+            $item->title = $fc->title;
+            $item->type = 'flashcard';
+            $item->subtitle = count($fc->flashcards ?? []) . ' cards • by ' . ($fc->user?->name ?? 'Teacher');
+            $item->url = route('student.flashcards.show', $fc);
+            $item->created_at = $fc->created_at;
+            $combinedRecents->push($item);
+        }
+        
+        // Add Quizzes
+        foreach($recentQuizzes as $qz) {
+            $item = new \stdClass();
+            $item->title = $qz->title;
+            $item->type = 'quiz';
+            $item->subtitle = 'Practice test • by ' . ($qz->teacher?->name ?? 'Teacher');
+            $item->url = route('student.quiz.take', ['topic' => $qz->topic, 'difficulty' => $qz->difficulty]);
+            $item->created_at = $qz->created_at;
+            $combinedRecents->push($item);
+        }
 
-        {{-- Recent Quiz Results --}}
-        <div class="col-md-6 mb-4 {{ $style === 'auditory' ? 'order-2' : 'order-1' }}">
-            <div class="card h-100">
-                <div class="card-header card-header-teal d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">📊 Recent Results</h5>
-                </div>
-                <div class="card-body">
-                    @if($progress->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Quiz</th>
-                                    <th>By</th>
-                                    <th>Score</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($progress->sortByDesc('created_at')->take(5) as $p)
-                                <tr>
-                                    <td>{{ Str::limit(($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')', 22) }}</td>
-                                    <td>
-                                        <small class="text-muted">
-                                            <i class="bi bi-person-circle me-1"></i>
-                                            {{ $teacherName }}
-                                        </small>
-                                    </td>
-                                    <td>
-                                        @if((($p->difficulty === 'hard' || $p->difficulty === 'medium')) && $p->status === 'pending')
-                                            <span class="badge text-white" style="background-color: #f59e0b;">Pending</span>
-                                        @else
-                                            <span class="badge bg-{{ $p->score >= 70 ? 'success' : ($p->score >= 40 ? 'warning' : 'danger') }}">
-                                                {{ $p->score }}%
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $p->created_at->format('M d') }}</td>
-                                    <td>
-                                        <a href="{{ route('student.progress') }}"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+        // Add Learning Materials
+        foreach($recentContents as $c) {
+            $item = new \stdClass();
+            $item->title = $c->title;
+            $item->type = 'material';
+            $item->subtitle = 'Material • by ' . ($c->teacher?->name ?? 'Teacher');
+            $item->url = route('student.contents.show', $c);
+            $item->created_at = $c->created_at;
+            $combinedRecents->push($item);
+        }
+
+        // Sort by created_at descending and take 4
+        $recents = $combinedRecents->sortByDesc('created_at')->take(4);
+    @endphp
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4 class="fw-bold text-dark mb-0">Recents</h4>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        @forelse($recents as $r)
+            <div class="col-md-6 mb-3">
+                <a href="{{ $r->url }}" class="d-flex align-items-center gap-3 p-3 hover-recent-item card h-100 flex-row text-decoration-none" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+                    {{-- Icon Container --}}
+                    <div class="recent-icon-box" style="flex-shrink:0; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: {{ $r->type === 'flashcard' ? 'rgba(66, 85, 255, 0.12)' : ($r->type === 'quiz' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)') }};">
+                        @if($r->type === 'flashcard')
+                            <i class="bi bi-card-text" style="font-size: 1.3rem; color: #4255ff;"></i>
+                        @elseif($r->type === 'quiz')
+                            <i class="bi bi-card-checklist" style="font-size: 1.3rem; color: #f59e0b;"></i>
+                        @else
+                            <i class="bi bi-file-earmark-text" style="font-size: 1.3rem; color: #10b981;"></i>
+                        @endif
                     </div>
-                    @else
-                    <p class="text-muted text-center py-4">
-                        No quizzes completed yet.
-                        <a href="{{ route('student.quizzes') }}">Take a quiz!</a>
-                    </p>
-                    @endif
-                </div>
+                    {{-- Text Info --}}
+                    <div style="flex: 1; min-width: 0;">
+                        <h6 class="fw-bold mb-0 text-dark text-truncate" style="font-size: 0.92rem; letter-spacing: -0.1px;">{{ $r->title }}</h6>
+                        <span class="text-muted" style="font-size: 0.78rem;">{{ $r->subtitle }}</span>
+                    </div>
+                </a>
             </div>
-        </div>
-
-        {{-- Adaptive Recommended Panel --}}
-        <div class="col-md-6 mb-4 {{ $style === 'auditory' ? 'order-1' : 'order-2' }}">
-            <div class="card h-100">
-                <div class="card-header card-header-teal"
-                     style="{{ $style && $cfg ? 'border-left: 5px solid '.$cfg['accent'].' !important;' : '' }}">
-                    <h5 class="mb-0">
-                        📖 {{ ($style && $cfg) ? $cfg['recTitle'] : 'New Learning Materials' }}
-                    </h5>
-                </div>
-                <div class="card-body">
-
-                    @if($style === 'read_write')
-                        {{-- Read/Write: flashcards first --}}
-                        @php $readWriteList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp
-                        @if($readWriteList->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
-                                <tbody>
-                                    @foreach($readWriteList as $item)
-                                    <tr>
-                                        <td>{{ Str::limit($item->title, 24) }}</td>
-                                        <td>
-                                            @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
-                                            @else
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
-                                                <i class="bi bi-card-text"></i>
-                                            </a>
-                                            @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        @else
-                        <p class="text-muted text-center py-4">No materials available.</p>
-                        @endif
-
-                    @elseif($style === 'auditory')
-                        {{-- Auditory: quizzes and flashcards (both have audio buttons) --}}
-                        @php $auditoryList = $recentFlashcards->concat($recentQuizzes)->sortByDesc('created_at')->take(5); @endphp
-                        @if($auditoryList->count() > 0)
-                        <div class="d-flex flex-column gap-2">
-                            @foreach($auditoryList as $item)
-                            @php
-                                $isFlash = class_basename($item) === 'FlashcardSet';
-                                $itemUrl = $isFlash
-                                    ? route('student.flashcards.show', $item)
-                                    : route('student.quiz.take', ['topic' => $item->topic, 'difficulty' => $item->difficulty]);
-                                $preview = Str::limit($item->title, 60);
-                                $topicLabel = $item->topic ?? 'General';
-                            @endphp
-                            <div class="d-flex align-items-center gap-3 p-3 rounded-3"
-                                 style="background:#f0f9ff;border:1px solid #bae6fd;transition:background .15s;"
-                                 onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f9ff'">
-                                {{-- Type badge --}}
-                                <div style="flex-shrink:0;">
-                                    @if($isFlash)
-                                    <span class="badge" style="background:#dcfce7;color:#166534;font-size:.72rem;">🃏 Flashcard</span>
-                                    @else
-                                    <span class="badge" style="background:#fff3cd;color:#856404;font-size:.72rem;">📝 Quiz</span>
-                                    @endif
-                                </div>
-                                {{-- Title --}}
-                                <div style="flex:1;min-width:0;">
-                                    <div class="fw-semibold text-truncate" style="font-size:.88rem;color:#0f172a;">{{ $item->title }}</div>
-                                    <div style="font-size:.75rem;color:#64748b;">{{ $topicLabel }}</div>
-                                </div>
-                                {{-- Open button --}}
-                                <a href="{{ $itemUrl }}"
-                                   class="btn btn-sm"
-                                   style="background:#f0f9ff;border:1px solid #7dd3fc;color:#0c4a6e;font-size:.78rem;flex-shrink:0;">
-                                    {{ $isFlash ? 'Practice' : 'Take Quiz' }}
-                                </a>
-                            </div>
-                            @endforeach
-                        </div>
-                        @else
-                        <p class="text-muted text-center py-4">No materials available.</p>
-                        @endif
-
-                    @else
-                        {{-- Default / undiagnosed --}}
-                        @php $defaultList = $recentContents->concat($recentFlashcards)->sortByDesc('created_at')->take(5); @endphp
-                        @if($defaultList->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
-                                <tbody>
-                                    @foreach($defaultList as $item)
-                                    <tr>
-                                        <td>{{ Str::limit($item->title, 24) }}</td>
-                                        <td>
-                                            @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Flashcard</span>
-                                            @else
-                                            <span class="badge" style="background-color: #e2e8f0; color: #475569;">Other</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" title="Practice">
-                                                <i class="bi bi-card-text"></i>
-                                            </a>
-                                            @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" title="View">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        @else
-                        <p class="text-muted text-center py-4">No materials available.</p>
-                        @endif
-                    @endif
-
-                </div>
+        @empty
+            <div class="col-12">
+                <p class="text-muted text-center py-4 card">No recent activities available.</p>
             </div>
-        </div>
-
+        @endforelse
     </div>{{-- /row --}}
 </div>{{-- /container --}}
 @endsection
