@@ -35,15 +35,16 @@
                 <div class="col-md-4 mb-4 set-card-col" data-title="{{ strtolower($set->title) }}">
                     <div class="card h-100 shadow-sm content-card">
                         <div class="card-body p-3 pb-2">
-                            <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div class="d-flex align-items-center gap-2 mb-1">
                                 <h6 class="card-title mb-0 fw-bold text-dark fs-6">{{ $set->title }}</h6>
                                 @php
                                     $isFavorited = in_array($set->id, $favoritedFlashcardIds ?? []);
                                 @endphp
-                                <button class="btn btn-link p-0 text-warning favorite-btn" 
+                                <button class="btn btn-link p-0 text-warning favorite-btn d-inline-flex align-items-center justify-content-center" 
                                         data-id="{{ $set->id }}" 
                                         data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
-                                        title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}">
+                                        title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}"
+                                        style="line-height: 1; text-decoration: none;">
                                     <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
                                 </button>
                             </div>
