@@ -236,14 +236,30 @@
             </div>
         @endif
     <!-- Undo Toast Notification -->
-    <div id="undo-toast" class="toast align-items-center text-white bg-dark border-0 position-fixed" 
-         style="bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 1050; display: none; min-width: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" 
+    <style>
+      .undo-toast-btn {
+          color: #ffffff !important;
+          font-weight: 600 !important;
+          text-decoration: none !important;
+          transition: all 0.2s;
+          letter-spacing: 0.3px;
+          cursor: pointer;
+          background: transparent;
+          border: none;
+      }
+      .undo-toast-btn:hover {
+          text-decoration: underline !important;
+          color: #ffffff !important;
+      }
+    </style>
+    <div id="undo-toast" class="toast align-items-center border-0 position-fixed" 
+         style="background-color: #27272a; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 1050; display: none; min-width: 360px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);" 
          role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex w-100 p-1">
-        <div class="toast-body d-flex align-items-center gap-2" id="undo-toast-body" style="font-size: 0.9rem;">
-          <i class="bi bi-check2"></i> Marked as Know
+      <div class="d-flex w-100 px-3 py-2">
+        <div class="toast-body d-flex align-items-center gap-2 p-0" id="undo-toast-body" style="font-size: 0.95rem;">
+          <i class="bi bi-check2"></i> <span style="color: #a1a1aa;">Marked as Know</span>
         </div>
-        <button type="button" onclick="performUndo()" class="btn btn-sm text-white fw-bold ms-auto me-2 my-auto" style="text-decoration: none;">Undo</button>
+        <button type="button" onclick="performUndo()" class="undo-toast-btn ms-auto my-auto p-0">Undo</button>
       </div>
     </div>
 </div>
@@ -267,9 +283,9 @@
             const toast = document.getElementById('undo-toast');
             const toastBody = document.getElementById('undo-toast-body');
             if(quality === 1) {
-                toastBody.innerHTML = '<i class="bi bi-x-lg text-danger"></i> Marked as Still learning';
+                toastBody.innerHTML = '<i class="bi bi-x-lg text-danger"></i> <span style="color: #a1a1aa;">Marked as Still learning</span>';
             } else {
-                toastBody.innerHTML = '<i class="bi bi-check2 text-success"></i> Marked as Know';
+                toastBody.innerHTML = '<i class="bi bi-check2 text-success"></i> <span style="color: #a1a1aa;">Marked as Know</span>';
             }
             toast.style.display = 'block';
             
