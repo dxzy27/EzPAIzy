@@ -581,8 +581,8 @@
                     {{-- Left Side: Logo and button underneath --}}
                     <div class="d-flex flex-column align-items-center gap-3" style="flex-shrink: 0; min-width: 140px;">
                         {{-- Logo / Icon --}}
-                        <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(66, 85, 255, 0.1); display: flex; align-items: center; justify-content: center;">
-                            <img src="{{ asset('images/vark.png') }}" alt="VARK logo" style="width: 44px; height: 44px; object-fit: contain;">
+                        <div style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center;">
+                            <img src="{{ asset('images/vark.png') }}" alt="VARK logo" style="width: 56px; height: 56px; object-fit: contain;">
                         </div>
                         
                         {{-- Action Button --}}
