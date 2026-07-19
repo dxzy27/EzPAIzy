@@ -3,17 +3,11 @@
 @section('content')
 <style>
     .content-card:hover {
-        box-shadow: 0 20px 40px rgba(var(--sidebar-active-rgb), 0.08) !important;
-        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        transform: translateY(-4px); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .content-card {
-        border-radius: 20px !important;
-        border: 1px solid rgba(255, 255, 255, 0.45) !important;
-        background: rgba(255, 255, 255, 0.70) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* ── Redesigned Filled Buttons ── */
@@ -24,126 +18,54 @@
         font-weight: 600 !important;
         font-size: 0.88rem !important;
         border-radius: 10px !important;
-        box-shadow: 0 4px 15px rgba(var(--sidebar-active-rgb), 0.18) !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
         padding: 10px 18px !important;
-        transition: all 0.25s ease !important;
+        transition: all 0.2s;
     }
     .btn-filled-primary:hover {
         background-color: var(--accent-dark) !important;
         border-color: var(--accent-dark) !important;
         color: #ffffff !important;
-        transform: translateY(-1.5px);
-        box-shadow: 0 6px 20px rgba(var(--sidebar-active-rgb), 0.3) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15) !important;
     }
     .btn-filled-secondary {
-        background-color: rgba(255, 255, 255, 0.5) !important;
-        border-color: rgba(255, 255, 255, 0.6) !important;
-        color: #1e293b !important;
+        background-color: #f1f5f9 !important;
+        border-color: #f1f5f9 !important;
+        color: #334155 !important;
         font-weight: 600 !important;
         font-size: 0.88rem !important;
         border-radius: 10px !important;
         padding: 10px 18px !important;
-        transition: all 0.2s !important;
-        backdrop-filter: blur(5px);
+        transition: all 0.2s;
     }
     .btn-filled-secondary:hover {
-        background-color: rgba(255, 255, 255, 0.85) !important;
-        border-color: rgba(255, 255, 255, 0.95) !important;
-        color: #0f172a !important;
+        background-color: #e2e8f0 !important;
+        border-color: #e2e8f0 !important;
+        color: #1e293b !important;
         transform: translateY(-1px);
     }
 
-    /* ── Modern Table Styles ── */
-    .table-modern {
-        width: 100%;
-        margin-bottom: 0;
-        vertical-align: middle;
-        border-collapse: separate;
-        border-spacing: 0 8px;
-    }
+    /* ── Theme-based Table Headers ── */
     .table-modern th {
-        background: transparent !important;
-        color: #64748b !important;
-        font-weight: 700 !important;
+        background-color: var(--accent) !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
         text-transform: uppercase;
-        font-size: 0.72rem !important;
-        letter-spacing: 0.8px;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.04) !important;
-        padding: 12px 16px !important;
+        font-size: 0.76rem !important;
+        letter-spacing: 0.5px;
+        border-bottom: none !important;
+        padding: 14px 16px !important;
     }
-    .table-modern tbody tr {
-        background: rgba(255, 255, 255, 0.35) !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
-        border-radius: 12px;
-        transition: all 0.25s ease;
+    .table-modern th:first-child {
+        border-top-left-radius: 12px;
     }
-    .table-modern tbody tr:hover {
-        background: rgba(255, 255, 255, 0.75) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.03);
+    .table-modern th:last-child {
+        border-top-right-radius: 12px;
     }
     .table-modern td {
-        padding: 14px 16px !important;
-        border: none !important;
-    }
-    .table-modern td:first-child {
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
-    }
-    .table-modern td:last-child {
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-
-    /* ── Badges ── */
-    .badge-modern {
-        font-size: 0.72rem !important;
-        font-weight: 700 !important;
-        padding: 4px 10px !important;
-        border-radius: 20px !important;
-        letter-spacing: 0.3px;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        text-transform: uppercase;
-    }
-    .badge-modern-success {
-        background-color: #dcfce7 !important;
-        color: #15803d !important;
-        border: 1px solid #bbf7d0 !important;
-    }
-    .badge-modern-warning {
-        background-color: #fef3c7 !important;
-        color: #b45309 !important;
-        border: 1px solid #fde68a !important;
-    }
-    .badge-modern-danger {
-        background-color: #fee2e2 !important;
-        color: #b91c1c !important;
-        border: 1px solid #fecaca !important;
-    }
-    .badge-modern-neutral {
-        background-color: rgba(var(--sidebar-active-rgb), 0.08) !important;
-        color: var(--accent) !important;
-        border: 1px solid rgba(var(--sidebar-active-rgb), 0.15) !important;
-    }
-
-    /* ── Action Buttons ── */
-    .btn-action-view {
-        width: 32px; height: 32px;
-        border-radius: 8px;
-        border: 1px solid rgba(var(--sidebar-active-rgb), 0.2) !important;
-        background: transparent;
-        color: var(--accent) !important;
-        display: inline-flex; align-items: center; justify-content: center;
-        transition: all 0.2s;
-        text-decoration: none;
-    }
-    .btn-action-view:hover {
-        background: var(--accent) !important;
-        color: #fff !important;
-        box-shadow: 0 4px 10px rgba(var(--sidebar-active-rgb), 0.25);
-        transform: translateY(-1px);
+        padding: 12px 16px !important;
+        vertical-align: middle !important;
     }
 
     /* ── Carousel Responsive Controls ── */
@@ -152,36 +74,45 @@
         .carousel-control-next { right: 10px !important; }
     }
 
-    /* ── Custom Cards headers ── */
+    /* ── Theme-based Card Headers ── */
     .card-header-teal {
-        background: transparent !important;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-        padding: 18px 24px !important;
-        border-top-left-radius: 20px !important;
-        border-top-right-radius: 20px !important;
+        background-color: var(--accent) !important;
+        color: #ffffff !important;
+        border-bottom: none !important;
+        padding: 16px 24px !important;
+        border-top-left-radius: 15px !important;
+        border-top-right-radius: 15px !important;
     }
     .card-header-teal h5 {
-        color: #0f172a !important;
-        font-weight: 700 !important;
-        font-size: 1.1rem !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 1.02rem !important;
+        margin: 0;
     }
 
     /* ── Carousel Arrows ── */
     .btn-carousel-ctrl {
-        width: 36px; height: 36px;
-        background: rgba(255, 255, 255, 0.5) !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        color: var(--accent) !important;
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        transition: all 0.25s;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        width: 34px !important;
+        height: 34px !important;
+        background: var(--accent) !important;
+        border-radius: 8px !important;
+        border: none !important;
+        opacity: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+        transition: all 0.2s !important;
     }
     .btn-carousel-ctrl:hover {
-        background: var(--accent) !important;
-        color: #fff !important;
-        box-shadow: 0 6px 15px rgba(var(--sidebar-active-rgb), 0.2);
-        transform: scale(1.05);
+        background: var(--accent-dark) !important;
+        transform: scale(1.05) !important;
+        opacity: 1 !important;
+    }
+    .btn-carousel-ctrl i {
+        color: #ffffff !important;
+        font-size: 1rem !important;
+        font-weight: bold !important;
     }
 
     /* ── Diagnosis Banner ── */
@@ -525,7 +456,7 @@
                 <div class="card-body">
                     @if($progress->count() > 0)
                     <div class="table-responsive">
-                        <table class="table-modern">
+                        <table class="table table-hover table-modern">
                             <thead>
                                 <tr>
                                     <th>Quiz</th>
@@ -547,9 +478,9 @@
                                     </td>
                                     <td>
                                         @if((($p->difficulty === 'hard' || $p->difficulty === 'medium')) && $p->status === 'pending')
-                                            <span class="badge-modern badge-modern-warning">Pending</span>
+                                            <span class="badge text-white" style="background-color: #f59e0b;">Pending</span>
                                         @else
-                                            <span class="badge-modern badge-modern-{{ $p->score >= 70 ? 'success' : ($p->score >= 40 ? 'warning' : 'danger') }}">
+                                            <span class="badge bg-{{ $p->score >= 70 ? 'success' : ($p->score >= 40 ? 'warning' : 'danger') }}">
                                                 {{ $p->score }}%
                                             </span>
                                         @endif
@@ -557,7 +488,7 @@
                                     <td>{{ $p->created_at->format('M d') }}</td>
                                     <td>
                                         <a href="{{ route('student.progress') }}"
-                                           class="btn-action-view">
+                                           class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
@@ -592,26 +523,26 @@
                         @php $readWriteList = $recentFlashcards->concat($recentContents)->sortByDesc('created_at')->take(5); @endphp
                         @if($readWriteList->count() > 0)
                         <div class="table-responsive">
-                            <table class="table-modern">
+                            <table class="table table-hover table-modern">
                                 <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($readWriteList as $item)
                                     <tr>
-                                        <td class="fw-semibold">{{ Str::limit($item->title, 24) }}</td>
+                                        <td>{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge-modern badge-modern-neutral">Flashcard</span>
+                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Flashcard</span>
                                             @else
-                                            <span class="badge-modern badge-modern-neutral">Other</span>
+                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn-action-view" title="Practice">
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="Practice">
                                                 <i class="bi bi-card-text"></i>
                                             </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn-action-view" title="View">
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="View">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @endif
@@ -640,26 +571,26 @@
                                 $topicLabel = $item->topic ?? 'General';
                             @endphp
                             <div class="d-flex align-items-center gap-3 p-3 rounded-3"
-                                 style="background:rgba(255,255,255,0.4);border:1px solid rgba(var(--sidebar-active-rgb),0.15);transition:all .25s;backdrop-filter:blur(5px);"
-                                 onmouseover="this.style.background='rgba(255,255,255,0.85)';this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.4)';this.style.transform='none';">
+                                 style="background:#f0f9ff;border:1px solid #bae6fd;transition:background .15s;"
+                                 onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f9ff'">
                                 {{-- Type badge --}}
                                 <div style="flex-shrink:0;">
                                     @if($isFlash)
-                                    <span class="badge-modern badge-modern-success">🃏 Flashcard</span>
+                                    <span class="badge" style="background:#dcfce7;color:#166534;font-size:.72rem;">🃏 Flashcard</span>
                                     @else
-                                    <span class="badge-modern badge-modern-warning">📝 Quiz</span>
+                                    <span class="badge" style="background:#fff3cd;color:#856404;font-size:.72rem;">📝 Quiz</span>
                                     @endif
                                 </div>
                                 {{-- Title --}}
                                 <div style="flex:1;min-width:0;">
-                                    <div class="fw-bold text-truncate" style="font-size:.88rem;color:#0f172a;">{{ $item->title }}</div>
+                                    <div class="fw-semibold text-truncate" style="font-size:.88rem;color:#0f172a;">{{ $item->title }}</div>
                                     <div style="font-size:.75rem;color:#64748b;">{{ $topicLabel }}</div>
                                 </div>
                                 {{-- Open button --}}
                                 <a href="{{ $itemUrl }}"
-                                   class="btn-action-view"
-                                   title="{{ $isFlash ? 'Practice' : 'Take Quiz' }}">
-                                    <i class="bi {{ $isFlash ? 'bi-card-text' : 'bi-clipboard-check' }}"></i>
+                                   class="btn btn-sm btn-outline-primary"
+                                   style="border-color: var(--accent); color: var(--accent); background: #ffffff; flex-shrink:0;">
+                                    {{ $isFlash ? 'Practice' : 'Take Quiz' }}
                                 </a>
                             </div>
                             @endforeach
@@ -673,26 +604,26 @@
                         @php $defaultList = $recentContents->concat($recentFlashcards)->sortByDesc('created_at')->take(5); @endphp
                         @if($defaultList->count() > 0)
                         <div class="table-responsive">
-                            <table class="table-modern">
+                            <table class="table table-hover table-modern">
                                 <thead><tr><th>Title</th><th>Type</th><th>Action</th></tr></thead>
                                 <tbody>
                                     @foreach($defaultList as $item)
                                     <tr>
-                                        <td class="fw-semibold">{{ Str::limit($item->title, 24) }}</td>
+                                        <td>{{ Str::limit($item->title, 24) }}</td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <span class="badge-modern badge-modern-neutral">Flashcard</span>
+                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Flashcard</span>
                                             @else
-                                            <span class="badge-modern badge-modern-neutral">Other</span>
+                                            <span class="badge text-dark" style="background-color: #e2e8f0;">Other</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(class_basename($item) === 'FlashcardSet')
-                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn-action-view" title="Practice">
+                                            <a href="{{ route('student.flashcards.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="Practice">
                                                 <i class="bi bi-card-text"></i>
                                             </a>
                                             @else
-                                            <a href="{{ route('student.contents.show', $item) }}" class="btn-action-view" title="View">
+                                            <a href="{{ route('student.contents.show', $item) }}" class="btn btn-sm btn-outline-primary" style="border-color: var(--accent); color: var(--accent);" title="View">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @endif
