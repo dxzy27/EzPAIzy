@@ -6,7 +6,7 @@
 <nav class="ez-topnav">
     <div class="ez-topnav-brand">
         <img src="{{ asset('images/logo.png') }}"    alt="Mascot"  class="brand-mascot">
-        <img src="{{ asset('images/EzPAIzy.png') }}" alt="EzPAIzy" class="brand-wordmark">
+        <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" class="brand-wordmark">
     </div>
     <div class="ez-topnav-actions">
         <a href="{{ route('register') }}" class="topnav-btn">Sign up</a>
