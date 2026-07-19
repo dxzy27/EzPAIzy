@@ -541,6 +541,30 @@
             </div>
         </div>
     </div>
+
+    {{-- ── Personalize Your Content (Quizlet Style) ── --}}
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-9 col-lg-8">
+            <span class="text-muted fw-bold d-block mb-2" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Personalize your content</span>
+            
+            <div class="card p-4 position-relative overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+                <div class="d-flex align-items-center gap-4">
+                    {{-- Logo / Icon --}}
+                    <div style="flex-shrink: 0; width: 64px; height: 64px; border-radius: 16px; background: rgba(66, 85, 255, 0.1); display: flex; align-items: center; justify-content: center;">
+                        <img src="{{ asset('images/logo.png') }}" alt="EzPAIzy Logo" style="width: 38px; height: 38px; object-fit: contain;">
+                    </div>
+                    
+                    {{-- Text and Button --}}
+                    <div style="flex: 1;">
+                        <h5 class="fw-bold text-dark mb-3" style="font-size: 1.15rem; letter-spacing: -0.2px;">Explore content based on your learning style</h5>
+                        <a href="{{ route('student.diagnosis.create') }}" class="quizlet-btn py-2 px-4" style="font-size: 0.85rem;">
+                            Take VARK Questionnaire
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>{{-- /container --}}
 @endsection
 
