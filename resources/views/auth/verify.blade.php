@@ -88,19 +88,19 @@
     *, *::before, *::after { box-sizing: border-box; }
 
     :root {
-        --accent:      #60a5fa;
-        --accent-dark: #3b82f6;
-        --accent-soft: rgba(96,165,250,.15);
-        --badge-bg:    #eff6ff;
-        --badge-color: #3b82f6;
-        --btn-bg:      #3b82f6;
-        --btn-hover:   #2563eb;
+        --accent:      #2dd4bf;
+        --accent-dark: #14b8a6;
+        --accent-soft: rgba(45,212,191,.15);
+        --badge-bg:    #f0fdfa;
+        --badge-color: #14b8a6;
+        --btn-bg:      #14b8a6;
+        --btn-hover:   #0d9488;
     }
 
     body {
         margin: 0;
         font-family: 'Outfit', sans-serif;
-        background: url("{{ asset('images/login bg.png') }}") no-repeat center center fixed !important;
+        background: url("{{ asset('images/signup bg.png') }}") no-repeat center center fixed !important;
         background-size: cover !important;
     }
     nav.navbar { display: none !important; }
@@ -146,7 +146,7 @@
         border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.45) !important;
         border-top: 5px solid var(--accent) !important;
-        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.08) !important;
+        box-shadow: 0 15px 35px rgba(20, 184, 166, 0.08) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */
