@@ -365,7 +365,7 @@
             }
             
             const currentCard = cards[currentIndex];
-            let controlsHtml = '';
+            let controlsHtml = '<div class="bg-dark text-white p-4 rounded-4 mx-auto mt-4 text-start" style="max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">';
             
             let stillArrow = '';
             let knowArrow = '';
@@ -376,9 +376,9 @@
 
             if (mode === 'review') {
                 if (!isFlipped) {
-                    controlsHtml = `
-                        <div class="text-center mt-4">
-                            <p class="text-muted mb-2">Think of the answer, then tap the card to flip and type it.</p>
+                    controlsHtml += `
+                        <div class="mb-4">
+                            <p class="text-white-50 mb-0 fw-bold">Think of the answer, then tap the card to flip and type it.</p>
                         </div>
                     `;
                 } else {
@@ -386,14 +386,14 @@
                         currentCard._parsedItems = parseDefinitionItems(currentCard.definition);
                     }
                     let allDone = currentCard._parsedItems.every(item => item.revealed);
-                    let initialMsg = allDone ? 'Perfect! How easy was that?' : 'How well did you remember this?';
+                    let initialMsg = allDone ? 'Perfect! How easy was that?' : 'How well did you remember?';
 
-                    controlsHtml = `
-                        <div id="grading-controls" class="mt-4 text-center">
-                            <p class="fw-bold mb-3" id="grading-message">${initialMsg}</p>
-                            <div class="d-flex justify-content-center gap-3">
+                    controlsHtml += `
+                        <div id="grading-controls" class="mb-4">
+                            <p class="fw-bold mb-3" id="grading-message" style="font-size: 0.95rem;">${initialMsg}</p>
+                            <div class="d-flex align-items-center gap-3">
                                 <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                    ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
+                                    ${stillArrow}<i class="bi bi-x-lg fs-6"></i> Still Learning
                                 </button>
                                 <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
                                     <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
@@ -403,12 +403,12 @@
                     `;
                 }
             } else {
-                controlsHtml = `
-                    <div id="grading-controls" class="mt-4 text-center">
-                        <p class="fw-bold mb-3" id="grading-message">How well did you remember this?</p>
-                        <div class="d-flex justify-content-center gap-3">
+                controlsHtml += `
+                    <div id="grading-controls" class="mb-4">
+                        <p class="fw-bold mb-3" id="grading-message" style="font-size: 0.95rem;">How well did you remember?</p>
+                        <div class="d-flex align-items-center gap-3">
                             <button class="btn btn-grade-still d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 1)" ${isSubmitting ? 'disabled' : ''}>
-                                ${stillArrow}<i class="bi bi-x-lg fs-5"></i> Still learning
+                                ${stillArrow}<i class="bi bi-x-lg fs-6"></i> Still Learning
                             </button>
                             <button class="btn btn-grade-know d-flex align-items-center gap-2" onclick="submitReview(${currentCard.id}, 5)" ${isSubmitting ? 'disabled' : ''}>
                                 <i class="bi bi-check-lg fs-5"></i> Know${knowArrow}
@@ -418,17 +418,17 @@
                 `;
             }
 
-            // Always add Next/Prev buttons
+            // Next/Prev buttons
             controlsHtml += `
-                <div class="mt-4 text-center d-flex justify-content-center gap-3">
-                    <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 fw-bold" style="width: 140px;" onclick="prevCard()" ${currentIndex === 0 ? 'disabled' : ''}>
+                <div class="d-flex align-items-center gap-4 ${isFlipped && mode === 'review' ? '' : 'pt-2'}">
+                    <button class="btn btn-link text-white-50 text-decoration-none p-0 d-flex align-items-center gap-2 fw-bold" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity: 0.5; pointer-events: none;"' : ''}>
                         <i class="bi bi-caret-left-fill"></i> Previous
                     </button>
-                    <button class="btn btn-primary d-flex align-items-center justify-content-center gap-2 fw-bold" style="width: 140px;" onclick="nextCard()">
+                    <button class="btn btn-link text-white text-decoration-none p-0 d-flex align-items-center gap-2 fw-bold" onclick="nextCard()">
                         Next <i class="bi bi-caret-right-fill"></i>
                     </button>
                 </div>
-            `;
+            </div>`;
             
             controlsEl.innerHTML = controlsHtml;
         }
