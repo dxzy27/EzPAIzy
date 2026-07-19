@@ -41,21 +41,18 @@
 <div class="container-fluid px-4 py-5" style="min-height: 100vh; background-color: transparent;">
     <div class="row justify-content-center">
         <div class="{{ $isReadWrite ? 'col-lg-8' : 'col-lg-12' }} quiz-container">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
-                    <i class="bi bi-arrow-left fs-5"></i>
-                </a>
-                <h5 class="text-muted mb-0">{{ $quiz->title }}</h5>
-            </div>
-
-            <!-- Progress -->
-            <div class="mb-4">
-                <div class="d-flex justify-content-between small text-muted mb-1">
+            <!-- Header & Progress -->
+            <div class="bg-dark text-white p-3 rounded-4 mb-4" style="box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="d-flex align-items-center mb-3">
+                    <a href="javascript:history.back()" class="text-white text-decoration-none fw-bold fs-5 d-flex align-items-center" style="opacity: 0.9; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+                        <i class="bi bi-arrow-left me-2"></i> {{ $quiz->title }}
+                    </a>
+                </div>
+                <div class="d-flex justify-content-between text-white-50 mt-1 mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
                     <span id="progress-text">Question 1 of {{ $quiz->questions->count() }}</span>
                 </div>
-                <div class="progress" style="height: 6px;">
-                    <div class="progress-bar bg-primary" id="progress-bar" role="progressbar" style="width: 0%"></div>
+                <div class="progress bg-secondary border-0" style="height: 6px; border-radius: 50px; background-color: rgba(255,255,255,0.1) !important;">
+                    <div class="progress-bar bg-primary" id="progress-bar" role="progressbar" style="width: 0%; border-radius: 50px; transition: width 0.3s ease;"></div>
                 </div>
             </div>
 
