@@ -576,7 +576,7 @@
         <div class="col-md-9 col-lg-8">
             <span class="text-muted fw-bold d-block mb-2" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Personalize your content</span>
             
-            <div class="card p-4 position-relative overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.5) !important;">
+            <div class="position-relative overflow-hidden p-2">
                 <div class="d-flex align-items-start gap-4">
                     {{-- Left Side: Logo and button underneath --}}
                     <div class="d-flex flex-column align-items-center gap-3" style="flex-shrink: 0; min-width: 140px;">
