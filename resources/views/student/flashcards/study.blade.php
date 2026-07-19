@@ -551,18 +551,16 @@
                         </a>
                         <span class="text-muted fw-bold" style="font-size: 0.8rem;">${Math.max(1, Math.ceil(cards.length * 0.5))} min</span>
                     </div>
-                    <div class="text-muted mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
-                        Card ${currentIndex + 1} of ${cards.length}
+                    <div class="d-flex justify-content-between align-items-center mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
+                        <span class="text-muted">Card ${currentIndex + 1} of ${cards.length}</span>
+                        ${currentIndex > 0 ? `<a href="javascript:void(0)" onclick="prevCard()" class="text-muted text-decoration-none" style="transition: color 0.2s;" onmouseover="this.style.color='#0f172a'" onmouseout="this.style.color='#64748b'"><i class="bi bi-arrow-counterclockwise me-1"></i>Undo</a>` : ''}
                     </div>
                     <div class="progress border-0" style="height: 6px; border-radius: 50px; background-color: #f1f5f9;">
                         <div class="progress-bar bg-primary" role="progressbar" style="width: ${((currentIndex + 1) / cards.length) * 100}%; border-radius: 50px; transition: width 0.3s ease;"></div>
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-center gap-2 w-100 mx-auto" style="max-width: 900px;">
-                    <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 44px; height: 44px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity: 0.5;"' : 'onmouseover="this.style.color=\'#0f172a\'; this.style.borderColor=\'#cbd5e1\'" onmouseout="this.style.color=\'#64748b\'; this.style.borderColor=\'#e2e8f0\'"'}>
-                        <i class="bi bi-chevron-left fs-4" style="margin-left: -2px;"></i>
-                    </button>
+                <div class="d-flex justify-content-center w-100 mx-auto" style="max-width: 800px;">
 
                     <div class="flashcard-container flex-grow-1" style="margin: 0; min-width: 0;">
                     <div class="flashcard-inner ${isFlipped ? 'is-flipped' : ''}">
@@ -604,9 +602,6 @@
                     </div>
                 </div>
 
-                <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 44px; height: 44px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="nextCard()" onmouseover="this.style.color='#0f172a'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.color='#64748b'; this.style.borderColor='#e2e8f0'">
-                    <i class="bi bi-chevron-right fs-4" style="margin-right: -2px;"></i>
-                </button>
             </div>
 
             <div class="controls"></div>
