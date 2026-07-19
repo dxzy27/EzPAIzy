@@ -30,7 +30,7 @@
 
                 {{-- Badge --}}
                 <div class="page-badge">
-                    <i class="bi bi-person-plus-fill me-1"></i> Create Account
+                    <i class="bi bi-person-plus-fill me-1"></i> Sign Up
                 </div>
 
                 {{-- MRSM Logo --}}
