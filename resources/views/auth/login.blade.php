@@ -18,10 +18,35 @@
     <div class="auth-container">
         <!-- Left Side: Welcome Intro -->
         <div class="auth-intro-side">
-            <h2 class="intro-title">Learn Pendidikan Islam in a <span class="accent-glow">Personalized Way</span></h2>
-            <p class="intro-text">
+            <h2 class="intro-title">Learn Smarter with <span class="accent-glow">Personalized Islamic Learning</span></h2>
+            
+            <p class="intro-text mb-4">
                 Discover learning materials tailored to your learning style, generate AI-powered quizzes, and track your progress in one place.
             </p>
+            
+            {{-- VARK Learning Styles Badge Section --}}
+            <div class="vark-badges d-flex flex-wrap gap-2 mb-4">
+                <span class="vark-badge visual"><i class="bi bi-eye"></i> Visual</span>
+                <span class="vark-badge auditory"><i class="bi bi-ear"></i> Auditory</span>
+                <span class="vark-badge read-write"><i class="bi bi-journal-text"></i> Read/Write</span>
+                <span class="vark-badge kinesthetic"><i class="bi bi-activity"></i> Kinesthetic</span>
+            </div>
+
+            {{-- Feature highlights --}}
+            <div class="intro-features d-flex flex-column gap-2 mt-2">
+                <div class="feature-item d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Personalized learning paths</span>
+                </div>
+                <div class="feature-item d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>AI Quiz Generation</span>
+                </div>
+                <div class="feature-item d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Track Your Progress</span>
+                </div>
+            </div>
         </div>
         
         <!-- Right Side: Form Card -->
@@ -163,7 +188,7 @@
 
     .ez-topnav {
         position: fixed; top: 0; left: 0; right: 0;
-        height: 54px; 
+        height: 60px; 
         background: rgba(255, 255, 255, 0.15) !important;
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
@@ -172,8 +197,8 @@
         border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
     }
     .ez-topnav-brand { display: flex; align-items: center; gap: 10px; }
-    .brand-mascot    { height: 38px; width: auto; object-fit: contain; }
-    .brand-wordmark  { height: 24px; width: auto; object-fit: contain; }
+    .brand-mascot    { height: 46px; width: auto; object-fit: contain; }
+    .brand-wordmark  { height: 28px; width: auto; object-fit: contain; }
     .ez-topnav-actions { display: flex; align-items: center; }
     .topnav-btn {
         background: rgba(255, 255, 255, 0.6) !important; 
@@ -185,7 +210,7 @@
 
     /* ── Page Layout ─────────────────────────────── */
     .page-wrap {
-        min-height: 100vh; padding-top: 54px;
+        min-height: 100vh; padding-top: 60px;
         display: flex; align-items: center; justify-content: center;
         padding-bottom: 40px;
     }
@@ -204,6 +229,7 @@
         flex: 1.1;
         color: #ffffff;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        transform: translateY(-40px);
     }
     .auth-form-side {
         flex: 0.9;
@@ -212,10 +238,10 @@
         width: 100%;
     }
     .intro-title {
-        font-size: 2.5rem;
+        font-size: 2.75rem;
         font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 20px;
+        line-height: 1.15;
+        margin-bottom: 25px;
     }
     .intro-title .accent-glow {
         color: var(--accent);
@@ -224,6 +250,30 @@
         font-size: 1.15rem;
         line-height: 1.6;
         opacity: 0.9;
+    }
+    
+    .vark-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+    .vark-badge i {
+        font-size: 0.95rem;
+    }
+    .feature-item {
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+    .feature-item i {
+        color: var(--accent);
+        font-size: 1.15rem;
     }
     
     @media (max-width: 991px) {
@@ -251,7 +301,7 @@
         border-radius: 24px;
         border: 1px solid rgba(255, 255, 255, 0.6) !important;
         border-top: 5px solid var(--accent) !important;   /* ← blue top stripe */
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 60px rgba(70, 120, 255, 0.15) !important;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18), 0 0 60px rgba(96, 165, 250, 0.15) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */
