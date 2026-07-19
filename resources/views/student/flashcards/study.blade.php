@@ -4,7 +4,7 @@
 <style>
     .flashcard-container {
         perspective: 1000px;
-        height: 320px;
+        height: 380px;
         width: 100%;
         max-width: 600px;
         margin: 0 auto;
@@ -554,8 +554,8 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-center gap-2 gap-md-4 w-100 mx-auto" style="max-width: 760px;">
-                    <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 50px; height: 50px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity: 0.5;"' : 'onmouseover="this.style.color=\'#0f172a\'; this.style.borderColor=\'#cbd5e1\'" onmouseout="this.style.color=\'#64748b\'; this.style.borderColor=\'#e2e8f0\'"'}>
+                <div class="d-flex align-items-center justify-content-center gap-2 w-100 mx-auto" style="max-width: 720px;">
+                    <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 44px; height: 44px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity: 0.5;"' : 'onmouseover="this.style.color=\'#0f172a\'; this.style.borderColor=\'#cbd5e1\'" onmouseout="this.style.color=\'#64748b\'; this.style.borderColor=\'#e2e8f0\'"'}>
                         <i class="bi bi-chevron-left fs-4" style="margin-left: -2px;"></i>
                     </button>
 
@@ -597,7 +597,7 @@
                     </div>
                 </div>
 
-                <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 50px; height: 50px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="nextCard()" onmouseover="this.style.color='#0f172a'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.color='#64748b'; this.style.borderColor='#e2e8f0'">
+                <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 bg-white" style="width: 44px; height: 44px; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;" onclick="nextCard()" onmouseover="this.style.color='#0f172a'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.color='#64748b'; this.style.borderColor='#e2e8f0'">
                     <i class="bi bi-chevron-right fs-4" style="margin-right: -2px;"></i>
                 </button>
             </div>
