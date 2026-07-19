@@ -42,16 +42,16 @@
     <div class="row justify-content-center">
         <div class="{{ $isReadWrite ? 'col-lg-8' : 'col-lg-12' }} quiz-container">
             <!-- Header & Progress -->
-            <div class="bg-dark text-white p-3 rounded-4 mb-4" style="box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+            <div class="bg-white p-3 rounded-4 mb-4 border" style="box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #e2e8f0 !important;">
                 <div class="d-flex align-items-center mb-3">
-                    <a href="javascript:history.back()" class="text-white text-decoration-none fw-bold fs-5 d-flex align-items-center" style="opacity: 0.9; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
-                        <i class="bi bi-arrow-left me-2"></i> {{ $quiz->title }}
+                    <a href="javascript:history.back()" class="text-dark text-decoration-none fw-bold fs-5 d-flex align-items-center" style="opacity: 0.9; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+                        <i class="bi bi-arrow-left me-2 text-muted"></i> {{ $quiz->title }}
                     </a>
                 </div>
-                <div class="d-flex justify-content-between text-white-50 mt-1 mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
+                <div class="d-flex justify-content-between text-muted mt-1 mb-2 fw-bold" style="font-size: 0.8rem; padding: 0 2px;">
                     <span id="progress-text">Question 1 of {{ $quiz->questions->count() }}</span>
                 </div>
-                <div class="progress bg-secondary border-0" style="height: 6px; border-radius: 50px; background-color: rgba(255,255,255,0.1) !important;">
+                <div class="progress border-0" style="height: 6px; border-radius: 50px; background-color: #f1f5f9;">
                     <div class="progress-bar bg-primary" id="progress-bar" role="progressbar" style="width: 0%; border-radius: 50px; transition: width 0.3s ease;"></div>
                 </div>
             </div>
