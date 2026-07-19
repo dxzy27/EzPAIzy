@@ -2,12 +2,31 @@
 
 @section('content')
 <style>
-    .content-card:hover {
-        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-        transform: translateY(-4px); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    /* ── Blended Card Styling (Quizlet Style) ── */
+    .card {
+        background: rgba(255, 255, 255, 0.58) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 0 8px 32px 0 rgba(31, 110, 104, 0.03) !important;
+        border-radius: 16px !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card:hover {
+        box-shadow: 0 15px 35px rgba(31, 110, 104, 0.08) !important;
     }
     .content-card {
+        background: rgba(255, 255, 255, 0.58) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 0 8px 32px 0 rgba(31, 110, 104, 0.03) !important;
+        border-radius: 16px !important;
         transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .content-card:hover {
+        box-shadow: 0 15px 35px rgba(31, 110, 104, 0.08) !important;
+        transform: translateY(-4px);
     }
 
     /* ── Redesigned Filled Buttons ── */
@@ -108,7 +127,7 @@
 
     /* ── Teal Card Headers ── */
     .card-header-teal {
-        background-color: #1F6E68 !important;
+        background-color: rgba(31, 110, 104, 0.88) !important;
         color: #ffffff !important;
         border-bottom: none !important;
         padding: 16px 24px !important;
