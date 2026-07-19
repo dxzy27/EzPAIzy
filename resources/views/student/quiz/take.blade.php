@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="card border-0 shadow-sm question-card animated fadeIn">
                 <div class="card-body p-4 p-md-5">
                     <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
-                        <h4 class="fw-bold text-dark mb-0" style="line-height: 1.4;">${savedTitle}</h4>
+                        <div class="text-dark mb-0" style="font-size: 28px; font-weight: 600; line-height: 1.45;">${savedTitle}</div>
                         @if(auth()->user()?->learning_style === 'auditory')
                         <button type="button" class="btn btn-light rounded-circle shadow-sm border d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; padding: 0;" onclick="speakQuestionAndChoices(${index})" title="Listen to question and choices">
                             <i class="bi bi-volume-up-fill text-primary fs-5"></i>
