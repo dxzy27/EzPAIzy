@@ -551,7 +551,7 @@
                 <div class="d-flex align-items-center gap-4">
                     {{-- Logo / Icon --}}
                     <div style="flex-shrink: 0; width: 64px; height: 64px; border-radius: 16px; background: rgba(66, 85, 255, 0.1); display: flex; align-items: center; justify-content: center;">
-                        <img src="{{ asset('images/logo.png') }}" alt="EzPAIzy Logo" style="width: 38px; height: 38px; object-fit: contain;">
+                        <img src="{{ asset('images/vark.png') }}" alt="VARK logo" style="width: 44px; height: 44px; object-fit: contain;">
                     </div>
                     
                     {{-- Text and Button --}}
