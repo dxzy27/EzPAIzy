@@ -81,9 +81,9 @@
                                 <a href="{{ route('student.flashcards.show', $set) }}" class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center" style="height: 42px; font-weight: 600; border-radius: 10px; font-size: 0.9rem;">
                                     Open Flashcards <i class="bi bi-arrow-right ms-2"></i>
                                 </a>
-                                <form action="{{ route('student.flashcards.reset', $set) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset this flashcard progress?');" class="m-0 w-100 text-center">
+                                <form action="{{ route('student.flashcards.reset', $set) }}" method="POST" class="m-0 w-100 text-center reset-progress-form">
                                     @csrf
-                                    <button type="submit" class="btn btn-link btn-sm p-0 reset-link">
+                                    <button type="button" class="btn btn-link btn-sm p-0 reset-link" onclick="confirmReset(this)">
                                         <i class="bi bi-arrow-clockwise me-1"></i> Reset Progress
                                     </button>
                                 </form>
@@ -109,6 +109,30 @@
             </div>
         </div>
     @endif
+</div>
+
+<!-- Reset Confirmation Modal -->
+<div class="modal fade" id="resetConfirmModal" tabindex="-1" aria-labelledby="resetConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center pt-0 pb-4 px-4">
+        <div class="mb-3">
+            <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle" style="width: 60px; height: 60px;">
+                <i class="bi bi-exclamation-triangle fs-2"></i>
+            </div>
+        </div>
+        <h5 class="fw-bold mb-2">Reset Progress?</h5>
+        <p class="text-muted small mb-4">This action cannot be undone. All your mastery progress for this set will be wiped.</p>
+        <div class="d-flex gap-2 w-100">
+            <button type="button" class="btn btn-light w-50 fw-bold" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger w-50 fw-bold" id="confirmResetBtn">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
 
@@ -195,6 +219,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+    }
+});
+
+let currentResetForm = null;
+function confirmReset(btn) {
+    currentResetForm = btn.closest('form');
+    const resetModal = new bootstrap.Modal(document.getElementById('resetConfirmModal'));
+    resetModal.show();
+}
+
+document.getElementById('confirmResetBtn').addEventListener('click', function() {
+    if (currentResetForm) {
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Resetting...';
+        this.disabled = true;
+        currentResetForm.submit();
     }
 });
 </script>
