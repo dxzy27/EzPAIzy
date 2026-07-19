@@ -127,37 +127,26 @@
 
             {{-- ── STUDENT LINKS ──────────────────────── --}}
 
-            {{-- Materials --}}
+            {{-- Flashcards --}}
             <li>
-                <a href="#materialsSubmenu" data-bs-toggle="collapse"
-                   class="nav-link"
-                   role="button"
-                   data-tooltip="Materials"
-                   aria-expanded="{{ request()->routeIs('student.contents.*') || request()->routeIs('student.flashcards.*') ? 'true' : 'false' }}">
-                    <i class="bi bi-collection nav-icon"></i>
-                    <span class="nav-label">Materials</span>
-                    <i class="bi bi-chevron-down nav-chevron"></i>
+                <a href="{{ route('student.flashcards.index') }}"
+                   class="nav-link {{ request()->routeIs('student.flashcards.*') ? 'active' : '' }}"
+                   data-tooltip="Flashcards">
+                    <i class="bi bi-card-text nav-icon"></i>
+                    <span class="nav-label">Flashcards</span>
                 </a>
-                <div class="collapse {{ request()->routeIs('student.contents.*') || request()->routeIs('student.flashcards.*') ? 'show' : '' }}"
-                     id="materialsSubmenu">
-                    <ul class="submenu-list">
-                        <li>
-                            <a href="{{ route('student.flashcards.index') }}"
-                               class="nav-link {{ request()->routeIs('student.flashcards.*') ? 'active' : '' }}">
-                                <i class="bi bi-card-text nav-icon"></i>
-                                <span class="nav-label">Flashcards</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('student.contents.index') }}"
-                               class="nav-link {{ request()->routeIs('student.contents.*') ? 'active' : '' }}">
-                                <i class="bi bi-journal-text nav-icon"></i>
-                                <span class="nav-label">Other</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
             </li>
+
+            {{-- Other --}}
+            <li>
+                <a href="{{ route('student.contents.index') }}"
+                   class="nav-link {{ request()->routeIs('student.contents.*') ? 'active' : '' }}"
+                   data-tooltip="Other">
+                    <i class="bi bi-journal-text nav-icon"></i>
+                    <span class="nav-label">Other</span>
+                </a>
+            </li>
+
 
             {{-- Quizzes --}}
             <li>
