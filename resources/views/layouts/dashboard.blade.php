@@ -682,9 +682,8 @@
         <header class="topbar">
             <div class="topbar-left">
                 <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : (auth()->user()->role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard')) }}" 
-                   class="d-flex align-items-center gap-2 text-decoration-none">
-                    <img src="{{ asset('images/logo.png') }}" alt="Mascot" style="height: 38px; width: auto; object-fit: contain;">
-                    <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" style="height: 24px; width: auto; object-fit: contain;">
+                   class="d-flex align-items-center text-decoration-none">
+                    <img src="{{ asset('images/logo.png') }}" alt="EzPAIzy Logo" style="height: 42px; width: auto; object-fit: contain;">
                 </a>
             </div>
             <h1 class="topbar-title">{{ $sectionTitle }}</h1>
