@@ -463,25 +463,28 @@
             height: 68px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 0 28px;
-            background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.07);
-            position: sticky;
+            background: transparent !important;
+            border-bottom: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            position: absolute;
             top: 0;
+            right: 0;
+            left: 0;
             z-index: 999;
+            pointer-events: none;
+        }
+        .topbar-right {
+            pointer-events: auto;
         }
         .topbar-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0;
+            display: none !important;
         }
         .page-body {
-            padding: 32px 28px;
+            padding: 80px 28px 32px;
         }
         @media (max-width: 575px) {
             .topbar {
