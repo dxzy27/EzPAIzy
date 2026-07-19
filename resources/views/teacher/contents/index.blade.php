@@ -76,10 +76,10 @@
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-12 text-center py-5 text-muted">
-            <i class="bi bi-folder2-open display-2 mb-3 d-block text-warning" style="opacity: .6;"></i>
-            <h5 class="fw-bold">Open a Folder</h5>
+    <div class="row mt-2">
+        <div class="col-md-12 text-center py-3 text-muted">
+            <i class="bi bi-folder2-open display-4 mb-2 d-block text-warning" style="opacity: .65;"></i>
+            <h6 class="fw-bold text-dark">Open a Folder</h6>
             <p class="small text-muted mb-0">Select one of the folders above to view its contents and materials.</p>
         </div>
     </div>
