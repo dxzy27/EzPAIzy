@@ -23,21 +23,21 @@ use App\Http\Controllers\ProfileController;
 */
 
 // Authentication Routes
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 // Default Redirections
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
 
 // Profile Routes
-Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('profile')->name('profile.')->group(function () {
     Route::get('/', [ProfileController::class, 'show'])->name('show');
     Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
     Route::put('/update', [ProfileController::class, 'update'])->name('update');
 });
 
 // Protected Student Web Routes
-Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->group(function () {
+Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('student.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
     Route::get('/set-visual', function() {
@@ -108,7 +108,7 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
 });
 
 // Protected Teacher Web Routes
-Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+Route::middleware(['auth', 'verified', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
 
