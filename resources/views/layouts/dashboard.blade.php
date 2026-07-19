@@ -548,8 +548,26 @@
         .stat-card:hover {
             transform: translateY(-3px);
         }
-        .folder-card { transition: transform .2s, box-shadow .2s; }
-        .folder-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,.1) !important; }
+        .folder-card {
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        }
+        .folder-card:hover {
+            transform: scale(1.05) !important;
+            box-shadow: 0 16px 32px rgba(31, 110, 104, 0.12) !important;
+        }
+        .folder-card .bi-folder-fill,
+        .folder-card .bi-folder-plus,
+        .folder-card .bi-folder,
+        .folder-card .bi-folder2-open {
+            transition: transform 0.3s ease !important;
+            display: inline-block !important;
+        }
+        .folder-card:hover .bi-folder-fill,
+        .folder-card:hover .bi-folder-plus,
+        .folder-card:hover .bi-folder,
+        .folder-card:hover .bi-folder2-open {
+            transform: translateY(-5px) !important;
+        }
 
         /* ── Premium Buttons ─────────────────────────── */
         .btn {
