@@ -28,10 +28,10 @@
             
             {{-- VARK Learning Styles Badge Section --}}
             <div class="vark-badges d-flex flex-wrap gap-3 mb-4">
-                <span class="vark-badge visual"><i class="bi bi-eye"></i> Visual</span>
-                <span class="vark-badge auditory"><i class="bi bi-ear"></i> Auditory</span>
-                <span class="vark-badge read-write"><i class="bi bi-journal-text"></i> Read/Write</span>
-                <span class="vark-badge kinesthetic"><i class="bi bi-activity"></i> Kinesthetic</span>
+                <span class="vark-badge">👁 Visual</span>
+                <span class="vark-badge">🎧 Auditory</span>
+                <span class="vark-badge">📖 Read/Write</span>
+                <span class="vark-badge">🏃 Competitive</span>
             </div>
 
             {{-- Feature highlights --}}
@@ -251,7 +251,7 @@
         font-size: 2.75rem;
         font-weight: 800;
         line-height: 1.15;
-        margin-bottom: 25px;
+        margin-bottom: 35px;
     }
     .intro-title .accent-glow {
         color: var(--accent);
@@ -265,18 +265,15 @@
     .vark-badge {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 18px;
+        gap: 6px;
+        padding: 4px 14px;
         border-radius: 99px;
-        font-size: 0.88rem;
+        font-size: 0.85rem;
         font-weight: 600;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        background: rgba(255, 255, 255, 0.08);
-        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.9);
         text-shadow: none;
-    }
-    .vark-badge i {
-        font-size: 0.95rem;
     }
     .feature-item {
         font-size: 1.05rem;
@@ -312,7 +309,7 @@
         border-radius: 24px;
         border: 1px solid rgba(255, 255, 255, 0.6) !important;
         border-top: 5px solid var(--accent) !important;   /* ← blue top stripe */
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.18), 0 0 60px rgba(96, 165, 250, 0.15) !important;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.22), 0 0 60px rgba(96, 165, 250, 0.15) !important;
     }
 
     /* ── Badge ───────────────────────────────────── */
@@ -382,7 +379,7 @@
     .btn-submit {
         position: relative; background: var(--btn-bg); color: #fff;
         font-weight: 700; font-size: .95rem; font-family: 'Outfit', sans-serif;
-        padding: 13px 20px; border-radius: 10px; border: none;
+        height: 54px; border-radius: 12px; border: none;
         cursor: pointer; display: flex; align-items: center; justify-content: center;
         letter-spacing: .5px; transition: background .2s, transform .15s;
     }
