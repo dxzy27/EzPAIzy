@@ -60,10 +60,19 @@
                                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ $set->stats->total > 0 ? (($set->stats->mastered + $set->stats->review) / $set->stats->total) * 100 : 0 }}%" title="Mastered"></div>
                                     <div class="progress-bar" role="progressbar" style="width: {{ $set->stats->total > 0 ? ($set->stats->learning / $set->stats->total) * 100 : 0 }}%; background-color: #f97316;" title="Still Learning"></div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-2" style="font-size: 0.72rem;">
-                                    <span class="text-secondary"><i class="bi bi-circle-fill text-secondary me-1" style="font-size: 0.5rem;"></i>{{ $set->stats->new }} New</span>
-                                    <span style="color: #f97316; font-weight: 500;"><i class="bi bi-circle-fill me-1" style="color: #f97316; font-size: 0.5rem;"></i>{{ $set->stats->learning }} Learning</span>
-                                    <span class="text-success" style="font-weight: 500;"><i class="bi bi-circle-fill text-success me-1" style="font-size: 0.5rem;"></i>{{ $set->stats->mastered + $set->stats->review }} Mastered</span>
+                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                    <span class="badge bg-light text-secondary border d-inline-flex align-items-center gap-1 py-1 px-2" style="border-radius: 30px; font-weight: 500; font-size: 0.7rem;">
+                                        <span style="width: 5px; height: 5px; border-radius: 50%; background-color: #6c757d; display: inline-block;"></span>
+                                        {{ $set->stats->new }} New
+                                    </span>
+                                    <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2" style="background-color: rgba(249, 115, 22, 0.08); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.15); border-radius: 30px; font-weight: 500; font-size: 0.7rem;">
+                                        <span style="width: 5px; height: 5px; border-radius: 50%; background-color: #f97316; display: inline-block;"></span>
+                                        Learning {{ $set->stats->learning }}
+                                    </span>
+                                    <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2" style="background-color: rgba(25, 135, 84, 0.08); color: #198754; border: 1px solid rgba(25, 135, 84, 0.15); border-radius: 30px; font-weight: 500; font-size: 0.7rem;">
+                                        <span style="width: 5px; height: 5px; border-radius: 50%; background-color: #198754; display: inline-block;"></span>
+                                        Mastered {{ $set->stats->mastered + $set->stats->review }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
