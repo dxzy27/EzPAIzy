@@ -80,26 +80,9 @@
                             </p>
                         </div>
 
-                        <!-- Audio Button (Always visible) -->
-                        <button class="btn d-inline-flex align-items-center gap-3 px-4 py-2 mt-4" id="playBtn" style="border-radius: 50px; background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
-                            <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 45px; height: 45px; background: #1bbc9b; color: white;">
-                                <i class="bi bi-play-fill fs-4" id="playIcon"></i>
-                            </div>
-                            <div class="text-start">
-                                <div class="fw-bold text-dark" style="font-size: 0.95rem;">Listen to Doa</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Interactive Reading</div>
-                            </div>
-                        </button>
-
                         <!-- Memorize Part (Hidden by Default) -->
                         <div class="memorize-part" style="display: none;">
-                            <div class="d-flex justify-content-center align-items-center mb-4 mt-5">
-                                <button class="btn btn-primary rounded-circle me-3 shadow-sm" id="mem-prev" style="width:45px; height:45px;" disabled><i class="bi bi-arrow-left"></i></button>
-                                <span class="fw-bold text-muted px-3 py-1 bg-light rounded-pill" id="mem-progress">1 / 1</span>
-                                <button class="btn btn-primary rounded-circle ms-3 shadow-sm" id="mem-next" style="width:45px; height:45px;"><i class="bi bi-arrow-right"></i></button>
-                            </div>
-                            
-                            <div class="position-relative mx-auto my-5 p-4 rounded-4" id="mem-card-area" style="max-width: 600px; background: rgba(0,0,0,0.02); min-height: 250px; cursor: pointer; border: 2px dashed rgba(0,0,0,0.1);">
+                            <div class="position-relative mx-auto my-5 p-4 rounded-4" id="mem-card-area" style="max-width: 800px; background: rgba(0,0,0,0.02); min-height: 250px; cursor: pointer; border: 2px dashed rgba(0,0,0,0.1);">
                                 
                                 <!-- Text Chunk to Memorize -->
                                 <h2 class="display-5 quran-font text-dark mb-0 d-flex align-items-center justify-content-center" style="line-height: 2; height: 100%; min-height: 200px;" dir="rtl" id="mem-chunk-display">
@@ -109,13 +92,32 @@
                                 <!-- Overlay (Hides text initially) -->
                                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center rounded-4" id="mem-overlay" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); transition: all 0.3s ease; z-index: 10;">
                                      <i class="bi bi-eye-slash text-muted fs-1 mb-2"></i>
-                                     <span class="text-muted fw-bold">Click to reveal</span>
+                                     <span class="text-muted fw-bold">Tap to Reveal</span>
                                 </div>
                             </div>
                             
-                            <div class="text-center mt-4">
-                                <p class="text-muted fst-italic" id="mem-translation-display"></p>
+                            <div class="d-flex justify-content-center align-items-center mb-5">
+                                <button class="btn btn-primary rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" id="mem-prev" style="width:45px; height:45px;" disabled><i class="bi bi-arrow-left"></i></button>
+                                <span class="fw-bold text-muted px-4 py-2 bg-light rounded-pill" id="mem-progress">1 / 1</span>
+                                <button class="btn btn-primary rounded-circle ms-3 shadow-sm d-flex align-items-center justify-content-center" id="mem-next" style="width:45px; height:45px; transition: all 0.2s;"><i class="bi bi-arrow-right"></i></button>
                             </div>
+                            
+                            <div class="text-center mt-4 mb-5">
+                                <p class="lead fs-5 fst-italic text-dark opacity-75" id="mem-translation-display"></p>
+                            </div>
+                        </div>
+
+                        <!-- Audio Button (Always visible at the bottom) -->
+                        <div class="mt-4 mb-3">
+                            <button class="btn d-inline-flex align-items-center gap-3 px-4 py-2" id="playBtn" style="border-radius: 50px; background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 45px; height: 45px; background: #1bbc9b; color: white;">
+                                    <i class="bi bi-play-fill fs-4" id="playIcon"></i>
+                                </div>
+                                <div class="text-start">
+                                    <div class="fw-bold text-dark" style="font-size: 0.95rem;">Listen to Doa</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Interactive Reading</div>
+                                </div>
+                            </button>
                         </div>
 
                     </div>
@@ -330,11 +332,11 @@
                 memNextBtn.disabled = currentChunkIndex >= totalChunks - 1;
                 
                 if (currentChunkIndex >= totalChunks - 1) {
-                    memNextBtn.innerHTML = 'Finish <i class="bi bi-check"></i>';
+                    memNextBtn.innerHTML = '<i class="bi bi-check fs-5"></i>';
                     memNextBtn.classList.remove('btn-primary');
                     memNextBtn.classList.add('btn-success');
                 } else {
-                    memNextBtn.innerHTML = 'Next <i class="bi bi-arrow-right"></i>';
+                    memNextBtn.innerHTML = '<i class="bi bi-arrow-right fs-5"></i>';
                     memNextBtn.classList.add('btn-primary');
                     memNextBtn.classList.remove('btn-success');
                 }
