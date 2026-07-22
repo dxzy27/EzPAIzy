@@ -698,37 +698,32 @@ class StudentController extends Controller
     /**
      * Display Daily Doa page.
      */
-    public function dailyDoa()
+    public function dailyDoa(Request $request)
     {
         $doas = $this->getStudentDoas();
         $doaKeys = array_keys($doas);
         
-        // Pick a random category based on the day of the year
-        $dayIndex = (now()->dayOfYear + now()->year) % count($doaKeys);
-        $situation = $doaKeys[$dayIndex];
-        $situationDoas = $doas[$situation];
-
-        // If there's a session doaSituation, override the category
-        if (session('doaSituation')) {
-            $situationDoas = session('doaSituation')['doas'];
+        // If a situation is passed in URL, use it. Otherwise, pick a random one based on the day
+        $requestedSituation = $request->query('situation');
+        
+        if ($requestedSituation && array_key_exists($requestedSituation, $doas)) {
+            $situation = $requestedSituation;
+        } else {
+            $dayIndex = (now()->dayOfYear + now()->year) % count($doaKeys);
+            $situation = $doaKeys[$dayIndex];
         }
 
-        return view('student.daily_doa', compact('situationDoas'));
+        $situationDoas = $doas[$situation];
+
+        return view('student.daily_doa', compact('situationDoas', 'situation'));
     }
 
     /**
-     * Fetch Doas by situation.
+     * Fetch Doas by situation (deprecated, redirecting to dailyDoa with query param).
      */
     public function doaSituation(Request $request)
     {
         $situation = $request->query('situation', 'study');
-        $doas = $this->getStudentDoas();
-        
-        $situationDoas = $doas[$situation] ?? $doas['study'];
-
-        return redirect()->route('student.daily_doa')->with('doaSituation', [
-            'situation' => ucfirst($situation),
-            'doas' => $situationDoas
-        ]);
+        return redirect()->route('student.daily_doa', ['situation' => $situation]);
     }
 }
