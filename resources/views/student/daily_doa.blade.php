@@ -28,12 +28,14 @@
 
                     <!-- Situation Selector -->
                     <div class="bg-light py-3 px-3 text-center border-bottom">
-                         <div class="d-flex justify-content-center flex-wrap align-items-center gap-3">
-                             <div class="d-flex align-items-center flex-wrap justify-content-center">
+                         <div class="d-flex flex-column align-items-center justify-content-center gap-2">
+                             <div class="d-flex align-items-center justify-content-center flex-wrap">
                                  <span class="text-muted small me-2 uppercase fw-bold">Situation:</span>
                                  <a href="{{ route('student.daily_doa', ['situation' => 'study']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'study' ? 'active' : '' }}">📚 Studying</a>
                                  <a href="{{ route('student.daily_doa', ['situation' => 'exam']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'exam' ? 'active' : '' }}">📝 Exam</a>
                                  <a href="{{ route('student.daily_doa', ['situation' => 'memory']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'memory' ? 'active' : '' }}">🧠 Memory</a>
+                             </div>
+                             <div class="d-flex align-items-center justify-content-center flex-wrap">
                                  <a href="{{ route('student.daily_doa', ['situation' => 'anxious']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'anxious' ? 'active' : '' }}">😰 Anxious</a>
                                  <a href="{{ route('student.daily_doa', ['situation' => 'unmotivated']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'unmotivated' ? 'active' : '' }}">😐 Unmotivated</a>
                              </div>
