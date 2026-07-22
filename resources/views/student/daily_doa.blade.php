@@ -107,8 +107,8 @@
                             </div>
                         </div>
 
-                        <!-- Audio Button (Always visible at the bottom) -->
-                        <div class="mt-4 mb-3">
+                        <!-- Audio Button (Hidden in Memorize Mode) -->
+                        <div class="mt-4 mb-3 normal-element">
                             <button class="btn d-inline-flex align-items-center gap-3 px-4 py-2" id="playBtn" style="border-radius: 50px; background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
                                 <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 45px; height: 45px; background: #1bbc9b; color: white;">
                                     <i class="bi bi-play-fill fs-4" id="playIcon"></i>
