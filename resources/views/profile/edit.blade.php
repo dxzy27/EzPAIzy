@@ -71,8 +71,8 @@
                             <label for="class_name" class="form-label">Class</label>
                             <select id="class_name" class="form-select @error('class_name') is-invalid @enderror" name="class_name">
                                 <option value="">-- Select Class --</option>
-                                @foreach(['5A1', '5A2', '5A3', '5B1', '5B2', '5B3'] as $class)
-                                    <option value="{{ $class }}" {{ old('class_name', $user->class_name) == $class ? 'selected' : '' }}>{{ $class }}</option>
+                                @foreach($schoolClasses as $schoolClass)
+                                    <option value="{{ $schoolClass->name }}" {{ old('class_name', $user->class_name) == $schoolClass->name ? 'selected' : '' }}>{{ $schoolClass->name }}</option>
                                 @endforeach
                             </select>
                             @error('class_name')

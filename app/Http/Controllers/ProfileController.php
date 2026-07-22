@@ -21,7 +21,8 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = auth()->user();
-        return view('profile.edit', compact('user'));
+        $schoolClasses = \App\Models\SchoolClass::orderBy('name')->get();
+        return view('profile.edit', compact('user', 'schoolClasses'));
     }
 
     /**
@@ -37,7 +38,7 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
-            'class_name' => 'nullable|string|in:5A1,5A2,5A3,5B1,5B2,5B3',
+            'class_name' => 'nullable|string|exists:school_classes,name',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 

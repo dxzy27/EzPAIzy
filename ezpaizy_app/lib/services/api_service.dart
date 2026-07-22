@@ -72,6 +72,22 @@ class ApiService {
     }
   }
 
+  static Future<List<String>> getClasses() async {
+    try {
+      final res = await http.get(
+        Uri.parse('$baseUrl/classes'),
+        headers: await _headers(),
+      );
+      final decoded = jsonDecode(res.body);
+      if (decoded['success'] == true && decoded['data'] is List) {
+        return List<String>.from(decoded['data']);
+      }
+      return [];
+    } catch (_) {
+      return [];
+    }
+  }
+
   static Future<void> logout() async {
     await http.post(
       Uri.parse('$baseUrl/logout'),

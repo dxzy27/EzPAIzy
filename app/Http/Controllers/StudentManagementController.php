@@ -31,7 +31,8 @@ class StudentManagementController extends Controller
      */
     public function create()
     {
-        return view('teacher.students.create');
+        $schoolClasses = \App\Models\SchoolClass::orderBy('name')->get();
+        return view('teacher.students.create', compact('schoolClasses'));
     }
 
     /**
@@ -44,7 +45,7 @@ class StudentManagementController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'phone_number' => 'nullable|string|max:20',
-            'class_name' => 'nullable|string|max:50',
+            'class_name' => 'nullable|string|exists:school_classes,name',
             'address' => 'nullable|string|max:255',
         ]);
 
@@ -182,7 +183,8 @@ class StudentManagementController extends Controller
     {
         abort_if($student->role !== 'student', 403, 'This user is not a student');
 
-        return view('teacher.students.edit', compact('student'));
+        $schoolClasses = \App\Models\SchoolClass::orderBy('name')->get();
+        return view('teacher.students.edit', compact('student', 'schoolClasses'));
     }
 
     /**
@@ -196,7 +198,7 @@ class StudentManagementController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $student->id,
             'phone_number' => 'nullable|string|max:20',
-            'class_name' => 'nullable|string|max:50',
+            'class_name' => 'nullable|string|exists:school_classes,name',
             'address' => 'nullable|string|max:255',
         ]);
 

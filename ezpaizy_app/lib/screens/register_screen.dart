@@ -18,6 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirmPassCtrl = TextEditingController();
   
   String? _className;
+  List<String> _classes = [];
+  bool _isFetchingClasses = true;
   
   bool _isLoading = false;
   String? _errorMessage;
@@ -31,6 +33,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passCtrl.dispose();
     _confirmPassCtrl.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchClasses();
+  }
+
+  Future<void> _fetchClasses() async {
+    final classes = await ApiService.getClasses();
+    if (mounted) {
+      setState(() {
+        _classes = classes;
+        _isFetchingClasses = false;
+      });
+    }
   }
 
   Future<void> _register() async {
@@ -353,18 +371,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 16),
 
                       // Class Name dropdown
-                      _CustomDropdownField(
-                        value: _className,
-                        hintText: 'Select Class...',
-                        items: const ['5A1', '5A2', '5A3', '5B1', '5B2', '5B3'],
-                        displayItems: const ['5A1', '5A2', '5A3', '5B1', '5B2', '5B3'],
-                        prefixIcon: Icons.class_outlined,
-                        onChanged: (val) {
-                          if (val != null) {
-                            setState(() => _className = val);
-                          }
-                        },
-                      ),
+                      _isFetchingClasses
+                          ? const Center(child: CircularProgressIndicator())
+                          : _CustomDropdownField(
+                              value: _className,
+                              hintText: 'Select Class...',
+                              items: _classes,
+                              displayItems: _classes,
+                              prefixIcon: Icons.class_outlined,
+                              onChanged: (val) {
+                                if (val != null) {
+                                  setState(() => _className = val);
+                                }
+                              },
+                            ),
                       const SizedBox(height: 16),
 
                       // Password & Confirm Row

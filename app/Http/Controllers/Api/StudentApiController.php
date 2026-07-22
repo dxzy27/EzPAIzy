@@ -68,7 +68,7 @@ class StudentApiController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone_number' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string', 'max:255'],
-            'class_name' => ['required', 'string', 'in:5A1,5A2,5A3,5B1,5B2,5B3'],
+            'class_name' => ['required', 'string', 'exists:school_classes,name'],
         ]);
 
         $user = \App\Models\User::create([

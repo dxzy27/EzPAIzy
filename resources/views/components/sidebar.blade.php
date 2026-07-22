@@ -45,6 +45,16 @@
                 </a>
             </li>
 
+            {{-- Class Management --}}
+            <li>
+                <a href="{{ route('admin.classes.index') }}"
+                   class="nav-link {{ request()->routeIs('admin.classes.*') ? 'active' : '' }}"
+                   data-tooltip="Classes">
+                    <i class="bi bi-building nav-icon"></i>
+                    <span class="nav-label">Classes</span>
+                </a>
+            </li>
+
         @elseif(auth()->user()->role === 'teacher')
 
             {{-- ── TEACHER LINKS ──────────────────────── --}}

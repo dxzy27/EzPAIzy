@@ -191,4 +191,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/moderation/question/{question}/toggle-flag', [App\Http\Controllers\Admin\ModerationController::class, 'toggleQuestionFlag'])->name('moderation.question.toggle-flag');
     Route::delete('/moderation/question/{question}/destroy', [App\Http\Controllers\Admin\ModerationController::class, 'destroyQuestion'])->name('moderation.question.destroy');
     // Quiz Moderation Removed because quizzes table is deleted
+    
+    // Class Management
+    Route::resource('classes', \App\Http\Controllers\Admin\SchoolClassController::class)->except(['create', 'show', 'edit']);
 });

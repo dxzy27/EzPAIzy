@@ -10,8 +10,9 @@ use App\Http\Controllers\Api\StudentApiController;
 */
 
 // Public: login & register (no auth needed)
-Route::post('/login', [StudentApiController::class, 'login']);
-Route::post('/register', [StudentApiController::class, 'register']);
+Route::post('/register', [\App\Http\Controllers\Api\StudentApiController::class, 'register']);
+Route::post('/login', [\App\Http\Controllers\Api\StudentApiController::class, 'login']);
+Route::get('/classes', [\App\Http\Controllers\Api\ClassApiController::class, 'index']);
 
 // Protected: require valid Sanctum token
 Route::middleware('auth:sanctum')->group(function () {

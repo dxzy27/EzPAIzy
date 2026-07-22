@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('questions', function (Blueprint $table) {
-            $table->boolean('is_flagged')->default(false)->after('difficulty');
+        Schema::create('school_classes', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('questions', function (Blueprint $table) {
-            $table->dropColumn('is_flagged');
-        });
+        Schema::dropIfExists('school_classes');
     }
 };

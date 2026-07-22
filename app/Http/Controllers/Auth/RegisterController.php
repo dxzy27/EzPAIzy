@@ -43,6 +43,17 @@ class RegisterController extends Controller
     }
 
     /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        $schoolClasses = \App\Models\SchoolClass::orderBy('name')->get();
+        return view('auth.register', compact('schoolClasses'));
+    }
+
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -75,7 +86,7 @@ class RegisterController extends Controller
             'role' => ['nullable', 'string', 'in:student,teacher'],
             'phone_number' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string', 'max:255'],
-            'class_name' => ['required', 'string', 'in:5A1,5A2,5A3,5B1,5B2,5B3'],
+            'class_name' => ['required', 'string', 'exists:school_classes,name'],
         ], [
             'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
             'password.min' => 'The password must be at least 8 characters.',
