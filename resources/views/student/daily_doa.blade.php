@@ -229,6 +229,14 @@
         });
 
         // TTS Audio Logic
+        let voices = [];
+        function loadVoices() {
+            voices = synth.getVoices();
+        }
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
         playBtn.addEventListener('click', () => {
             if (synth.speaking) {
                 synth.cancel();
@@ -241,9 +249,16 @@
             const doa = doas[currentIndex];
             const utterance = new SpeechSynthesisUtterance(doa.arabic);
             
-            // Try to set an Arabic voice
-            utterance.lang = 'ar-SA';
-            utterance.rate = 0.85; // slightly slower for better clarity
+            // Try to find an Arabic voice
+            let arabicVoice = voices.find(voice => voice.lang.includes('ar'));
+            if (arabicVoice) {
+                utterance.voice = arabicVoice;
+            } else {
+                // Fallback to standard Arabic lang tag if voice not found in array
+                utterance.lang = 'ar-SA';
+            }
+            
+            utterance.rate = 0.85; 
             
             utterance.onstart = () => {
                 isPlaying = true;
@@ -255,6 +270,14 @@
                 isPlaying = false;
                 playIcon.classList.remove('bi-pause-fill');
                 playIcon.classList.add('bi-play-fill');
+            };
+
+            utterance.onerror = (e) => {
+                console.error('Speech synthesis error', e);
+                isPlaying = false;
+                playIcon.classList.remove('bi-pause-fill');
+                playIcon.classList.add('bi-play-fill');
+                alert("Your browser or device does not have an Arabic voice installed to read this Doa. Please try on a different browser (like Chrome or Edge).");
             };
 
             synth.speak(utterance);
