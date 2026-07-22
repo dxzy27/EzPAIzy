@@ -228,7 +228,7 @@
             }
         });
 
-        // TTS Audio Logic (Using Google Translate TTS for reliable Arabic playback)
+        // Audio Logic (Using local generated MP3 files)
         let audioPlayer = new Audio();
         let isPlaying = false;
 
@@ -242,10 +242,9 @@
             }
 
             const doa = doas[currentIndex];
-            const text = encodeURIComponent(doa.arabic);
             
-            // Using Google's TTS endpoint
-            audioPlayer.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${text}`;
+            // Using local MP3 files guaranteed to work everywhere (Web, iOS, Android, Brave)
+            audioPlayer.src = doa.audio;
             
             audioPlayer.play().then(() => {
                 isPlaying = true;

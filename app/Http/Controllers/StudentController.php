@@ -713,6 +713,11 @@ class StudentController extends Controller
 
         $situationDoas = $doas[$situation];
 
+        // Attach the audio path and situation/index to each Doa
+        foreach ($situationDoas as $index => &$doa) {
+            $doa['audio'] = asset('audio/doas/' . $situation . '_' . ($index + 1) . '.mp3');
+        }
+
         return view('student.daily_doa', compact('situationDoas', 'situation'));
     }
 
