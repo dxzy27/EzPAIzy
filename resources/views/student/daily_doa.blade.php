@@ -182,8 +182,8 @@
         const memNextBtn = document.getElementById('mem-next');
         const memProgressDisplay = document.getElementById('mem-progress');
 
-        // Text to Speech
-        let synth = window.speechSynthesis;
+        // Audio Variables
+        let audioPlayer = new Audio();
         let isPlaying = false;
 
         function updateDoaView() {
@@ -197,9 +197,9 @@
             prevBtn.disabled = (currentIndex === 0);
             nextBtn.disabled = (currentIndex === doas.length - 1);
 
-            // Stop TTS if running when changing Doa
-            if (synth.speaking) {
-                synth.cancel();
+            // Stop audio if playing when changing Doa
+            if (isPlaying) {
+                audioPlayer.pause();
                 isPlaying = false;
                 playIcon.classList.remove('bi-pause-fill');
                 playIcon.classList.add('bi-play-fill');
@@ -229,9 +229,6 @@
         });
 
         // Audio Logic (Using local generated MP3 files)
-        let audioPlayer = new Audio();
-        let isPlaying = false;
-
         playBtn.addEventListener('click', () => {
             if (isPlaying) {
                 audioPlayer.pause();
