@@ -139,6 +139,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Widget::class)->orderBy('position');
     }
+
+    /**
+     * A teacher can create many quizzes (topics of type quiz).
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function quizzes()
+    {
+        return $this->hasMany(Topic::class)->where('type', 'quiz');
+    }
     
     /**
      * A student can have many favorited contents.
