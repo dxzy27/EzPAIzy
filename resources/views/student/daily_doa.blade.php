@@ -228,18 +228,13 @@
             }
         });
 
-        // TTS Audio Logic
-        let voices = [];
-        function loadVoices() {
-            voices = synth.getVoices();
-        }
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = loadVoices;
-        }
+        // TTS Audio Logic (Using Google Translate TTS for reliable Arabic playback)
+        let audioPlayer = new Audio();
+        let isPlaying = false;
 
         playBtn.addEventListener('click', () => {
-            if (synth.speaking) {
-                synth.cancel();
+            if (isPlaying) {
+                audioPlayer.pause();
                 isPlaying = false;
                 playIcon.classList.remove('bi-pause-fill');
                 playIcon.classList.add('bi-play-fill');
@@ -247,41 +242,29 @@
             }
 
             const doa = doas[currentIndex];
-            const utterance = new SpeechSynthesisUtterance(doa.arabic);
+            const text = encodeURIComponent(doa.arabic);
             
-            // Try to find an Arabic voice
-            let arabicVoice = voices.find(voice => voice.lang.includes('ar'));
-            if (arabicVoice) {
-                utterance.voice = arabicVoice;
-            } else {
-                // Fallback to standard Arabic lang tag if voice not found in array
-                utterance.lang = 'ar-SA';
-            }
+            // Using Google's TTS endpoint
+            audioPlayer.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${text}`;
             
-            utterance.rate = 0.85; 
-            
-            utterance.onstart = () => {
+            audioPlayer.play().then(() => {
                 isPlaying = true;
                 playIcon.classList.remove('bi-play-fill');
                 playIcon.classList.add('bi-pause-fill');
-            };
-
-            utterance.onend = () => {
+            }).catch(e => {
+                console.error("Audio playback failed:", e);
+                alert("Failed to play audio. Your browser might be blocking it.");
                 isPlaying = false;
                 playIcon.classList.remove('bi-pause-fill');
                 playIcon.classList.add('bi-play-fill');
-            };
-
-            utterance.onerror = (e) => {
-                console.error('Speech synthesis error', e);
-                isPlaying = false;
-                playIcon.classList.remove('bi-pause-fill');
-                playIcon.classList.add('bi-play-fill');
-                alert("Your browser or device does not have an Arabic voice installed to read this Doa. Please try on a different browser (like Chrome or Edge).");
-            };
-
-            synth.speak(utterance);
+            });
         });
+
+        audioPlayer.onended = () => {
+            isPlaying = false;
+            playIcon.classList.remove('bi-pause-fill');
+            playIcon.classList.add('bi-play-fill');
+        };
 
         // Mode Switch Logic
         const modeBtns = document.querySelectorAll('.mode-btn');
