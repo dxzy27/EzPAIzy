@@ -292,7 +292,7 @@ class ExpertSystemController extends Controller
             'style'      => $first,
             'scores'     => $scores,
             'confidence' => $confidence,
-            'is_mixed'   => $confidence < 45,
+            'is_mixed'   => false, // Disabled multimodal detection intentionally
         ];
     }
 
