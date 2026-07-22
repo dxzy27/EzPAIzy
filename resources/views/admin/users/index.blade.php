@@ -206,7 +206,7 @@
                     
                     <div class="mb-3">
                         <label class="form-label small fw-bold">New Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="At least 8 characters" required minlength="8">
+                        <input type="password" name="password" class="form-control" placeholder="1 uppercase, 1 lowercase, 1 number, 1 special char" required minlength="8">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-bold">Confirm New Password</label>

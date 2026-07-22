@@ -132,7 +132,28 @@ class UserController extends Controller
     public function resetPassword(Request $request, User $user)
     {
         $validated = $request->validate([
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[a-z]/',      // at least one lowercase letter
+                'regex:/[A-Z]/',      // at least one uppercase letter
+                'regex:/[0-9]/',      // at least one number
+                'regex:/[@$!%*#?&.]/', // at least one special character
+                'confirmed',
+                function ($attribute, $value, $fail) use ($user) {
+                    $name = strtolower($user->name ?? '');
+                    if ($name && str_contains(strtolower($value), $name)) {
+                        $fail('The password cannot contain the user\'s name.');
+                    }
+                    if (preg_match('/(0123|1234|2345|3456|4567|5678|6789|abcd|bcde|cdef|defg|efgh|fghi|ghij|hijk|ijkl|jklm|klmn|lmno|mnop|nopq|opqr|pqrs|qrst|rstu|stuv|tuvw|uvwx|vwxy|wxyz)/i', $value)) {
+                        $fail('The password cannot contain sequential patterns (e.g., 1234, abcd).');
+                    }
+                }
+            ],
+        ], [
+            'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            'password.min' => 'The password must be at least 8 characters.',
         ]);
 
         $user->password = Hash::make($validated['password']);
