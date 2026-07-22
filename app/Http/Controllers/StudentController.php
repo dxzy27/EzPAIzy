@@ -701,16 +701,14 @@ class StudentController extends Controller
     public function dailyDoa(Request $request)
     {
         $doas = $this->getStudentDoas();
-        $doaKeys = array_keys($doas);
         
-        // If a situation is passed in URL, use it. Otherwise, pick a random one based on the day
+        // If a situation is passed in URL, use it. Otherwise, default to the first one ('study')
         $requestedSituation = $request->query('situation');
         
         if ($requestedSituation && array_key_exists($requestedSituation, $doas)) {
             $situation = $requestedSituation;
         } else {
-            $dayIndex = (now()->dayOfYear + now()->year) % count($doaKeys);
-            $situation = $doaKeys[$dayIndex];
+            $situation = 'study';
         }
 
         $situationDoas = $doas[$situation];
