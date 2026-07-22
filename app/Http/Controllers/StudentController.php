@@ -533,34 +533,164 @@ class StudentController extends Controller
     {
         return [
             'study' => [
-                'arabic' => 'رَبِّ زِدْنِي عِلْمًا',
-                'english' => 'O my Lord, increase me in knowledge.',
-                'malay' => 'Ya Tuhanku, tambahkanlah kepadaku ilmu pengetahuan.',
-                'title' => 'Doa Before Studying'
+                [
+                    'arabic' => 'رَبِّ زِدْنِي عِلْمًا',
+                    'english' => 'O my Lord, increase me in knowledge.',
+                    'malay' => 'Ya Tuhanku, tambahkanlah kepadaku ilmu pengetahuan.',
+                    'title' => 'Doa Before Studying 1'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي وَعَلِّمْنِي مَا يَنْفَعُنِي وَزِدْنِي عِلْمًا',
+                    'english' => 'O Allah, benefit me from that which You taught me, and teach me that which will benefit me, and increase me in knowledge.',
+                    'malay' => 'Ya Allah, manfaatkanlah aku dengan apa yang telah Engkau ajarkan kepadaku, dan ajarilah aku apa yang bermanfaat bagiku, dan tambahkanlah ilmuku.',
+                    'title' => 'Doa Before Studying 2'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ أَخْرِجْنِي مِنْ ظُلُمَاتِ الْوَهْمِ وَأَكْرِمْنِي بِنُورِ الْفَهْمِ',
+                    'english' => 'O Allah, bring me out of the darkness of illusion and honor me with the light of understanding.',
+                    'malay' => 'Ya Allah, keluarkanlah aku dari kegelapan keraguan dan muliakanlah aku dengan cahaya kefahaman.',
+                    'title' => 'Doa Before Studying 3'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ افْتَحْ عَلَيْنَا حِكْمَتَكَ وَانْشُرْ عَلَيْنَا مِنْ خَزَائِنِ رَحْمَتِكَ',
+                    'english' => 'O Allah, open for us Your wisdom and spread upon us from the treasures of Your mercy.',
+                    'malay' => 'Ya Allah, bukakanlah ke atas kami hikmah-Mu dan limpahkanlah ke atas kami dari khazanah rahmat-Mu.',
+                    'title' => 'Doa Before Studying 4'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ يَسِّرْ وَلَا تُعَسِّرْ',
+                    'english' => 'O Allah, make it easy and do not make it difficult.',
+                    'malay' => 'Ya Allah, mudahkanlah dan janganlah Engkau persulit.',
+                    'title' => 'Doa Before Studying 5'
+                ],
             ],
             'exam' => [
-                'arabic' => 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي يَفْقَهُوا قَوْلِي',
-                'english' => 'O my Lord! Open for me my chest (grant me self-confidence, contentment, and boldness); Ease my task for me; And remove the impediment from my speech, so they may understand what I say.',
-                'malay' => 'Ya Tuhanku, lapangkanlah dadaku, mudahkanlah urusanku, dan lepaskanlah kekakuan dari lidahku, agar mereka mengerti perkataanku.',
-                'title' => 'Doa For Exams & Clarity'
+                [
+                    'arabic' => 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي يَفْقَهُوا قَوْلِي',
+                    'english' => 'O my Lord! Open for me my chest; Ease my task for me; And remove the impediment from my speech.',
+                    'malay' => 'Ya Tuhanku, lapangkanlah dadaku, mudahkanlah urusanku, dan lepaskanlah kekakuan dari lidahku.',
+                    'title' => 'Doa For Exams & Clarity 1'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا وَأَنْتَ تَجْعَلُ الْحَزَنَ إِذَا شِئْتَ سَهْلًا',
+                    'english' => 'O Allah, there is no ease except in that which You have made easy, and You make the difficulty, if You wish, easy.',
+                    'malay' => 'Ya Allah, tiada kemudahan melainkan apa yang Engkau jadikan mudah, dan Engkau jadikan kesusahan itu mudah jika Engkau kehendaki.',
+                    'title' => 'Doa For Exams & Clarity 2'
+                ],
+                [
+                    'arabic' => 'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ',
+                    'english' => 'O Living, O Sustaining, in Your Mercy I seek relief.',
+                    'malay' => 'Wahai Tuhan Yang Maha Hidup, Wahai Tuhan Yang Maha Berdiri Sendiri, dengan rahmat-Mu aku memohon pertolongan.',
+                    'title' => 'Doa For Exams & Clarity 3'
+                ],
+                [
+                    'arabic' => 'رَبِّ يَسِّرْ وَأَعِنْ',
+                    'english' => 'O Lord, make it easy and help me.',
+                    'malay' => 'Ya Tuhanku, mudahkanlah dan bantulah aku.',
+                    'title' => 'Doa For Exams & Clarity 4'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ ارْزُقْنَا النَّجَاحَ وَالتَّوْفِيقَ فِى الْاِمْتِحَانِ',
+                    'english' => 'O Allah, grant us success and guidance in the examination.',
+                    'malay' => 'Ya Allah, kurniakanlah kami kejayaan dan taufiq dalam peperiksaan.',
+                    'title' => 'Doa For Exams & Clarity 5'
+                ],
             ],
             'memory' => [
-                'arabic' => 'اللَّهُمَّ إِنِّي أَسْتَوْدِعُكَ مَا قَرَأْتُ وَمَا حَفِظْتُ وَمَا تَعَلَّمْتُ، فَرُدَّهُ لِي إِلَيَّ عِنْدَ حَاجَتِي إِلَيْهِ',
-                'english' => 'O Allah, I entrust You with what I have read, memorized and learned. Bring it back to me when I am in need of it.',
-                'malay' => 'Ya Allah, sesungguhnya aku menitipkan kepada-Mu apa yang telah aku baca, hafal, dan pelajari. Kembalikanlah ia kepadaku ketika aku memerlukannya.',
-                'title' => 'Doa For Memory Retention'
+                [
+                    'arabic' => 'اللَّهُمَّ إِنِّي أَسْتَوْدِعُكَ مَا قَرَأْتُ وَمَا حَفِظْتُ وَمَا تَعَلَّمْتُ',
+                    'english' => 'O Allah, I entrust You with what I have read, memorized and learned.',
+                    'malay' => 'Ya Allah, sesungguhnya aku menitipkan kepada-Mu apa yang telah aku baca, hafal, dan pelajari.',
+                    'title' => 'Doa For Memory Retention 1'
+                ],
+                [
+                    'arabic' => 'فَرُدَّهُ إِلَيَّ عِنْدَ حَاجَتِي إِلَيْهِ',
+                    'english' => 'Bring it back to me when I am in need of it.',
+                    'malay' => 'Kembalikanlah ia kepadaku ketika aku memerlukannya.',
+                    'title' => 'Doa For Memory Retention 2'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ نَوِّرْ قَلْبِي بِنُورِ هِدَايَتِكَ كَمَا نَوَّرْتَ الْأَرْضَ بِنُورِ شَمْسِكَ',
+                    'english' => 'O Allah, illuminate my heart with the light of Your guidance, just as You illuminated the earth with the light of Your sun.',
+                    'malay' => 'Ya Allah, terangilah hatiku dengan cahaya petunjuk-Mu, sebagaimana Engkau menerangi bumi dengan cahaya matahari-Mu.',
+                    'title' => 'Doa For Memory Retention 3'
+                ],
+                [
+                    'arabic' => 'رَبِّ هَبْ لِي حُكْمًا وَأَلْحِقْنِي بِالصَّالِحِينَ',
+                    'english' => 'My Lord, grant me wisdom and join me with the righteous.',
+                    'malay' => 'Ya Tuhanku, berikanlah aku hikmah dan pertemukanlah aku dengan orang-orang yang soleh.',
+                    'title' => 'Doa For Memory Retention 4'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ اجْعَلْ نَفْسِي مُطْمَئِنَّةً، تُؤْمِنُ بِلِقَائِكَ، وَتَرْضَى بِقَضَائِكَ',
+                    'english' => 'O Allah, make my soul tranquil, believing in meeting You, and content with Your decree.',
+                    'malay' => 'Ya Allah, jadikanlah jiwaku tenang, beriman dengan pertemuan dengan-Mu, dan redha dengan ketentuan-Mu.',
+                    'title' => 'Doa For Memory Retention 5'
+                ],
             ],
             'anxious' => [
-                'arabic' => 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ',
-                'english' => 'O Allah, I seek refuge in You from anxiety and sorrow, weakness and laziness.',
-                'malay' => 'Ya Allah, aku berlindung kepada-Mu dari kebimbangan dan kesedihan, dari kelemahan dan kemalasan.',
-                'title' => 'Doa When Feeling Anxious'
+                [
+                    'arabic' => 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ',
+                    'english' => 'O Allah, I seek refuge in You from anxiety and sorrow.',
+                    'malay' => 'Ya Allah, aku berlindung kepada-Mu dari kebimbangan dan kesedihan.',
+                    'title' => 'Doa When Feeling Anxious 1'
+                ],
+                [
+                    'arabic' => 'حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ',
+                    'english' => 'Allah is sufficient for me. There is no deity except Him. On Him I have relied, and He is the Lord of the Great Throne.',
+                    'malay' => 'Cukuplah Allah bagiku. Tiada Tuhan selain Dia. Kepada-Nya aku bertawakkal, dan Dia adalah Tuhan Arasy yang Maha Agung.',
+                    'title' => 'Doa When Feeling Anxious 2'
+                ],
+                [
+                    'arabic' => 'لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ',
+                    'english' => 'There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.',
+                    'malay' => 'Tiada Tuhan melainkan Engkau, Maha Suci Engkau. Sesungguhnya aku adalah dari golongan yang menzalimi diri sendiri.',
+                    'title' => 'Doa When Feeling Anxious 3'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ رَحْمَتَكَ أَرْجُو فَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ',
+                    'english' => 'O Allah, it is Your mercy that I hope for, so do not leave me in charge of my affairs even for a blink of an eye.',
+                    'malay' => 'Ya Allah, rahmat-Mu yang aku harapkan, maka janganlah Engkau serahkan urusanku kepada diriku sendiri walau sekelip mata.',
+                    'title' => 'Doa When Feeling Anxious 4'
+                ],
+                [
+                    'arabic' => 'وَأُفَوِّضُ أَمْرِي إِلَى اللَّهِ ۚ إِنَّ اللَّهَ بَصِيرٌ بِالْعِبَادِ',
+                    'english' => 'And I entrust my affair to Allah. Indeed, Allah is Seeing of [His] servants.',
+                    'malay' => 'Dan aku menyerahkan urusanku kepada Allah. Sesungguhnya Allah Maha Melihat akan hamba-hamba-Nya.',
+                    'title' => 'Doa When Feeling Anxious 5'
+                ],
             ],
             'unmotivated' => [
-                'arabic' => 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزَنَ إِذَا شِئْتَ سَهْلًا',
-                'english' => 'O Allah, nothing is easy except what You make easy, and You can make what is difficult easy if You wish.',
-                'malay' => 'Ya Allah, tiada kemudahan melainkan apa yang Engkau jadikan mudah, dan Engkau jadikan kesusahan (yang aku alami) itu mudah jika Engkau kehendaki.',
-                'title' => 'Doa For Motivation'
+                [
+                    'arabic' => 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ',
+                    'english' => 'O Allah, I seek refuge in You from weakness and laziness.',
+                    'malay' => 'Ya Allah, aku berlindung kepada-Mu dari kelemahan dan kemalasan.',
+                    'title' => 'Doa For Motivation 1'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْبُخْلِ وَالْجُبْنِ',
+                    'english' => 'O Allah, I seek refuge in You from miserliness and cowardice.',
+                    'malay' => 'Ya Allah, aku berlindung kepada-Mu dari kebakhilan dan sifat penakut.',
+                    'title' => 'Doa For Motivation 2'
+                ],
+                [
+                    'arabic' => 'يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ',
+                    'english' => 'O Turner of hearts, keep my heart steadfast on Your religion.',
+                    'malay' => 'Wahai Tuhan yang membolak-balikkan hati, tetapkanlah hatiku di atas agama-Mu.',
+                    'title' => 'Doa For Motivation 3'
+                ],
+                [
+                    'arabic' => 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',
+                    'english' => 'O Allah, help me to remember You, to give You thanks, and to perform Your worship in the best manner.',
+                    'malay' => 'Ya Allah, bantulah aku untuk mengingat-Mu, bersyukur kepada-Mu, dan beribadah kepada-Mu dengan sebaik-baiknya.',
+                    'title' => 'Doa For Motivation 4'
+                ],
+                [
+                    'arabic' => 'رَبَّنَا آتِنَا مِن لَّدُنكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا',
+                    'english' => 'Our Lord, grant us from Yourself mercy and prepare for us from our affair right guidance.',
+                    'malay' => 'Wahai Tuhan kami, kurniakanlah rahmat dari sisi-Mu dan sediakanlah petunjuk dalam urusan kami.',
+                    'title' => 'Doa For Motivation 5'
+                ],
             ],
         ];
     }
@@ -573,31 +703,32 @@ class StudentController extends Controller
         $doas = $this->getStudentDoas();
         $doaKeys = array_keys($doas);
         
-        // Pick a random Doa based on the day of the year
+        // Pick a random category based on the day of the year
         $dayIndex = (now()->dayOfYear + now()->year) % count($doaKeys);
-        $dailyDoa = $doas[$doaKeys[$dayIndex]];
+        $situation = $doaKeys[$dayIndex];
+        $situationDoas = $doas[$situation];
 
-        // If there's a session doaSituation, override the dailyDoa
+        // If there's a session doaSituation, override the category
         if (session('doaSituation')) {
-            $dailyDoa = session('doaSituation')['doa'];
+            $situationDoas = session('doaSituation')['doas'];
         }
 
-        return view('student.daily_doa', compact('dailyDoa'));
+        return view('student.daily_doa', compact('situationDoas'));
     }
 
     /**
-     * Fetch Doa by situation.
+     * Fetch Doas by situation.
      */
     public function doaSituation(Request $request)
     {
         $situation = $request->query('situation', 'study');
         $doas = $this->getStudentDoas();
         
-        $dailyDoa = $doas[$situation] ?? $doas['study'];
+        $situationDoas = $doas[$situation] ?? $doas['study'];
 
         return redirect()->route('student.daily_doa')->with('doaSituation', [
             'situation' => ucfirst($situation),
-            'doa' => $dailyDoa
+            'doas' => $situationDoas
         ]);
     }
 }
