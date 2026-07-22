@@ -525,4 +525,79 @@ class StudentController extends Controller
 
         return view('student.flashcards.folder', compact('topic', 'flashcardSets', 'favoritedFlashcardIds'));
     }
+
+    /**
+     * Get a list of common student Doas.
+     */
+    private function getStudentDoas()
+    {
+        return [
+            'study' => [
+                'arabic' => 'رَبِّ زِدْنِي عِلْمًا',
+                'english' => 'O my Lord, increase me in knowledge.',
+                'malay' => 'Ya Tuhanku, tambahkanlah kepadaku ilmu pengetahuan.',
+                'title' => 'Doa Before Studying'
+            ],
+            'exam' => [
+                'arabic' => 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي يَفْقَهُوا قَوْلِي',
+                'english' => 'O my Lord! Open for me my chest (grant me self-confidence, contentment, and boldness); Ease my task for me; And remove the impediment from my speech, so they may understand what I say.',
+                'malay' => 'Ya Tuhanku, lapangkanlah dadaku, mudahkanlah urusanku, dan lepaskanlah kekakuan dari lidahku, agar mereka mengerti perkataanku.',
+                'title' => 'Doa For Exams & Clarity'
+            ],
+            'memory' => [
+                'arabic' => 'اللَّهُمَّ إِنِّي أَسْتَوْدِعُكَ مَا قَرَأْتُ وَمَا حَفِظْتُ وَمَا تَعَلَّمْتُ، فَرُدَّهُ لِي إِلَيَّ عِنْدَ حَاجَتِي إِلَيْهِ',
+                'english' => 'O Allah, I entrust You with what I have read, memorized and learned. Bring it back to me when I am in need of it.',
+                'malay' => 'Ya Allah, sesungguhnya aku menitipkan kepada-Mu apa yang telah aku baca, hafal, dan pelajari. Kembalikanlah ia kepadaku ketika aku memerlukannya.',
+                'title' => 'Doa For Memory Retention'
+            ],
+            'anxious' => [
+                'arabic' => 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ',
+                'english' => 'O Allah, I seek refuge in You from anxiety and sorrow, weakness and laziness.',
+                'malay' => 'Ya Allah, aku berlindung kepada-Mu dari kebimbangan dan kesedihan, dari kelemahan dan kemalasan.',
+                'title' => 'Doa When Feeling Anxious'
+            ],
+            'unmotivated' => [
+                'arabic' => 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزَنَ إِذَا شِئْتَ سَهْلًا',
+                'english' => 'O Allah, nothing is easy except what You make easy, and You can make what is difficult easy if You wish.',
+                'malay' => 'Ya Allah, tiada kemudahan melainkan apa yang Engkau jadikan mudah, dan Engkau jadikan kesusahan (yang aku alami) itu mudah jika Engkau kehendaki.',
+                'title' => 'Doa For Motivation'
+            ],
+        ];
+    }
+
+    /**
+     * Display Daily Doa page.
+     */
+    public function dailyDoa()
+    {
+        $doas = $this->getStudentDoas();
+        $doaKeys = array_keys($doas);
+        
+        // Pick a random Doa based on the day of the year
+        $dayIndex = (now()->dayOfYear + now()->year) % count($doaKeys);
+        $dailyDoa = $doas[$doaKeys[$dayIndex]];
+
+        // If there's a session doaSituation, override the dailyDoa
+        if (session('doaSituation')) {
+            $dailyDoa = session('doaSituation')['doa'];
+        }
+
+        return view('student.daily_doa', compact('dailyDoa'));
+    }
+
+    /**
+     * Fetch Doa by situation.
+     */
+    public function doaSituation(Request $request)
+    {
+        $situation = $request->query('situation', 'study');
+        $doas = $this->getStudentDoas();
+        
+        $dailyDoa = $doas[$situation] ?? $doas['study'];
+
+        return redirect()->route('student.daily_doa')->with('doaSituation', [
+            'situation' => ucfirst($situation),
+            'doa' => $dailyDoa
+        ]);
+    }
 }

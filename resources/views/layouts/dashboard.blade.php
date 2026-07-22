@@ -677,9 +677,11 @@
         $sectionTitle = 'Revision';
     } elseif (request()->routeIs('*progress*')) {
         $sectionTitle = 'My Progress';
-    } elseif (request()->routeIs('*daily_quran*')) {
+    } elseif(request()->routeIs('student.daily_quran')) {
         $sectionTitle = 'Daily Quran';
-    } elseif (request()->routeIs('*diagnosis*')) {
+    } elseif(request()->routeIs('student.daily_doa') || request()->routeIs('student.doa.situation')) {
+        $sectionTitle = 'Daily Doa';
+    } elseif(request()->routeIs('student.diagnosis.*')) {
         $sectionTitle = 'Diagnosis';
     }
 @endphp

@@ -189,12 +189,22 @@
             </li>
 
             {{-- Daily Quran --}}
-            <li>
-                <a href="{{ route('student.daily_quran') }}"
-                   class="nav-link {{ request()->routeIs('student.daily_quran') ? 'active' : '' }}"
+            <li class="nav-item mb-2">
+                <a href="{{ route('student.daily_quran') }}" 
+                   class="nav-link text-white d-flex align-items-center rounded-3 px-3 py-2 {{ request()->routeIs('student.daily_quran', 'student.quran.mood') ? 'active bg-white bg-opacity-10' : 'hover-bg-white-10' }}"
                    data-tooltip="Daily Quran">
-                    <i class="bi bi-moon-stars nav-icon"></i>
+                    <i class="bi bi-book fs-5 me-3 nav-icon"></i>
                     <span class="nav-label">Daily Quran</span>
+                </a>
+            </li>
+
+            {{-- Daily Doa --}}
+            <li class="nav-item mb-2">
+                <a href="{{ route('student.daily_doa') }}" 
+                   class="nav-link text-white d-flex align-items-center rounded-3 px-3 py-2 {{ request()->routeIs('student.daily_doa', 'student.doa.situation') ? 'active bg-white bg-opacity-10' : 'hover-bg-white-10' }}"
+                   data-tooltip="Daily Doa">
+                    <i class="bi bi-moon-stars fs-5 me-3 nav-icon"></i>
+                    <span class="nav-label">Daily Doa</span>
                 </a>
             </li>
 

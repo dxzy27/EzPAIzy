@@ -75,6 +75,10 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
     Route::get('/daily-quran', [StudentController::class, 'dailyQuran'])->name('daily_quran');
     Route::get('/quran/mood', [StudentController::class, 'quranMood'])->name('quran.mood');
 
+    // Daily Doa & Situation
+    Route::get('/daily-doa', [StudentController::class, 'dailyDoa'])->name('daily_doa');
+    Route::get('/doa/situation', [StudentController::class, 'doaSituation'])->name('doa.situation');
+
     // Diagnosis / Expert System
     Route::get('/diagnosis', [ExpertSystemController::class, 'show'])->name('diagnosis.show');
     Route::get('/diagnosis/create', [ExpertSystemController::class, 'create'])->name('diagnosis.create');
