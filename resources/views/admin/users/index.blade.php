@@ -170,36 +170,6 @@
                                 </form>
                             </div>
 
-                            {{-- Reset Password Modal --}}
-                            <div class="modal fade" id="resetPasswordModal-{{ $user->id }}" tabindex="-1" aria-labelledby="resetPasswordModalLabel-{{ $user->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title fw-bold" id="resetPasswordModalLabel-{{ $user->id }}"><i class="bi bi-key-fill text-warning me-2"></i>Reset Password</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form action="{{ route('admin.users.reset-password', $user) }}" method="POST">
-                                            @csrf
-                                            <div class="modal-body text-start">
-                                                <p>Resetting password for: <strong>{{ $user->name }}</strong> ({{ $user->email }})</p>
-                                                
-                                                <div class="mb-3">
-                                                    <label class="form-label small fw-bold">New Password</label>
-                                                    <input type="password" name="password" class="form-control" placeholder="At least 8 characters" required minlength="8">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label small fw-bold">Confirm New Password</label>
-                                                    <input type="password" name="password_confirmation" class="form-control" placeholder="Re-type password" required minlength="8">
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-warning">Reset Password</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         </td>
                     </tr>
                 @empty
@@ -216,7 +186,41 @@
 
     {{-- Pagination --}}
     <div class="mt-4">
-        {{ $users->links() }}
+        {{ $users->withQueryString()->links() }}
     </div>
 </div>
+
+{{-- Render Reset Password Modals outside the table structure --}}
+@foreach($users as $user)
+<div class="modal fade" id="resetPasswordModal-{{ $user->id }}" tabindex="-1" aria-labelledby="resetPasswordModalLabel-{{ $user->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="resetPasswordModalLabel-{{ $user->id }}"><i class="bi bi-key-fill text-warning me-2"></i>Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.users.reset-password', $user) }}" method="POST">
+                @csrf
+                <div class="modal-body text-start">
+                    <p>Resetting password for: <strong>{{ $user->name }}</strong> ({{ $user->email }})</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">New Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="At least 8 characters" required minlength="8">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Confirm New Password</label>
+                        <input type="password" name="password_confirmation" class="form-control" placeholder="Re-type password" required minlength="8">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Reset Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection
