@@ -15,3 +15,4 @@ class ClassApiController extends Controller
             'data' => $classes
         ]);
     }
+}
