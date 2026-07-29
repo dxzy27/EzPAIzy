@@ -8,8 +8,10 @@
         border: 2px solid #e9ecef;
     }
     .option-card:hover {
-        border-color: #dee2e6;
-        background-color: #f8f9fa;
+        border-color: #0d6efd !important;
+        background-color: #f0f7ff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15) !important;
     }
     .option-card.selected {
         border-color: #0d6efd !important;
