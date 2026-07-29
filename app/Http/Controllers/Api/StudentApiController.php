@@ -487,44 +487,7 @@ class StudentApiController extends Controller
         return response()->json(['success' => true]);
     }
 
-    /**
-     * Daily Quran verse — mirrors web logic.
-     */
-    public function dailyQuran()
-    {
-        $dailyAyah = Cache::remember('daily_ayah_api_v1_' . now()->format('Y-m-d'), 60 * 24, function () {
-            $totalVerses = 6236;
-            $ayahId      = (now()->dayOfYear + now()->year) % $totalVerses + 1;
 
-            try {
-                $response = Http::get("http://api.alquran.cloud/v1/ayah/{$ayahId}/editions/quran-uthmani,en.sahih,ms.basmeih");
-
-                if ($response->successful()) {
-                    $data = $response->json('data');
-                    return [
-                        'arabic'      => $data[0]['text'] ?? '',
-                        'verse'       => $data[1]['text'] ?? '',
-                        'translation' => $data[2]['text'] ?? '',
-                        'surah'       => ($data[0]['surah']['englishName'] ?? '') .
-                            ' (' . ($data[0]['surah']['name'] ?? '') . ')' .
-                            ' — Ayah ' . ($data[0]['numberInSurah'] ?? ''),
-                        'audio'       => "https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/{$ayahId}",
-                    ];
-                }
-            } catch (\Exception $e) {
-                // fallback below
-            }
-
-            return [
-                'arabic'  => 'إِنَّ مَعَ الْعُسْرِ يُسْرًا',
-                'verse'   => 'Indeed, with hardship will be ease.',
-                'surah'   => 'Al-Inshirah — Ayah 6',
-                'audio'   => 'https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/6085',
-            ];
-        });
-
-        return response()->json($dailyAyah);
-    }
 
     /**
      * Fetch flashcards from a set that are DUE for review.

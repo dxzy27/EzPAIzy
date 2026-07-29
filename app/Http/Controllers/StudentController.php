@@ -381,56 +381,6 @@ class StudentController extends Controller
         ]);
     }
 
-    /**
-     * Display Daily Quran page.
-     */
-    public function dailyQuran()
-    {
-        $dailyAyah = Cache::remember('daily_ayah_v2_' . now()->format('Y-m-d'), 60 * 24, function () {
-            $totalVerses = 6236;
-            $ayahId = (now()->dayOfYear + now()->year) % $totalVerses + 1;
-
-            try {
-                $response = Http::get("http://api.alquran.cloud/v1/ayah/{$ayahId}/editions/quran-uthmani,en.sahih,ms.basmeih");
-
-                if ($response->successful()) {
-                    $data = $response->json('data');
-                    return [
-                        'arabic' => [
-                            'text' => $data[0]['text'] ?? ''
-                        ],
-                        'english' => [
-                            'text' => $data[1]['text'] ?? ''
-                        ],
-                        'malay' => [
-                            'text' => $data[2]['text'] ?? ''
-                        ],
-                        'surah' => [
-                            'englishName' => $data[0]['surah']['englishName'] ?? '',
-                            'name' => $data[0]['surah']['name'] ?? '',
-                        ],
-                        'numberInSurah' => $data[0]['numberInSurah'] ?? 1,
-                        'audio' => [
-                            'audio' => "https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/{$ayahId}"
-                        ]
-                    ];
-                }
-            } catch (\Exception $e) {
-                // Fallback below
-            }
-
-            return [
-                'arabic' => ['text' => 'إِنَّ مَعَ الْعُسْرِ يُسْرًا'],
-                'english' => ['text' => 'Indeed, with hardship will be ease.'],
-                'malay' => ['text' => 'Sesungguhnya bersama kesulitan ada kemudahan.'],
-                'surah' => ['englishName' => 'Al-Inshirah', 'name' => 'الشرح'],
-                'numberInSurah' => 6,
-                'audio' => ['audio' => 'https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/6085']
-            ];
-        });
-
-        return view('student.daily_quran', compact('dailyAyah'));
-    }
 
     /**
      * Fetch verse by mood.

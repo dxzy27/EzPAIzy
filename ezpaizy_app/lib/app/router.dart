@@ -15,7 +15,7 @@ import '../screens/flashcard_practice_screen.dart';
 import '../screens/flashcard_study_screen.dart';
 import '../screens/progress_screen.dart';
 import '../screens/revision_screen.dart';
-import '../screens/daily_quran_screen.dart';
+
 import '../screens/learning_style_screen.dart';
 import '../screens/learning_profile_screen.dart';
 import '../screens/notes_folder_screen.dart';
@@ -111,10 +111,7 @@ class AppRouter {
                 path: '/revision',
                 builder: (_, _) => const RevisionScreen(),
               ),
-              GoRoute(
-                path: '/daily-quran',
-                builder: (_, _) => const DailyQuranScreen(),
-              ),
+
               GoRoute(
                 path: '/learning-style',
                 builder: (_, _) => const LearningStyleScreen(),

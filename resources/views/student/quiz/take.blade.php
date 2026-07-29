@@ -12,8 +12,8 @@
         background-color: #f8f9fa;
     }
     .option-card.selected {
-        border-color: #0d6efd;
-        background-color: #e7f1ff;
+        border-color: #0d6efd !important;
+        background-color: #e7f1ff !important;
     }
     .option-card.correct {
         border-color: #198754 !important;

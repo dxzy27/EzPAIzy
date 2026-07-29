@@ -71,8 +71,7 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
     Route::post('/flashcards/{set}/reset', [StudentController::class, 'resetFlashcardSet'])->name('flashcards.reset');
     Route::post('/flashcards/{flashcard}/review', [StudentController::class, 'reviewFlashcard'])->name('flashcards.review');
 
-    // Daily Quran & Mood
-    Route::get('/daily-quran', [StudentController::class, 'dailyQuran'])->name('daily_quran');
+    // Quran Mood
     Route::get('/quran/mood', [StudentController::class, 'quranMood'])->name('quran.mood');
 
     // Daily Doa & Situation
