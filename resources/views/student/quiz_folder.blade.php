@@ -69,15 +69,16 @@
                                 <!-- Badges Row -->
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <div class="d-flex gap-1.5 align-items-center">
-                                        <span class="badge px-2.5 py-1 rounded-pill fw-bold text-uppercase bg-{{ $difficultyColor }} bg-opacity-10 text-{{ $difficultyColor }}" style="font-size: 0.72rem;">
-                                            {{ ucfirst($quiz->difficulty) }}
+                                        <span class="badge px-3 py-1.5 rounded-pill fw-bold text-uppercase bg-{{ $difficultyColor }} bg-opacity-10 text-{{ $difficultyColor }}" style="font-size: 0.78rem;">
+                                            🟢 {{ ucfirst($quiz->difficulty) }}
                                         </span>
                                     </div>
-                                    <button class="btn btn-link p-0 text-warning favorite-btn" 
+                                    <button class="btn btn-link p-0 text-warning favorite-btn d-inline-flex align-items-center justify-content-center" 
                                             data-topic="{{ $quiz->topic }}" 
                                             data-difficulty="{{ $quiz->difficulty }}" 
                                             data-favorited="{{ in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []) ? 'true' : 'false' }}"
-                                            title="{{ in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []) ? 'Remove from Revision' : 'Add to Revision' }}">
+                                            title="{{ in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []) ? 'Remove from Revision' : 'Add to Revision' }}"
+                                            style="height: 28px; width: 28px; line-height: 1;">
                                         <i class="bi {{ in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []) ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
                                     </button>
                                 </div>
@@ -103,16 +104,14 @@
                                 <div class="mb-3 mt-2">
                                     @if($p)
                                         @if(($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') && $p->status === 'pending')
-                                            <div class="d-flex justify-content-between text-muted small mb-1">
-                                                <span>Quiz Progress</span>
-                                                <span class="text-warning fw-semibold">Pending Review</span>
+                                            <div class="d-flex justify-content-between text-muted small mb-2 align-items-center">
+                                                <span class="fw-bold">Best Score</span>
+                                                <span class="badge bg-warning bg-opacity-10 text-warning px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-clock-history me-1"></i> Awaiting grading
+                                                </span>
                                             </div>
                                             <div class="progress" style="height: 9px; border-radius: 4px;">
                                                 <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%; border-radius: 4px;" title="Pending Review"></div>
-                                            </div>
-                                            <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
-                                                <span class="text-warning" style="font-weight: 500;"><i class="bi bi-clock-history me-1"></i>Awaiting grading</span>
-                                                <span class="text-secondary">Attempted</span>
                                             </div>
                                         @else
                                             @php
@@ -120,31 +119,28 @@
                                                 $barBg = $p->score >= 70 ? 'bg-success' : ($p->score >= 50 ? 'bg-warning' : 'bg-danger');
                                                 $statusText = $p->score >= 70 ? 'Excellent' : ($p->score >= 50 ? 'Good' : 'Need Practice');
                                             @endphp
-                                            <div class="d-flex justify-content-between text-muted small mb-1 align-items-end">
-                                                <span>Quiz Score</span>
+                                            <div class="d-flex justify-content-between text-muted small mb-2 align-items-center">
+                                                <span class="fw-bold">Best Score</span>
+                                                <span class="badge bg-success bg-opacity-10 text-success px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-check-circle-fill me-1"></i> Completed
+                                                </span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-end mb-1">
+                                                <span class="text-muted small">Score percentage</span>
                                                 <span class="{{ $scoreClass }} fw-bold" style="font-size: 1.35rem; line-height: 1;">{{ $p->score }}%</span>
                                             </div>
                                             <div class="progress" style="height: 9px; border-radius: 4px;">
                                                 <div class="progress-bar {{ $barBg }}" role="progressbar" style="width: {{ $p->score }}%; border-radius: 4px;" title="{{ $statusText }}"></div>
                                             </div>
-                                            <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
-                                                <span class="{{ $scoreClass }}" style="font-weight: 500;">
-                                                    <i class="bi @if($p->score >= 70) bi-check-circle-fill @elseif($p->score >= 50) bi-exclamation-circle-fill @else bi-x-circle-fill @endif me-1"></i>{{ $statusText }}
-                                                </span>
-                                                <span class="text-secondary">Completed</span>
-                                            </div>
                                         @endif
                                     @else
-                                        <div class="d-flex justify-content-between text-muted small mb-1">
-                                            <span>Quiz Score</span>
-                                            <span class="text-secondary">Not Attempted</span>
+                                        <div class="d-flex justify-content-between text-muted small mb-2 align-items-center">
+                                            <span class="fw-bold">Best Score</span>
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                                <i class="bi bi-dash-circle me-1"></i> Not Started
+                                            </span>
                                         </div>
-                                        <div class="progress" style="height: 9px; border-radius: 4px; background-color: #e9ecef;">
-                                            <div class="progress-bar" role="progressbar" style="width: 0%; border-radius: 4px;"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
-                                            <span class="text-muted"><i class="bi bi-circle me-1"></i>Not started</span>
-                                        </div>
+                                        <div class="text-muted-light small italic">Not attempted yet</div>
                                     @endif
                                 </div>
                             </div>
