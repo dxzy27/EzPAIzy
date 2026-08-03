@@ -10,7 +10,7 @@
                     <i class="bi bi-arrow-left fs-5"></i>
                 </a>
                 <div>
-                    <h1 class="h2 fw-bold text-dark mb-0">📈 My Progress</h1>
+                    <h1 class="fw-extrabold text-dark mb-0" style="font-size: 2.1rem; font-weight: 800;">📈 My Progress</h1>
                     <p class="text-muted mb-0">Track your quiz attempts and study performance</p>
                 </div>
             </div>
@@ -259,7 +259,7 @@
                                         <span class="text-muted italic small">Pending Review</span>
                                     @else
                                         @if($isQuiz)
-                                            <span class="text-success fw-bold d-block" style="font-size: 1.35rem; line-height: 1;">{{ $p->score }}</span>
+                                            <span class="text-success fw-bold d-block" style="font-size: 1.65rem; line-height: 1;">{{ $p->score }}</span>
                                         @else
                                             @php
                                                 preg_match('/(\d+\/\d+)\s+Mastered\s+\((\d+)%\)/', $p->score, $matches);
@@ -267,10 +267,10 @@
                                                 $pct = $matches[2] ?? null;
                                             @endphp
                                             @if($pct !== null)
-                                                <span class="text-success fw-bold d-block mb-0" style="font-size: 1.35rem; line-height: 1;">{{ $pct }}%</span>
+                                                <span class="text-success fw-bold d-block mb-0" style="font-size: 1.65rem; line-height: 1;">{{ $pct }}%</span>
                                                 <span class="text-muted small" style="font-size: 0.72rem;">{{ $fraction }} Mastered</span>
                                             @else
-                                                <span class="text-success fw-bold d-block" style="font-size: 1.35rem; line-height: 1;">{{ $p->score }}</span>
+                                                <span class="text-success fw-bold d-block" style="font-size: 1.65rem; line-height: 1;">{{ $p->score }}</span>
                                             @endif
                                         @endif
                                     @endif
@@ -529,7 +529,7 @@
 
     <!-- Bottom Actions (Left Aligned & Anchored) -->
     <div class="mt-4 pt-2">
-        <h6 class="fw-bold text-muted text-uppercase mb-2 small" style="letter-spacing: 0.5px;">Continue Your Journey</h6>
+        <h6 class="fw-bold text-muted text-uppercase mb-1 small" style="letter-spacing: 0.5px;">Continue Your Journey</h6>
         <div class="d-flex flex-wrap gap-2 align-items-center">
             @if($selectedType === 'flashcards')
                 <a href="{{ route('student.flashcards.index') }}" class="btn btn-primary px-4 rounded-pill fw-bold shadow-sm">
