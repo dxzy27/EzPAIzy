@@ -29,8 +29,8 @@
             @foreach($contents as $content)
                 <div class="col-md-6 mb-4 material-card-col" data-title="{{ strtolower($content->title) }}">
                     <div class="card h-100 shadow-sm content-card border-0" style="border-radius: 16px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;">
-                        <div class="card-body p-4">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="card-body p-4 pb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.15rem; line-height: 1.4;">{{ $content->title }}</h5>
                                 @php
                                     $isFavorited = in_array($content->id, $favoritedContentIds ?? []);
@@ -43,24 +43,22 @@
                                 </button>
                             </div>
                             
-                            <p class="card-text text-muted mb-3" style="font-size: 0.9rem;">{{ Str::limit($content->content, 120) }}</p>
-                            
-                            <!-- Metadata Icons -->
-                            <div class="d-flex flex-wrap gap-3 mb-4 text-muted" style="font-size: 0.85rem;">
-                                <div class="d-flex align-items-center gap-1">
-                                    <span>👨</span> <span>{{ $content->teacher->name ?? 'Unknown' }}</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <span>📅</span> <span>{{ $content->created_at->format('M d, Y') }}</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <span>📖</span> <span>{{ strtoupper($content->file_type ?? 'TEXT') }}</span>
-                                </div>
+                            <!-- Metadata Inline with Bullets -->
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-3 text-muted" style="font-size: 0.82rem;">
+                                <span>👨 {{ $content->teacher->name ?? 'Unknown' }}</span>
+                                <span class="text-muted-opacity">•</span>
+                                <span>📅 {{ $content->created_at->format('M d, Y') }}</span>
+                                <span class="text-muted-opacity">•</span>
+                                <span>📖 {{ strtoupper($content->file_type ?? 'TEXT') }}</span>
                             </div>
+
+                            @if(trim($content->content))
+                                <p class="card-text text-muted mb-2" style="font-size: 0.88rem;">{{ Str::limit($content->content, 120) }}</p>
+                            @endif
                         </div>
 
                         <!-- Card Footer -->
-                        <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4 d-flex justify-content-between align-items-center">
+                        <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4 d-flex justify-content-between align-items-center">
                             @php
                                 $fileType = strtoupper($content->file_type ?? 'TEXT');
                                 $badgeStyle = '';
