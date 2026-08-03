@@ -128,15 +128,15 @@ class _ProgressScreenState extends State<ProgressScreen> {
                         // Stats Row
                         Row(
                           children: [
-                            _statCard('Total', '${progress.length}', Colors.blue,
+                            _statCard('📝 Total', '${progress.length}', Colors.blue,
                                 Icons.quiz),
                             const SizedBox(width: 10),
-                            _statCard('Average',
+                            _statCard('📊 Average',
                                 '${avgScore.toStringAsFixed(1)}%', Colors.teal,
                                 Icons.trending_up),
                             const SizedBox(width: 10),
                             _statCard(
-                                'Highest', '$highestScore%', Colors.green, Icons.emoji_events),
+                                '🏆 Highest', '$highestScore%', Colors.green, Icons.emoji_events),
                           ],
                         ),
                         const SizedBox(height: 24),

@@ -204,8 +204,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Text(
                 name,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 15,
                   color: Color(0xFF1E293B),
                   fontFamily: 'Outfit',
                 ),

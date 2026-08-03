@@ -11,11 +11,11 @@
                 <i class="bi bi-pencil"></i> Edit Profile
             </a>
             @if (auth()->user()->isStudent())
-                <a href="{{ route('student.dashboard') }}" class="btn btn-secondary">
+                <a href="{{ route('student.dashboard') }}" class="btn text-white" style="background-color: #475569;">
                     <i class="bi bi-arrow-left"></i> Back
                 </a>
             @else
-                <a href="{{ route('teacher.dashboard') }}" class="btn btn-secondary">
+                <a href="{{ route('teacher.dashboard') }}" class="btn text-white" style="background-color: #475569;">
                     <i class="bi bi-arrow-left"></i> Back
                 </a>
             @endif
@@ -32,16 +32,16 @@
                             {{ substr($user->name, 0, 1) }}
                         </div>
                     </div>
-                    <h5>{{ $user->name }}</h5>
-                    <p class="text-muted mb-2">
+                    <h3 class="fw-bold mb-1" style="font-size: 1.6rem; color: #0f172a;">{{ $user->name }}</h3>
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
                         @if ($user->isTeacher())
                             <span class="badge bg-primary">Teacher</span>
                         @else
                             <span class="badge bg-success">Student</span>
                         @endif
-                    </p>
+                        <span style="font-size: 12px; color: #94a3b8;">• Member since {{ $user->created_at->format('M d, Y') }}</span>
+                    </div>
                     <hr class="my-2">
-                    <p class="text-muted small mb-3">Member since {{ $user->created_at->format('M d, Y') }}</p>
 
                     <!-- Profile Information - Reduced margin to mb-2 for a compact layout -->
                     <div class="mb-2">
@@ -66,7 +66,7 @@
 
                     <div class="mb-2">
                         <label class="form-label text-muted mb-0">Address</label>
-                        <h6>{{ $user->address ?? 'Not provided' }}</h6>
+                        <h6 style="word-wrap: break-word; white-space: normal; overflow-wrap: break-word; max-width: 600px; margin: 0 auto;">{{ $user->address ?? 'Not provided' }}</h6>
                     </div>
 
                     <div class="mb-2">
@@ -90,7 +90,7 @@
                                 <div class="row">
                                     <div class="col-md-4 text-center">
                                         <h3 class="text-primary fw-bold" style="font-size: 38px;">{{ $user->progress()->count() }}</h3>
-                                        <p class="text-muted" style="font-size: 16px;">Quizzes Taken</p>
+                                        <p class="text-muted" style="font-size: 16px;">📝 Quizzes Taken</p>
                                     </div>
                                     <div class="col-md-4 text-center">
                                         <h3 class="text-success fw-bold" style="font-size: 38px;">
@@ -100,11 +100,11 @@
                                                 N/A
                                             @endif
                                         </h3>
-                                        <p class="text-muted" style="font-size: 16px;">Average Score</p>
+                                        <p class="text-muted" style="font-size: 16px;">📊 Average Score</p>
                                     </div>
                                     <div class="col-md-4 text-center">
                                         <h3 class="text-info fw-bold" style="font-size: 38px;">{{ $user->favorites()->count() }}</h3>
-                                        <p class="text-muted" style="font-size: 16px;">Saved Materials</p>
+                                        <p class="text-muted" style="font-size: 16px;">📚 Saved Materials</p>
                                     </div>
                                 </div>
                             </div>
