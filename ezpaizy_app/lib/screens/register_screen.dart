@@ -163,17 +163,384 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  Widget _buildIntroSide() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RichText(
+          text: const TextSpan(
+            text: 'Learn Smarter with ',
+            style: TextStyle(
+              fontSize: 38,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              fontFamily: 'Outfit',
+              height: 1.15,
+            ),
+            children: [
+              TextSpan(
+                text: 'Personalized Islamic Learning',
+                style: TextStyle(color: Color(0xFF60A5FA)),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Discover learning materials tailored to your learning style, generate AI-powered quizzes, and track your progress in one place.',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white70,
+            height: 1.65,
+            fontFamily: 'Outfit',
+          ),
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            _buildVarkBadge('👁 Visual', const Color(0xFF06B6D4)),
+            _buildVarkBadge('🎧 Auditory', const Color(0xFFF97316)),
+            _buildVarkBadge('📖 Read/Write', const Color(0xFFEAB308)),
+            _buildVarkBadge('🏃 Kinaesthetic', const Color(0xFFEC4899)),
+          ],
+        ),
+        const SizedBox(height: 32),
+        _buildFeatureItem('Personalized learning paths'),
+        const SizedBox(height: 12),
+        _buildFeatureItem('AI Quiz Generation'),
+        const SizedBox(height: 12),
+        _buildFeatureItem('Track Your Progress'),
+        const SizedBox(height: 32),
+        const Text(
+          'Start your personalized learning journey today.',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF60A5FA),
+            fontFamily: 'Outfit',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVarkBadge(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Outfit',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem(String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.check_circle, color: Color(0xFF60A5FA), size: 18),
+        const SizedBox(width: 10),
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontFamily: 'Outfit',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCardSide() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFAFBFC),
+        borderRadius: BorderRadius.circular(20),
+        border: const Border(
+          top: BorderSide(
+            color: Color(0xFF60A5FA),
+            width: 5,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.18),
+            blurRadius: 40,
+            offset: const Offset(0, 16),
+          ),
+          BoxShadow(
+            color: const Color(0xFF60A5FA).withOpacity(0.15),
+            blurRadius: 60,
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Badge: SIGN UP
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFF6FF),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.person_add, color: Color(0xFF3B82F6), size: 14),
+                SizedBox(width: 6),
+                Text(
+                  'SIGN UP',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF3B82F6),
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // MRSM Logo
+          Image.asset(
+            'assets/images/mrsm.png',
+            height: 70,
+            errorBuilder: (context, error, stackTrace) => const SizedBox(),
+          ),
+          const SizedBox(height: 12),
+
+          // Heading
+          RichText(
+            textAlign: TextAlign.center,
+            text: const TextSpan(
+              text: 'Create an ',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1E293B),
+                fontFamily: 'Outfit',
+              ),
+              children: [
+                TextSpan(
+                  text: 'Account',
+                  style: TextStyle(color: Color(0xFF3B82F6)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Join us and start your learning journey',
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xFF64748B),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+
+          // Name field
+          _CustomInputField(
+            controller: _nameCtrl,
+            hintText: 'Full Name',
+            prefixIcon: Icons.person_outline,
+            keyboardType: TextInputType.name,
+          ),
+          const SizedBox(height: 16),
+
+          // Email field
+          _CustomInputField(
+            controller: _emailCtrl,
+            hintText: 'Email Address',
+            prefixIcon: Icons.email_outlined,
+            keyboardType: TextInputType.emailAddress,
+          ),
+          const SizedBox(height: 16),
+
+          // Phone Number field
+          _CustomInputField(
+            controller: _phoneCtrl,
+            hintText: 'Phone Number',
+            prefixIcon: Icons.phone_outlined,
+            keyboardType: TextInputType.phone,
+          ),
+          const SizedBox(height: 16),
+
+          // Address field
+          _CustomInputField(
+            controller: _addressCtrl,
+            hintText: 'Home Address',
+            prefixIcon: Icons.home_outlined,
+            keyboardType: TextInputType.streetAddress,
+          ),
+          const SizedBox(height: 16),
+
+          // Class Name dropdown
+          _isFetchingClasses
+              ? const Center(child: CircularProgressIndicator())
+              : _CustomDropdownField(
+                  value: _className,
+                  hintText: 'Select Class...',
+                  items: _classes,
+                  displayItems: _classes,
+                  prefixIcon: Icons.class_outlined,
+                  onChanged: (val) {
+                    if (val != null) {
+                      setState(() => _className = val);
+                    }
+                  },
+                ),
+          const SizedBox(height: 16),
+
+          // Password & Confirm Row
+          Row(
+            children: [
+              Expanded(
+                child: _CustomInputField(
+                  controller: _passCtrl,
+                  hintText: 'Password',
+                  prefixIcon: Icons.lock_outline,
+                  obscure: true,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _CustomInputField(
+                  controller: _confirmPassCtrl,
+                  hintText: 'Confirm',
+                  prefixIcon: Icons.lock_outline,
+                  obscure: true,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Error Display
+          if (_errorMessage != null) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF2F2),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFFCA5A5)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Color(0xFFB91C1C), fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+
+          // Submit button
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton(
+              onPressed: _isLoading ? null : _register,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF3B82F6),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                    )
+                  : const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Spacer(),
+                        Text(
+                          'CREATE ACCOUNT',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        Spacer(),
+                        Icon(Icons.arrow_forward, size: 16),
+                      ],
+                    ),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+          Center(
+            child: GestureDetector(
+              onTap: () => context.go('/login'),
+              child: RichText(
+                text: const TextSpan(
+                  text: "Already have an account? ",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF64748B),
+                    fontFamily: 'Outfit',
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Sign in here',
+                      style: TextStyle(
+                        color: Color(0xFF3B82F6),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width > 991;
+
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white.withOpacity(0.08),
         elevation: 0,
         scrolledUnderElevation: 0,
         titleSpacing: 24,
-        shape: const Border(
+        shape: Border(
           bottom: BorderSide(
-            color: Color(0xFFE2E8F0),
+            color: Colors.white.withOpacity(0.12),
             width: 1,
           ),
         ),
@@ -183,18 +550,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Image.asset(
               'assets/images/logo.png',
               height: 40,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.school, color: Color(0xFF14B8A6), size: 32),
+              errorBuilder: (context, error, stackTrace) => const Icon(Icons.school, color: Colors.white, size: 32),
             ),
             const SizedBox(width: 8),
             Image.asset(
               'assets/images/EzPAIzy.png',
               height: 24,
+              color: Colors.white,
               errorBuilder: (context, error, stackTrace) => const Text(
                 'EzPAIzy',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -204,13 +572,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 24.0),
             child: Center(
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () => context.go('/login'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF334155),
-                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white.withOpacity(0.6),
+                  foregroundColor: const Color(0xFF1E293B),
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
+                    side: BorderSide(color: Colors.white.withOpacity(0.5)),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                   minimumSize: const Size(0, 0),
@@ -235,274 +605,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFF0FDFB),
-              Color(0xFFE0FAF5),
-              Color(0xFFECFDF5),
+              Color(0xFF0C4150),
+              Color(0xFF083344),
             ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 100),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 520),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 32),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: const Border(
-                      top: BorderSide(
-                        color: Color(0xFF2DD4BF), // Teal top stripe
-                        width: 5,
-                      ),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF2DD4BF).withOpacity(0.13),
-                        blurRadius: 48,
-                        offset: const Offset(0, 16),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      // Badge: CREATE ACCOUNT
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF0FDFA),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.person_add, color: Color(0xFF14B8A6), size: 14),
-                            SizedBox(width: 6),
-                            Text(
-                              'CREATE ACCOUNT',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF14B8A6),
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // MRSM Logo
-                      Image.asset(
-                        'assets/images/mrsm.png',
-                        height: 70,
-                        errorBuilder: (context, error, stackTrace) => const SizedBox(),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Heading
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: const TextSpan(
-                          text: 'Create an ',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF1E293B),
-                            fontFamily: 'Outfit',
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Account',
-                              style: TextStyle(color: Color(0xFF2DD4BF)),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Join us and start your learning journey',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF64748B),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Name field
-                      _CustomInputField(
-                        controller: _nameCtrl,
-                        hintText: 'Full Name',
-                        prefixIcon: Icons.person_outline,
-                        keyboardType: TextInputType.name,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Email field
-                      _CustomInputField(
-                        controller: _emailCtrl,
-                        hintText: 'Email Address',
-                        prefixIcon: Icons.email_outlined,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Phone Number field
-                      _CustomInputField(
-                        controller: _phoneCtrl,
-                        hintText: 'Phone Number',
-                        prefixIcon: Icons.phone_outlined,
-                        keyboardType: TextInputType.phone,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Address field
-                      _CustomInputField(
-                        controller: _addressCtrl,
-                        hintText: 'Home Address',
-                        prefixIcon: Icons.home_outlined,
-                        keyboardType: TextInputType.streetAddress,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Class Name dropdown
-                      _isFetchingClasses
-                          ? const Center(child: CircularProgressIndicator())
-                          : _CustomDropdownField(
-                              value: _className,
-                              hintText: 'Select Class...',
-                              items: _classes,
-                              displayItems: _classes,
-                              prefixIcon: Icons.class_outlined,
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() => _className = val);
-                                }
-                              },
-                            ),
-                      const SizedBox(height: 16),
-
-                      // Password & Confirm Row
-                      Row(
+                constraints: BoxConstraints(maxWidth: isWide ? 1040 : 520),
+                child: isWide
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: _CustomInputField(
-                              controller: _passCtrl,
-                              hintText: 'Password',
-                              prefixIcon: Icons.lock_outline,
-                              obscure: true, // We'll just keep it always obscure for simplicity matching the web
-                            ),
+                            flex: 11,
+                            child: _buildIntroSide(),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 60),
                           Expanded(
-                            child: _CustomInputField(
-                              controller: _confirmPassCtrl,
-                              hintText: 'Confirm',
-                              prefixIcon: Icons.lock_outline, // The web uses bi-lock-fill
-                              obscure: true,
-                            ),
+                            flex: 9,
+                            child: _buildCardSide(),
                           ),
                         ],
+                      )
+                    : Column(
+                        children: [
+                          _buildCardSide(),
+                        ],
                       ),
-                      const SizedBox(height: 24),
-
-                      // Error Display
-                      if (_errorMessage != null) ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFEF2F2),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: const Color(0xFFFCA5A5)),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _errorMessage!,
-                                  style: const TextStyle(color: Color(0xFFB91C1C), fontSize: 13),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-
-                      // Submit button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed: _isLoading ? null : _register,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF14B8A6), // Teal
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: _isLoading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
-                                )
-                              : const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Spacer(),
-                                    Text(
-                                      'CREATE ACCOUNT',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Icon(Icons.arrow_forward, size: 16),
-                                  ],
-                                ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-                      Center(
-                        child: GestureDetector(
-                          onTap: () => context.go('/login'),
-                          child: RichText(
-                            text: const TextSpan(
-                              text: "Already have an account? ",
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF64748B),
-                                fontFamily: 'Outfit',
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: 'Sign in here',
-                                  style: TextStyle(
-                                    color: Color(0xFF2DD4BF),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
           ),

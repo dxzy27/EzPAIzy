@@ -16,11 +16,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool loading = true;
   String? error;
   List<dynamic> noteFolders = [];
+  List<dynamic> revisionList = [];
+
+  final PageController _carouselController = PageController();
+  int _carouselIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    _carouselController.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -31,17 +41,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final d = await ApiService.getDashboard();
       List<dynamic> folders = [];
+      List<dynamic> revisions = [];
 
       final style = (d['user']?['learning_style'] ?? d['profile']?['learning_style']) as String?;
       if (style == 'read_write') {
         folders = await ApiService.getNoteFolders();
       }
+      revisions = await ApiService.getRevision();
 
       setState(() {
         data = d;
         noteFolders = folders;
+        revisionList = revisions;
         loading = false;
       });
+
       if (d['user'] != null && mounted) {
         Provider.of<AuthProvider>(context, listen: false).setUser(d['user']);
       }
@@ -168,387 +182,566 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  void _showProfileDropdown(BuildContext context, Offset position, String name, Color accentColor, AuthProvider auth) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+        Rect.fromLTWH(position.dx - 180, position.dy + 12, 180, 200),
+        Offset.zero & overlay.size,
+      ),
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+      ),
+      items: <PopupMenuEntry<String>>[
+        PopupMenuItem(
+          enabled: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: Color(0xFF1E293B),
+                  fontFamily: 'Outfit',
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                'Student',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Color(0xFF94A3B8),
+                  fontFamily: 'Outfit',
+                ),
+              ),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem(
+          value: 'profile',
+          child: Row(
+            children: [
+              Icon(Icons.person_outline, size: 18, color: Colors.grey[700]),
+              const SizedBox(width: 8),
+              const Text('Profile', style: TextStyle(fontSize: 13, fontFamily: 'Outfit', fontWeight: FontWeight.w500)),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'progress',
+          child: Row(
+            children: [
+              Icon(Icons.bar_chart_outlined, size: 18, color: Colors.grey[700]),
+              const SizedBox(width: 8),
+              const Text('My Progress', style: TextStyle(fontSize: 13, fontFamily: 'Outfit', fontWeight: FontWeight.w500)),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem(
+          value: 'signout',
+          child: Row(
+            children: const [
+              Icon(Icons.logout, size: 18, color: Colors.redAccent),
+              SizedBox(width: 8),
+              Text(
+                'Sign out',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontFamily: 'Outfit',
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ).then((value) async {
+      if (value == 'profile') {
+        context.go('/learning-profile');
+      } else if (value == 'progress') {
+        context.go('/progress');
+      } else if (value == 'signout') {
+        await ApiService.logout();
+        auth.logout();
+        if (context.mounted) {
+          context.go('/login');
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.read<AuthProvider>();
-
     final style = (data?['user']?['learning_style'] ?? data?['profile']?['learning_style']) as String?;
-    final persona = data?['persona'] as String?;
+    final name = data?['user']?['name'] as String? ?? 'Student';
+    final firstName = name.split(' ')[0];
 
-    // ── Per-style configuration (Matching Web dashboard.blade.php) ──
+    // Per-style config
     Color accentColor = const Color(0xFF3B82F6);
     Color accentLightColor = const Color(0xFFEFF6FF);
     Color accentTextColor = const Color(0xFF1E3A8A);
-    String styleLabel = 'Basic Learner';
     String tipIcon = '💡';
     String tipTitle = 'Study Tip';
-    String tipText = 'Complete the learning style diagnosis to get personalized recommendations and custom dashboard features.';
+    String tipText = 'Complete the learning style diagnosis to get personalized recommendations.';
 
     if (style == 'read_write') {
       accentColor = const Color(0xFF7D6867);
       accentLightColor = const Color(0xFFFAF6F6);
       accentTextColor = const Color(0xFF453938);
-      styleLabel = 'Read/Write Learner';
       tipIcon = '✍️';
       tipTitle = 'Read/Write Study Tip';
-      tipText = 'Use the Notepad next to your materials and quizzes to jot down summaries and acronyms. You can access all your saved notes from the "My Folders" section.';
+      tipText = 'Use the Notepad next to your materials and quizzes to jot down summaries and acronyms.';
     } else if (style == 'auditory') {
       accentColor = const Color(0xFFE5B181);
       accentLightColor = const Color(0xFFFFF7ED);
       accentTextColor = const Color(0xFF7C2D12);
-      styleLabel = 'Auditory Learner';
       tipIcon = '🎵';
       tipTitle = 'Auditory Study Tip';
-      tipText = 'After reading any material today, close it and say aloud — in your own words — what you just learned. If you can explain it, you have truly encoded it.';
+      tipText = 'After reading any material today, close it and say aloud — in your own words — what you just learned.';
     } else if (style == 'visual') {
-      accentColor = const Color(0xFFD946EF);
-      accentLightColor = const Color(0xFFFDF4FF);
-      accentTextColor = const Color(0xFF701A75);
-      styleLabel = 'Visual Learner';
-      tipIcon = '👁️';
-      tipTitle = 'Visual Study Tip';
-      tipText = 'Use mental pictures of postures (Rukuk, Sujud) and Wudhu sequences. Visualizing these processes is your strongest memory tool.';
-    } else if (style == 'kinesthetic') {
       accentColor = const Color(0xFF06B6D4);
       accentLightColor = const Color(0xFFECFEFF);
       accentTextColor = const Color(0xFF083344);
-      styleLabel = 'Kinaesthetic Learner';
+      tipIcon = '👁️';
+      tipTitle = 'Visual Study Tip';
+      tipText = 'You can highlight or underline the text that you read in flashcards, quizzes and other materials.';
+    } else if (style == 'kinesthetic') {
+      accentColor = const Color(0xFFD946EF);
+      accentLightColor = const Color(0xFFFDF4FF);
+      accentTextColor = const Color(0xFF701A75);
       tipIcon = '🤸';
       tipTitle = 'Kinaesthetic Study Tip';
-      tipText = 'Practice using swipe flashcards and timed challenges — kinaesthetic learners learn best through active, physical actions.';
+      tipText = 'Interact directly with your study tools! Use swipe flashcards and timed challenges.';
     }
 
-    final width = MediaQuery.of(context).size.width;
-    final isTablet = width >= 600;
-
-    // Build the 3 stats cards
-    final materialsCard = _buildStatCard(
-      isPrimary: style == 'read_write' || style == 'auditory' || style == 'visual' || style == 'kinesthetic',
-      accentColor: accentColor,
-      accentLightColor: accentLightColor,
-      accentTextColor: accentTextColor,
-      title: '📚 Materials',
-      value: '${data?['materials_count'] ?? 0}',
-      subtitle: 'Available Materials',
-      actionArea: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () => context.go('/flashcards'),
-              icon: const Icon(Icons.collections_bookmark_outlined, size: 14),
-              label: const Text('Flashcards', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF10B981),
-                side: const BorderSide(color: Color(0xFF10B981)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () => context.go('/contents'),
-              icon: const Icon(Icons.article_outlined, size: 14),
-              label: const Text('Other Materials', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF3B82F6),
-                side: const BorderSide(color: Color(0xFF3B82F6)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    final quizzesCard = _buildStatCard(
-      isPrimary: false,
-      accentColor: accentColor,
-      accentLightColor: accentLightColor,
-      accentTextColor: accentTextColor,
-      title: '📝 Quizzes',
-      value: '${data?['quiz_count'] ?? 0}',
-      subtitle: 'Available Quizzes',
-      actionArea: OutlinedButton.icon(
-        onPressed: () => context.go('/quizzes'),
-        icon: const Icon(Icons.play_circle_outline, size: 16),
-        label: const Text('Browse Quizzes', style: TextStyle(fontWeight: FontWeight.bold)),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: const Color(0xFF3B82F6),
-          side: const BorderSide(color: Color(0xFF3B82F6)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-        ),
-      ),
-    );
-
-    final completedCard = _buildStatCard(
-      isPrimary: false,
-      accentColor: accentColor,
-      accentLightColor: accentLightColor,
-      accentTextColor: accentTextColor,
-      title: '✅ Completed',
-      value: '${data?['completed_count'] ?? 0}',
-      subtitle: 'Quizzes Completed',
-      actionArea: style == null
-          ? OutlinedButton.icon(
-              onPressed: () => context.go('/learning-style'),
-              icon: const Icon(Icons.assignment_outlined, size: 16),
-              label: const Text('Start Diagnosis', style: TextStyle(fontWeight: FontWeight.bold)),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF3B82F6),
-                side: const BorderSide(color: Color(0xFF3B82F6)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              ),
-            )
-          : OutlinedButton.icon(
-              onPressed: () => context.go('/progress'),
-              icon: const Icon(Icons.bar_chart_outlined, size: 16),
-              label: const Text('View Progress', style: TextStyle(fontWeight: FontWeight.bold)),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF06B6D4),
-                side: const BorderSide(color: Color(0xFF06B6D4)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              ),
-            ),
-    );
-
-    List<Widget> orderedCards;
-    if (style == 'read_write' || style == 'auditory' || style == 'visual' || style == 'kinesthetic') {
-      orderedCards = [materialsCard, quizzesCard, completedCard];
-    } else {
-      orderedCards = [quizzesCard, materialsCard, completedCard];
-    }
+    final isWide = MediaQuery.of(context).size.width > 900;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/logo.png',
-              height: 28,
-              errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
-            ),
-            const SizedBox(width: 6),
-            const Text(
-              'EzPAIzy',
-              style: TextStyle(
-                color: Color(0xFF1E293B),
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Color(0xFF64748B)),
-            onPressed: () async {
-              await auth.logout();
-              if (context.mounted) context.go('/login');
-            },
-          ),
-        ],
-      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFF0F7FF),
-              Color(0xFFE0EDFF),
-              Color(0xFFEDE9FE),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
           ),
         ),
-        child: loading
-            ? const Center(child: CircularProgressIndicator())
-            : error != null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.wifi_off, size: 48, color: Colors.grey),
-                        const SizedBox(height: 12),
-                        Text(error!, style: const TextStyle(color: Colors.grey)),
-                        const SizedBox(height: 16),
-                        ElevatedButton(onPressed: _load, child: const Text('Retry')),
-                      ],
-                    ),
-                  )
-                : RefreshIndicator(
-                    onRefresh: _load,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // ── Welcome Header with yellow "My Progress" button ──
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Student Dashboard',
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF1E293B),
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.15), // Very light overlay for readability
+          child: SafeArea(
+            child: loading
+                ? const Center(child: CircularProgressIndicator())
+                : error != null
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.wifi_off, size: 48, color: Colors.grey),
+                            const SizedBox(height: 12),
+                            Text(error!, style: const TextStyle(color: Colors.grey)),
+                            const SizedBox(height: 16),
+                            ElevatedButton(onPressed: _load, child: const Text('Retry')),
+                          ],
+                        ),
+                      )
+                    : RefreshIndicator(
+                        onRefresh: _load,
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 800),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Top Nav Bar
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/logo.png',
+                                        height: 40,
+                                        errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
+                                      ),
+                                      GestureDetector(
+                                        onTapDown: (details) {
+                                          _showProfileDropdown(context, details.globalPosition, name, accentColor, auth);
+                                        },
+                                        child: Container(
+                                          width: 36,
+                                          height: 36,
+                                          decoration: BoxDecoration(
+                                            color: accentColor,
+                                            borderRadius: BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.1),
+                                                blurRadius: 4,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            firstName.isNotEmpty ? firstName[0].toUpperCase() : 'S',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              fontFamily: 'Outfit',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 24),
+
+                                  // Greeting Header
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        '👋',
+                                        style: TextStyle(fontSize: 32),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Assalamualaikum, $firstName',
+                                              style: const TextStyle(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w800,
+                                                color: Color(0xFF1E293B),
+                                                fontFamily: 'Outfit',
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            const Text(
+                                              'Ready to continue your learning today?',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFF64748B),
+                                                fontFamily: 'Outfit',
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 24),
+
+                                  // Study Tip Card
+                                  if (style != null) ...[
+                                    Container(
+                                      padding: const EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: accentLightColor,
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(color: accentColor),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(tipIcon, style: const TextStyle(fontSize: 28)),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  tipTitle.toUpperCase(),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                    color: accentTextColor,
+                                                    letterSpacing: 0.5,
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 6),
+                                                Text(
+                                                  tipText,
+                                                  style: TextStyle(
+                                                    color: accentTextColor,
+                                                    fontSize: 13,
+                                                    height: 1.5,
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Wrap(
-                                      crossAxisAlignment: WrapCrossAlignment.center,
-                                      spacing: 8,
-                                      runSpacing: 4,
-                                      children: [
-                                        Text(
-                                          'Welcome, ${data?['user']?['name'] ?? 'Student'}',
-                                          style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
-                                        ),
-                                        if (style != null)
-                                          _buildStyleBadge(style, persona ?? styleLabel),
-                                      ],
-                                    ),
+                                    const SizedBox(height: 24),
                                   ],
-                                ),
+
+                                  // Stats Carousel
+                                  _buildStatsCarousel(style, accentColor, accentLightColor, accentTextColor),
+                                  const SizedBox(height: 32),
+
+                                  // Recents Section
+                                  _buildRecentsSection(),
+                                  const SizedBox(height: 32),
+
+                                  // Personalize Section
+                                  _buildPersonalizeSection(),
+                                  const SizedBox(height: 32),
+
+                                  // Revision Section
+                                  _buildRevisionSection(),
+                                  const SizedBox(height: 24),
+                                ],
                               ),
-                              const SizedBox(width: 8),
-                              ElevatedButton.icon(
-                                onPressed: () => context.go('/progress'),
-                                icon: const Icon(Icons.bar_chart, color: Color(0xFF1E293B), size: 16),
-                                label: const Text(
-                                  'My Progress',
-                                  style: TextStyle(
-                                    color: Color(0xFF1E293B),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFFFC107), // My Progress warning yellow
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  elevation: 0,
-                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                                  minimumSize: Size.zero,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 20),
-
-                          // ── Study Tip Card (diagnosed students only) ──
-                          if (style != null) ...[
-                            _buildTipCard(accentColor, accentLightColor, accentTextColor, tipIcon, tipTitle, tipText),
-                            const SizedBox(height: 20),
-                          ],
-
-                          // ── Stats Cards Row/Column ──
-                          isTablet
-                              ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: orderedCards.map((card) => Expanded(child: card)).toList(),
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: orderedCards,
-                                ),
-                          const SizedBox(height: 10),
-                          if (style == 'read_write') ...[
-                            _buildFoldersSection(accentColor),
-                          ],
-
-                          // ── Bottom Panel Row/Column ──
-                          width >= 800
-                              ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(child: _buildRecentResults(style, data?['best_score'])),
-                                    const SizedBox(width: 20),
-                                    Expanded(child: _buildAdaptiveSection(style, accentColor)),
-                                  ],
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    _buildRecentResults(style, data?['best_score']),
-                                    const SizedBox(height: 20),
-                                    _buildAdaptiveSection(style, accentColor),
-                                  ],
-                                ),
-                          const SizedBox(height: 20),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildStyleBadge(String style, String label) {
-    Color bg = const Color(0xFFEFF6FF);
-    Color fg = const Color(0xFF3B82F6);
-    Color border = const Color(0xFF3B82F6);
-    IconData icon = Icons.person;
+  Widget _buildStatsCarousel(String? style, Color accentColor, Color accentLightColor, Color accentTextColor) {
+    final materialsCount = data?['materials_count'] ?? 0;
+    final quizCount = data?['quiz_count'] ?? 0;
+    final completedCount = data?['completed_count'] ?? 0;
 
-    if (style == 'read_write') {
-      bg = const Color(0xFFFAF6F6);
-      fg = const Color(0xFF453938);
-      border = const Color(0xFF7D6867);
-      icon = Icons.edit_note;
-    } else if (style == 'auditory') {
-      bg = const Color(0xFFFFF7ED);
-      fg = const Color(0xFF7C2D12);
-      border = const Color(0xFFE5B181);
-      icon = Icons.hearing;
-    } else if (style == 'visual') {
-      bg = const Color(0xFFFDF4FF);
-      fg = const Color(0xFF701A75);
-      border = const Color(0xFFD946EF);
-      icon = Icons.visibility;
-    } else if (style == 'kinesthetic') {
-      bg = const Color(0xFFECFEFF);
-      border = const Color(0xFF06B6D4);
-      icon = Icons.sports_handball;
-    }
-
-    return InkWell(
-      onTap: () => context.go('/learning-profile'),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: border),
-        ),
-        child: Row(
+    final List<Widget> slides = [
+      _buildCarouselSlide(
+        title: 'Available Content',
+        count: '$materialsCount',
+        color: const Color(0xFF14B8A6),
+        imageAsset: 'assets/images/slideshow 1.png',
+        actionArea: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: fg, size: 12),
-            const SizedBox(width: 4),
-            Text(
-              label,
-              style: TextStyle(color: fg, fontSize: 10, fontWeight: FontWeight.bold),
+            ElevatedButton(
+              onPressed: () => context.go('/flashcards'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4255FF),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: const Text('Flashcards', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              onPressed: () => context.go('/contents'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF10B981),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: const Text('Materials', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+            ),
+          ],
+        ),
+      ),
+      _buildCarouselSlide(
+        title: 'Available Quizzes',
+        count: '$quizCount',
+        color: const Color(0xFFF59E0B),
+        imageAsset: 'assets/images/slideshow 2.png',
+        actionArea: ElevatedButton(
+          onPressed: () => context.go('/quizzes'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF4255FF),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          ),
+          child: const Text('Browse Quizzes', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+        ),
+      ),
+      _buildCarouselSlide(
+        title: 'Quizzes Completed',
+        count: '$completedCount',
+        color: const Color(0xFF10B981),
+        imageAsset: 'assets/images/slideshow 3.png',
+        actionArea: style == null
+            ? ElevatedButton(
+                onPressed: () => context.go('/learning-style'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4255FF),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                child: const Text('Start Diagnosis', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+              )
+            : ElevatedButton(
+                onPressed: () => context.go('/progress'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4255FF),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                child: const Text('View Progress', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+              ),
+      ),
+    ];
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Column(
+          children: [
+            Container(
+              height: 180,
+              child: PageView.builder(
+                controller: _carouselController,
+                itemCount: slides.length,
+                onPageChanged: (idx) {
+                  setState(() {
+                    _carouselIndex = idx;
+                  });
+                },
+                itemBuilder: (context, idx) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: slides[idx],
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(slides.length, (idx) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: _carouselIndex == idx ? const Color(0xFF1F6E68) : Colors.grey.withOpacity(0.4),
+                    shape: BoxShape.circle,
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+        Positioned(
+          left: -4,
+          child: IconButton(
+            icon: const Icon(Icons.chevron_left, size: 28, color: Colors.black54),
+            onPressed: () {
+              _carouselController.previousPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+          ),
+        ),
+        Positioned(
+          right: -4,
+          child: IconButton(
+            icon: const Icon(Icons.chevron_right, size: 28, color: Colors.black54),
+            onPressed: () {
+              _carouselController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCarouselSlide({
+    required String title,
+    required String count,
+    required Color color,
+    required String imageAsset,
+    required Widget actionArea,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1F6E68).withOpacity(0.05),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 6,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      count,
+                      style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w800,
+                        color: color,
+                        height: 1.0,
+                        fontFamily: 'Outfit',
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E293B),
+                        fontFamily: 'Outfit',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    actionArea,
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 1.5,
+              height: 90,
+              color: Colors.black.withOpacity(0.1),
+            ),
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Image.asset(
+                  imageAsset,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.book, size: 64, color: Colors.grey),
+                ),
+              ),
             ),
           ],
         ),
@@ -556,775 +749,314 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Widget _buildRecentsSection() {
+    final list = data?['new_materials'] as List? ?? [];
+    if (list.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-  Widget _buildTipCard(Color accent, Color bg, Color textAccent, String emoji, String title, String tip) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: accent),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    // Combine quizzes and flashcards
+    final items = list.take(4).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Recents',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF1E293B),
+            fontFamily: 'Outfit',
+          ),
+        ),
+        const SizedBox(height: 12),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 12,
+            childAspectRatio: 4.5,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, idx) {
+            final item = items[idx];
+            final type = item['type'] as String? ?? 'Content';
+            final title = item['title'] as String? ?? '';
+            final isFlash = type == 'Flashcard';
+            final topic = item['topic'] as String? ?? 'General';
+            final itemId = item['id'];
+
+            return InkWell(
+              onTap: () {
+                if (isFlash) {
+                  context.go('/flashcards/$itemId');
+                } else {
+                  context.go('/contents/$itemId');
+                }
+              },
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isFlash ? const Color(0xFF4255FF).withOpacity(0.12) : const Color(0xFF10B981).withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      isFlash ? Icons.style : Icons.description,
+                      color: isFlash ? const Color(0xFF4255FF) : const Color(0xFF10B981),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1E293B),
+                            fontFamily: 'Outfit',
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          isFlash ? '$topic • Flashcards • by Hamzah' : '$topic • Material • by Hamzah',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF64748B),
+                            fontFamily: 'Outfit',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPersonalizeSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'PERSONALIZE YOUR CONTENT',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF64748B),
+            letterSpacing: 0.5,
+            fontFamily: 'Outfit',
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 28)),
-            const SizedBox(width: 16),
-            Expanded(
+            Column(
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4255FF).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Image.asset(
+                      'assets/images/vark.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.psychology, color: Color(0xFF4255FF), size: 36),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => context.go('/learning-style'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4255FF),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                  child: const Text(
+                    'Start Diagnosis',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(width: 20),
+            const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title.toUpperCase(),
+                    '🎯 Discover Your Learning Style',
                     style: TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      color: textAccent,
-                      letterSpacing: 0.5,
+                      color: Color(0xFF1E293B),
+                      fontFamily: 'Outfit',
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
-                    tip,
-                    style: TextStyle(color: textAccent, fontSize: 13, height: 1.5),
+                    'Complete the VARK Questionnaire to customize materials to your personal study method.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF64748B),
+                      height: 1.4,
+                      fontFamily: 'Outfit',
+                    ),
                   ),
                 ],
               ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 
-  Widget _buildStatCard({
-    required bool isPrimary,
-    required Color accentColor,
-    required Color accentLightColor,
-    required Color accentTextColor,
-    required String title,
-    required String value,
-    required String subtitle,
-    required Widget actionArea,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16, left: 4, right: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: isPrimary
-            ? Border.all(color: accentColor, width: 2)
-            : Border.all(color: Colors.grey.withOpacity(0.15), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (isPrimary)
-            Container(
-              height: 4,
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(18),
-                  topRight: Radius.circular(18),
-                ),
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: Column(
-              children: [
-                if (isPrimary) ...[
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: accentLightColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      '⭐ Recommended for you',
-                      style: TextStyle(
-                        color: accentTextColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: isPrimary ? accentColor : const Color(0xFF14B8A6),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF64748B),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                actionArea,
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildRevisionSection() {
+    final hasRevision = revisionList.isNotEmpty;
+    String revTitle = 'No saved materials';
+    String revSubtitle = 'Mark materials with a star to revise them here.';
 
-  Widget _buildRecentResults(String? style, int? bestScore) {
-    final list = data?['recent_results'] as List?;
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Recent Results',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: list == null || list.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: Column(
-                        children: [
-                          const Text(
-                            'No quizzes completed yet. ',
-                            style: TextStyle(color: Color(0xFF64748B), fontSize: 13),
-                          ),
-                          const SizedBox(height: 8),
-                          TextButton(
-                            onPressed: () => context.go('/quizzes'),
-                            child: const Text('Take a quiz!', style: TextStyle(fontWeight: FontWeight.bold)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Table(
-                      defaultColumnWidth: const FixedColumnWidth(100),
-                      columnWidths: const {
-                        0: FixedColumnWidth(130), // Quiz title
-                        1: FixedColumnWidth(70),  // By
-                        2: FixedColumnWidth(70),  // Score
-                        3: FixedColumnWidth(60),  // Date
-                        4: FixedColumnWidth(40),  // Action
-                      },
-                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                      children: [
-                        const TableRow(
-                          children: [
-                            TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('Quiz', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
-                            TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('By', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
-                            TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('Score', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
-                            TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
-                            TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
-                          ],
-                        ),
-                        ...list.map((p) {
-                          final score = p['score'] ?? 0;
-                          final isPending = p['status'] == 'pending';
-                          final title = p['quiz']?['title'] ?? 'Quiz';
-                          final teacher = p['quiz']?['teacher']?['name'] ?? 'Unknown';
-                          final dateStr = _formatDate(p['created_at']);
-                          
-                          Color badgeBg = Colors.grey;
-                          Color badgeFg = Colors.white;
-                          String badgeText = '$score%';
-
-                          if (isPending) {
-                            badgeText = 'Pending';
-                            badgeBg = const Color(0xFFE2E8F0);
-                            badgeFg = const Color(0xFF64748B);
-                          } else if (score >= 80) {
-                            badgeBg = const Color(0xFFDCFCE7);
-                            badgeFg = const Color(0xFF15803D);
-                          } else if (score >= 50) {
-                            badgeBg = const Color(0xFFFEF3C7);
-                            badgeFg = const Color(0xFFB45309);
-                          } else {
-                            badgeBg = const Color(0xFFFEE2E2);
-                            badgeFg = const Color(0xFFB91C1C);
-                          }
-
-                          return TableRow(
-                            children: [
-                              TableCell(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6),
-                                  child: Text(
-                                    title,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFF1E293B)),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                              TableCell(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6),
-                                  child: Text(
-                                    teacher,
-                                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                              TableCell(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: badgeBg,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Text(
-                                        badgeText,
-                                        style: TextStyle(color: badgeFg, fontWeight: FontWeight.bold, fontSize: 10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              TableCell(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6),
-                                  child: Text(
-                                    dateStr,
-                                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-                                  ),
-                                ),
-                              ),
-                              TableCell(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.visibility, size: 16, color: Color(0xFF3B82F6)),
-                                    onPressed: () => context.go('/progress'),
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatDate(String? raw) {
-    if (raw == null) return '';
-    try {
-      final dt = DateTime.parse(raw);
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return '${months[dt.month - 1]} ${dt.day.toString().padLeft(2, '0')}';
-    } catch (_) {
-      return '';
-    }
-  }
-
-  Widget _buildAdaptiveSection(String? style, Color accentColor) {
-    String cardTitle = 'New Learning Materials';
-    if (style == 'read_write') {
-      cardTitle = '✨ Recommended: Your Saved Notes & Materials';
-    } else if (style == 'auditory') {
-      cardTitle = '✨ Recent Listenable Materials';
-    } else if (style == 'visual') {
-      cardTitle = '✨ Visual Study Materials';
-    } else if (style == 'kinesthetic') {
-      cardTitle = '✨ Hands-On Practice Materials';
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-            child: Row(
-              children: [
-                if (style != null)
-                  Container(
-                    width: 3,
-                    height: 18,
-                    decoration: BoxDecoration(
-                      color: accentColor,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                if (style != null)
-                  const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    cardTitle,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E293B),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: _buildAdaptiveBody(style),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdaptiveBody(String? style) {
-    if (style == 'auditory') {
-      return _buildAuditoryList();
-    } else {
-      return _buildDefaultOrReadWriteList(style);
-    }
-  }
-
-  Widget _buildAuditoryList() {
-    final list = data?['new_materials'] as List?;
-    if (list == null || list.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 24),
-          child: Text('No materials available.', style: TextStyle(color: Color(0xFF64748B), fontSize: 13)),
-        ),
-      );
+    if (hasRevision) {
+      final first = revisionList.first;
+      revTitle = first['title'] ?? 'Revision Item';
+      revSubtitle = first['topic'] ?? 'Other Material';
     }
 
     return Column(
-      children: list.map((item) {
-        final isFlash = item['type'] == 'Flashcard';
-        final title = item['title'] ?? '';
-        final topic = item['topic'] ?? 'General';
-        final itemId = item['id'];
-
-        return InkWell(
-          onTap: () {
-            if (isFlash) {
-              context.go('/flashcards/$itemId');
-            } else {
-              context.go('/contents/$itemId');
-            }
-          },
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F9FF),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFBAE6FD)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: isFlash ? const Color(0xFFDCFCE7) : const Color(0xFFE0F2FE),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    isFlash ? '🃏 Flashcard' : '📄 Material ⭐',
-                    style: TextStyle(
-                      color: isFlash ? const Color(0xFF166534) : const Color(0xFF0C4A6E),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: Color(0xFF0F172A),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        topic,
-                        style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0F9FF),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFF7DD3FC)),
-                  ),
-                  child: Text(
-                    isFlash ? 'Practice' : 'Read',
-                    style: const TextStyle(
-                      color: Color(0xFF0C4A6E),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 11,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'REVISION LIST',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF64748B),
+            letterSpacing: 0.5,
+            fontFamily: 'Outfit',
           ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildDefaultOrReadWriteList(String? style) {
-    final list = data?['new_materials'] as List?;
-    if (list == null || list.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 24),
-          child: Text('No materials available.', style: TextStyle(color: Color(0xFF64748B), fontSize: 13)),
         ),
-      );
-    }
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Table(
-        defaultColumnWidth: const FixedColumnWidth(100),
-        columnWidths: const {
-          0: FixedColumnWidth(160), // Title
-          1: FixedColumnWidth(90),  // Type
-          2: FixedColumnWidth(80),  // Action
-        },
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: [
-          const TableRow(
-            children: [
-              TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('Title', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
-              TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('Type', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
-              TableCell(child: Padding(padding: EdgeInsets.only(bottom: 8), child: Text('', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))))),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
             ],
           ),
-          ...list.map((item) {
-            final isFlash = item['type'] == 'Flashcard';
-            final title = item['title'] ?? '';
-            final actionText = item['action'] ?? '';
-            final itemId = item['id'];
-
-            Color badgeBg;
-            Color badgeFg;
-            String typeLabel;
-
-            if (style == 'read_write') {
-              if (isFlash) {
-                typeLabel = 'Flashcard ⭐';
-                badgeBg = const Color(0xFFEDE9FE);
-                badgeFg = const Color(0xFF6D28D9);
-              } else {
-                typeLabel = 'Content';
-                badgeBg = const Color(0xFFDBEAFE);
-                badgeFg = const Color(0xFF1D4ED8);
-              }
-            } else {
-              if (isFlash) {
-                typeLabel = 'Flashcard';
-                badgeBg = const Color(0xFFDCFCE7);
-                badgeFg = const Color(0xFF15803D);
-              } else {
-                typeLabel = 'Content';
-                badgeBg = const Color(0xFFDBEAFE);
-                badgeFg = const Color(0xFF1D4ED8);
-              }
-            }
-
-            return TableRow(
-              children: [
-                TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      title,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFF1E293B)),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
+                    child: const Icon(Icons.star, color: Color(0xFFF59E0B), size: 28),
                   ),
-                ),
-                TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: badgeBg,
-                          borderRadius: BorderRadius.circular(4),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'To-Revise',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1E293B),
+                            fontFamily: 'Outfit',
+                          ),
                         ),
-                        child: Text(
-                          typeLabel,
-                          style: TextStyle(color: badgeFg, fontWeight: FontWeight.bold, fontSize: 10),
+                        const SizedBox(height: 4),
+                        Text(
+                          hasRevision ? 'Recently saved:' : revTitle,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: hasRevision ? const Color(0xFF64748B) : const Color(0xFF64748B),
+                            fontFamily: 'Outfit',
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          if (isFlash) {
-                            context.go('/flashcards/$itemId');
-                          } else {
-                            context.go('/contents/$itemId');
-                          }
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: isFlash ? const Color(0xFF10B981) : const Color(0xFF3B82F6),
-                          side: BorderSide(color: isFlash ? const Color(0xFF10B981) : const Color(0xFF3B82F6)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text(
-                          actionText,
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFoldersSection(Color accentColor) {
-    if (noteFolders.isEmpty) {
-      return Container(
-        margin: const EdgeInsets.only(top: 20),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: const Column(
-          children: [
-            Icon(Icons.folder_open, size: 48, color: Colors.grey),
-            SizedBox(height: 10),
-            Text(
-              'My Folders is Empty',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1E293B)),
-            ),
-            SizedBox(height: 6),
-            Text(
-              'Your saved study notes will appear here grouped by topic folders.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-            child: Row(
-              children: [
-                Container(
-                  width: 3,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    color: accentColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                const Expanded(
-                  child: Text(
-                    '📁 My Folders (Study Notes)',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E293B),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(20),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 2.2,
-            ),
-            itemCount: noteFolders.length,
-            itemBuilder: (context, index) {
-              final folderTopic = noteFolders[index].toString();
-              return InkWell(
-                onTap: () => context.go('/notes/folder/${Uri.encodeComponent(folderTopic)}'),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFAF6F6),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFF7D6867).withOpacity(0.2)),
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.folder_shared, color: Color(0xFF7D6867), size: 28),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              folderTopic,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                                color: Color(0xFF453938),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                        if (hasRevision) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            revTitle,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1E293B),
+                              fontFamily: 'Outfit',
                             ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'View Notes',
-                              style: TextStyle(fontSize: 10, color: Color(0xFF7D6867), fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            revSubtitle,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFF64748B),
+                              fontFamily: 'Outfit',
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => context.go('/revision'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF9E0B),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: const Text(
+                    'Go to Revision List',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
                   ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

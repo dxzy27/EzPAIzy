@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import '../providers/auth_provider.dart';
+import '../services/api_service.dart';
+import 'package:provider/provider.dart';
 import '../screens/login_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/quizzes_screen.dart';
@@ -140,10 +142,85 @@ class ScaffoldWithNav extends StatelessWidget {
     final loc = GoRouterState.of(context).matchedLocation;
     if (loc.startsWith('/quizzes') || loc.startsWith('/quiz')) return 1;
     if (loc.startsWith('/flashcards')) return 2;
-    if (loc.startsWith('/progress') || loc.startsWith('/revision')) return 3;
-    if (loc.startsWith('/daily-quran')) return 4;
-    if (loc.startsWith('/contents') || loc.startsWith('/learning')) return 0; // fallback to home
-    return 0;
+    if (loc.startsWith('/contents')) return 3;
+    if (loc.startsWith('/dashboard')) return 0;
+    return 4; // Highlight 'More' for everything else
+  }
+
+  void _showMoreMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        final auth = Provider.of<AuthProvider>(context, listen: false);
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(Icons.star_outline, color: Color(0xFF3B82F6)),
+                title: const Text('Revision', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  context.go('/revision');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.bar_chart_outlined, color: Color(0xFF3B82F6)),
+                title: const Text('My Progress', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  context.go('/progress');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.psychology_outlined, color: Color(0xFF3B82F6)),
+                title: const Text('Diagnosis / Learning Style', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  context.go('/learning-style');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.account_circle_outlined, color: Color(0xFF3B82F6)),
+                title: const Text('Learning Profile', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  context.go('/learning-profile');
+                },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.redAccent),
+                title: const Text('Sign Out', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.redAccent, fontFamily: 'Outfit')),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  await ApiService.logout();
+                  auth.logout();
+                  if (context.mounted) {
+                    context.go('/login');
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -155,23 +232,26 @@ class ScaffoldWithNav extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
+        unselectedLabelStyle: const TextStyle(fontFamily: 'Outfit'),
         onTap: (i) {
-          switch (i) {
-            case 0:
-              context.go('/dashboard');
-              break;
-            case 1:
-              context.go('/quizzes');
-              break;
-            case 2:
-              context.go('/flashcards');
-              break;
-            case 3:
-              context.go('/progress');
-              break;
-            case 4:
-              context.go('/daily-quran');
-              break;
+          if (i == 4) {
+            _showMoreMenu(context);
+          } else {
+            switch (i) {
+              case 0:
+                context.go('/dashboard');
+                break;
+              case 1:
+                context.go('/quizzes');
+                break;
+              case 2:
+                context.go('/flashcards');
+                break;
+              case 3:
+                context.go('/contents');
+                break;
+            }
           }
         },
         items: const [
@@ -191,14 +271,14 @@ class ScaffoldWithNav extends StatelessWidget {
             label: 'Flashcards',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart_outlined),
-            activeIcon: Icon(Icons.bar_chart),
-            label: 'Progress',
+            icon: Icon(Icons.book_outlined),
+            activeIcon: Icon(Icons.book),
+            label: 'Other',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.auto_stories_outlined),
-            activeIcon: Icon(Icons.auto_stories),
-            label: 'Quran',
+            icon: Icon(Icons.more_horiz_outlined),
+            activeIcon: Icon(Icons.more_horiz),
+            label: 'More',
           ),
         ],
       ),

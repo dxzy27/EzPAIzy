@@ -103,8 +103,8 @@
                                         <p class="text-muted">Average Score</p>
                                     </div>
                                     <div class="col-md-4 text-center">
-                                        <h3 class="text-info">{{ $user->widgets()->count() }}</h3>
-                                        <p class="text-muted">Dashboard Widgets</p>
+                                        <h3 class="text-info">{{ $user->favorites()->count() }}</h3>
+                                        <p class="text-muted">Saved Materials</p>
                                     </div>
                                 </div>
                             </div>
