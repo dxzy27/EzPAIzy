@@ -61,6 +61,12 @@
                         'hard' => 'danger',
                         default => 'primary'
                     };
+                    $difficultyEmoji = match($quiz->difficulty) {
+                        'easy' => '🟢',
+                        'medium' => '🟡',
+                        'hard' => '🔴',
+                        default => '🔵'
+                    };
                 @endphp
                 <div class="col-md-6 col-lg-4 col-xl-3 quiz-card-col" data-title="{{ strtolower($quiz->title) }}" data-difficulty="{{ strtolower($quiz->difficulty) }}">
                     <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px; overflow: hidden; {{ $isLocked ? 'opacity: 0.7; filter: grayscale(20%);' : '' }}">
@@ -70,7 +76,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <div class="d-flex gap-1.5 align-items-center">
                                         <span class="badge px-3 py-1.5 rounded-pill fw-bold text-uppercase bg-{{ $difficultyColor }} bg-opacity-10 text-{{ $difficultyColor }}" style="font-size: 0.78rem;">
-                                            🟢 {{ ucfirst($quiz->difficulty) }}
+                                            {{ $difficultyEmoji }} {{ ucfirst($quiz->difficulty) }}
                                         </span>
                                     </div>
                                     <button class="btn btn-link p-0 text-warning favorite-btn d-inline-flex align-items-center justify-content-center" 
