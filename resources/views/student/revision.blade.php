@@ -46,22 +46,24 @@
                     $isContent = !empty($fav->content);
                     $isFlashcard = !empty($fav->flashcardSet);
                     
-                    $typeLabel = $isContent ? 'Other' : ($isFlashcard ? 'Flashcard Set' : 'Quiz');
-                    $icon = $isContent ? 'bi-file-text' : ($isFlashcard ? 'bi-card-list' : 'bi-patch-question');
-                    
+                    $typeLabel = '';
                     $bgStyle = '';
                     $badgeStyle = '';
                     $btnClass = '';
                     
                     if ($isContent) {
+                        $fileType = strtoupper($item->file_type ?? 'TEXT');
+                        $typeLabel = '📄 ' . ($fileType === 'TEXT' ? 'Other' : $fileType);
                         $bgStyle = 'border-left: 5px solid #1565c0;';
                         $badgeStyle = 'background-color: #e3f2fd; color: #1565c0;';
                         $btnClass = 'btn-primary';
                     } elseif ($isFlashcard) {
+                        $typeLabel = '🎴 Flashcard Set';
                         $bgStyle = 'border-left: 5px solid #ff8f00;';
                         $badgeStyle = 'background-color: #fff8e1; color: #ff8f00;';
                         $btnClass = 'btn-warning text-dark';
                     } else {
+                        $typeLabel = '❓ Quiz';
                         $bgStyle = 'border-left: 5px solid #00a896;';
                         $badgeStyle = 'background-color: #e0f2f1; color: #00a896;';
                         $btnClass = 'btn-info text-white';
@@ -76,41 +78,59 @@
                         : ($isFlashcard ? "/student/favorites/flashcard/{$item->id}" : "/student/favorites/quiz/{$item->topic}/{$item->difficulty}");
                 @endphp
                 <div class="col-md-6 mb-4 revision-card-col" data-title="{{ strtolower($item->title) }}">
-                    <div class="card h-100 shadow-sm border-0" style="border-radius: 12px; {{ $bgStyle }} overflow: hidden;">
-                        <div class="card-body p-4 pb-3">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <span class="badge px-2.5 py-1.5 rounded-pill fw-bold mb-2 small d-inline-flex align-items-center gap-1" style="{{ $badgeStyle }}">
-                                        <i class="bi {{ $icon }}"></i> {{ $typeLabel }}
+                    <div class="card h-100 shadow-sm border-0" style="border-radius: 16px; {{ $bgStyle }} overflow: hidden;">
+                        <div class="card-body d-flex flex-column justify-content-between" style="padding: 1.15rem;">
+                            <div>
+                                <!-- Top row: Badge and Trash Icon -->
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge px-2.5 py-1.5 rounded-pill fw-bold small d-inline-flex align-items-center gap-1" style="{{ $badgeStyle }}">
+                                        {!! $typeLabel !!}
                                     </span>
-                                    <h5 class="card-title fw-bold text-dark mb-0">{{ $item->title }}</h5>
+                                    <button class="btn btn-link p-0 text-muted remove-favorite-btn" 
+                                            style="font-size: 1.1rem; line-height: 1;"
+                                            data-url="{{ $deleteApiUrl }}"
+                                            title="Remove from revision">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
                                 </div>
-                                <button 
-                                    class="btn btn-sm btn-outline-danger remove-favorite-btn rounded-circle p-2 d-inline-flex align-items-center justify-content-center" 
-                                    style="width: 32px; height: 32px;"
-                                    data-url="{{ $deleteApiUrl }}"
-                                    title="Remove from revision">
-                                    <i class="bi bi-x-lg" style="font-size: 0.75rem;"></i>
-                                </button>
+                                
+                                <!-- Title -->
+                                <h5 class="card-title fw-bold text-dark mb-2" style="font-size: 1.05rem; line-height: 1.4;">{{ $item->title }}</h5>
+                                
+                                <!-- Inline Metadata Details -->
+                                <div class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.5;">
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <span>👤 By: {{ $isContent ? ($item->teacher->name ?? 'Unknown') : ($isQuiz ? ($item->teacher->name ?? 'Unknown') : ($item->user->name ?? 'Unknown')) }}</span>
+                                        <span class="text-muted-opacity">•</span>
+                                        @if($isFlashcard)
+                                            <span>🎴 {{ $item->flashcards()->count() }} Cards</span>
+                                        @elseif($isContent)
+                                            <span>📄 {{ strtoupper($item->file_type ?? 'TEXT') }}</span>
+                                        @else
+                                            @php
+                                                $qCount = \App\Models\Question::where('topic', $item->topic)->where('difficulty', $item->difficulty)->count();
+                                            @endphp
+                                            <span>❓ {{ $qCount }} Questions</span>
+                                        @endif
+                                    </div>
+                                    <div class="mt-1 d-flex flex-wrap align-items-center gap-2" style="font-size: 0.76rem;">
+                                        <span class="text-primary fw-bold">⭐ Saved {{ $fav->created_at->diffForHumans() }}</span>
+                                        <span class="text-black-50">|</span>
+                                        <span class="text-black-50">Uploaded: {{ $item->created_at->format('M d, Y') }}</span>
+                                    </div>
+                                </div>
                             </div>
                             
-                            @if(trim($isContent ? $item->content : $item->description))
-                                <p class="card-text text-muted mb-3" style="font-size: 0.9rem;">{{ Str::limit($isContent ? $item->content : $item->description, 120) }}</p>
-                            @endif
-                            
-                            <!-- Inline Metadata with Bullets -->
-                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2 text-muted small" style="font-size: 0.8rem;">
-                                <span>👤 By: {{ $isContent ? ($item->teacher->name ?? 'Unknown') : ($isQuiz ? ($item->teacher->name ?? 'Unknown') : ($item->user->name ?? 'Unknown')) }}</span>
-                                <span class="text-muted-opacity">•</span>
-                                <span>📅 Created: {{ $item->created_at->format('M d, Y') }}</span>
-                                <span class="text-muted-opacity">•</span>
-                                <span>⭐ Added: {{ $fav->created_at->format('M d, Y') }}</span>
+                            <!-- Primary Action Button -->
+                            <div class="d-grid mt-2">
+                                <a href="{{ $viewRoute }}" class="btn btn-sm {{ $btnClass }} py-2 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-1" style="font-size: 0.85rem;">
+                                    @if($isQuiz)
+                                        Take Quiz <i class="bi bi-arrow-right"></i>
+                                    @else
+                                        Open {{ $isContent ? 'Material' : 'Flashcard Set' }} <i class="bi bi-arrow-right"></i>
+                                    @endif
+                                </a>
                             </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4 d-flex justify-content-end">
-                            <a href="{{ $viewRoute }}" class="btn btn-sm {{ $btnClass }} px-3 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center gap-1">
-                                View {{ $typeLabel }} <i class="bi bi-arrow-right"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -219,5 +239,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <style>
 .revision-card-col {
     transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.remove-favorite-btn:hover {
+    color: #dc3545 !important;
 }
 </style>
