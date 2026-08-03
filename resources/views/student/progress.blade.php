@@ -141,7 +141,21 @@
                                         @if($p->type === 'Quiz' && ($p->difficulty === 'hard' || $p->difficulty === 'medium') && $p->status === 'pending')
                                             <span class="text-muted italic">Pending Review</span>
                                         @else
-                                            <strong>{{ $p->score }}</strong>
+                                            @if($p->type === 'Quiz')
+                                                <span class="text-success fw-bold d-block" style="font-size: 1.05rem;">{{ $p->score }}</span>
+                                            @else
+                                                @php
+                                                    preg_match('/(\d+\/\d+)\s+Mastered\s+\((\d+)%\)/', $p->score, $matches);
+                                                    $fraction = $matches[1] ?? $p->score;
+                                                    $pct = $matches[2] ?? null;
+                                                @endphp
+                                                @if($pct !== null)
+                                                    <span class="text-success fw-bold d-block mb-0" style="font-size: 1.05rem;">{{ $pct }}%</span>
+                                                    <span class="text-muted small" style="font-size: 0.75rem;">{{ $fraction }} Mastered</span>
+                                                @else
+                                                    <strong class="text-success">{{ $p->score }}</strong>
+                                                @endif
+                                            @endif
                                         @endif
                                     </td>
                                     <td>
@@ -368,7 +382,7 @@
                                             @endif
                                         @else
                                             <a href="{{ route('student.flashcards.show', $p->id) }}" class="btn btn-sm btn-outline-success">
-                                                <i class="bi bi-arrow-right"></i> Study
+                                                Continue Study <i class="bi bi-arrow-right"></i>
                                             </a>
                                         @endif
                                     </td>
@@ -383,39 +397,151 @@
             </div>
         </div>
 
-        <!-- Statistics -->
-        @if($selectedType !== 'flashcards')
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Quizzes</h5>
-                        <h2 class="text-primary">{{ $totalQuizzes }}</h2>
+        <div class="row mt-4 g-4">
+            <!-- Left Column: Performance Overview & Motivational Card -->
+            <div class="col-md-8">
+                <!-- Topics Mastery Overview -->
+                <div class="card shadow-sm border-0 mb-4" style="border-radius: 16px;">
+                    <div class="card-body" style="padding: 1.5rem;">
+                        <h5 class="card-title fw-bold text-dark mb-4"><i class="bi bi-bar-chart-line text-success"></i> Topics Mastery Overview</h5>
+                        
+                        @php
+                            $topicGroups = $unified->groupBy('topic');
+                        @endphp
+
+                        @if($topicGroups->count() > 0)
+                            @foreach($topicGroups as $topicName => $items)
+                                @php
+                                    $totalItems = $items->count();
+                                    $masteredItems = $items->filter(function($item) {
+                                        if ($item->status === 'Mastered' || $item->status === 'Excellent' || $item->status === 'graded') {
+                                            return true;
+                                        }
+                                        if (is_numeric($item->score_num) && $item->score_num >= 70) {
+                                            return true;
+                                        }
+                                        return false;
+                                    })->count();
+                                    $pct = $totalItems > 0 ? round(($masteredItems / $totalItems) * 100) : 0;
+                                    
+                                    $barColor = 'bg-danger';
+                                    if ($pct >= 85) {
+                                        $barColor = 'bg-success';
+                                    } elseif ($pct >= 50) {
+                                        $barColor = 'bg-warning';
+                                    }
+                                @endphp
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between mb-2 small fw-bold">
+                                        <span class="text-dark">{{ $topicName }}</span>
+                                        <span class="text-muted">{{ $pct }}% Mastered <span class="text-black-50">({{ $masteredItems }}/{{ $totalItems }} activities)</span></span>
+                                    </div>
+                                    <div class="progress" style="height: 10px; border-radius: 5px; background-color: #f1f3f5;">
+                                        <div class="progress-bar {{ $barColor }}" style="width: {{ $pct }}%; border-radius: 5px; transition: width 0.6s ease;"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted mb-0">No topic performance data available yet.</p>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Motivational Message Card -->
+                <div class="card shadow-sm border-0" style="border-radius: 16px; background-color: #e8f5e9;">
+                    <div class="card-body d-flex align-items-center gap-3" style="padding: 1.5rem;">
+                        <div class="bg-success text-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; flex-shrink: 0;">
+                            <i class="bi bi-emoji-smile fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-success mb-1">Keep learning!</h5>
+                            <p class="text-dark mb-0" style="font-size: 0.95rem;">
+                                @if($topicGroups->count() > 0)
+                                    @php
+                                        $bestTopic = '';
+                                        $bestPct = -1;
+                                        foreach($topicGroups as $topicName => $items) {
+                                            $totalItems = $items->count();
+                                            $masteredItems = $items->filter(function($item) {
+                                                return $item->status === 'Mastered' || (is_numeric($item->score_num) && $item->score_num >= 70);
+                                            })->count();
+                                            $pct = $totalItems > 0 ? round(($masteredItems / $totalItems) * 100) : 0;
+                                            if ($pct > $bestPct) {
+                                                $bestPct = $pct;
+                                                $bestTopic = $topicName;
+                                            }
+                                        }
+                                    @endphp
+                                    You have mastered <strong>{{ $bestPct }}%</strong> of your <strong>{{ $bestTopic }}</strong> activities. You're doing great, keep up the good work!
+                                @else
+                                    Start taking quizzes or studying flashcards to track your progress and master new topics!
+                                @endif
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Right Column: Statistics Stacked & Action Buttons -->
             <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Average Quiz Score</h5>
-                        <h2 class="text-info">
-                            {{ $averageScore }}%
-                        </h2>
-                    </div>
+                <!-- Stat Cards -->
+                <div class="d-flex flex-column gap-3">
+                    @if($selectedType !== 'flashcards')
+                        <!-- Quiz Attempts Card -->
+                        <div class="card shadow-sm border-0" style="border-radius: 16px; background: linear-gradient(135deg, #1565c0, #1e88e5); color: white;">
+                            <div class="card-body text-center" style="padding: 1.25rem;">
+                                <h1 class="display-4 fw-extrabold mb-1" style="font-weight: 800;">{{ $totalQuizzes }}</h1>
+                                <p class="small text-white-50 mb-0 text-uppercase fw-bold" style="letter-spacing: 0.5px; font-size: 0.75rem;">Quiz Attempts</p>
+                            </div>
+                        </div>
+
+                        <!-- Average Score Card -->
+                        <div class="card shadow-sm border-0" style="border-radius: 16px; background: linear-gradient(135deg, #00a896, #02c39a); color: white;">
+                            <div class="card-body text-center" style="padding: 1.25rem;">
+                                <h1 class="display-4 fw-extrabold mb-1" style="font-weight: 800;">{{ $averageScore }}%</h1>
+                                <p class="small text-white-50 mb-0 text-uppercase fw-bold" style="letter-spacing: 0.5px; font-size: 0.75rem;">Average Score</p>
+                            </div>
+                        </div>
+
+                        <!-- Best Score Card -->
+                        <div class="card shadow-sm border-0" style="border-radius: 16px; background: linear-gradient(135deg, #ff8f00, #ffa000); color: white;">
+                            <div class="card-body text-center" style="padding: 1.25rem;">
+                                <h1 class="display-4 fw-extrabold mb-1" style="font-weight: 800;">{{ $highestScore }}%</h1>
+                                <p class="small text-white-50 mb-0 text-uppercase fw-bold" style="letter-spacing: 0.5px; font-size: 0.75rem;">Best Quiz Score</p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Highest Quiz Score</h5>
-                        <h2 class="text-success">
-                            {{ $highestScore }}%
-                        </h2>
+
+                <!-- Navigation & Action Buttons -->
+                <div class="card shadow-sm border-0 mt-4" style="border-radius: 16px;">
+                    <div class="card-body" style="padding: 1.5rem;">
+                        <h6 class="fw-bold text-muted text-uppercase mb-3 small" style="letter-spacing: 0.5px;">What's Next?</h6>
+                        <div class="d-grid gap-2">
+                            @if($selectedType === 'flashcards')
+                                <a href="{{ route('student.flashcards.index') }}" class="btn btn-primary py-2.5 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    Study More Flashcards <i class="bi bi-arrow-right"></i>
+                                </a>
+                            @elseif($selectedType === 'quiz')
+                                <a href="{{ route('student.quizzes') }}" class="btn btn-success py-2.5 rounded-pill fw-bold text-white shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    Take More Quizzes <i class="bi bi-arrow-right"></i>
+                                </a>
+                            @else
+                                <a href="{{ route('student.quizzes') }}" class="btn btn-success py-2.5 rounded-pill fw-bold text-white shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    Take More Quizzes <i class="bi bi-arrow-right"></i>
+                                </a>
+                                <a href="{{ route('student.flashcards.index') }}" class="btn btn-outline-primary py-2.5 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-2">
+                                    Study More Flashcards
+                                </a>
+                            @endif
+                            <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary py-2.5 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-house-door"></i> Back to Dashboard
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        @endif
     @else
         <div class="alert alert-info" role="alert">
             <h4 class="alert-heading">No Progress Yet</h4>
@@ -427,20 +553,18 @@
                 <p>You haven't completed any quizzes or flashcards yet. <a href="{{ route('student.quizzes') }}" class="alert-link">Start taking quizzes</a> or <a href="{{ route('student.flashcards.index') }}" class="alert-link">studying flashcards</a> to see your progress here.</p>
             @endif
         </div>
-    @endif
-
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <a href="{{ route('student.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        
+        <div class="mt-4">
+            <a href="{{ route('student.dashboard') }}" class="btn btn-secondary rounded-pill px-4">Back to Dashboard</a>
             @if($selectedType === 'flashcards')
-                <a href="{{ route('student.flashcards.index') }}" class="btn btn-primary">Study More Flashcards</a>
+                <a href="{{ route('student.flashcards.index') }}" class="btn btn-primary rounded-pill px-4 ms-2">Study More Flashcards</a>
             @elseif($selectedType === 'quiz')
-                <a href="{{ route('student.quizzes') }}" class="btn btn-primary">Take More Quizzes</a>
+                <a href="{{ route('student.quizzes') }}" class="btn btn-primary rounded-pill px-4 ms-2">Take More Quizzes</a>
             @else
-                <a href="{{ route('student.quizzes') }}" class="btn btn-primary">Take More Quizzes</a>
-                <a href="{{ route('student.flashcards.index') }}" class="btn btn-outline-primary ms-2">Study More Flashcards</a>
+                <a href="{{ route('student.quizzes') }}" class="btn btn-primary rounded-pill px-4 ms-2">Take More Quizzes</a>
+                <a href="{{ route('student.flashcards.index') }}" class="btn btn-outline-primary rounded-pill px-4 ms-2">Study More Flashcards</a>
             @endif
         </div>
-    </div>
+    @endif
 </div>
 @endsection
