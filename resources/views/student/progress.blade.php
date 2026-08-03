@@ -22,11 +22,11 @@
         <div class="row mb-3 g-3">
             <!-- Quiz Attempts -->
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 text-center h-100" style="border-radius: 16px; background: linear-gradient(135deg, #1565c0, #1e88e5); color: white;">
+                <div class="card shadow-sm border text-center h-100" style="border-radius: 16px; background-color: #ffffff;">
                     <div class="card-body d-flex flex-column justify-content-center" style="padding: 0.9rem 1rem;">
-                        <h1 class="display-6 fw-extrabold mb-1" style="font-weight: 800;">{{ $totalQuizzes }}</h1>
-                        <p class="fw-bold mb-1 text-uppercase text-white-50 small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Quiz Attempts</p>
-                        <p class="mb-0 text-white-50 small" style="font-size: 0.75rem;">
+                        <h1 class="display-6 fw-extrabold mb-1" style="font-weight: 800; color: #1565c0;">{{ $totalQuizzes }}</h1>
+                        <p class="fw-bold mb-1 text-uppercase text-muted small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Quizzes Taken</p>
+                        <p class="mb-0 text-muted small" style="font-size: 0.75rem;">
                             {{ $totalQuizzes > 0 ? 'Keep up the practice!' : 'Start your first quiz!' }}
                         </p>
                     </div>
@@ -34,11 +34,11 @@
             </div>
             <!-- Average Score -->
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 text-center h-100" style="border-radius: 16px; background: linear-gradient(135deg, #00a896, #02c39a); color: white;">
+                <div class="card shadow-sm border text-center h-100" style="border-radius: 16px; background-color: #ffffff;">
                     <div class="card-body d-flex flex-column justify-content-center" style="padding: 0.9rem 1rem;">
-                        <h1 class="display-6 fw-extrabold mb-1" style="font-weight: 800;">{{ $averageScore }}%</h1>
-                        <p class="fw-bold mb-1 text-uppercase text-white-50 small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Average Score</p>
-                        <p class="mb-0 text-white-50 small" style="font-size: 0.75rem;">
+                        <h1 class="display-6 fw-extrabold mb-1" style="font-weight: 800; color: #00a896;">{{ $averageScore }}%</h1>
+                        <p class="fw-bold mb-1 text-uppercase text-muted small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Average Score</p>
+                        <p class="mb-0 text-muted small" style="font-size: 0.75rem;">
                             {{ $averageScore >= 70 ? 'Excellent performance!' : ($averageScore > 0 ? 'Good work, aim higher!' : 'No graded attempts yet.') }}
                         </p>
                     </div>
@@ -46,11 +46,11 @@
             </div>
             <!-- Best Score -->
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 text-center h-100" style="border-radius: 16px; background: linear-gradient(135deg, #ff8f00, #ffa000); color: white;">
+                <div class="card shadow-sm border text-center h-100" style="border-radius: 16px; background-color: #ffffff;">
                     <div class="card-body d-flex flex-column justify-content-center" style="padding: 0.9rem 1rem;">
-                        <h1 class="display-6 fw-extrabold mb-1" style="font-weight: 800;">{{ $highestScore }}%</h1>
-                        <p class="fw-bold mb-1 text-uppercase text-white-50 small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Best Quiz Score</p>
-                        <p class="mb-0 text-white-50 small" style="font-size: 0.75rem;">
+                        <h1 class="display-6 fw-extrabold mb-1" style="font-weight: 800; color: #2e7d32;">{{ $highestScore }}%</h1>
+                        <p class="fw-bold mb-1 text-uppercase text-muted small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Best Quiz Score</p>
+                        <p class="mb-0 text-muted small" style="font-size: 0.75rem;">
                             {{ $highestScore >= 80 ? 'Mastery achieved!' : ($highestScore > 0 ? 'Keep aiming for 100%!' : 'Take a quiz to set a record.') }}
                         </p>
                     </div>
@@ -94,8 +94,8 @@
                                             <span class="text-dark text-truncate" style="max-width: 120px;">{{ $topicName }}</span>
                                             <span class="text-muted">{{ $pct }}% Mastered</span>
                                         </div>
-                                        <div class="progress" style="height: 6px; border-radius: 3px; background-color: #e9ecef;">
-                                            <div class="progress-bar {{ $barColor }}" style="width: {{ $pct }}%; border-radius: 3px;"></div>
+                                        <div class="progress" style="height: 9px; border-radius: 4px; background-color: #e9ecef;">
+                                            <div class="progress-bar {{ $barColor }}" style="width: {{ $pct }}%; border-radius: 4px;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +200,7 @@
                         $statusClass = 'bg-primary text-white';
                     }
                 @endphp
-                <div class="col-md-6 mb-4 progress-row" data-title="{{ strtolower($p->title) }}" data-topic="{{ strtolower($p->topic) }}">
+                <div class="col-12 mb-3 progress-row" data-title="{{ strtolower($p->title) }}" data-topic="{{ strtolower($p->topic) }}">
                     <div class="card h-100 shadow-sm border-0" style="border-radius: 16px; {{ $bgStyle }} overflow: hidden;">
                         <div class="card-body d-flex flex-column justify-content-between" style="padding: 1.15rem;">
                             <div>
@@ -480,7 +480,7 @@
                                             </span>
                                         @endif
                                     @else
-                                        <a href="{{ route('student.flashcards.show', $p->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold">
+                                        <a href="{{ route('student.flashcards.show', $p->id) }}" class="btn btn-sm btn-success text-white rounded-pill px-3 fw-bold shadow-sm">
                                             Continue Study <i class="bi bi-arrow-right"></i>
                                         </a>
                                     @endif
@@ -511,8 +511,8 @@
 
     <!-- Bottom Actions (Left Aligned & Anchored) -->
     <div class="mt-4 pt-2">
-        <h6 class="fw-bold text-muted text-uppercase mb-3 small" style="letter-spacing: 0.5px;">Continue Your Journey</h6>
-        <div class="d-flex flex-wrap gap-2">
+        <h6 class="fw-bold text-muted text-uppercase mb-2 small" style="letter-spacing: 0.5px;">Continue Your Journey</h6>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
             @if($selectedType === 'flashcards')
                 <a href="{{ route('student.flashcards.index') }}" class="btn btn-primary px-4 rounded-pill fw-bold shadow-sm">
                     Study More Flashcards <i class="bi bi-arrow-right"></i>
@@ -529,7 +529,7 @@
                     Study More Flashcards <i class="bi bi-arrow-right"></i>
                 </a>
             @endif
-            <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary px-4 rounded-pill fw-bold">
+            <a href="{{ route('student.dashboard') }}" class="btn btn-link text-secondary text-decoration-none fw-bold px-2 py-1">
                 <i class="bi bi-house-door"></i> Back to Dashboard
             </a>
         </div>
