@@ -199,6 +199,24 @@
                     } elseif ($p->status === 'Graded') {
                         $statusClass = 'bg-primary text-white';
                     }
+                    
+                    // Topic Badge Colors Mapping
+                    $topicNorm = strtolower(trim($p->topic));
+                    $topicStyle = 'background-color: #f5f5f5; color: #616161;'; // Default grey
+                    
+                    if (str_contains($topicNorm, 'quran') || str_contains($topicNorm, 'qur\'an')) {
+                        $topicStyle = 'background-color: #f3e5f5; color: #7b1fa2;'; // Soft Purple
+                    } elseif (str_contains($topicNorm, 'hadis') || str_contains($topicNorm, 'hadith')) {
+                        $topicStyle = 'background-color: #e3f2fd; color: #1565c0;'; // Soft Blue
+                    } elseif (str_contains($topicNorm, 'akidah') || str_contains($topicNorm, 'aqidah')) {
+                        $topicStyle = 'background-color: #e0f2f1; color: #00796b;'; // Soft Teal
+                    } elseif (str_contains($topicNorm, 'fiqah') || str_contains($topicNorm, 'fiqh')) {
+                        $topicStyle = 'background-color: #e8f5e9; color: #2e7d32;'; // Soft Green
+                    } elseif (str_contains($topicNorm, 'sirah') || str_contains($topicNorm, 'sejarah')) {
+                        $topicStyle = 'background-color: #fff3e0; color: #e65100;'; // Soft Orange
+                    } elseif (str_contains($topicNorm, 'akhlak') || str_contains($topicNorm, 'adab')) {
+                        $topicStyle = 'background-color: #ffebee; color: #c62828;'; // Soft Rose/Red
+                    }
                 @endphp
                 <div class="col-12 mb-3 progress-row" data-title="{{ strtolower($p->title) }}" data-topic="{{ strtolower($p->topic) }}">
                     <div class="card h-100 shadow-sm border-0" style="border-radius: 16px; {{ $bgStyle }} overflow: hidden;">
@@ -214,8 +232,8 @@
                                             {{ $p->status }}
                                         </span>
                                     </div>
-                                    <!-- Soft purple topic badge -->
-                                    <span class="badge px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="background-color: #f3e5f5; color: #7b1fa2; font-size: 0.72rem;">{{ $p->topic }}</span>
+                                    <!-- Dynamic colored topic badge -->
+                                    <span class="badge px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="{{ $topicStyle }} font-size: 0.72rem;">{{ $p->topic }}</span>
                                 </div>
                                 
                                 <!-- Title -->
