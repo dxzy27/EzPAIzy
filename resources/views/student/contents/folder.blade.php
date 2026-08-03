@@ -28,33 +28,92 @@
         <div class="row">
             @foreach($contents as $content)
                 <div class="col-md-6 mb-4 material-card-col" data-title="{{ strtolower($content->title) }}">
-                    <div class="card h-100 shadow-sm content-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0 fw-bold text-dark">{{ $content->title }}</h5>
+                    <div class="card h-100 shadow-sm content-card border-0" style="border-radius: 16px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.15rem; line-height: 1.4;">{{ $content->title }}</h5>
                                 @php
                                     $isFavorited = in_array($content->id, $favoritedContentIds ?? []);
                                 @endphp
-                                <button class="btn btn-link p-0 text-warning favorite-btn" 
+                                <button class="btn btn-link p-0 text-warning favorite-btn ms-2" 
                                         data-id="{{ $content->id }}" 
                                         data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
                                         title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}">
                                     <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
                                 </button>
                             </div>
-                            <p class="card-text text-muted">{{ Str::limit($content->content, 150) }}</p>
-                            <p class="text-muted small mb-1">
-                                <i class="bi bi-person-circle text-secondary me-1"></i> Teacher: {{ $content->teacher->name ?? 'Unknown' }}
-                            </p>
-                            <p class="text-muted small mb-0">
-                                <i class="bi bi-calendar text-secondary me-1"></i>
-                                Created: {{ $content->created_at->format('M d, Y') }}
-                            </p>
+                            
+                            <p class="card-text text-muted mb-3" style="font-size: 0.9rem;">{{ Str::limit($content->content, 120) }}</p>
+                            
+                            <!-- Metadata Icons -->
+                            <div class="d-flex flex-wrap gap-3 mb-4 text-muted" style="font-size: 0.85rem;">
+                                <div class="d-flex align-items-center gap-1">
+                                    <span>👨</span> <span>{{ $content->teacher->name ?? 'Unknown' }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span>📅</span> <span>{{ $content->created_at->format('M d, Y') }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span>📖</span> <span>{{ strtoupper($content->file_type ?? 'TEXT') }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Page Tracking / Progress -->
+                            <div class="p-3 bg-light rounded-3 border border-light-subtle d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fs-4">📖</span>
+                                    <div>
+                                        <div class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Last Read</div>
+                                        <div class="fw-bold text-dark small">
+                                            @if($content->progress)
+                                                Page {{ $content->progress->current_page }} of {{ $content->progress->total_pages }}
+                                            @else
+                                                Not started yet
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                @if($content->progress)
+                                    @php
+                                        $percent = min(100, max(0, round(($content->progress->current_page / $content->progress->total_pages) * 100)));
+                                    @endphp
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">{{ $percent }}% done</span>
+                                @else
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2.5 py-1">0%</span>
+                                @endif
+                            </div>
                         </div>
-                        <div class="card-footer bg-light border-0 d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary text-white">{{ $content->file_type ?? 'Text' }}</span>
-                            <a href="{{ route('student.contents.show', $content) }}" class="btn btn-sm btn-primary">
-                                <i class="bi bi-eye me-1"></i> Read
+
+                        <!-- Card Footer -->
+                        <div class="card-footer bg-white border-0 pt-0 pb-4 px-4 d-flex justify-content-between align-items-center">
+                            @php
+                                $fileType = strtoupper($content->file_type ?? 'TEXT');
+                                $badgeStyle = '';
+                                $badgeText = '';
+                                if ($fileType === 'PDF') {
+                                    $badgeStyle = 'background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2;';
+                                    $badgeText = '🟥 PDF';
+                                } elseif (in_array($fileType, ['DOC', 'DOCX'])) {
+                                    $badgeStyle = 'background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb;';
+                                    $badgeText = '🟦 DOCX';
+                                } elseif (in_array($fileType, ['PPT', 'PPTX'])) {
+                                    $badgeStyle = 'background-color: #fffde7; color: #e65100; border: 1px solid #ffe082;';
+                                    $badgeText = '🟨 PPT';
+                                } else {
+                                    $badgeStyle = 'background-color: #f5f5f5; color: #616161; border: 1px solid #e0e0e0;';
+                                    $badgeText = '📝 ' . $fileType;
+                                }
+                            @endphp
+                            <span class="badge px-3 py-2 rounded-pill fw-bold" style="{{ $badgeStyle }} font-size: 0.78rem;">
+                                {!! $badgeText !!}
+                            </span>
+                            
+                            <a href="{{ route('student.contents.show', $content) }}" class="btn btn-sm btn-primary px-3 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center gap-1 py-2">
+                                @if($content->progress)
+                                    Continue Reading <i class="bi bi-arrow-right"></i>
+                                @else
+                                    Open Material <i class="bi bi-arrow-right"></i>
+                                @endif
                             </a>
                         </div>
                     </div>

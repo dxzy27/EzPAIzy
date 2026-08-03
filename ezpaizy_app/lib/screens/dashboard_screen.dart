@@ -646,10 +646,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: IconButton(
             icon: const Icon(Icons.chevron_left, size: 28, color: Colors.black54),
             onPressed: () {
-              _carouselController.previousPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
+              if (_carouselIndex == 0) {
+                _carouselController.animateToPage(
+                  2,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              } else {
+                _carouselController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              }
             },
           ),
         ),
@@ -658,10 +666,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: IconButton(
             icon: const Icon(Icons.chevron_right, size: 28, color: Colors.black54),
             onPressed: () {
-              _carouselController.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
+              if (_carouselIndex == 2) {
+                _carouselController.animateToPage(
+                  0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              } else {
+                _carouselController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              }
             },
           ),
         ),

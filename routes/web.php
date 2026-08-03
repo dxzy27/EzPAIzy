@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
     Route::get('/contents', [StudentController::class, 'contents'])->name('contents.index');
     Route::get('/contents/folder/{topic}', [StudentController::class, 'contentFolder'])->name('contents.folder');
     Route::get('/contents/{content}', [StudentController::class, 'showContent'])->name('contents.show');
+    Route::post('/contents/{content}/progress', [StudentController::class, 'updateContentProgress'])->name('contents.progress');
 
     // Flashcards
     Route::get('/flashcards', [StudentController::class, 'flashcards'])->name('flashcards.index');

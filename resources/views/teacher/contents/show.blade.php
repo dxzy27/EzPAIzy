@@ -46,6 +46,48 @@
                     <h5 class="mb-0">Content</h5>
                 </div>
                 <div class="card-body">
+                    @if(auth()->user()->role === 'student')
+                        <div class="p-3 bg-light rounded-3 border border-light-subtle mb-4 shadow-sm">
+                            <div class="row align-items-center">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fs-3">📖</span>
+                                        <div>
+                                            <h6 class="fw-bold mb-1 text-dark">Track Your Reading Progress</h6>
+                                            <p class="text-muted small mb-0">Update where you are so you can continue next time!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <form id="progress-form" class="d-flex align-items-center justify-content-md-end gap-2">
+                                        @csrf
+                                        <div class="d-flex align-items-center gap-1">
+                                            <span class="small text-muted fw-bold">Page</span>
+                                            <input type="number" id="current_page" name="current_page" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" value="{{ $progress->current_page ?? 1 }}" min="1">
+                                            <span class="small text-muted fw-bold">of</span>
+                                            <input type="number" id="total_pages" name="total_pages" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" value="{{ $progress->total_pages ?? 100 }}" min="1">
+                                        </div>
+                                        <button type="button" id="update-progress-btn" class="btn btn-sm btn-primary fw-bold px-3 rounded-pill shadow-sm">
+                                            Save Progress
+                                        </button>
+                                    </form>
+                                    <div id="progress-status-msg" class="text-md-end small mt-1 fw-semibold text-success d-none">
+                                        <i class="bi bi-check-circle-fill"></i> Progress saved!
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Small Progress Bar -->
+                            <div class="progress mt-3" style="height: 6px; border-radius: 3px;">
+                                @php
+                                    $curr = $progress->current_page ?? 1;
+                                    $tot = $progress->total_pages ?? 100;
+                                    $percentage = min(100, max(0, round(($curr / $tot) * 100)));
+                                @endphp
+                                <div id="progress-bar-indicator" class="progress-bar bg-success" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    @endif
+
                     @if($content->file_path)
                         <div class="mb-4 text-center">
                             @if(in_array(strtolower($content->file_type), ['jpg', 'jpeg', 'png', 'gif']))
@@ -222,6 +264,61 @@
 
 </div>
 
+@if(auth()->user()->role === 'student')
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updateBtn = document.getElementById('update-progress-btn');
+    if (updateBtn) {
+        updateBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const currentPageInput = document.getElementById('current_page');
+            const totalPagesInput = document.getElementById('total_pages');
+            const currentPage = parseInt(currentPageInput.value) || 1;
+            const totalPages = parseInt(totalPagesInput.value) || 100;
+            const statusMsg = document.getElementById('progress-status-msg');
+            const progressBar = document.getElementById('progress-bar-indicator');
+
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+
+            fetch("{{ route('student.contents.progress', $content->id) }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    current_page: currentPage,
+                    total_pages: totalPages
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = 'Save Progress';
+                if (data.success) {
+                    statusMsg.classList.remove('d-none');
+                    setTimeout(() => {
+                        statusMsg.classList.add('d-none');
+                    }, 2000);
+
+                    const percent = Math.min(100, Math.max(0, Math.round((currentPage / totalPages) * 100)));
+                    progressBar.style.width = percent + '%';
+                    progressBar.setAttribute('aria-valuenow', percent);
+                }
+            })
+            .catch(err => {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = 'Save Progress';
+                console.error(err);
+            });
+        });
+    }
+});
+</script>
+@endpush
+@endif
 
 @endsection
 

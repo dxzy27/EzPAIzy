@@ -171,35 +171,11 @@ class ScaffoldWithNav extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               ListTile(
-                leading: const Icon(Icons.star_outline, color: Color(0xFF3B82F6)),
-                title: const Text('Revision', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  context.go('/revision');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.bar_chart_outlined, color: Color(0xFF3B82F6)),
-                title: const Text('My Progress', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  context.go('/progress');
-                },
-              ),
-              ListTile(
                 leading: const Icon(Icons.psychology_outlined, color: Color(0xFF3B82F6)),
                 title: const Text('Diagnosis / Learning Style', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
                 onTap: () {
                   Navigator.pop(ctx);
                   context.go('/learning-style');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.account_circle_outlined, color: Color(0xFF3B82F6)),
-                title: const Text('Learning Profile', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  context.go('/learning-profile');
                 },
               ),
               const Divider(),
@@ -261,18 +237,18 @@ class ScaffoldWithNav extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.quiz_outlined),
-            activeIcon: Icon(Icons.quiz),
+            icon: Icon(Icons.edit_note_outlined),
+            activeIcon: Icon(Icons.edit_note),
             label: 'Quizzes',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.style_outlined),
-            activeIcon: Icon(Icons.style),
+            icon: Icon(Icons.assignment_outlined),
+            activeIcon: Icon(Icons.assignment),
             label: 'Flashcards',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book_outlined),
-            activeIcon: Icon(Icons.book),
+            icon: Icon(Icons.article_outlined),
+            activeIcon: Icon(Icons.article),
             label: 'Other',
           ),
           BottomNavigationBarItem(
