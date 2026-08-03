@@ -102,7 +102,6 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
 
     // Revision / Favorites
     Route::get('/revision', [FavoriteController::class, 'index'])->name('revision');
-    Route::get('/revision/folder/{topic}', [FavoriteController::class, 'folder'])->name('revision.folder');
     Route::post('/favorites/{content}', [FavoriteController::class, 'store'])->name('favorites.add');
     Route::delete('/favorites/{content}', [FavoriteController::class, 'destroy'])->name('favorites.remove');
     Route::post('/favorites/flashcard/{flashcardSet}', [FavoriteController::class, 'storeFlashcard'])->name('favorites.flashcard.add');

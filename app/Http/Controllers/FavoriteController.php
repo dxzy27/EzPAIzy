@@ -15,37 +15,6 @@ class FavoriteController extends Controller
     {
         $user = auth()->user();
         
-        $favorites = \App\Models\Favorite::where('student_id', $user->id)
-            ->with(['content', 'flashcardSet'])
-            ->get();
-
-        $topics = $favorites->map(function($fav) {
-            if ($fav->quiz_topic) {
-                return $fav->quiz_topic;
-            }
-            if ($fav->content) {
-                return $fav->content->topic;
-            }
-            if ($fav->flashcardSet) {
-                return $fav->flashcardSet->topic;
-            }
-            return null;
-        })->filter()->unique()->values()->map(function($topicName) {
-            $t = new \stdClass();
-            $t->name = $topicName;
-            return $t;
-        });
-
-        return view('student.revision', compact('topics'));
-    }
-
-    /**
-     * Display a specific topic folder's revision items
-     */
-    public function folder($topic)
-    {
-        $user = auth()->user();
-        
         $classTeacher = \App\Models\User::where('role', 'teacher')
             ->where('class_name', $user->class_name)
             ->first();
@@ -55,21 +24,9 @@ class FavoriteController extends Controller
         $favorites = \App\Models\Favorite::where('student_id', $user->id)
             ->with(['content.teacher', 'flashcardSet.user']) // Corrected relationship names
             ->latest()
-            ->get()
-            ->filter(function($fav) use ($topic) {
-                if ($fav->quiz_topic === $topic) {
-                    return true;
-                }
-                if ($fav->content && $fav->content->topic === $topic) {
-                    return true;
-                }
-                if ($fav->flashcardSet && $fav->flashcardSet->topic === $topic) {
-                    return true;
-                }
-                return false;
-            });
+            ->get();
 
-        return view('student.revision_folder', compact('favorites', 'topic', 'teacherName'));
+        return view('student.revision', compact('favorites', 'teacherName'));
     }
     
     /**
