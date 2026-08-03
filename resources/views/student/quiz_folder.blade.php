@@ -1,26 +1,29 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container-fluid px-4 py-5">
-    <div class="d-flex justify-content-between align-items-end mb-5">
-        <div>
-            <div class="d-flex align-items-center gap-3 mb-2">
-                <a href="{{ route('student.quizzes') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Folders">
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ url()->previous() === url()->current() ? route('student.quizzes') : url()->previous() }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
                     <i class="bi bi-arrow-left fs-5"></i>
                 </a>
-                <h1 class="display-6 fw-bold text-dark mb-0">
-                    <i class="bi bi-folder-fill text-warning me-2"></i>{{ $topic }}
-                </h1>
+                <div>
+                    <h1 class="fw-extrabold text-dark mb-0" style="font-size: 2.1rem; font-weight: 800;">
+                        <i class="bi bi-folder-fill text-warning me-2"></i>{{ $topic }}
+                    </h1>
+                    <nav aria-label="breadcrumb" class="mt-1">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="{{ route('student.quizzes') }}" class="text-decoration-none">Quizzes</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ $topic }}</li>
+                        </ol>
+                    </nav>
+                </div>
             </div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('student.quizzes') }}" class="text-decoration-none">Quizzes</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ $topic }}</li>
-                </ol>
-            </nav>
         </div>
-        <div class="d-none d-md-block">
-             <div class="input-group shadow-sm" style="border-radius: 50px; overflow: hidden; width: 300px;">
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+             <div class="input-group shadow-sm ms-auto" style="border-radius: 50px; overflow: hidden; max-width: 300px;">
                 <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
                 <input type="text" id="quiz-search" class="form-control border-0 ps-2" placeholder="Search quizzes...">
              </div>
@@ -33,169 +36,153 @@
                 @php
                     $isLocked = false;
                     $lockMessage = '';
+                    
+                    // Topic Badge Colors Mapping
+                    $topicNorm = strtolower(trim($quiz->topic));
+                    $topicStyle = 'background-color: #f5f5f5; color: #616161;'; // Default grey
+                    
+                    if (str_contains($topicNorm, 'quran') || str_contains($topicNorm, 'qur\'an')) {
+                        $topicStyle = 'background-color: #f3e5f5; color: #7b1fa2;'; // Soft Purple
+                    } elseif (str_contains($topicNorm, 'hadis') || str_contains($topicNorm, 'hadith')) {
+                        $topicStyle = 'background-color: #e3f2fd; color: #1565c0;'; // Soft Blue
+                    } elseif (str_contains($topicNorm, 'akidah') || str_contains($topicNorm, 'aqidah')) {
+                        $topicStyle = 'background-color: #e0f2f1; color: #00796b;'; // Soft Teal
+                    } elseif (str_contains($topicNorm, 'fiqah') || str_contains($topicNorm, 'fiqh')) {
+                        $topicStyle = 'background-color: #e8f5e9; color: #2e7d32;'; // Soft Green
+                    } elseif (str_contains($topicNorm, 'sirah') || str_contains($topicNorm, 'sejarah')) {
+                        $topicStyle = 'background-color: #fff3e0; color: #e65100;'; // Soft Orange
+                    } elseif (str_contains($topicNorm, 'akhlak') || str_contains($topicNorm, 'adab')) {
+                        $topicStyle = 'background-color: #ffebee; color: #c62828;'; // Soft Rose/Red
+                    }
+                    
+                    $difficultyColor = match($quiz->difficulty) {
+                        'easy' => 'success',
+                        'medium' => 'warning',
+                        'hard' => 'danger',
+                        default => 'primary'
+                    };
                 @endphp
                 <div class="col-md-6 col-lg-4 col-xl-3 quiz-card-col" data-title="{{ strtolower($quiz->title) }}" data-difficulty="{{ strtolower($quiz->difficulty) }}">
-                    <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 12px; overflow: hidden; {{ $isLocked ? 'opacity: 0.7; filter: grayscale(20%);' : '' }}">
-                        <div class="card-body d-flex flex-column p-4">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <span class="badge rounded-pill bg-light text-dark shadow-sm border" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 600;">
-                                    <i class="bi bi-folder2-open me-1 text-primary"></i> {{ $quiz->topic ?? 'General' }}
-                                </span>
-                                @php
-                                    $difficultyColor = match($quiz->difficulty) {
-                                        'easy' => 'success',
-                                        'medium' => 'warning',
-                                        'hard' => 'danger',
-                                        default => 'primary'
-                                    };
-                                @endphp
-                                <span class="badge bg-{{ $difficultyColor }} bg-opacity-10 text-{{ $difficultyColor }}" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; font-weight: 700;">
-                                    {{ ucfirst($quiz->difficulty) }}
-                                </span>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold text-dark mb-0" style="font-size: 1.15rem; line-height: 1.3;">{{ $quiz->title }}</h5>
-                                @php
-                                    $isFavorited = in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []);
-                                @endphp
-                                <button class="btn btn-link p-0 text-warning favorite-btn" 
-                                        data-topic="{{ $quiz->topic }}" 
-                                        data-difficulty="{{ $quiz->difficulty }}" 
-                                        data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
-                                        title="{{ $isFavorited ? 'Remove from Revision' : 'Add to Revision' }}">
-                                    <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
-                                </button>
-                            </div>
-                            <p class="text-muted small mb-3">
-                                <i class="bi bi-person-circle me-1"></i> {{ $quiz->teacher->name ?? 'Unknown Teacher' }}
-                            </p>
-
-                            @if($isLocked)
-                                <div class="alert alert-warning py-1 px-2 mb-3 d-flex align-items-center gap-2" style="font-size: 0.75rem; border-radius: 8px; font-weight: 600;">
-                                    <i class="bi bi-lock-fill text-warning fs-6"></i>
-                                    <span>Locked: {{ $lockMessage }}</span>
+                    <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px; overflow: hidden; {{ $isLocked ? 'opacity: 0.7; filter: grayscale(20%);' : '' }}">
+                        <div class="card-body d-flex flex-column justify-content-between" style="padding: 1.15rem;">
+                            <div>
+                                <!-- Badges Row -->
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="d-flex gap-1.5 align-items-center">
+                                        <span class="badge px-2.5 py-1 rounded-pill fw-bold text-uppercase bg-{{ $difficultyColor }} bg-opacity-10 text-{{ $difficultyColor }}" style="font-size: 0.72rem;">
+                                            {{ ucfirst($quiz->difficulty) }}
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-link p-0 text-warning favorite-btn" 
+                                            data-topic="{{ $quiz->topic }}" 
+                                            data-difficulty="{{ $quiz->difficulty }}" 
+                                            data-favorited="{{ in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []) ? 'true' : 'false' }}"
+                                            title="{{ in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []) ? 'Remove from Revision' : 'Add to Revision' }}">
+                                        <i class="bi {{ in_array($quiz->topic . '-' . $quiz->difficulty, $favoritedQuizMap ?? []) ? 'bi-star-fill' : 'bi-star' }} fs-5"></i>
+                                    </button>
                                 </div>
-                            @endif
+                                
+                                <!-- Title -->
+                                <h5 class="card-title fw-extrabold text-dark mb-2" style="font-size: 1.15rem; line-height: 1.4; font-weight: 800;">{{ $quiz->title }}</h5>
+                                
+                                <!-- Inline Metadata Details -->
+                                <div class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.5;">
+                                    👤 By: {{ $quiz->teacher->name ?? 'Unknown Teacher' }}
+                                </div>
 
-                            @php
-                                $p = $quiz->progress->first();
-                            @endphp
-                            <div class="mb-3 mt-2">
-                                @if($p)
-                                    @if(($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') && $p->status === 'pending')
-                                        <div class="d-flex justify-content-between text-muted small mb-1">
-                                            <span>Quiz Progress</span>
-                                            <span class="text-warning fw-semibold">Pending Review</span>
-                                        </div>
-                                        <div class="progress" style="height: 6px;">
-                                            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" title="Pending Review"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
-                                            <span class="text-warning" style="font-weight: 500;"><i class="bi bi-clock-history me-1"></i>Awaiting grading</span>
-                                            <span class="text-secondary">Attempted</span>
-                                        </div>
-                                    @else
-                                        @php
-                                            $scoreClass = $p->score >= 70 ? 'text-success' : ($p->score >= 50 ? 'text-warning' : 'text-danger');
-                                            $barBg = $p->score >= 70 ? 'bg-success' : ($p->score >= 50 ? 'bg-warning' : 'bg-danger');
-                                            $statusText = $p->score >= 70 ? 'Excellent' : ($p->score >= 50 ? 'Good' : 'Need Practice');
-                                        @endphp
-                                        <div class="d-flex justify-content-between text-muted small mb-1">
-                                            <span>Quiz Score</span>
-                                            <span class="{{ $scoreClass }} fw-bold">{{ $p->score }}%</span>
-                                        </div>
-                                        <div class="progress" style="height: 6px;">
-                                            <div class="progress-bar {{ $barBg }}" role="progressbar" style="width: {{ $p->score }}%" title="{{ $statusText }}"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
-                                            <span class="{{ $scoreClass }}" style="font-weight: 500;">
-                                                <i class="bi @if($p->score >= 70) bi-check-circle-fill @elseif($p->score >= 50) bi-exclamation-circle-fill @else bi-x-circle-fill @endif me-1"></i>{{ $statusText }}
-                                            </span>
-                                            <span class="text-secondary">Completed</span>
-                                        </div>
-                                    @endif
-                                @else
-                                    <div class="d-flex justify-content-between text-muted small mb-1">
-                                        <span>Quiz Score</span>
-                                        <span class="text-secondary">Not Attempted</span>
-                                    </div>
-                                    <div class="progress" style="height: 6px; background-color: #e9ecef;">
-                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                                    </div>
-                                    <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
-                                        <span class="text-muted"><i class="bi bi-circle me-1"></i>Not started</span>
+                                @if($isLocked)
+                                    <div class="alert alert-warning py-1 px-2 mb-3 d-flex align-items-center gap-2" style="font-size: 0.75rem; border-radius: 8px; font-weight: 600;">
+                                        <i class="bi bi-lock-fill text-warning fs-6"></i>
+                                        <span>Locked: {{ $lockMessage }}</span>
                                     </div>
                                 @endif
+
+                                @php
+                                    $p = $quiz->progress->first();
+                                @endphp
+                                <div class="mb-3 mt-2">
+                                    @if($p)
+                                        @if(($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') && $p->status === 'pending')
+                                            <div class="d-flex justify-content-between text-muted small mb-1">
+                                                <span>Quiz Progress</span>
+                                                <span class="text-warning fw-semibold">Pending Review</span>
+                                            </div>
+                                            <div class="progress" style="height: 9px; border-radius: 4px;">
+                                                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%; border-radius: 4px;" title="Pending Review"></div>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
+                                                <span class="text-warning" style="font-weight: 500;"><i class="bi bi-clock-history me-1"></i>Awaiting grading</span>
+                                                <span class="text-secondary">Attempted</span>
+                                            </div>
+                                        @else
+                                            @php
+                                                $scoreClass = $p->score >= 70 ? 'text-success' : ($p->score >= 50 ? 'text-warning' : 'text-danger');
+                                                $barBg = $p->score >= 70 ? 'bg-success' : ($p->score >= 50 ? 'bg-warning' : 'bg-danger');
+                                                $statusText = $p->score >= 70 ? 'Excellent' : ($p->score >= 50 ? 'Good' : 'Need Practice');
+                                            @endphp
+                                            <div class="d-flex justify-content-between text-muted small mb-1 align-items-end">
+                                                <span>Quiz Score</span>
+                                                <span class="{{ $scoreClass }} fw-bold" style="font-size: 1.35rem; line-height: 1;">{{ $p->score }}%</span>
+                                            </div>
+                                            <div class="progress" style="height: 9px; border-radius: 4px;">
+                                                <div class="progress-bar {{ $barBg }}" role="progressbar" style="width: {{ $p->score }}%; border-radius: 4px;" title="{{ $statusText }}"></div>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
+                                                <span class="{{ $scoreClass }}" style="font-weight: 500;">
+                                                    <i class="bi @if($p->score >= 70) bi-check-circle-fill @elseif($p->score >= 50) bi-exclamation-circle-fill @else bi-x-circle-fill @endif me-1"></i>{{ $statusText }}
+                                                </span>
+                                                <span class="text-secondary">Completed</span>
+                                            </div>
+                                        @endif
+                                    @else
+                                        <div class="d-flex justify-content-between text-muted small mb-1">
+                                            <span>Quiz Score</span>
+                                            <span class="text-secondary">Not Attempted</span>
+                                        </div>
+                                        <div class="progress" style="height: 9px; border-radius: 4px; background-color: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar" style="width: 0%; border-radius: 4px;"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
+                                            <span class="text-muted"><i class="bi bi-circle me-1"></i>Not started</span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="mt-auto pt-3 border-top">
+                            <div>
+                                <!-- Divider -->
+                                <hr class="my-2" style="border-top: 1px solid rgba(0,0,0,0.06); opacity: 1;">
+                                
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text-muted small">
                                         <i class="bi bi-question-circle me-1"></i> {{ $quiz->questions_count }} Question{{ $quiz->questions_count !== 1 ? 's' : '' }}
                                     </span>
-                                    <small class="text-muted">Dynamic</small>
+                                    <!-- Dynamic styled topic badge -->
+                                    <span class="badge px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="{{ $topicStyle }} font-size: 0.72rem;">{{ $quiz->topic ?? 'General' }}</span>
                                 </div>
                                 
                                 @if($quiz->questions_count > 0)
                                     @if($isLocked)
-                                        <button class="btn btn-secondary w-100" style="border-radius: 8px;" disabled>
-                                            <i class="bi bi-lock-fill me-1"></i> Locked
+                                        <button class="btn btn-secondary w-100 rounded-pill py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" disabled>
+                                            <i class="bi bi-lock-fill"></i> Locked
                                         </button>
                                     @elseif($p)
-                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-outline-primary w-100 shadow-sm" style="border-radius: 8px;">
-                                            <i class="bi bi-arrow-repeat me-1"></i> Retake Quiz
+                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-outline-primary w-100 rounded-pill py-2.5 fw-bold d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-arrow-repeat"></i> Retake Quiz
                                         </a>
                                     @else
-                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;">
-                                            <i class="bi bi-play-fill me-1"></i> Take Quiz
+                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-success text-white w-100 py-2.5 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                            Take Quiz <i class="bi bi-arrow-right"></i>
                                         </a>
                                     @endif
                                 @else
-                                    <button class="btn btn-primary w-100 shadow-sm" style="border-radius: 8px;" onclick="alert('There are no available quizzes right now')">
-                                        <i class="bi bi-play-fill me-1"></i> Take Quiz
+                                    <button class="btn btn-success text-white w-100 py-2.5 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="alert('There are no available quizzes right now')">
+                                        Take Quiz <i class="bi bi-arrow-right"></i>
                                     </button>
                                 @endif
                             </div>
                         </div>
                     </div>
-
-                    <!-- Manual Score Modal (Legacy) -->
-                    @if($quiz->questions_count == 0)
-                    <div class="modal fade" id="quizModal{{ $quiz->difficulty }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content border-0 shadow">
-                                <div class="modal-header bg-light border-0">
-                                    <h5 class="modal-title fw-bold">{{ $quiz->title }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="{{ route('student.submit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST">
-                                    <div class="modal-body p-4">
-                                        @csrf
-                                        <div class="alert alert-info d-flex align-items-center mb-3">
-                                            <i class="bi bi-info-circle-fill me-2 fs-5"></i>
-                                            <div>
-                                                This quiz has no online questions. Please take it offline and enter your score here.
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label for="score{{ $quiz->difficulty }}" class="form-label fw-bold">Your Score (0-100)</label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-lg" id="score{{ $quiz->difficulty }}" name="score" min="0" max="100" required placeholder="85">
-                                                <span class="input-group-text bg-light text-muted">/ 100</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary px-4">Submit Score</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             @endforeach
         </div>
@@ -206,7 +193,7 @@
             </div>
         </div>
     @else
-        <div class="alert alert-info text-center py-5" role="alert" style="border-radius: 12px;">
+        <div class="alert alert-info text-center py-5" role="alert" style="border-radius: 16px;">
             <i class="bi bi-info-circle display-4 d-block mb-3 text-info"></i>
             <h4 class="alert-heading fw-bold">No Quizzes in this Folder</h4>
             <p>Your instructor hasn't added any quizzes to the <strong>{{ $topic }}</strong> folder yet.</p>
