@@ -52,13 +52,12 @@
                     $btnClass = '';
                     
                     if ($isContent) {
-                        $fileType = strtoupper($item->file_type ?? 'TEXT');
-                        $typeLabel = '📄 ' . ($fileType === 'TEXT' ? 'Other' : $fileType);
+                        $typeLabel = '📄 Other';
                         $bgStyle = 'border-left: 5px solid #1565c0;';
                         $badgeStyle = 'background-color: #e3f2fd; color: #1565c0;';
                         $btnClass = 'btn-primary';
                     } elseif ($isFlashcard) {
-                        $typeLabel = '🎴 Flashcard Set';
+                        $typeLabel = '🎴 Flashcard';
                         $bgStyle = 'border-left: 5px solid #ff8f00;';
                         $badgeStyle = 'background-color: #fff8e1; color: #ff8f00;';
                         $btnClass = 'btn-warning text-dark';
