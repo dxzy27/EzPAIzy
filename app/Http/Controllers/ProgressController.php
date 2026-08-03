@@ -157,7 +157,8 @@ class ProgressController extends Controller
             'selectedTopic',
             'totalQuizzes',
             'averageScore',
-            'highestScore'
+            'highestScore',
+            'unified'
         ));
     }
 }
