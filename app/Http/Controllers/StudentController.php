@@ -9,7 +9,6 @@ use App\Models\FlashcardProgress;
 use App\Models\Progress;
 use App\Models\Topic;
 use App\Models\Favorite;
-use App\Models\ContentProgress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -211,16 +210,6 @@ class StudentController extends Controller
             ->pluck('content_id')
             ->toArray();
 
-        // Fetch user's content progress map
-        $contentProgressMap = ContentProgress::where('user_id', $user->id)
-            ->whereIn('content_id', $contents->pluck('id'))
-            ->get()
-            ->keyBy('content_id');
-
-        foreach ($contents as $c) {
-            $c->progress = $contentProgressMap->get($c->id);
-        }
-
         return view('student.contents.folder', compact('topic', 'contents', 'favoritedContentIds'));
     }
 
@@ -229,39 +218,7 @@ class StudentController extends Controller
      */
     public function showContent(Content $content)
     {
-        $user = auth()->user();
-        $progress = ContentProgress::where('user_id', $user->id)
-            ->where('content_id', $content->id)
-            ->first();
-
-        return view('teacher.contents.show', compact('content', 'progress'));
-    }
-
-    /**
-     * Update progress of single content item.
-     */
-    public function updateContentProgress(Request $request, Content $content)
-    {
-        $request->validate([
-            'current_page' => 'required|integer|min:1',
-            'total_pages' => 'required|integer|min:1',
-        ]);
-
-        $progress = ContentProgress::updateOrCreate(
-            [
-                'user_id' => auth()->id(),
-                'content_id' => $content->id,
-            ],
-            [
-                'current_page' => $request->current_page,
-                'total_pages' => $request->total_pages,
-            ]
-        );
-
-        return response()->json([
-            'success' => true,
-            'progress' => $progress
-        ]);
+        return view('teacher.contents.show', compact('content')); // Reuses show template
     }
 
     /**

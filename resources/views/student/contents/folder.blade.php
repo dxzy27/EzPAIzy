@@ -57,31 +57,6 @@
                                     <span>📖</span> <span>{{ strtoupper($content->file_type ?? 'TEXT') }}</span>
                                 </div>
                             </div>
-
-                            <!-- Page Tracking / Progress -->
-                            <div class="p-3 bg-light rounded-3 border border-light-subtle d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="fs-4">📖</span>
-                                    <div>
-                                        <div class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Last Read</div>
-                                        <div class="fw-bold text-dark small">
-                                            @if($content->progress)
-                                                Page {{ $content->progress->current_page }} of {{ $content->progress->total_pages }}
-                                            @else
-                                                Not started yet
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                @if($content->progress)
-                                    @php
-                                        $percent = min(100, max(0, round(($content->progress->current_page / $content->progress->total_pages) * 100)));
-                                    @endphp
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">{{ $percent }}% done</span>
-                                @else
-                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2.5 py-1">0%</span>
-                                @endif
-                            </div>
                         </div>
 
                         <!-- Card Footer -->
@@ -109,11 +84,7 @@
                             </span>
                             
                             <a href="{{ route('student.contents.show', $content) }}" class="btn btn-sm btn-primary px-3 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center gap-1 py-2">
-                                @if($content->progress)
-                                    Continue Reading <i class="bi bi-arrow-right"></i>
-                                @else
-                                    Open Material <i class="bi bi-arrow-right"></i>
-                                @endif
+                                Open Material <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
                     </div>
