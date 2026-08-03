@@ -1,8 +1,8 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container mt-5">
-    <div class="row mb-4">
+<div class="container mt-3">
+    <div class="row mb-3">
         <div class="col-md-12 text-center">
             <h2>My Profile</h2>
         </div>
@@ -26,51 +26,51 @@
         <!-- Profile and Information combined into a single column -->
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body text-center"> <!-- Center everything here -->
-                    <div class="mb-3">
+                <div class="card-body text-center py-3"> <!-- Center everything here and reduce padding -->
+                    <div class="mb-2">
                         <div class="avatar-circle text-white" style="width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto; background-color: {{ $user->avatar_color }};">
                             {{ substr($user->name, 0, 1) }}
                         </div>
                     </div>
                     <h5>{{ $user->name }}</h5>
-                    <p class="text-muted">
+                    <p class="text-muted mb-2">
                         @if ($user->isTeacher())
                             <span class="badge bg-primary">Teacher</span>
                         @else
                             <span class="badge bg-success">Student</span>
                         @endif
                     </p>
-                    <hr>
-                    <p class="text-muted small">Member since {{ $user->created_at->format('M d, Y') }}</p>
+                    <hr class="my-2">
+                    <p class="text-muted small mb-3">Member since {{ $user->created_at->format('M d, Y') }}</p>
 
-                    <!-- Profile Information -->
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Full Name</label>
+                    <!-- Profile Information - Reduced margin to mb-2 for a compact layout -->
+                    <div class="mb-2">
+                        <label class="form-label text-muted mb-0">Full Name</label>
                         <h6>{{ $user->name }}</h6>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Email Address</label>
+                    <div class="mb-2">
+                        <label class="form-label text-muted mb-0">Email Address</label>
                         <h6>{{ $user->email }}</h6>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Phone Number</label>
+                    <div class="mb-2">
+                        <label class="form-label text-muted mb-0">Phone Number</label>
                         <h6>{{ $user->phone_number ?? 'Not provided' }}</h6>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Class</label>
+                    <div class="mb-2">
+                        <label class="form-label text-muted mb-0">Class</label>
                         <h6>{{ $user->class_name ?? 'Not assigned' }}</h6>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Address</label>
+                    <div class="mb-2">
+                        <label class="form-label text-muted mb-0">Address</label>
                         <h6>{{ $user->address ?? 'Not provided' }}</h6>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Account Type</label>
+                    <div class="mb-2">
+                        <label class="form-label text-muted mb-0">Account Type</label>
                         <h6>
                             @if ($user->isTeacher())
                                 <span class="badge bg-primary">Teacher</span>
@@ -82,29 +82,29 @@
 
                     <!-- Learning Statistics (for students) -->
                     @if ($user->isStudent())
-                        <div class="card mt-4">
-                            <div class="card-header bg-light">
+                        <div class="card mt-3">
+                            <div class="card-header bg-light py-2">
                                 <h5 class="mb-0">Learning Statistics</h5>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body py-3">
                                 <div class="row">
                                     <div class="col-md-4 text-center">
-                                        <h3 class="text-primary">{{ $user->progress()->count() }}</h3>
-                                        <p class="text-muted">Quizzes Taken</p>
+                                        <h3 class="text-primary fw-bold" style="font-size: 38px;">{{ $user->progress()->count() }}</h3>
+                                        <p class="text-muted" style="font-size: 16px;">Quizzes Taken</p>
                                     </div>
                                     <div class="col-md-4 text-center">
-                                        <h3 class="text-success">
+                                        <h3 class="text-success fw-bold" style="font-size: 38px;">
                                             @if ($user->progress()->count() > 0)
                                                 {{ round($user->progress()->avg('score'), 2) }}%
                                             @else
                                                 N/A
                                             @endif
                                         </h3>
-                                        <p class="text-muted">Average Score</p>
+                                        <p class="text-muted" style="font-size: 16px;">Average Score</p>
                                     </div>
                                     <div class="col-md-4 text-center">
-                                        <h3 class="text-info">{{ $user->favorites()->count() }}</h3>
-                                        <p class="text-muted">Saved Materials</p>
+                                        <h3 class="text-info fw-bold" style="font-size: 38px;">{{ $user->favorites()->count() }}</h3>
+                                        <p class="text-muted" style="font-size: 16px;">Saved Materials</p>
                                     </div>
                                 </div>
                             </div>
