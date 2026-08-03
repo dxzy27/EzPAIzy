@@ -6,7 +6,7 @@
     <div class="row mb-3 align-items-center">
         <div class="col-md-12">
             <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Dashboard">
+                <a href="{{ url()->previous() === url()->current() ? route('student.dashboard') : url()->previous() }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
                     <i class="bi bi-arrow-left fs-5"></i>
                 </a>
                 <div>
