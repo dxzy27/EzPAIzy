@@ -95,7 +95,7 @@
                                 </div>
                                 
                                 <!-- Title -->
-                                <h5 class="card-title fw-bold text-dark mb-2" style="font-size: 1.05rem; line-height: 1.4;">{{ $item->title }}</h5>
+                                <h5 class="card-title fw-extrabold text-dark mb-2" style="font-size: 1.15rem; line-height: 1.4; font-weight: 800;">{{ $item->title }}</h5>
                                 
                                 <!-- Inline Metadata Details -->
                                 <div class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.5;">
@@ -121,9 +121,12 @@
                                 </div>
                             </div>
                             
+                            <!-- Subtle Divider -->
+                            <hr class="my-2" style="border-top: 1px solid rgba(0,0,0,0.06); opacity: 1;">
+                            
                             <!-- Primary Action Button -->
-                            <div class="d-grid mt-2">
-                                <a href="{{ $viewRoute }}" class="btn btn-sm {{ $btnClass }} py-2 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-1" style="font-size: 0.85rem;">
+                            <div class="d-grid">
+                                <a href="{{ $viewRoute }}" class="btn btn-sm {{ $btnClass }} rounded-pill fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-1" style="padding-top: 0.35rem; padding-bottom: 0.35rem; font-size: 0.85rem;">
                                     @if($isQuiz)
                                         Take Quiz <i class="bi bi-arrow-right"></i>
                                     @else
