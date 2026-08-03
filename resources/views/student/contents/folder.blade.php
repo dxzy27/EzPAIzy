@@ -60,7 +60,7 @@
                         </div>
 
                         <!-- Card Footer -->
-                        <div class="card-footer bg-white border-0 pt-0 pb-4 px-4 d-flex justify-content-between align-items-center">
+                        <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4 d-flex justify-content-between align-items-center">
                             @php
                                 $fileType = strtoupper($content->file_type ?? 'TEXT');
                                 $badgeStyle = '';
