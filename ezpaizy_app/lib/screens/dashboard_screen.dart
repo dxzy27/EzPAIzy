@@ -368,7 +368,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Image.asset(
-                                        'assets/images/logo.png',
+                                        'assets/images/newlogo.png',
                                         height: 40,
                                         errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
                                       ),

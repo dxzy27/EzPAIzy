@@ -544,29 +544,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             width: 1,
           ),
         ),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/images/logo.png',
-              height: 40,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.school, color: Colors.white, size: 32),
-            ),
-            const SizedBox(width: 8),
-            Image.asset(
-              'assets/images/EzPAIzy.png',
-              height: 24,
+        title: Image.asset(
+          'assets/images/newlogo.png',
+          height: 40,
+          errorBuilder: (context, error, stackTrace) => const Text(
+            'EzPAIzy',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
               color: Colors.white,
-              errorBuilder: (context, error, stackTrace) => const Text(
-                'EzPAIzy',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              fontFamily: 'Outfit',
             ),
-          ],
+          ),
         ),
         actions: [
           Padding(
