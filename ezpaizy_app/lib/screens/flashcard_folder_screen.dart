@@ -360,16 +360,16 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
                                         ),
                                         const SizedBox(height: 12),
 
-                                        // Status Pills
-                                        Wrap(
-                                          spacing: 4,
-                                          runSpacing: 4,
-                                          children: [
-                                            _buildBadge('• $newCount New', Colors.blue, const Color(0xFFEFF6FF)),
-                                            _buildBadge('• $learning Learn', Colors.orange, const Color(0xFFFFF7ED)),
-                                            _buildBadge('• $mastered Master', Colors.green, const Color(0xFFF0FDF4)),
-                                          ],
-                                        ),
+                                         // Status Pills
+                                         Wrap(
+                                           spacing: 4,
+                                           runSpacing: 4,
+                                           children: [
+                                             _buildBadge('$newCount New', const Color(0xFF64748B), const Color(0xFFF1F5F9)),
+                                             _buildBadge('Learning $learning', const Color(0xFFEA580C), const Color(0xFFFFF7ED)),
+                                             _buildBadge('Mastered $mastered', const Color(0xFF16A34A), const Color(0xFFF0FDF4)),
+                                           ],
+                                         ),
                                         const SizedBox(height: 12),
 
                                         // Open button
