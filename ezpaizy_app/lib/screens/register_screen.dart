@@ -17,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passCtrl = TextEditingController();
   final _confirmPassCtrl = TextEditingController();
   
+  String? _role;
   String? _className;
   List<String> _classes = [];
   bool _isFetchingClasses = true;
@@ -59,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passCtrl.text;
     final confirmPassword = _confirmPassCtrl.text;
 
-    if (name.isEmpty || email.isEmpty || phone.isEmpty || address.isEmpty || _className == null || password.isEmpty || confirmPassword.isEmpty) {
+    if (name.isEmpty || email.isEmpty || phone.isEmpty || address.isEmpty || _role == null || _className == null || password.isEmpty || confirmPassword.isEmpty) {
       setState(() {
         _errorMessage = 'All fields are required.';
       });
@@ -98,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: email,
         phoneNumber: phone,
         address: address,
-        role: 'student',
+        role: _role!,
         className: _className!,
         password: password,
         passwordConfirmation: confirmPassword,
@@ -274,7 +275,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         borderRadius: BorderRadius.circular(20),
         border: const Border(
           top: BorderSide(
-            color: Color(0xFF60A5FA),
+            color: Color(0xFF14B8A6), // Teal accent border top matching web
             width: 5,
           ),
         ),
@@ -285,7 +286,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             offset: const Offset(0, 16),
           ),
           BoxShadow(
-            color: const Color(0xFF60A5FA).withOpacity(0.15),
+            color: const Color(0xFF14B8A6).withOpacity(0.15),
             blurRadius: 60,
           ),
         ],
@@ -296,20 +297,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: const Color(0xFFF0FDFA), // Light teal background
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.person_add, color: Color(0xFF3B82F6), size: 14),
+                Icon(Icons.person_add, color: Color(0xFF0D9488), size: 14),
                 SizedBox(width: 6),
                 Text(
                   'SIGN UP',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF3B82F6),
+                    color: Color(0xFF0D9488), // Teal text
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -340,7 +341,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 TextSpan(
                   text: 'Account',
-                  style: TextStyle(color: Color(0xFF3B82F6)),
+                  style: TextStyle(color: Color(0xFF0D9488)), // Teal word
                 ),
               ],
             ),
@@ -389,6 +390,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
             hintText: 'Home Address',
             prefixIcon: Icons.home_outlined,
             keyboardType: TextInputType.streetAddress,
+          ),
+          const SizedBox(height: 16),
+
+          // Register As dropdown
+          _CustomDropdownField(
+            value: _role,
+            hintText: 'Register As...',
+            items: const ['student', 'teacher'],
+            displayItems: const ['Student', 'Teacher'],
+            prefixIcon: Icons.badge_outlined,
+            onChanged: (val) {
+              if (val != null) {
+                setState(() => _role = val);
+              }
+            },
           ),
           const SizedBox(height: 16),
 
@@ -465,7 +481,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _register,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF3B82F6),
+                backgroundColor: const Color(0xFF14B8A6), // Teal background matching web
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -513,7 +529,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextSpan(
                       text: 'Sign in here',
                       style: TextStyle(
-                        color: Color(0xFF3B82F6),
+                        color: Color(0xFF0D9488), // Teal redirect link matching web
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -592,6 +608,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+            opacity: 0.12, // Subtle Islamic geometric watermark pattern matching web
+          ),
           gradient: LinearGradient(
             colors: [
               Color(0xFF0C4150),

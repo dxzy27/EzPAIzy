@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  String _role = 'student';
   bool _obscure = true;
   bool _keepSignedIn = false;
 
@@ -274,6 +275,21 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           const SizedBox(height: 16),
 
+          // Login As dropdown
+          _CustomDropdownField(
+            value: _role,
+            hintText: 'Login As...',
+            items: const ['student', 'teacher', 'admin'],
+            displayItems: const ['Student', 'Teacher', 'Administrator'],
+            prefixIcon: Icons.badge_outlined,
+            onChanged: (val) {
+              if (val != null) {
+                setState(() => _role = val);
+              }
+            },
+          ),
+          const SizedBox(height: 16),
+
           // Keep me signed in & Forgot password
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -473,6 +489,11 @@ class _LoginScreenState extends State<LoginScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+            opacity: 0.12, // Subtle Islamic geometric watermark pattern matching web
+          ),
           gradient: LinearGradient(
             colors: [
               Color(0xFF0C4150),
@@ -554,6 +575,72 @@ class _CustomInputField extends StatelessWidget {
           suffixIcon: suffixIcon,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        ),
+      ),
+    );
+  }
+}
+
+class _CustomDropdownField extends StatelessWidget {
+  final String? value;
+  final String hintText;
+  final List<String> items;
+  final List<String> displayItems;
+  final IconData prefixIcon;
+  final ValueChanged<String?> onChanged;
+
+  const _CustomDropdownField({
+    required this.value,
+    required this.hintText,
+    required this.items,
+    required this.displayItems,
+    required this.prefixIcon,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: value,
+          isExpanded: true,
+          hint: Row(
+            children: [
+              Icon(prefixIcon, color: const Color(0xFF94A3B8), size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  hintText,
+                  style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF94A3B8)),
+          onChanged: onChanged,
+          items: List.generate(items.length, (index) {
+            return DropdownMenuItem<String>(
+              value: items[index],
+              child: Row(
+                children: [
+                  Icon(prefixIcon, color: const Color(0xFF94A3B8), size: 18),
+                  const SizedBox(width: 8),
+                  Text(
+                    displayItems[index],
+                    style: const TextStyle(fontSize: 14, color: Color(0xFF334155)),
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
