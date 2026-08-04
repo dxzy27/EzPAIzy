@@ -111,7 +111,7 @@
                                     @if($p)
                                         @if(($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') && $p->status === 'pending')
                                             <div class="d-flex justify-content-between text-muted small mb-2 align-items-center">
-                                                <span class="fw-bold">Best Score</span>
+                                                <span class="fw-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">Status</span>
                                                 <span class="badge bg-warning bg-opacity-10 text-warning px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.7rem;">
                                                     <i class="bi bi-clock-history me-1"></i> Awaiting grading
                                                 </span>
@@ -126,13 +126,13 @@
                                                 $statusText = $p->score >= 70 ? 'Excellent' : ($p->score >= 50 ? 'Good' : 'Need Practice');
                                             @endphp
                                             <div class="d-flex justify-content-between text-muted small mb-2 align-items-center">
-                                                <span class="fw-bold">Best Score</span>
+                                                <span class="fw-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">Status</span>
                                                 <span class="badge bg-success bg-opacity-10 text-success px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.7rem;">
                                                     <i class="bi bi-check-circle-fill me-1"></i> Completed
                                                 </span>
                                             </div>
                                             <div class="d-flex justify-content-between align-items-end mb-1">
-                                                <span class="text-muted small">Score percentage</span>
+                                                <span class="text-muted small fw-bold">Best Score</span>
                                                 <span class="{{ $scoreClass }} fw-bold" style="font-size: 1.35rem; line-height: 1;">{{ $p->score }}%</span>
                                             </div>
                                             <div class="progress" style="height: 9px; border-radius: 4px;">
@@ -141,7 +141,7 @@
                                         @endif
                                     @else
                                         <div class="d-flex justify-content-between text-muted small mb-2 align-items-center">
-                                            <span class="fw-bold">Best Score</span>
+                                            <span class="fw-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">Status</span>
                                             <span class="badge bg-secondary bg-opacity-10 text-secondary px-2.5 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.7rem;">
                                                 <i class="bi bi-dash-circle me-1"></i> Not Started
                                             </span>
