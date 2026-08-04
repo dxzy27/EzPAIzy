@@ -447,7 +447,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                   text,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 20, // 20px font
+                    fontSize: 22, // 22px matching web 1.5rem scaling
                     fontWeight: FontWeight.bold, // Bold text
                     color: Color(0xFF0F172A),
                     fontFamily: 'Outfit',
@@ -458,6 +458,13 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
             ),
           ),
 
+          Divider(
+            color: const Color(0xFF0F172A).withOpacity(0.15), // Matching bottom divider
+            height: 1,
+            thickness: 1,
+          ),
+          const SizedBox(height: 12),
+
           // Bottom Hint
           Center(
             child: Text(
@@ -465,7 +472,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold, // Bold footer hint
-                color: Color(0xFF94A3B8),
+                color: Color(0xFF64748B), // Slate matching header
                 fontFamily: 'Outfit',
               ),
             ),
