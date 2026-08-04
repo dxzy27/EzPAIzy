@@ -176,7 +176,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           ),
         ),
         child: Container(
-          color: const Color(0xFFF8FAFC).withOpacity(0.6),
+          color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
             child: Column(
               children: [
