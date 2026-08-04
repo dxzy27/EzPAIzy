@@ -196,7 +196,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                   maxCrossAxisExtent: 280,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16,
-                                  mainAxisExtent: 250,
+                                  mainAxisExtent: 265,
                                 ),
                                 itemCount: filteredQuizzes.length,
                                 itemBuilder: (context, i) {
@@ -290,7 +290,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                             ),
                                             const Icon(
                                               Icons.star_border,
-                                              color: Color(0xFFCBD5E1),
+                                              color: Color(0xFFFFC107),
                                               size: 20,
                                             ),
                                           ],
@@ -308,6 +308,19 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+
+                                        // Teacher Row
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.person, size: 12, color: Color(0xFF94A3B8)),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              'By: ${q['teacher']?['name'] ?? 'Teacher'}',
+                                              style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(height: 12),
 
@@ -387,6 +400,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                         ],
 
                                         const Spacer(),
+                                        const Divider(height: 16, color: Color(0xFFF1F5F9), thickness: 1),
 
                                         // Stats Row (Questions and Category pill)
                                         Row(
