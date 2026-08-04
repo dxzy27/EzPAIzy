@@ -1,62 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import 'package:go_router/go_router.dart';
 import '../services/api_service.dart';
-import '../app/theme.dart';
-
-enum FlashcardMode { read, revision }
 
 class FlashcardPracticeScreen extends StatefulWidget {
   final int setId;
   const FlashcardPracticeScreen({super.key, required this.setId});
 
   @override
-  State<FlashcardPracticeScreen> createState() =>
-      _FlashcardPracticeScreenState();
+  State<FlashcardPracticeScreen> createState() => _FlashcardPracticeScreenState();
 }
 
 class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     with SingleTickerProviderStateMixin {
-  // ── Data ──────────────────────────────────────────────────────────────────
   Map<String, dynamic>? set;
   List<dynamic> allCards = [];
   bool loading = true;
 
-  // ── State ─────────────────────────────────────────────────────────────────
-  FlashcardMode mode = FlashcardMode.read;
   int currentIndex = 0;
   bool isFlipped = false;
+  bool isSubmitting = false;
 
-  // Revision-mode substates
-  bool isAnswerRevealed = false; // placeholder → revealed
-  bool wasCorrect = false; // typed correctly vs gave up
-
-  // ── Animation ─────────────────────────────────────────────────────────────
   late AnimationController _flipCtrl;
   late Animation<double> _flipAnim;
-
-  // ── Typing ────────────────────────────────────────────────────────────────
-  final TextEditingController _typeCtrl = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-  String _placeholderText = '';
-
-  // ─────────────────────────────────────────────────────────────────────────
 
   @override
   void initState() {
     super.initState();
     _flipCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 450));
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
     _flipAnim = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _flipCtrl, curve: Curves.easeInOut));
+      CurvedAnimation(parent: _flipCtrl, curve: Curves.easeInOut),
+    );
     _load();
   }
 
   @override
   void dispose() {
     _flipCtrl.dispose();
-    _typeCtrl.dispose();
-    _focusNode.dispose();
     super.dispose();
   }
 
@@ -73,615 +55,411 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     }
   }
 
-  // ── Mode switching ────────────────────────────────────────────────────────
-  void _setMode(FlashcardMode m) {
-    setState(() {
-      mode = m;
-      currentIndex = 0;
-      _resetCard();
-    });
-  }
-
-  void _resetCard() {
-    isFlipped = false;
-    isAnswerRevealed = false;
-    wasCorrect = false;
-    _typeCtrl.clear();
-    _placeholderText = '';
-    _flipCtrl.reset();
-  }
-
-  // ── Flip ──────────────────────────────────────────────────────────────────
   void _flip() {
-    if (mode == FlashcardMode.read) {
-      // Read mode: toggle freely
-      if (isFlipped) {
-        _flipCtrl.reverse();
-      } else {
-        _flipCtrl.forward();
-      }
-      setState(() => isFlipped = !isFlipped);
+    if (isFlipped) {
+      _flipCtrl.reverse();
     } else {
-      // Revision mode: only flip once; then lock
-      if (!isFlipped) {
-        _flipCtrl.forward();
+      _flipCtrl.forward();
+    }
+    setState(() => isFlipped = !isFlipped);
+  }
+
+  Future<void> _submitReview(int quality) async {
+    if (isSubmitting) return;
+    setState(() => isSubmitting = true);
+
+    final card = allCards[currentIndex];
+    try {
+      await ApiService.submitFlashcardReview(card['id'], quality);
+
+      if (currentIndex < allCards.length - 1) {
         setState(() {
-          isFlipped = true;
-          _buildPlaceholder();
+          currentIndex++;
+          isFlipped = false;
         });
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted && !isAnswerRevealed) _focusNode.requestFocus();
-        });
-      }
-    }
-  }
-
-  void _buildPlaceholder() {
-    final card = allCards[currentIndex];
-    final definition = (card['definition'] as String? ?? '');
-    _placeholderText =
-        definition.split(' ').map((w) => '_' * w.length).join('   ');
-  }
-
-  // ── Typing ────────────────────────────────────────────────────────────────
-  void _onType(String val) {
-    final card = allCards[currentIndex];
-    final correct = (card['definition'] as String? ?? '').trim().toLowerCase();
-    final definition = (card['definition'] as String? ?? '');
-
-    // Build live placeholder (fill letters in as typed)
-    String display = '';
-    for (int i = 0; i < definition.length; i++) {
-      if (i < val.length) {
-        display += definition[i] == ' ' ? '   ' : val[i];
+        _flipCtrl.reset();
       } else {
-        display += definition[i] == ' ' ? '   ' : '_';
+        if (mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) => AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: const Text('All Done! 🎉', style: TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold)),
+              content: const Text(
+                "You've reviewed all flashcards in this set. Great job!",
+                style: TextStyle(fontFamily: 'Outfit'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    context.pop();
+                  },
+                  child: const Text('Back to Sets', style: TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+          );
+        }
       }
-    }
-
-    setState(() => _placeholderText = display);
-
-    if (val.trim().toLowerCase() == correct) {
-      _focusNode.unfocus();
-      setState(() {
-        isAnswerRevealed = true;
-        wasCorrect = true;
-      });
-      // Auto-submit high score
-      ApiService.submitFlashcardReview(card['id'], 5);
+    } catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to submit review')),
+      );
+    } finally {
+      setState(() => isSubmitting = false);
     }
   }
 
-  void _giveUp() {
-    final card = allCards[currentIndex];
-    _focusNode.unfocus();
-    setState(() {
-      isAnswerRevealed = true;
-      wasCorrect = false;
-    });
-    // Auto-submit low score
-    ApiService.submitFlashcardReview(card['id'], 0);
-  }
-
-  void _tryAgain() {
-    setState(() {
-      isAnswerRevealed = false;
-      wasCorrect = false;
-      _typeCtrl.clear();
-      _buildPlaceholder();
-    });
-    _focusNode.requestFocus();
-  }
-
-  // ── Navigation ────────────────────────────────────────────────────────────
-  void _next() {
-    if (currentIndex < allCards.length - 1) {
-      setState(() {
-        currentIndex++;
-        _resetCard();
-      });
-    }
-  }
-
-  void _prev() {
-    if (currentIndex > 0) {
-      setState(() {
-        currentIndex--;
-        _resetCard();
-      });
-    }
-  }
-
-  void _shuffle() {
-    setState(() {
-      allCards.shuffle();
-      currentIndex = 0;
-      _resetCard();
-    });
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final auth = context.read<AuthProvider>();
-    final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
-
     if (loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
+
     if (set == null || allCards.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: Text(set?['title'] ?? 'Flashcards')),
-        body: const Center(child: Text('No cards in this set.')),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg1.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Container(
+            color: const Color(0xFFF1F5F9).withOpacity(0.15),
+            child: SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.menu_book, size: 64, color: Color(0xFFCBD5E1)),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'No cards in this set.',
+                      style: TextStyle(color: Color(0xFF64748B), fontFamily: 'Outfit', fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => context.pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0F9D58),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: const Text('Go Back', style: TextStyle(fontFamily: 'Outfit')),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       );
     }
 
     final card = allCards[currentIndex];
-    final isRead = mode == FlashcardMode.read;
-
-    Widget cardWidget = SizedBox(
-      height: 320,
-      child: GestureDetector(
-        onTap: _flip,
-        child: AnimatedBuilder(
-          animation: _flipAnim,
-          builder: (_, _) {
-            final angle = _flipAnim.value * 3.14159;
-            final showFront = _flipAnim.value <= 0.5;
-            return Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
-                ..rotateY(angle),
-              child: showFront
-                  ? _buildFront(card)
-                  : Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()..rotateY(3.14159),
-                      child: _buildBack(card),
-                    ),
-            );
-          },
-        ),
-      ),
-    );
-
-    if (isKinesthetic && !isRead) {
-      cardWidget = Dismissible(
-        key: ValueKey<int>(card['id']),
-        direction: DismissDirection.horizontal,
-        onDismissed: (direction) {
-          final cardId = card['id'];
-          if (direction == DismissDirection.endToStart) {
-            // Swiped Left: Still learning (quality = 1)
-            ApiService.submitFlashcardReview(cardId, 1);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Marked: Still Learning 🔴'), duration: Duration(milliseconds: 700)),
-            );
-          } else {
-            // Swiped Right: Know (quality = 5)
-            ApiService.submitFlashcardReview(cardId, 5);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Marked: Know 🟢'), duration: Duration(milliseconds: 700)),
-            );
-          }
-          _next();
-        },
-        background: Container(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.only(left: 20),
-          color: Colors.green.withOpacity(0.2),
-          child: const Icon(Icons.check_circle, color: Colors.green, size: 50),
-        ),
-        secondaryBackground: Container(
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 20),
-          color: Colors.red.withOpacity(0.2),
-          child: const Icon(Icons.cancel, color: Colors.red, size: 50),
-        ),
-        child: cardWidget,
-      );
-    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(set!['title'] ?? 'Flashcards'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ── Mode Toggle ────────────────────────────────────────────────
-            if (isKinesthetic) ...[
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _modeBtn(
-                      label: 'Read Mode',
-                      icon: Icons.menu_book,
-                      selected: isRead,
-                      onTap: () => _setMode(FlashcardMode.read),
-                      selectedColor: Colors.blue,
-                    ),
-                    _modeBtn(
-                      label: 'Revision Mode',
-                      icon: Icons.psychology,
-                      selected: !isRead,
-                      onTap: () => _setMode(FlashcardMode.revision),
-                      selectedColor: AppTheme.primary,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // ── Counter Badge ──────────────────────────────────────────────
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-              decoration: BoxDecoration(
-                color: isRead ? Colors.grey.shade600 : AppTheme.primary,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '${isRead ? "Card" : "Reviewing Card"} ${currentIndex + 1} of ${allCards.length}',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // ── Flashcard ──────────────────────────────────────────────────
-            cardWidget,
-            const SizedBox(height: 20),
-            // ── Below-card controls ────────────────────────────────────────
-            if (isRead) ...[
-              // Read mode: grading buttons when flipped, or swipe hint when not flipped
-              if (!isFlipped)
-                const Text('Think of the answer, then tap the card to flip it.',
-                    style: TextStyle(color: Colors.grey, fontSize: 14))
-              else ...[
-                const Text(
-                  'How well did you remember this?',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          final cardId = card['id'];
-                          try {
-                            await ApiService.submitFlashcardReview(cardId, 1);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Marked: Still Learning 🔴'), duration: Duration(milliseconds: 700)),
-                            );
-                            _next();
-                          } catch (_) {}
-                        },
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        label: const Text('Still learning', style: TextStyle(color: Colors.red)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.shade50,
-                          side: BorderSide(color: Colors.red.shade200),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          final cardId = card['id'];
-                          try {
-                            await ApiService.submitFlashcardReview(cardId, 5);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Marked: Know 🟢'), duration: Duration(milliseconds: 700)),
-                            );
-                            _next();
-                          } catch (_) {}
-                        },
-                        icon: const Icon(Icons.check, color: Colors.green),
-                        label: const Text('Know', style: TextStyle(color: Colors.green)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade50,
-                          side: BorderSide(color: Colors.green.shade200),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ] else ...[
-              // Revision mode: typing area or grading area
-              if (!isFlipped)
-                Text(
-                  'Think of the answer, then tap the card to flip and type it.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.orange.shade700,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 14),
-                ),
-              if (isFlipped && !isAnswerRevealed) ...[
-                TextField(
-                  controller: _typeCtrl,
-                  focusNode: _focusNode,
-                  onChanged: _onType,
-                  textAlign: TextAlign.center,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  decoration: InputDecoration(
-                    hintText: 'Type the exact answer...',
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                OutlinedButton(
-                  onPressed: _giveUp,
-                  child: const Text('I give up, show answer'),
-                ),
-              ],
-              if (isAnswerRevealed) ...[
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: wasCorrect
-                        ? Colors.green.shade50
-                        : Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        color: wasCorrect
-                            ? Colors.green.shade200
-                            : Colors.orange.shade200),
-                  ),
-                  child: Text(
-                    wasCorrect
-                        ? '✅ Perfect! Click Next when ready.'
-                        : '⚠️ Answer Revealed. Click Next when ready.',
-                    style: TextStyle(
-                      color: wasCorrect
-                          ? Colors.green.shade800
-                          : Colors.orange.shade800,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ElevatedButton.icon(
-                  onPressed: _tryAgain,
-                  icon: const Icon(Icons.refresh, size: 18),
-                  label: const Text('Try Again'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    foregroundColor: Colors.black87,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                ),
-              ],
-            ],
-            const SizedBox(height: 20),
-
-            // ── Navigation Row ─────────────────────────────────────────────
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.15),
+          child: SafeArea(
+            child: Column(
               children: [
-                ElevatedButton.icon(
-                  onPressed: currentIndex > 0 ? _prev : null,
-                  icon: const Icon(Icons.chevron_left),
-                  label: const Text('Previous'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade600,
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: Colors.grey.shade200,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                // Header Area matching Web layout
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Exit Study Button
+                      InkWell(
+                        onTap: () => context.pop(),
+                        borderRadius: BorderRadius.circular(8),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          child: Row(
+                            children: [
+                              Icon(Icons.arrow_back, size: 16, color: Color(0xFF64748B)),
+                              SizedBox(width: 4),
+                              Text(
+                                'Exit Study',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF64748B),
+                                  fontFamily: 'Outfit',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Set Title
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            set!['title'] ?? '',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A),
+                              fontFamily: 'Outfit',
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+
+                      // Progress indicator
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${currentIndex + 1} / ${allCards.length}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF64748B),
+                              fontFamily: 'Outfit',
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 60,
+                            height: 3,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(2),
+                              child: LinearProgressIndicator(
+                                value: (currentIndex + 1) / allCards.length,
+                                backgroundColor: const Color(0xFFE2E8F0),
+                                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF3B82F6)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                ElevatedButton.icon(
-                  onPressed: currentIndex < allCards.length - 1 ? _next : null,
-                  icon: const Text('Next'),
-                  label: const Icon(Icons.chevron_right),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade600,
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: Colors.grey.shade200,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+
+                const Spacer(flex: 2),
+
+                // Card Widget with Flip Animation
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: SizedBox(
+                    height: 320,
+                    width: double.infinity,
+                    child: GestureDetector(
+                      onTap: _flip,
+                      child: AnimatedBuilder(
+                        animation: _flipAnim,
+                        builder: (_, __) {
+                          final angle = _flipAnim.value * 3.14159;
+                          final showFront = _flipAnim.value <= 0.5;
+                          return Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 2, 0.0015)
+                              ..rotateY(angle),
+                            child: showFront
+                                ? _buildCardFace(
+                                    label: 'QUESTION',
+                                    text: card['term'] ?? '',
+                                    hint: 'Click anywhere to reveal',
+                                  )
+                                : Transform(
+                                    alignment: Alignment.center,
+                                    transform: Matrix4.identity()..rotateY(3.14159),
+                                    child: _buildCardFace(
+                                      label: 'ANSWER',
+                                      text: card['definition'] ?? '',
+                                      hint: 'Click anywhere to hide',
+                                    ),
+                                  ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
+
+                const Spacer(flex: 2),
+
+                // Rating & Feedback controls underneath (Fades/Enables when flipped)
+                AnimatedOpacity(
+                  opacity: isFlipped ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: IgnorePointer(
+                    ignoring: !isFlipped,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'How well did you remember this?',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF475569),
+                              fontFamily: 'Outfit',
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Red X Button
+                              GestureDetector(
+                                onTap: () => _submitReview(1),
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.02),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 24),
+                              // Green Check Button
+                              GestureDetector(
+                                onTap: () => _submitReview(5),
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.02),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                const Spacer(flex: 3),
               ],
             ),
-
-            // ── Shuffle (Read Mode only) ───────────────────────────────────
-            if (isRead) ...[
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: _shuffle,
-                  icon: const Icon(Icons.shuffle, size: 18),
-                  label: const Text('Shuffle Cards'),
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                ),
-              ),
-            ],
-            const SizedBox(height: 20),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  // ── Card faces ────────────────────────────────────────────────────────────
-  Widget _buildFront(Map<String, dynamic> card) {
+  // Builder helper for clean card matching web mockup
+  Widget _buildCardFace({
+    required String label,
+    required String text,
+    required String hint,
+  }) {
     return Container(
-      width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF1ABC9C),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
-              color: Colors.teal.withOpacity(0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8))
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('TERM',
-                style: TextStyle(
-                    color: Colors.white60,
-                    fontSize: 11,
-                    letterSpacing: 2,
-                    fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Center(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Label
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF64748B),
+              letterSpacing: 1.0,
+              fontFamily: 'Outfit',
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Divider(color: Color(0xFFF1F5F9), height: 1, thickness: 1),
+          
+          // Question or Answer Text
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
                 child: Text(
-                  card['term'] ?? '',
+                  text,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      height: 1.4),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF0F172A),
+                    fontFamily: 'Outfit',
+                    height: 1.5,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            const Text('☝ Tap to flip',
-                style: TextStyle(color: Colors.white60, fontSize: 12)),
-          ],
-        ),
-      ),
-    );
-  }
+          ),
 
-  Widget _buildBack(Map<String, dynamic> card) {
-    final isRevision = mode == FlashcardMode.revision;
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: isAnswerRevealed
-            ? const Color(0xFF16A085)
-            : (isRevision ? const Color(0xFF2C3E7A) : const Color(0xFF16A085)),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.teal.withOpacity(0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8))
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              isRevision ? card['term'] ?? '' : 'DEFINITION',
+          // Bottom Hint
+          Center(
+            child: Text(
+              hint,
               style: const TextStyle(
-                  color: Colors.white60,
-                  fontSize: 11,
-                  letterSpacing: 2,
-                  fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Center(
-                child: isRevision && !isAnswerRevealed
-                    ? Text(
-                        _placeholderText,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'monospace',
-                          letterSpacing: 4,
-                        ),
-                      )
-                    : Text(
-                        card['definition'] ?? '',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            height: 1.4),
-                      ),
+                fontSize: 11,
+                color: Color(0xFF94A3B8),
+                fontFamily: 'Outfit',
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Mode toggle button ────────────────────────────────────────────────────
-  Widget _modeBtn({
-    required String label,
-    required IconData icon,
-    required bool selected,
-    required VoidCallback onTap,
-    required Color selectedColor,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected ? selectedColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            Icon(icon,
-                color: selected ? Colors.white : Colors.grey.shade600,
-                size: 16),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                  color: selected ? Colors.white : Colors.grey.shade600,
-                  fontWeight:
-                      selected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 13),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
