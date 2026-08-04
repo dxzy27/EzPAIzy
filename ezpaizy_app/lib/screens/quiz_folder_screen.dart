@@ -357,4 +357,4 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
       ),
     );
   }
-
+}
