@@ -142,7 +142,7 @@ class ScaffoldWithNav extends StatelessWidget {
     final loc = GoRouterState.of(context).matchedLocation;
     if (loc.startsWith('/quizzes') || loc.startsWith('/quiz')) return 1;
     if (loc.startsWith('/flashcards')) return 2;
-    if (loc.startsWith('/contents')) return 3;
+    if (loc.startsWith('/learning-style')) return 3;
     if (loc.startsWith('/dashboard')) return 0;
     return 4; // Highlight 'More' for everything else
   }
@@ -171,13 +171,13 @@ class ScaffoldWithNav extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               ListTile(
-                leading: const Icon(Icons.psychology_outlined, color: Color(0xFF3B82F6)),
-                title: const Text('Diagnosis / Learning Style', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
+                leading: const Icon(Icons.article_outlined, color: Color(0xFF3B82F6)),
+                title: const Text('Materials', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
                 onTap: () {
                   Navigator.pop(ctx);
-                  context.go('/learning-style');
+                  context.go('/contents');
                 },
-              ),
+               ),
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.logout, color: Colors.redAccent),
@@ -225,7 +225,7 @@ class ScaffoldWithNav extends StatelessWidget {
                 context.go('/flashcards');
                 break;
               case 3:
-                context.go('/contents');
+                context.go('/learning-style');
                 break;
             }
           }
@@ -247,9 +247,9 @@ class ScaffoldWithNav extends StatelessWidget {
             label: 'Flashcards',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.article_outlined),
-            activeIcon: Icon(Icons.article),
-            label: 'Other',
+            icon: Icon(Icons.psychology_outlined),
+            activeIcon: Icon(Icons.psychology),
+            label: 'Diagnosis',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.more_horiz_outlined),
