@@ -142,34 +142,6 @@ class StudentController extends Controller
             $allQuizzes->push($quiz);
         }
 
-        $easyQuizzes = $allQuizzes->where('difficulty', 'easy');
-        $mediumQuizzes = $allQuizzes->where('difficulty', 'medium');
-
-        $easyAllPassed = true;
-        if ($easyQuizzes->count() > 0) {
-            foreach ($easyQuizzes as $eq) {
-                $prog = $eq->progress->first();
-                if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
-                    $easyAllPassed = false;
-                    break;
-                }
-            }
-        }
-
-        $mediumAllPassed = true;
-        if ($mediumQuizzes->count() > 0) {
-            foreach ($mediumQuizzes as $mq) {
-                $prog = $mq->progress->first();
-                if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
-                    $mediumAllPassed = false;
-                    break;
-                }
-            }
-        }
-
-        $mediumLocked = !$easyAllPassed;
-        $hardLocked = !$mediumAllPassed;
-
         // Return a LengthAwarePaginator to support views using pagination
         $quizzes = new \Illuminate\Pagination\LengthAwarePaginator(
             $allQuizzes,
@@ -187,7 +159,7 @@ class StudentController extends Controller
             })
             ->toArray();
 
-        return view('student.quiz_folder', compact('topic', 'quizzes', 'mediumLocked', 'hardLocked', 'favoritedQuizMap'));
+        return view('student.quiz_folder', compact('topic', 'quizzes', 'favoritedQuizMap'));
     }
 
     /**

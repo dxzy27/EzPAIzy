@@ -34,9 +34,6 @@
         <div class="row g-4">
             @foreach($quizzes as $quiz)
                 @php
-                    $isLocked = false;
-                    $lockMessage = '';
-                    
                     // Topic Badge Colors Mapping
                     $topicNorm = strtolower(trim($quiz->topic));
                     $topicStyle = 'background-color: #f5f5f5; color: #616161;'; // Default grey
@@ -69,7 +66,7 @@
                     };
                 @endphp
                 <div class="col-md-6 col-lg-4 col-xl-3 quiz-card-col" data-title="{{ strtolower($quiz->title) }}" data-difficulty="{{ strtolower($quiz->difficulty) }}">
-                    <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px; overflow: hidden; {{ $isLocked ? 'opacity: 0.7; filter: grayscale(20%);' : '' }}">
+                    <div class="card h-100 shadow-sm border-0 content-card" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px; overflow: hidden;">
                         <div class="card-body d-flex flex-column justify-content-between" style="padding: 1.15rem;">
                             <div>
                                 <!-- Badges Row -->
@@ -96,13 +93,6 @@
                                 <div class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.5;">
                                     👤 By: {{ $quiz->teacher->name ?? 'Unknown Teacher' }}
                                 </div>
-
-                                @if($isLocked)
-                                    <div class="alert alert-warning py-1 px-2 mb-3 d-flex align-items-center gap-2" style="font-size: 0.75rem; border-radius: 8px; font-weight: 600;">
-                                        <i class="bi bi-lock-fill text-warning fs-6"></i>
-                                        <span>Locked: {{ $lockMessage }}</span>
-                                    </div>
-                                @endif
 
                                 @php
                                     $p = $quiz->progress->first();
@@ -164,11 +154,7 @@
                                 </div>
                                 
                                 @if($quiz->questions_count > 0)
-                                    @if($isLocked)
-                                        <button class="btn btn-secondary w-100 rounded-pill py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" disabled>
-                                            <i class="bi bi-lock-fill"></i> Locked
-                                        </button>
-                                    @elseif($p)
+                                    @if($p)
                                         <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-outline-primary w-100 rounded-pill py-2.5 fw-bold d-flex align-items-center justify-content-center gap-2">
                                             <i class="bi bi-arrow-repeat"></i> Retake Quiz
                                         </a>
