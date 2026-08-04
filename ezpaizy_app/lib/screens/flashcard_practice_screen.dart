@@ -440,15 +440,20 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           Expanded(
             child: Center(
               child: SingleChildScrollView(
-                child: Text(
-                  text,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    fontSize: 22, // 22px matching web 1.5rem scaling
-                    fontWeight: FontWeight.bold, // Bold text
-                    color: const Color(0xFF0F172A),
-                    height: 1.6, // 1.6 line height
-                  ),
+                child: Builder(
+                  builder: (context) {
+                    final isList = RegExp(r'(?:\s+|^)\d+\.\s').hasMatch(text);
+                    return Text(
+                      text,
+                      textAlign: isList ? TextAlign.left : TextAlign.center, // Left align lists to match web indentation
+                      style: GoogleFonts.outfit(
+                        fontSize: 22, // 22px matching web 1.5rem scaling
+                        fontWeight: FontWeight.bold, // Bold text
+                        color: const Color(0xFF0F172A),
+                        height: 1.6, // 1.6 line height
+                      ),
+                    );
+                  }
                 ),
               ),
             ),
