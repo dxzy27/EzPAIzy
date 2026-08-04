@@ -394,13 +394,13 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        borderRadius: BorderRadius.circular(6), // Sharp 6px radius matching web
+        border: Border.all(color: const Color(0xFFCBD5E1)), // Solid slate-300 border
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            color: Colors.black.withOpacity(0.08), // Web shadow color
+            blurRadius: 30, // 30px blur
+            offset: const Offset(0, 8), // 8px Y offset
           ),
         ],
       ),
@@ -412,15 +412,19 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           Text(
             label,
             style: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
               color: Color(0xFF64748B),
               letterSpacing: 1.0,
               fontFamily: 'Outfit',
             ),
           ),
           const SizedBox(height: 12),
-          const Divider(color: Color(0xFFF1F5F9), height: 1, thickness: 1),
+          Divider(
+            color: const Color(0xFF0F172A).withOpacity(0.15), // Faint dark divider
+            height: 1,
+            thickness: 1,
+          ),
           
           // Question or Answer Text
           Expanded(
@@ -430,11 +434,11 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                   text,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 20, // 20px font
+                    fontWeight: FontWeight.bold, // Bold text
                     color: Color(0xFF0F172A),
                     fontFamily: 'Outfit',
-                    height: 1.5,
+                    height: 1.6, // 1.6 line height
                   ),
                 ),
               ),
@@ -447,6 +451,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
               hint,
               style: const TextStyle(
                 fontSize: 11,
+                fontWeight: FontWeight.bold, // Bold footer hint
                 color: Color(0xFF94A3B8),
                 fontFamily: 'Outfit',
               ),
