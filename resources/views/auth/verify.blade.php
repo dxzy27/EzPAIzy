@@ -5,8 +5,7 @@
 {{-- ── Top Navigation Bar ──────────────────────────────────────── --}}
 <nav class="ez-topnav">
     <div class="ez-topnav-brand">
-        <img src="{{ asset('images/logo.png') }}"    alt="Mascot"  class="brand-mascot">
-        <img src="{{ asset('images/EzPAIzy.png') }}?v={{ time() }}" alt="EzPAIzy" class="brand-wordmark">
+        <img src="{{ asset('images/newlogo.png') }}?v={{ time() }}" alt="EzPAIzy Logo" class="brand-new-logo" style="height: 48px; width: auto; object-fit: contain;">
     </div>
     <div class="ez-topnav-actions">
         <a href="{{ route('logout') }}" 

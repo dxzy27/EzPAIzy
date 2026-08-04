@@ -704,7 +704,7 @@
             <div class="topbar-left">
                 <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : (auth()->user()->role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard')) }}" 
                    class="d-flex align-items-center text-decoration-none">
-                    <img src="{{ asset('images/logo.png') }}" alt="EzPAIzy Logo" style="height: 54px; width: auto; object-fit: contain;">
+                    <img src="{{ asset('images/newlogo.png') }}?v={{ time() }}" alt="EzPAIzy Logo" style="height: 48px; width: auto; object-fit: contain;">
                 </a>
             </div>
             <h1 class="topbar-title">{{ $sectionTitle }}</h1>
