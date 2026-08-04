@@ -27,13 +27,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/student/quiz/{quiz}',            [StudentApiController::class, 'quizDetail']);
     Route::post('/student/quiz/{quiz}/submit',    [StudentApiController::class, 'submitQuiz']);
 
+    // Unified Topics Endpoint (matches 'quiz', 'material', or 'flashcard' types)
+    Route::get('/student/topics/{type}',         [StudentApiController::class, 'getTopicsByType']);
+    
     // Learning Materials
-    Route::get('/student/content-topics',        [StudentApiController::class, 'contentTopics']);
     Route::get('/student/contents',              [StudentApiController::class, 'contents']);
     Route::get('/student/contents/{content}',    [StudentApiController::class, 'contentDetail']);
 
     // Flashcards
-    Route::get('/student/topics',                [StudentApiController::class, 'topics']);
     Route::get('/student/flashcards',            [StudentApiController::class, 'flashcards']);
     Route::get('/student/flashcards/{set}',      [StudentApiController::class, 'flashcardDetail']);
     Route::get('/student/flashcards/{set}/study', [StudentApiController::class, 'studyFlashcards']);

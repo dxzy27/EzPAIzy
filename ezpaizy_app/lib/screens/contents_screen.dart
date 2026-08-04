@@ -33,7 +33,7 @@ class _ContentsScreenState extends State<ContentsScreen> {
     setState(() => loading = true);
     try {
       contents = await ApiService.getContents();
-      topics = await ApiService.getContentTopics();
+      topics = await ApiService.getTopics('material');
       
       if (topics.isEmpty) {
         final Set<String> uniqueTopics = {};

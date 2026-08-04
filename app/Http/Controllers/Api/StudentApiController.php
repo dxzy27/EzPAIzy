@@ -241,9 +241,9 @@ class StudentApiController extends Controller
     }
 
     /**
-     * Get all quiz topics for the student's class teachers.
+     * Get all folder topics dynamically by type (matches 'quiz', 'material', or 'flashcard').
      */
-    public function quizTopics(Request $request)
+    public function getTopicsByType(Request $request, $type)
     {
         $user = $request->user();
         $teacherIds = \App\Models\User::where('role', 'teacher')
@@ -251,28 +251,7 @@ class StudentApiController extends Controller
             ->pluck('id')
             ->toArray();
 
-        $topics = \App\Models\Topic::where('type', 'quiz')
-            ->whereIn('user_id', $teacherIds)
-            ->pluck('name')
-            ->unique()
-            ->values()
-            ->toArray();
-
-        return response()->json($topics);
-    }
-
-    /**
-     * Get all content topics for the student's class teachers.
-     */
-    public function contentTopics(Request $request)
-    {
-        $user = $request->user();
-        $teacherIds = \App\Models\User::where('role', 'teacher')
-            ->where('class_name', $user->class_name)
-            ->pluck('id')
-            ->toArray();
-
-        $topics = \App\Models\Topic::where('type', 'material')
+        $topics = \App\Models\Topic::where('type', $type)
             ->whereIn('user_id', $teacherIds)
             ->pluck('name')
             ->unique()
@@ -420,26 +399,7 @@ class StudentApiController extends Controller
         return response()->json($sets);
     }
 
-    /**
-     * Get all flashcard topics for the student's class teachers.
-     */
-    public function topics(Request $request)
-    {
-        $user = $request->user();
-        $teacherIds = \App\Models\User::where('role', 'teacher')
-            ->where('class_name', $user->class_name)
-            ->pluck('id')
-            ->toArray();
 
-        $topics = \App\Models\Topic::where('type', 'flashcard')
-            ->whereIn('user_id', $teacherIds)
-            ->pluck('name')
-            ->unique()
-            ->values()
-            ->toArray();
-
-        return response()->json($topics);
-    }
 
     /**
      * Single flashcard set with cards.

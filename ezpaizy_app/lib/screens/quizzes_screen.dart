@@ -33,7 +33,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
     setState(() => loading = true);
     try {
       quizzes = await ApiService.getQuizzes();
-      topics = await ApiService.getQuizTopics();
+      topics = await ApiService.getTopics('quiz');
       
       if (topics.isEmpty) {
         final Set<String> uniqueTopics = {};

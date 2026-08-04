@@ -33,7 +33,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     setState(() => loading = true);
     try {
       sets = await ApiService.getFlashcards();
-      topics = await ApiService.getTopics();
+      topics = await ApiService.getTopics('flashcard');
       
       if (topics.isEmpty) {
         final Set<String> uniqueTopics = {};

@@ -115,9 +115,9 @@ class ApiService {
     }
   }
 
-  static Future<List<String>> getQuizTopics() async {
+  static Future<List<String>> getTopics(String type) async {
     try {
-      final res = await http.get(Uri.parse('$baseUrl/student/quiz-topics'),
+      final res = await http.get(Uri.parse('$baseUrl/student/topics/$type'),
           headers: await _headers());
       if (res.statusCode != 200) return [];
       final decoded = jsonDecode(res.body);
@@ -169,20 +169,7 @@ class ApiService {
     }
   }
 
-  static Future<List<String>> getContentTopics() async {
-    try {
-      final res = await http.get(Uri.parse('$baseUrl/student/content-topics'),
-          headers: await _headers());
-      if (res.statusCode != 200) return [];
-      final decoded = jsonDecode(res.body);
-      if (decoded is List) {
-        return List<String>.from(decoded.map((x) => x.toString()));
-      }
-      return [];
-    } catch (_) {
-      return [];
-    }
-  }
+
 
   static Future<List<dynamic>> getContents() async {
     try {
@@ -202,20 +189,7 @@ class ApiService {
     return jsonDecode(res.body);
   }
 
-  static Future<List<String>> getTopics() async {
-    try {
-      final res = await http.get(Uri.parse('$baseUrl/student/topics'),
-          headers: await _headers());
-      if (res.statusCode != 200) return [];
-      final decoded = jsonDecode(res.body);
-      if (decoded is List) {
-        return List<String>.from(decoded.map((x) => x.toString()));
-      }
-      return [];
-    } catch (_) {
-      return [];
-    }
-  }
+
 
   static Future<List<dynamic>> getFlashcards() async {
     try {
