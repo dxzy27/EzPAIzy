@@ -96,7 +96,22 @@ class StudentController extends Controller
             ->where('class_name', $user->class_name)
             ->first();
 
-        $difficulties = ['easy', 'medium', 'hard'];
+        // Query unique difficulties from Questions and Progress tables
+        $qDiffs = \App\Models\Question::where('topic', $topic)
+            ->select('difficulty')
+            ->distinct()
+            ->pluck('difficulty')
+            ->toArray();
+            
+        $pDiffs = Progress::where('student_id', $user->id)
+            ->where('topic', $topic)
+            ->select('difficulty')
+            ->distinct()
+            ->pluck('difficulty')
+            ->toArray();
+
+        $difficulties = array_values(array_unique(array_filter(array_merge($qDiffs, $pDiffs))));
+        
         $allQuizzes = collect();
         foreach ($difficulties as $diff) {
             $quiz = new \stdClass();
@@ -150,7 +165,7 @@ class StudentController extends Controller
         // Return a LengthAwarePaginator to support views using pagination
         $quizzes = new \Illuminate\Pagination\LengthAwarePaginator(
             $allQuizzes,
-            3,
+            $allQuizzes->count(),
             12,
             1,
             ['path' => request()->url()]

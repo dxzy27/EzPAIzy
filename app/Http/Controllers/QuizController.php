@@ -28,7 +28,16 @@ class QuizController extends Controller
 
     public function folder($topic)
     {
-        $difficulties = ['easy', 'medium', 'hard'];
+        $difficulties = Question::where('topic', $topic)
+            ->select('difficulty')
+            ->distinct()
+            ->pluck('difficulty')
+            ->toArray();
+
+        if (empty($difficulties)) {
+            $difficulties = ['easy', 'medium', 'hard'];
+        }
+
         $quizzes = collect();
 
         foreach ($difficulties as $diff) {
@@ -46,7 +55,7 @@ class QuizController extends Controller
         // Return a LengthAwarePaginator to support views using pagination
         $quizzes = new \Illuminate\Pagination\LengthAwarePaginator(
             $quizzes,
-            3,
+            $quizzes->count(),
             12,
             1,
             ['path' => request()->url()]
