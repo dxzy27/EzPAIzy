@@ -169,6 +169,21 @@ class ApiService {
     }
   }
 
+  static Future<List<String>> getContentTopics() async {
+    try {
+      final res = await http.get(Uri.parse('$baseUrl/student/content-topics'),
+          headers: await _headers());
+      if (res.statusCode != 200) return [];
+      final decoded = jsonDecode(res.body);
+      if (decoded is List) {
+        return List<String>.from(decoded.map((x) => x.toString()));
+      }
+      return [];
+    } catch (_) {
+      return [];
+    }
+  }
+
   static Future<List<dynamic>> getContents() async {
     try {
       final res = await http.get(Uri.parse('$baseUrl/student/contents'),
