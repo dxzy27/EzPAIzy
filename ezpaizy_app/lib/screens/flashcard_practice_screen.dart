@@ -176,7 +176,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           ),
         ),
         child: Container(
-          color: const Color(0xFFF1F5F9).withOpacity(0.15),
+          color: const Color(0xFFF8FAFC).withOpacity(0.9),
           child: SafeArea(
             child: Column(
               children: [
@@ -304,82 +304,75 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
                 const Spacer(flex: 2),
 
-                // Rating & Feedback controls underneath (Fades/Enables when flipped)
-                AnimatedOpacity(
-                  opacity: isFlipped ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: IgnorePointer(
-                    ignoring: !isFlipped,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                // Rating & Feedback controls underneath (Always visible)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'How well did you remember this?',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF475569),
+                          fontFamily: 'Outfit',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            'How well did you remember this?',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF475569),
-                              fontFamily: 'Outfit',
+                          // Red X Button
+                          GestureDetector(
+                            onTap: () => _submitReview(1),
+                            child: Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.02),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Red X Button
-                              GestureDetector(
-                                onTap: () => _submitReview(1),
-                                child: Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.02),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
+                          const SizedBox(width: 24),
+                          // Green Check Button
+                          GestureDetector(
+                            onTap: () => _submitReview(5),
+                            child: Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.02),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
                                   ),
-                                  child: const Center(
-                                    child: Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
-                                  ),
-                                ),
+                                ],
                               ),
-                              const SizedBox(width: 24),
-                              // Green Check Button
-                              GestureDetector(
-                                onTap: () => _submitReview(5),
-                                child: Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.02),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Center(
-                                    child: Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
-                                  ),
-                                ),
+                              child: const Center(
+                                child: Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
 
