@@ -142,61 +142,9 @@ class ScaffoldWithNav extends StatelessWidget {
     final loc = GoRouterState.of(context).matchedLocation;
     if (loc.startsWith('/quizzes') || loc.startsWith('/quiz')) return 1;
     if (loc.startsWith('/flashcards')) return 2;
-    if (loc.startsWith('/learning-style')) return 3;
-    if (loc.startsWith('/dashboard')) return 0;
-    return 4; // Highlight 'More' for everything else
-  }
-
-  void _showMoreMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        final auth = Provider.of<AuthProvider>(context, listen: false);
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 8),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: const Icon(Icons.article_outlined, color: Color(0xFF3B82F6)),
-                title: const Text('Materials', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  context.go('/contents');
-                },
-               ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.logout, color: Colors.redAccent),
-                title: const Text('Sign Out', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.redAccent, fontFamily: 'Outfit')),
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  await ApiService.logout();
-                  auth.logout();
-                  if (context.mounted) {
-                    context.go('/login');
-                  }
-                },
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        );
-      },
-    );
+    if (loc.startsWith('/contents')) return 3;
+    if (loc.startsWith('/learning-style')) return 4;
+    return 0; // Default to Home/Dashboard
   }
 
   @override
@@ -211,23 +159,22 @@ class ScaffoldWithNav extends StatelessWidget {
         selectedLabelStyle: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
         unselectedLabelStyle: const TextStyle(fontFamily: 'Outfit'),
         onTap: (i) {
-          if (i == 4) {
-            _showMoreMenu(context);
-          } else {
-            switch (i) {
-              case 0:
-                context.go('/dashboard');
-                break;
-              case 1:
-                context.go('/quizzes');
-                break;
-              case 2:
-                context.go('/flashcards');
-                break;
-              case 3:
-                context.go('/learning-style');
-                break;
-            }
+          switch (i) {
+            case 0:
+              context.go('/dashboard');
+              break;
+            case 1:
+              context.go('/quizzes');
+              break;
+            case 2:
+              context.go('/flashcards');
+              break;
+            case 3:
+              context.go('/contents');
+              break;
+            case 4:
+              context.go('/learning-style');
+              break;
           }
         },
         items: const [
@@ -247,14 +194,14 @@ class ScaffoldWithNav extends StatelessWidget {
             label: 'Flashcards',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.article_outlined),
+            activeIcon: Icon(Icons.article),
+            label: 'Materials',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.psychology_outlined),
             activeIcon: Icon(Icons.psychology),
             label: 'Diagnosis',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.more_horiz_outlined),
-            activeIcon: Icon(Icons.more_horiz),
-            label: 'More',
           ),
         ],
       ),
