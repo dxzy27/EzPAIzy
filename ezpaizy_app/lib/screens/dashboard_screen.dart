@@ -694,7 +694,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: LinearGradient(
+          colors: [
+            Colors.white.withOpacity(0.9),
+            const Color(0xFFF8FBFD).withOpacity(0.9),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.5)),
         boxShadow: [
