@@ -265,38 +265,45 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                 // Card Widget with Flip Animation
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: SizedBox(
-                    height: 320,
-                    width: double.infinity,
-                    child: GestureDetector(
-                      onTap: _flip,
-                      child: AnimatedBuilder(
-                        animation: _flipAnim,
-                        builder: (_, __) {
-                          final angle = _flipAnim.value * 3.14159;
-                          final showFront = _flipAnim.value <= 0.5;
-                          return Transform(
-                            alignment: Alignment.center,
-                            transform: Matrix4.identity()
-                              ..setEntry(3, 2, 0.0015)
-                              ..rotateY(angle),
-                            child: showFront
-                                ? _buildCardFace(
-                                    label: 'QUESTION',
-                                    text: card['term'] ?? '',
-                                    hint: 'Click anywhere to reveal',
-                                  )
-                                : Transform(
-                                    alignment: Alignment.center,
-                                    transform: Matrix4.identity()..rotateY(3.14159),
-                                    child: _buildCardFace(
-                                      label: 'ANSWER',
-                                      text: card['definition'] ?? '',
-                                      hint: 'Click anywhere to hide',
-                                    ),
-                                  ),
-                          );
-                        },
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 600), // Prevent infinite stretch on wide screens
+                      child: SizedBox(
+                        height: 320,
+                        width: double.infinity,
+                        child: GestureDetector(
+                          onTap: _flip,
+                          child: AnimatedBuilder(
+                            animation: _flipAnim,
+                            builder: (_, __) {
+                              final angle = _flipAnim.value * 3.14159;
+                              final showFront = _flipAnim.value <= 0.5;
+                              return Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.identity()
+                                  ..setEntry(3, 2, 0.0015)
+                                  ..rotateY(angle),
+                                child: showFront
+                                    ? _buildCardFace(
+                                        label: 'QUESTION',
+                                        text: card['term'] ?? '',
+                                        hint: 'Click anywhere to reveal',
+                                        cardBgColor: const Color(0xFFDDDDDD), // Grey matching web front
+                                      )
+                                    : Transform(
+                                        alignment: Alignment.center,
+                                        transform: Matrix4.identity()..rotateY(3.14159),
+                                        child: _buildCardFace(
+                                          label: 'ANSWER',
+                                          text: card['definition'] ?? '',
+                                          hint: 'Click anywhere to hide',
+                                          cardBgColor: const Color(0xFFEDE9E6), // Warm light grey matching web back
+                                        ),
+                                      ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -307,72 +314,77 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                 // Rating & Feedback controls underneath (Always visible)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'How well did you remember this?',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF475569),
-                          fontFamily: 'Outfit',
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 600),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Red X Button
-                          GestureDetector(
-                            onTap: () => _submitReview(1),
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.02),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: const Center(
-                                child: Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
-                              ),
+                          const Text(
+                            'How well did you remember this?',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF475569),
+                              fontFamily: 'Outfit',
                             ),
                           ),
-                          const SizedBox(width: 24),
-                          // Green Check Button
-                          GestureDetector(
-                            onTap: () => _submitReview(5),
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.02),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Red X Button
+                              GestureDetector(
+                                onTap: () => _submitReview(1),
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.02),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                  child: const Center(
+                                    child: Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
+                                  ),
+                                ),
                               ),
-                              child: const Center(
-                                child: Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
+                              const SizedBox(width: 24),
+                              // Green Check Button
+                              GestureDetector(
+                                onTap: () => _submitReview(5),
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.02),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
 
@@ -390,10 +402,11 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     required String label,
     required String text,
     required String hint,
+    required Color cardBgColor,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardBgColor,
         borderRadius: BorderRadius.circular(6), // Sharp 6px radius matching web
         border: Border.all(color: const Color(0xFFCBD5E1)), // Solid slate-300 border
         boxShadow: [
