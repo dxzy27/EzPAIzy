@@ -293,7 +293,7 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
                                   maxCrossAxisExtent: 280,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16,
-                                  mainAxisExtent: 240, // Fixed height with a buffer for wrapped multiline titles
+                                  mainAxisExtent: 260, // Increased height to provide clean breathing room at the bottom
                                 ),
                                 itemCount: filteredSets.length,
                                 itemBuilder: (context, i) {

@@ -247,53 +247,7 @@ class StudentApiController extends Controller
                 $allQuizzes->push($quiz);
             }
         }
-
-        $quizzesByTopic = $allQuizzes->groupBy('topic');
-        $finalQuizzes = collect();
-
-        foreach ($quizzesByTopic as $topic => $topicQuizzes) {
-            $easyQuizzes = $topicQuizzes->where('difficulty', 'easy');
-            $mediumQuizzes = $topicQuizzes->where('difficulty', 'medium');
-
-            $easyAllPassed = true;
-            if ($easyQuizzes->count() > 0) {
-                foreach ($easyQuizzes as $eq) {
-                    $prog = count($eq['progress']) > 0 ? $eq['progress'][0] : null;
-                    if (!$prog || $prog['score'] < 80 || $prog['status'] === 'pending') {
-                        $easyAllPassed = false;
-                        break;
-                    }
-                }
-            } else {
-                $easyAllPassed = false;
-            }
-
-            $mediumAllPassed = true;
-            if ($mediumQuizzes->count() > 0) {
-                foreach ($mediumQuizzes as $mq) {
-                    $prog = count($mq['progress']) > 0 ? $mq['progress'][0] : null;
-                    if (!$prog || $prog['score'] < 80 || $prog['status'] === 'pending') {
-                        $mediumAllPassed = false;
-                        break;
-                    }
-                }
-            } else {
-                $mediumAllPassed = false;
-            }
-
-            foreach ($topicQuizzes as $quiz) {
-                if ($quiz['difficulty'] === 'medium') {
-                    $quiz['is_locked'] = !$easyAllPassed;
-                } elseif ($quiz['difficulty'] === 'hard') {
-                    $quiz['is_locked'] = !$mediumAllPassed;
-                } else {
-                    $quiz['is_locked'] = false;
-                }
-                $finalQuizzes->push($quiz);
-            }
-        }
-
-        return response()->json($finalQuizzes);
+        return response()->json($allQuizzes);
     }
 
     /**
