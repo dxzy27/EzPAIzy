@@ -15,12 +15,21 @@ class QuizFolderScreen extends StatefulWidget {
 
 class _QuizFolderScreenState extends State<QuizFolderScreen> {
   List<dynamic> quizzes = [];
+  List<dynamic> filteredQuizzes = [];
   bool loading = true;
+  final _search = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _load();
+    _search.addListener(_filter);
+  }
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -32,8 +41,18 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
         final t = q['topic']?.toString().trim();
         return t == widget.topic || (widget.topic == 'General' && (t == null || t.isEmpty));
       }).toList();
+      filteredQuizzes = quizzes;
     } catch (_) {}
     setState(() => loading = false);
+  }
+
+  void _filter() {
+    final q = _search.text.toLowerCase();
+    setState(() {
+      filteredQuizzes = quizzes
+          .where((item) => item['title']?.toString().toLowerCase().contains(q) ?? false)
+          .toList();
+    });
   }
 
   Color _diffColor(String? diff) {
@@ -129,11 +148,33 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                 ),
                 const SizedBox(height: 16),
 
+                // Search Bar
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: TextField(
+                    controller: _search,
+                    style: const TextStyle(fontFamily: 'Outfit', fontSize: 13),
+                    decoration: const InputDecoration(
+                      hintText: 'Search quizzes...',
+                      hintStyle: TextStyle(fontFamily: 'Outfit', fontSize: 13, color: Color(0xFF94A3B8)),
+                      prefixIcon: Icon(Icons.search, color: Color(0xFF94A3B8), size: 18),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+
                 // Responsive Grid of Quiz cards (unlocked structure matching web)
                 Expanded(
                   child: loading
                       ? const Center(child: CircularProgressIndicator())
-                      : quizzes.isEmpty
+                      : filteredQuizzes.isEmpty
                           ? const Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +182,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                   Icon(Icons.quiz, size: 64, color: Color(0xFFCBD5E1)),
                                   SizedBox(height: 12),
                                   Text(
-                                    'No quizzes in this folder',
+                                    'No quizzes found',
                                     style: TextStyle(color: Color(0xFF64748B), fontFamily: 'Outfit'),
                                   ),
                                 ],
@@ -157,9 +198,9 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                   mainAxisSpacing: 16,
                                   mainAxisExtent: 250, // Fixed height for dynamic clean cards
                                 ),
-                                itemCount: quizzes.length,
+                                itemCount: filteredQuizzes.length,
                                 itemBuilder: (context, i) {
-                                  final q = quizzes[i];
+                                  final q = filteredQuizzes[i];
                                   final diff = q['difficulty'] ?? 'easy';
                                   final count = q['questions_count'] ?? 0;
                                   final progressList = q['progress'] as List?;
