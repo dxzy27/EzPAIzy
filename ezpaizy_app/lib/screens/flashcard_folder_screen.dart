@@ -348,14 +348,33 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
                                         ),
                                         const SizedBox(height: 4),
 
-                                        // Progress Bar
+                                        // Progress Bar (Custom stacked bar matching web)
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(4),
-                                          child: LinearProgressIndicator(
-                                            value: pct,
-                                            backgroundColor: const Color(0xFFF1F5F9),
-                                            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
-                                            minHeight: 4,
+                                          borderRadius: BorderRadius.circular(50),
+                                          child: Container(
+                                            height: 8,
+                                            color: const Color(0xFFF1F5F9), // Background grey
+                                            child: cards == 0
+                                                ? const SizedBox.shrink()
+                                                : Row(
+                                                    children: [
+                                                      if (mastered + review > 0)
+                                                        Expanded(
+                                                          flex: mastered + review,
+                                                          child: Container(color: const Color(0xFF10B981)), // Green (Mastered)
+                                                        ),
+                                                      if (learning > 0)
+                                                        Expanded(
+                                                          flex: learning,
+                                                          child: Container(color: const Color(0xFFF97316)), // Orange/Red (Learning)
+                                                        ),
+                                                      if (newCount > 0)
+                                                        Expanded(
+                                                          flex: newCount,
+                                                          child: Container(color: Colors.transparent), // Remaining grey
+                                                        ),
+                                                    ],
+                                                  ),
                                           ),
                                         ),
                                         const SizedBox(height: 12),
