@@ -326,9 +326,9 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 600), // Prevent infinite stretch on wide screens
+                        constraints: const BoxConstraints(maxWidth: 800), // Max width 800 matching web
                         child: SizedBox(
-                          height: 260,
+                          height: 400, // Height 400 matching web
                           width: double.infinity,
                           child: GestureDetector(
                             onTap: _flip,
@@ -375,16 +375,17 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 600),
+                        constraints: const BoxConstraints(maxWidth: 800),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               'How well did you remember this?',
-                              style: GoogleFonts.outfit(
+                              style: const TextStyle(
+                                fontFamily: 'Outfit',
                                 fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFF475569),
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF475569),
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -482,10 +483,11 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           // Header Label
           Text(
             label,
-            style: GoogleFonts.outfit(
-              fontSize: 11,
+            style: const TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF64748B),
+              color: Color(0xFF64748B),
               letterSpacing: 1.0,
             ),
           ),
@@ -506,10 +508,11 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                     return Text(
                       text,
                       textAlign: isList ? TextAlign.left : TextAlign.center, // Left align lists to match web indentation
-                      style: GoogleFonts.outfit(
-                        fontSize: 22, // 22px matching web 1.5rem scaling
+                      style: const TextStyle(
+                        fontFamily: 'Outfit',
+                        fontSize: 24, // 24px matching web 1.5rem scaling
                         fontWeight: FontWeight.bold, // Bold text
-                        color: const Color(0xFF0F172A),
+                        color: Color(0xFF0F172A),
                         height: 1.6, // 1.6 line height
                       ),
                     );
@@ -530,10 +533,11 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           Center(
             child: Text(
               hint,
-              style: GoogleFonts.outfit(
-                fontSize: 11,
+              style: const TextStyle(
+                fontFamily: 'Outfit',
+                fontSize: 12,
                 fontWeight: FontWeight.bold, // Bold footer hint
-                color: const Color(0xFF64748B), // Slate matching header
+                color: Color(0xFF64748B), // Slate matching header
               ),
             ),
           ),
