@@ -379,6 +379,27 @@ class StudentApiController extends Controller
     }
 
     /**
+     * Get all flashcard topics for the student's class teachers.
+     */
+    public function topics(Request $request)
+    {
+        $user = $request->user();
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
+        $topics = \App\Models\Topic::where('type', 'flashcard')
+            ->whereIn('user_id', $teacherIds)
+            ->pluck('name')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        return response()->json($topics);
+    }
+
+    /**
      * Single flashcard set with cards.
      */
     public function flashcardDetail(FlashcardSet $set)

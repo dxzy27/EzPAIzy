@@ -33,16 +33,19 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     setState(() => loading = true);
     try {
       sets = await ApiService.getFlashcards();
+      topics = await ApiService.getTopics();
       
-      final Set<String> uniqueTopics = {};
-      for (var s in sets) {
-        if (s['topic'] != null && s['topic'].toString().trim().isNotEmpty) {
-          uniqueTopics.add(s['topic'].toString().trim());
-        } else {
-          uniqueTopics.add('General');
+      if (topics.isEmpty) {
+        final Set<String> uniqueTopics = {};
+        for (var s in sets) {
+          if (s['topic'] != null && s['topic'].toString().trim().isNotEmpty) {
+            uniqueTopics.add(s['topic'].toString().trim());
+          } else {
+            uniqueTopics.add('General');
+          }
         }
+        topics = uniqueTopics.toList()..sort();
       }
-      topics = uniqueTopics.toList()..sort();
       filteredTopics = topics;
     } catch (_) {}
     setState(() => loading = false);

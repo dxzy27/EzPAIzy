@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/student/contents/{content}',    [StudentApiController::class, 'contentDetail']);
 
     // Flashcards
+    Route::get('/student/topics',                [StudentApiController::class, 'topics']);
     Route::get('/student/flashcards',            [StudentApiController::class, 'flashcards']);
     Route::get('/student/flashcards/{set}',      [StudentApiController::class, 'flashcardDetail']);
     Route::get('/student/flashcards/{set}/study', [StudentApiController::class, 'studyFlashcards']);
