@@ -241,6 +241,27 @@ class StudentApiController extends Controller
     }
 
     /**
+     * Get all quiz topics for the student's class teachers.
+     */
+    public function quizTopics(Request $request)
+    {
+        $user = $request->user();
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
+        $topics = \App\Models\Topic::where('type', 'quiz')
+            ->whereIn('user_id', $teacherIds)
+            ->pluck('name')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        return response()->json($topics);
+    }
+
+    /**
      * Single quiz with questions.
      */
     public function quizDetail(Quiz $quiz)

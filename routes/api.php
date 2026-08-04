@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/student/dashboard', [StudentApiController::class, 'dashboard']);
 
     // Quizzes
+    Route::get('/student/quiz-topics',           [StudentApiController::class, 'quizTopics']);
     Route::get('/student/quizzes',               [StudentApiController::class, 'quizzes']);
     Route::get('/student/quiz/{quiz}',            [StudentApiController::class, 'quizDetail']);
     Route::post('/student/quiz/{quiz}/submit',    [StudentApiController::class, 'submitQuiz']);
