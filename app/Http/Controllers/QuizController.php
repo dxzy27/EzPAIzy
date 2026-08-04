@@ -34,10 +34,6 @@ class QuizController extends Controller
             ->pluck('difficulty')
             ->toArray();
 
-        if (empty($difficulties)) {
-            $difficulties = ['easy', 'medium', 'hard'];
-        }
-
         $quizzes = collect();
 
         foreach ($difficulties as $diff) {
