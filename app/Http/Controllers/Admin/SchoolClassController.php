@@ -35,12 +35,21 @@ class SchoolClassController extends Controller
     public function update(Request $request, string $id)
     {
         $schoolClass = \App\Models\SchoolClass::findOrFail($id);
+        $oldName = $schoolClass->name;
         
         $request->validate([
             'name' => 'required|string|max:255|unique:school_classes,name,' . $schoolClass->id,
         ]);
 
-        $schoolClass->update($request->only('name'));
+        $newName = $request->input('name');
+        $schoolClass->update(['name' => $newName]);
+
+        // Cascade the class name update to the users table
+        if ($oldName !== $newName) {
+            \App\Models\User::where('class_name', $oldName)
+                ->update(['class_name' => $newName]);
+        }
+
         return redirect()->route('admin.classes.index')->with('success', 'Class updated successfully.');
     }
 
