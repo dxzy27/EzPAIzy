@@ -47,8 +47,15 @@ class StudentController extends Controller
         $classTeacher = \App\Models\User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
         $teacherName = $classTeacher ? $classTeacher->name : 'Unknown';
 
-        // Retrieve unique topic + difficulty combinations that have questions
+        // Retrieve active quiz topics for student's teachers
+        $activeQuizTopics = \App\Models\Topic::where('type', 'quiz')
+            ->whereIn('user_id', $teacherIds)
+            ->pluck('name')
+            ->toArray();
+
+        // Retrieve unique topic + difficulty combinations that have questions and are active
         $quizzes = \App\Models\Question::select('topic', 'difficulty')
+            ->whereIn('topic', $activeQuizTopics)
             ->groupBy('topic', 'difficulty')
             ->get()
             ->map(function($q) use ($classTeacher) {
@@ -61,7 +68,8 @@ class StudentController extends Controller
                 return $quiz;
             });
 
-        $progress = $user->progress()->get();
+        // Filter progress by active quiz topics
+        $progress = $user->progress()->whereIn('topic', $activeQuizTopics)->get();
 
         return view('student.dashboard', compact('quizzes', 'progress', 'teacherIds', 'teacherName'));
     }
