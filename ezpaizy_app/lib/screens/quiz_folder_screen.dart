@@ -93,6 +93,53 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Calculate progression locking logic matching Web
+    final easyQuizzes = quizzes.where((q) => q['difficulty']?.toString().toLowerCase() == 'easy');
+    final mediumQuizzes = quizzes.where((q) => q['difficulty']?.toString().toLowerCase() == 'medium');
+
+    bool easyAllPassed = true;
+    for (var eq in easyQuizzes) {
+      final progressList = eq['progress'] as List?;
+      bool passed = false;
+      if (progressList != null && progressList.isNotEmpty) {
+        for (var p in progressList) {
+          final score = p['score'] ?? 0;
+          final status = p['status'] ?? 'pending';
+          if (score >= 80 && status != 'pending') {
+            passed = true;
+            break;
+          }
+        }
+      }
+      if (!passed) {
+        easyAllPassed = false;
+        break;
+      }
+    }
+
+    bool mediumAllPassed = true;
+    for (var mq in mediumQuizzes) {
+      final progressList = mq['progress'] as List?;
+      bool passed = false;
+      if (progressList != null && progressList.isNotEmpty) {
+        for (var p in progressList) {
+          final score = p['score'] ?? 0;
+          final status = p['status'] ?? 'pending';
+          if (score >= 80 && status != 'pending') {
+            passed = true;
+            break;
+          }
+        }
+      }
+      if (!passed) {
+        mediumAllPassed = false;
+        break;
+      }
+    }
+
+    final mediumLocked = !easyAllPassed;
+    final hardLocked = !mediumAllPassed;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -196,7 +243,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                   maxCrossAxisExtent: 280,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16,
-                                  mainAxisExtent: 250, // Fixed height for dynamic clean cards
+                                  mainAxisExtent: 275, // Increased height to accommodate locking messages & progress bars
                                 ),
                                 itemCount: filteredQuizzes.length,
                                 itemBuilder: (context, i) {
@@ -221,6 +268,39 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                   final hasAttempted = bestProgress != null;
                                   final scoreVal = bestProgress?['score'] ?? 0;
                                   final statusVal = bestProgress?['status'] ?? 'pending';
+
+                                  // Check locking rules matching Web
+                                  final isLocked = (diff.toString().toLowerCase() == 'medium' && mediumLocked) ||
+                                                   (diff.toString().toLowerCase() == 'hard' && hardLocked);
+
+                                  String diffLabel = diff.toString().toUpperCase();
+                                  if (diff.toString().toLowerCase() == 'easy') diffLabel = '🟢 EASY';
+                                  if (diff.toString().toLowerCase() == 'medium') diffLabel = '🟡 MEDIUM';
+                                  if (diff.toString().toLowerCase() == 'hard') diffLabel = '🔴 HARD';
+
+                                  // Status pill matching Web
+                                  String statusText = '⚪ NOT STARTED';
+                                  Color statusBg = const Color(0xFFF1F5F9);
+                                  Color statusFg = const Color(0xFF64748B);
+
+                                  if (hasAttempted) {
+                                    if (statusVal == 'pending') {
+                                      statusText = '🟡 AWAITING GRADING';
+                                      statusBg = const Color(0xFFFEF3C7);
+                                      statusFg = const Color(0xFFD97706);
+                                    } else {
+                                      statusText = '🟢 COMPLETED';
+                                      statusBg = const Color(0xFFDCFCE7);
+                                      statusFg = const Color(0xFF15803D);
+                                    }
+                                  }
+
+                                  Color progressColor = const Color(0xFFEF4444); // red default
+                                  if (scoreVal >= 70) {
+                                    progressColor = const Color(0xFF22C55E); // green
+                                  } else if (scoreVal >= 50) {
+                                    progressColor = const Color(0xFFF59E0B); // amber
+                                  }
 
                                   return Container(
                                     decoration: BoxDecoration(
@@ -250,7 +330,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                                 borderRadius: BorderRadius.circular(12),
                                               ),
                                               child: Text(
-                                                diff.toString().toUpperCase(),
+                                                diffLabel,
                                                 style: TextStyle(
                                                   color: _diffColor(diff),
                                                   fontSize: 9,
@@ -280,58 +360,112 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        const SizedBox(height: 2),
-
-                                        // Teacher
-                                        Row(
-                                          children: [
-                                            const Icon(Icons.person, size: 12, color: Color(0xFF94A3B8)),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              'By: ${q['teacher']?['name'] ?? 'Teacher'}',
-                                              style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
-                                            ),
-                                          ],
-                                        ),
                                         const SizedBox(height: 12),
 
-                                        // Score Row matching Web Card
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text(
-                                              'Best Score',
-                                              style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
+                                        // Web aligned Status & Progress Section
+                                        if (isLocked)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFFEF3C7),
+                                              borderRadius: BorderRadius.circular(8),
                                             ),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                color: hasAttempted 
-                                                    ? (statusVal == 'completed' ? const Color(0xFFE6F4EA) : const Color(0xFFFFF4E5))
-                                                    : const Color(0xFFF1F5F9),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                              child: Text(
-                                                hasAttempted ? '$scoreVal%' : 'NOT STARTED',
+                                            child: Row(
+                                              children: [
+                                                const Icon(Icons.lock, size: 12, color: Color(0xFFD97706)),
+                                                const SizedBox(width: 4),
+                                                Expanded(
+                                                  child: Text(
+                                                    diff.toString().toLowerCase() == 'medium'
+                                                        ? 'Locked: Complete all Easy quizzes with 80%+'
+                                                        : 'Locked: Complete all Medium quizzes with 80%+',
+                                                    style: const TextStyle(
+                                                      fontSize: 8,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFFB45309),
+                                                      fontFamily: 'Outfit',
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        else ...[
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text(
+                                                'STATUS',
                                                 style: TextStyle(
                                                   fontSize: 9,
                                                   fontWeight: FontWeight.bold,
-                                                  color: hasAttempted 
-                                                      ? (statusVal == 'completed' ? const Color(0xFF137333) : const Color(0xFFB06000))
-                                                      : const Color(0xFF64748B),
+                                                  color: Color(0xFF64748B),
+                                                  letterSpacing: 0.5,
                                                   fontFamily: 'Outfit',
                                                 ),
                                               ),
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: statusBg,
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: Text(
+                                                  statusText,
+                                                  style: TextStyle(
+                                                    fontSize: 8,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: statusFg,
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),
+                                          if (hasAttempted) ...[
+                                            if (statusVal == 'pending') ...[
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(4),
+                                                child: const LinearProgressIndicator(
+                                                  minHeight: 8,
+                                                  backgroundColor: Color(0xFFE2E8F0),
+                                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                                                ),
+                                              ),
+                                            ] else ...[
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    'Best Score',
+                                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                                  ),
+                                                  Text(
+                                                    '$scoreVal%',
+                                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: progressColor, fontFamily: 'Outfit'),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 4),
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(4),
+                                                child: LinearProgressIndicator(
+                                                  minHeight: 8,
+                                                  value: scoreVal / 100.0,
+                                                  backgroundColor: const Color(0xFFE2E8F0),
+                                                  valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+                                                ),
+                                              ),
+                                            ],
+                                          ] else ...[
+                                            const Text(
+                                              'Not attempted yet',
+                                              style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontStyle: FontStyle.italic, fontFamily: 'Outfit'),
                                             ),
                                           ],
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          hasAttempted 
-                                              ? (statusVal == 'completed' ? 'Successfully completed' : 'Grading pending') 
-                                              : 'Not attempted yet',
-                                          style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
-                                        ),
+                                        ],
+
                                         const Spacer(),
 
                                         // Stats Row (Questions and Category pill)
@@ -343,47 +477,87 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                                 const Icon(Icons.help_outline, size: 12, color: Color(0xFF94A3B8)),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  '$count Questions',
+                                                  '$count Question${count != 1 ? 's' : ''}',
                                                   style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontFamily: 'Outfit'),
                                                 ),
                                               ],
                                             ),
-                                            Text(
-                                              widget.topic.toUpperCase(),
-                                              style: const TextStyle(
-                                                fontSize: 9, 
-                                                fontWeight: FontWeight.bold, 
-                                                color: Color(0xFFD946EF), // Fuchsia matching web category
-                                                fontFamily: 'Outfit',
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFFDF4FF),
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              child: Text(
+                                                widget.topic.toUpperCase(),
+                                                style: const TextStyle(
+                                                  fontSize: 8, 
+                                                  fontWeight: FontWeight.bold, 
+                                                  color: Color(0xFFD946EF), // Fuchsia matching web category
+                                                  fontFamily: 'Outfit',
+                                                ),
                                               ),
                                             ),
                                           ],
                                         ),
                                         const SizedBox(height: 10),
 
-                                        // Take Quiz Button (Teal/Green style matching web)
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height: 32,
-                                          child: ElevatedButton(
-                                            onPressed: () => _onTakeQuiz(q),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(0xFF0F9D58), // Green matching web button
-                                              foregroundColor: Colors.white,
-                                              elevation: 0,
-                                              padding: EdgeInsets.zero,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                        // Aligned Buttons
+                                        if (isLocked)
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height: 32,
+                                            child: ElevatedButton.icon(
+                                              onPressed: null,
+                                              icon: const Icon(Icons.lock, size: 12),
+                                              label: const Text('Locked', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xFFCBD5E1),
+                                                disabledBackgroundColor: const Color(0xFFCBD5E1),
+                                                disabledForegroundColor: const Color(0xFF64748B),
+                                                elevation: 0,
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              ),
                                             ),
-                                            child: const Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text('Take Quiz', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
-                                                SizedBox(width: 4),
-                                                Icon(Icons.arrow_forward, size: 10),
-                                              ],
+                                          )
+                                        else if (hasAttempted)
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height: 32,
+                                            child: OutlinedButton.icon(
+                                              onPressed: () => _onTakeQuiz(q),
+                                              icon: const Icon(Icons.refresh, size: 12),
+                                              label: const Text('Retake Quiz', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+                                              style: OutlinedButton.styleFrom(
+                                                foregroundColor: const Color(0xFF3B82F6),
+                                                side: const BorderSide(color: Color(0xFF3B82F6)),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              ),
+                                            ),
+                                          )
+                                        else
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height: 32,
+                                            child: ElevatedButton(
+                                              onPressed: () => _onTakeQuiz(q),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xFF0F9D58),
+                                                foregroundColor: Colors.white,
+                                                elevation: 0,
+                                                padding: EdgeInsets.zero,
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              ),
+                                              child: const Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text('Take Quiz', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+                                                  SizedBox(width: 4),
+                                                  Icon(Icons.arrow_forward, size: 10),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
                                       ],
                                     ),
                                   );
