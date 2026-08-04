@@ -180,64 +180,120 @@ class StudentApiController extends Controller
     }
 
     /**
-     * All quizzes.
+     * All quizzes generated dynamically from questions and progress.
      */
-    public function quizzes()
+    public function quizzes(Request $request)
     {
-        $user = auth()->user();
+        $user = $request->user();
         $teacherIds = \App\Models\User::where('role', 'teacher')
             ->where('class_name', $user->class_name)
             ->pluck('id')
             ->toArray();
 
-        $quizzes = Quiz::where('is_flagged', false)
-            ->whereIn('teacher_id', $teacherIds)
-            ->with('teacher')
-            ->with(['progress' => function($q) use ($user) {
-                $q->where('student_id', $user->id);
-            }])
-            ->withCount('questions')
-            ->latest()
-            ->get();
+        $topics = \App\Models\Topic::where('type', 'quiz')
+            ->whereIn('user_id', $teacherIds)
+            ->pluck('name')
+            ->toArray();
 
-        // Group by topic to calculate locks
-        $quizzesByTopic = $quizzes->groupBy('topic');
+        $allQuizzes = collect();
 
-        $result = $quizzes->map(function ($quiz) use ($quizzesByTopic) {
-            $topicQuizzes = $quizzesByTopic[$quiz->topic ?? ''] ?? collect();
-            
+        foreach ($topics as $topic) {
+            $difficulties = \App\Models\Question::where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->pluck('difficulty')
+                ->toArray();
+
+            $pDiffs = \App\Models\Progress::where('student_id', $user->id)
+                ->where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->pluck('difficulty')
+                ->toArray();
+
+            $difficulties = array_values(array_unique(array_filter(array_merge($difficulties, $pDiffs))));
+            $progressRecords = \App\Models\Progress::where('student_id', $user->id)
+                ->where('topic', $topic)
+                ->get();
+
+            $classTeacher = \App\Models\User::where('role', 'teacher')
+                ->where('class_name', $user->class_name)
+                ->first();
+
+            foreach ($difficulties as $diff) {
+                $quizIdStr = $topic . '_' . $diff;
+                $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
+
+                $qCount = \App\Models\Question::where('topic', $topic)
+                    ->where('difficulty', $diff)
+                    ->count();
+
+                $quizProgress = $progressRecords->where('difficulty', $diff)->values()->toArray();
+
+                $quiz = [
+                    'id' => $quizIdInt,
+                    'topic' => $topic,
+                    'difficulty' => $diff,
+                    'title' => $topic . ' (' . ucfirst($diff) . ')',
+                    'questions_count' => $qCount,
+                    'teacher' => $classTeacher ? [
+                        'id' => $classTeacher->id,
+                        'name' => $classTeacher->name,
+                    ] : null,
+                    'progress' => $quizProgress,
+                    'is_locked' => false,
+                ];
+
+                $allQuizzes->push($quiz);
+            }
+        }
+
+        $quizzesByTopic = $allQuizzes->groupBy('topic');
+        $finalQuizzes = collect();
+
+        foreach ($quizzesByTopic as $topic => $topicQuizzes) {
             $easyQuizzes = $topicQuizzes->where('difficulty', 'easy');
             $mediumQuizzes = $topicQuizzes->where('difficulty', 'medium');
 
             $easyAllPassed = true;
             if ($easyQuizzes->count() > 0) {
                 foreach ($easyQuizzes as $eq) {
-                    $prog = $eq->progress->first();
-                    if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
+                    $prog = count($eq['progress']) > 0 ? $eq['progress'][0] : null;
+                    if (!$prog || $prog['score'] < 80 || $prog['status'] === 'pending') {
                         $easyAllPassed = false;
                         break;
                     }
                 }
+            } else {
+                $easyAllPassed = false;
             }
 
             $mediumAllPassed = true;
             if ($mediumQuizzes->count() > 0) {
                 foreach ($mediumQuizzes as $mq) {
-                    $prog = $mq->progress->first();
-                    if (!$prog || $prog->score < 80 || $prog->status === 'pending') {
+                    $prog = count($mq['progress']) > 0 ? $mq['progress'][0] : null;
+                    if (!$prog || $prog['score'] < 80 || $prog['status'] === 'pending') {
                         $mediumAllPassed = false;
                         break;
                     }
                 }
+            } else {
+                $mediumAllPassed = false;
             }
 
-            $isLocked = false;
+            foreach ($topicQuizzes as $quiz) {
+                if ($quiz['difficulty'] === 'medium') {
+                    $quiz['is_locked'] = !$easyAllPassed;
+                } elseif ($quiz['difficulty'] === 'hard') {
+                    $quiz['is_locked'] = !$mediumAllPassed;
+                } else {
+                    $quiz['is_locked'] = false;
+                }
+                $finalQuizzes->push($quiz);
+            }
+        }
 
-            $quiz->is_locked = $isLocked;
-            return $quiz;
-        });
-
-        return response()->json($result);
+        return response()->json($finalQuizzes);
     }
 
     /**
@@ -262,24 +318,140 @@ class StudentApiController extends Controller
     }
 
     /**
-     * Single quiz with questions.
+     * Single quiz detail lookup via dynamically computed CRC32 ID.
      */
-    public function quizDetail(Quiz $quiz)
+    public function quizDetail(Request $request, $id)
     {
-        $quiz->load('questions');
-        return response()->json($quiz);
+        $user = $request->user();
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
+
+        $topics = \App\Models\Topic::where('type', 'quiz')
+            ->whereIn('user_id', $teacherIds)
+            ->pluck('name')
+            ->toArray();
+
+        $matchedTopic = null;
+        $matchedDifficulty = null;
+
+        foreach ($topics as $topic) {
+            $difficulties = \App\Models\Question::where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->pluck('difficulty')
+                ->toArray();
+
+            $pDiffs = \App\Models\Progress::where('student_id', $user->id)
+                ->where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->pluck('difficulty')
+                ->toArray();
+
+            $difficulties = array_values(array_unique(array_filter(array_merge($difficulties, $pDiffs))));
+
+            foreach ($difficulties as $diff) {
+                $quizIdStr = $topic . '_' . $diff;
+                $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
+
+                if ($quizIdInt == $id) {
+                    $matchedTopic = $topic;
+                    $matchedDifficulty = $diff;
+                    break 2;
+                }
+            }
+        }
+
+        if (!$matchedTopic || !$matchedDifficulty) {
+            return response()->json(['error' => 'Quiz not found'], 404);
+        }
+
+        $questions = \App\Models\Question::where('topic', $matchedTopic)
+            ->where('difficulty', $matchedDifficulty)
+            ->get();
+
+        $classTeacher = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->first();
+
+        $quizProgress = \App\Models\Progress::where('student_id', $user->id)
+            ->where('topic', $matchedTopic)
+            ->where('difficulty', $matchedDifficulty)
+            ->get();
+
+        return response()->json([
+            'id' => intval($id),
+            'topic' => $matchedTopic,
+            'difficulty' => $matchedDifficulty,
+            'title' => $matchedTopic . ' (' . ucfirst($matchedDifficulty) . ')',
+            'questions' => $questions,
+            'teacher' => $classTeacher ? [
+                'id' => $classTeacher->id,
+                'name' => $classTeacher->name,
+            ] : null,
+            'progress' => $quizProgress,
+        ]);
     }
 
     /**
-     * Submit quiz answers — auto-grade MCQ, pending for hard/essay.
+     * Submit quiz answers — dynamically graded and saved.
      */
-    public function submitQuiz(Request $request, Quiz $quiz)
+    public function submitQuiz(Request $request, $id)
     {
-        $user      = $request->user();
-        $answers   = $request->input('answers', []);
-        $questions = $quiz->questions;
+        $user = $request->user();
+        $answers = $request->input('answers', []);
+        
+        $teacherIds = \App\Models\User::where('role', 'teacher')
+            ->where('class_name', $user->class_name)
+            ->pluck('id')
+            ->toArray();
 
-        // Auto-grade multiple choice
+        $topics = \App\Models\Topic::where('type', 'quiz')
+            ->whereIn('user_id', $teacherIds)
+            ->pluck('name')
+            ->toArray();
+
+        $matchedTopic = null;
+        $matchedDifficulty = null;
+
+        foreach ($topics as $topic) {
+            $difficulties = \App\Models\Question::where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->pluck('difficulty')
+                ->toArray();
+
+            $pDiffs = \App\Models\Progress::where('student_id', $user->id)
+                ->where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->pluck('difficulty')
+                ->toArray();
+
+            $difficulties = array_values(array_unique(array_filter(array_merge($difficulties, $pDiffs))));
+
+            foreach ($difficulties as $diff) {
+                $quizIdStr = $topic . '_' . $diff;
+                $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
+
+                if ($quizIdInt == $id) {
+                    $matchedTopic = $topic;
+                    $matchedDifficulty = $diff;
+                    break 2;
+                }
+            }
+        }
+
+        if (!$matchedTopic || !$matchedDifficulty) {
+            return response()->json(['error' => 'Quiz not found'], 404);
+        }
+
+        $questions = \App\Models\Question::where('topic', $matchedTopic)
+            ->where('difficulty', $matchedDifficulty)
+            ->get();
+
         $correct = 0;
         foreach ($questions as $i => $q) {
             $key = (string) $i;
@@ -288,24 +460,28 @@ class StudentApiController extends Controller
             }
         }
 
-        $score  = $questions->count() > 0
+        $score = $questions->count() > 0
             ? (int) round(($correct / $questions->count()) * 100)
             : 0;
-        $status = ($quiz->difficulty === 'hard' || $quiz->difficulty === 'medium') ? 'pending' : 'completed';
+            
+        $status = ($matchedDifficulty === 'hard' || $matchedDifficulty === 'medium') ? 'pending' : 'completed';
 
-        // Upsert progress
-        $progress = Progress::updateOrCreate(
-            ['student_id' => $user->id, 'quiz_id' => $quiz->id],
+        $progress = \App\Models\Progress::updateOrCreate(
             [
-                'score'           => $score,
+                'student_id' => $user->id,
+                'topic' => $matchedTopic,
+                'difficulty' => $matchedDifficulty,
+            ],
+            [
+                'score' => $score,
                 'student_answers' => $answers,
-                'status'          => $status,
+                'status' => $status,
             ]
         );
 
         return response()->json([
-            'score'    => $score,
-            'status'   => $status,
+            'score' => $score,
+            'status' => $status,
             'progress' => $progress,
         ]);
     }
