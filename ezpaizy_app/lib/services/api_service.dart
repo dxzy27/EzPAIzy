@@ -261,6 +261,18 @@ class ApiService {
         headers: await _headers());
   }
 
+  static Future<bool> resetFlashcardProgress(int setId) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$baseUrl/student/flashcards/$setId/reset'),
+        headers: await _headers(),
+      );
+      return res.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
+  }
+
   static Future<Map<String, dynamic>> getDailyQuran() async {
     final res = await http.get(Uri.parse('$baseUrl/student/daily-quran'),
         headers: await _headers());

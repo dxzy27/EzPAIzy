@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/student/flashcards/{set}',      [StudentApiController::class, 'flashcardDetail']);
     Route::get('/student/flashcards/{set}/study', [StudentApiController::class, 'studyFlashcards']);
     Route::post('/student/flashcards/{flashcard}/review', [StudentApiController::class, 'reviewFlashcard']);
+    Route::post('/student/flashcards/{set}/reset', [StudentApiController::class, 'resetFlashcardSet']);
 
     // Progress
     Route::get('/student/progress',                 [StudentApiController::class, 'progress']);

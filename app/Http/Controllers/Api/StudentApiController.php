@@ -1080,4 +1080,17 @@ class StudentApiController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    /**
+     * Reset flashcard progress for a set (for authenticated student).
+     */
+    public function resetFlashcardSet(Request $request, \App\Models\FlashcardSet $set)
+    {
+        $cardIds = $set->flashcards()->pluck('id')->toArray();
+        \App\Models\FlashcardProgress::where('user_id', $request->user()->id)
+            ->whereIn('flashcard_id', $cardIds)
+            ->delete();
+
+        return response()->json(['success' => true]);
+    }
 }
