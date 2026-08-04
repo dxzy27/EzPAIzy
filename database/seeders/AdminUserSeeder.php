@@ -27,7 +27,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'adminezpaizy@gmail.com'],
             [
                 'name' => 'System Admin',
-                'password' => Hash::make('Admin@123'),
+                'password' => '$2y$12$3e7RHOHF0AI7SjHDDjEqIuYASa5nQEZsrvvjI4QjgNZEfc3jiYhtm',
                 'role' => 'admin',
                 'email_verified_at' => now(),
             ]
