@@ -6,7 +6,7 @@
 <nav class="ez-topnav">
     <div class="ez-topnav-container">
         <div class="ez-topnav-brand">
-            <img src="{{ asset('images/newlogo.png') }}?v={{ time() }}" alt="EzPAIzy Logo" class="brand-new-logo" style="height: 48px; width: auto; object-fit: contain;">
+            <img src="{{ asset('images/newlogo.png') }}?v={{ time() }}" alt="EzPAIzy Logo" class="brand-new-logo" style="height: 75px; width: auto; object-fit: contain;">
         </div>
         <div class="ez-topnav-actions">
             <a href="{{ route('login') }}" class="topnav-btn">Log in</a>
@@ -230,7 +230,7 @@
 
     .ez-topnav {
         position: fixed; top: 0; left: 0; right: 0;
-        height: 60px; 
+        height: 90px; 
         background: rgba(255, 255, 255, 0.15) !important;
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
@@ -264,9 +264,9 @@
         to { opacity: 1; transform: translateY(0); }
     }
     .page-wrap {
-        min-height: 100vh; padding-top: 60px;
+        min-height: 100vh; padding-top: 90px;
         display: flex; align-items: center; justify-content: center;
-        padding: 84px 20px 40px;
+        padding: 114px 20px 40px;
         animation: fadeIn 0.45s ease-out forwards;
     }
 

@@ -5,7 +5,7 @@
 {{-- ── Top Navigation Bar ──────────────────────────────────────── --}}
 <nav class="ez-topnav">
     <div class="ez-topnav-brand">
-        <img src="{{ asset('images/newlogo.png') }}?v={{ time() }}" alt="EzPAIzy Logo" class="brand-new-logo" style="height: 48px; width: auto; object-fit: contain;">
+        <img src="{{ asset('images/newlogo.png') }}?v={{ time() }}" alt="EzPAIzy Logo" class="brand-new-logo" style="height: 75px; width: auto; object-fit: contain;">
     </div>
     <div class="ez-topnav-actions">
         <a href="{{ route('login') }}" class="topnav-btn">Log in</a>
@@ -102,7 +102,7 @@
     /* ── Top Nav ─────────────────────────────────── */
     .ez-topnav {
         position: fixed; top: 0; left: 0; right: 0;
-        height: 64px; 
+        height: 90px; 
         background: rgba(255, 255, 255, 0.4) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
@@ -124,7 +124,7 @@
 
     /* ── Page Layout ─────────────────────────────── */
     .page-wrap {
-        min-height: 100vh; padding-top: 64px;
+        min-height: 100vh; padding-top: 90px;
         display: flex; align-items: center; justify-content: center;
         padding-bottom: 40px;
     }
