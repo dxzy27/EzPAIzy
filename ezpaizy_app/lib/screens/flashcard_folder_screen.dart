@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
+import '../providers/auth_provider.dart';
 
 class FlashcardFolderScreen extends StatefulWidget {
   final String topic;
@@ -106,60 +108,15 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
       return;
     }
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 8),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  s['title'] ?? 'Open Flashcard',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
-                ),
-              ),
-              const SizedBox(height: 20),
-              ListTile(
-                leading: const Icon(Icons.menu_book, color: Color(0xFF10B981)),
-                title: const Text('Read Mode (Study & Memorize)', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
-                subtitle: const Text('Go through flashcard terms page-by-page', style: TextStyle(fontFamily: 'Outfit')),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  context.push('/flashcards/${s['id']}');
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.psychology, color: Color(0xFF3B82F6)),
-                title: const Text('Practice Mode (Active Recall)', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
-                subtitle: const Text('Challenge your memory using cards matching', style: TextStyle(fontFamily: 'Outfit')),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  context.push('/flashcards/${s['id']}/practice');
-                },
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        );
-      },
-    );
+    final style = Provider.of<AuthProvider>(context, listen: false).user?['learning_style']?.toString().toLowerCase();
+
+    if (style == 'kinesthetic') {
+      // Kinesthetic learners go directly to Practice Mode
+      context.push('/flashcards/${s['id']}/practice');
+    } else {
+      // All other styles (visual, auditory, read_write, null) go directly to Read Mode
+      context.push('/flashcards/${s['id']}');
+    }
   }
 
   @override

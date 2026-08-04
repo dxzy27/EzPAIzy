@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
+import '../providers/auth_provider.dart';
 
 class QuizFolderScreen extends StatefulWidget {
   final String topic;
@@ -57,6 +59,16 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
         return const Color(0xFFFEE2E2); // light red
       default:
         return const Color(0xFFDBEAFE);
+    }
+  }
+
+  void _onTakeQuiz(Map<String, dynamic> q) {
+    final style = Provider.of<AuthProvider>(context, listen: false).user?['learning_style']?.toString().toLowerCase();
+
+    if (style == 'kinesthetic') {
+      context.push('/quiz/${q['id']}/practice');
+    } else {
+      context.push('/quiz/${q['id']}');
     }
   }
 
@@ -313,7 +325,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
                                           width: double.infinity,
                                           height: 32,
                                           child: ElevatedButton(
-                                            onPressed: () => context.push('/quiz/${q['id']}'),
+                                            onPressed: () => _onTakeQuiz(q),
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: const Color(0xFF0F9D58), // Green matching web button
                                               foregroundColor: Colors.white,
@@ -345,4 +357,4 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
       ),
     );
   }
-}
+
