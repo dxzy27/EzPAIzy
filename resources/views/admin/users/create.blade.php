@@ -62,10 +62,15 @@
                         </select>
                     </div>
 
-                    {{-- Class Name (For Students only) --}}
+                    {{-- Class Name (For Students and Teachers) --}}
                     <div class="col-md-6" id="classInputGroup">
                         <label class="form-label small fw-bold">Class Name</label>
-                        <input type="text" name="class_name" class="form-control" placeholder="e.g. 5 Al-Ghazali" value="{{ old('class_name') }}">
+                        <select name="class_name" class="form-select">
+                            <option value="">No Class / Unassigned</option>
+                            @foreach($schoolClasses as $sc)
+                                <option value="{{ $sc->name }}" {{ old('class_name') === $sc->name ? 'selected' : '' }}>{{ $sc->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     {{-- Phone Number --}}
@@ -96,7 +101,7 @@
         const classInputGroup = document.getElementById('classInputGroup');
 
         function toggleClassInput() {
-            if (roleSelect.value === 'student') {
+            if (roleSelect.value === 'student' || roleSelect.value === 'teacher') {
                 classInputGroup.style.display = 'block';
             } else {
                 classInputGroup.style.display = 'none';

@@ -38,7 +38,8 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('admin.users.create');
+        $schoolClasses = \App\Models\SchoolClass::orderBy('name')->get();
+        return view('admin.users.create', compact('schoolClasses'));
     }
 
     public function store(Request $request)
@@ -69,7 +70,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $schoolClasses = \App\Models\SchoolClass::orderBy('name')->get();
+        return view('admin.users.edit', compact('user', 'schoolClasses'));
     }
 
     public function update(Request $request, User $user)
