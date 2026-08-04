@@ -112,10 +112,10 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
 
     if (style == 'kinesthetic') {
       // Kinesthetic learners go directly to Practice Mode
-      context.push('/flashcards/${s['id']}/practice');
+      context.push('/flashcards/${s['id']}/practice').then((_) => _load());
     } else {
       // All other styles (visual, auditory, read_write, null) go directly to Read Mode
-      context.push('/flashcards/${s['id']}');
+      context.push('/flashcards/${s['id']}').then((_) => _load());
     }
   }
 
@@ -260,9 +260,9 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
                                   final mastered = stats?['mastered'] ?? 0;
                                   final review = stats?['review'] ?? 0;
                                   final learning = stats?['learning'] ?? 0;
-                                  final newCount = cards - (mastered + review + learning);
+                                  final newCount = stats?['new'] ?? (cards - (mastered + review + learning));
 
-                                  final double pct = cards == 0 ? 0.0 : (mastered / cards);
+                                  final double pct = cards == 0 ? 0.0 : ((mastered + review) / cards);
                                   final pctText = '${(pct * 100).toStringAsFixed(0)}%';
 
                                   return Container(
@@ -367,7 +367,7 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
                                            children: [
                                              _buildBadge('$newCount New', const Color(0xFF64748B), const Color(0xFFF1F5F9)),
                                              _buildBadge('Learning $learning', const Color(0xFFEA580C), const Color(0xFFFFF7ED)),
-                                             _buildBadge('Mastered $mastered', const Color(0xFF16A34A), const Color(0xFFF0FDF4)),
+                                             _buildBadge('Mastered ${mastered + review}', const Color(0xFF16A34A), const Color(0xFFF0FDF4)),
                                            ],
                                          ),
                                         const SizedBox(height: 12),
