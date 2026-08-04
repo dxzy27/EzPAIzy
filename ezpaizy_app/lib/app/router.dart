@@ -43,6 +43,12 @@ class AppRouter {
             path: '/register',
             builder: (_, _) => const RegisterScreen(),
           ),
+          GoRoute(
+            path: '/quiz/:id',
+            builder: (_, state) => TakeQuizScreen(
+              quizId: int.parse(state.pathParameters['id']!),
+            ),
+          ),
           ShellRoute(
             builder: (context, state, child) =>
                 ScaffoldWithNav(child: child),
@@ -59,12 +65,6 @@ class AppRouter {
                 path: '/quizzes/folder/:topic',
                 builder: (_, state) => QuizFolderScreen(
                   topic: Uri.decodeComponent(state.pathParameters['topic']!),
-                ),
-              ),
-              GoRoute(
-                path: '/quiz/:id',
-                builder: (_, state) => TakeQuizScreen(
-                  quizId: int.parse(state.pathParameters['id']!),
                 ),
               ),
               GoRoute(

@@ -95,83 +95,176 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
     final isReadWrite = auth.user?['learning_style'] == 'read_write';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(quiz!['title'] ?? 'Quiz'),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => context.pop(),
+      backgroundColor: const Color(0xFFF1F5F9), // Soft grey background matching web
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      body: Column(
-        children: [
-          // Progress bar
-          LinearProgressIndicator(
-            value: (currentPage + 1) / questions.length,
-            backgroundColor: Colors.grey.shade200,
-            color: AppTheme.primaryLight,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Question ${currentPage + 1} of ${questions.length}',
-                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                Text('${answers.length} answered',
-                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
-              ],
-            ),
-          ),
-
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _buildQuestion(q, currentPage),
-                  if (isReadWrite) ...[
-                    const SizedBox(height: 20),
-                    StudyNotepadWidget(
-                      resourceType: 'quiz',
-                      resourceId: widget.quizId,
-                      topic: quiz!['topic'] ?? 'General',
-                      defaultTitle: 'Notes: ${quiz!['title'] ?? ''}',
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.15),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800), // Match web container max-width 800
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16), // Rounded card corners
+                      border: Border.all(color: const Color(0xFFE2E8F0)), // Slate-200 border
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ],
-                ],
-              ),
-            ),
-          ),
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Header: Title and Back button
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () => context.pop(),
+                              borderRadius: BorderRadius.circular(8),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4),
+                                child: Icon(Icons.arrow_back, color: Color(0xFF64748B), size: 22),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                quiz!['title'] ?? 'Quiz',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1E293B),
+                                  fontFamily: 'Outfit',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
 
-          // Navigation buttons
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                if (currentPage > 0)
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () =>
-                          setState(() => currentPage--),
-                      child: const Text('Previous'),
-                    ),
-                  ),
-                if (currentPage > 0) const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton(
-                    onPressed: currentPage < questions.length - 1
-                        ? () => setState(() => currentPage++)
-                        : _submit,
-                    child: Text(
-                      currentPage < questions.length - 1 ? 'Next' : 'Submit',
+                        // Subtitle: Progress Text
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Question ${currentPage + 1} of ${questions.length}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF64748B),
+                                fontFamily: 'Outfit',
+                              ),
+                            ),
+                            Text(
+                              '${answers.length} answered',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF64748B),
+                                fontFamily: 'Outfit',
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Thin Progress Bar
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: LinearProgressIndicator(
+                            value: (currentPage + 1) / questions.length,
+                            backgroundColor: const Color(0xFFF1F5F9),
+                            color: const Color(0xFF3B82F6), // Web primary blue
+                            minHeight: 6,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Divider(color: Color(0xFFE2E8F0), thickness: 1),
+                        const SizedBox(height: 12),
+
+                        // Question & Options Content
+                        _buildQuestion(q, currentPage),
+
+                        if (isReadWrite) ...[
+                          const SizedBox(height: 20),
+                          StudyNotepadWidget(
+                            resourceType: 'quiz',
+                            resourceId: widget.quizId,
+                            topic: quiz!['topic'] ?? 'General',
+                            defaultTitle: 'Notes: ${quiz!['title'] ?? ''}',
+                          ),
+                        ],
+
+                        const SizedBox(height: 24),
+                        const Divider(color: Color(0xFFE2E8F0), thickness: 1),
+                        const SizedBox(height: 16),
+
+                        // Footer Navigation buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Previous Button
+                            OutlinedButton(
+                              onPressed: currentPage > 0
+                                  ? () => setState(() => currentPage--)
+                                  : null,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF64748B),
+                                side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              ),
+                              child: const Text(
+                                'Previous',
+                                style: TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
+                              ),
+                            ),
+
+                            // Next/Submit Button
+                            ElevatedButton(
+                              onPressed: (q['type'] == 'mcq' && answers[currentPage] == null)
+                                  ? null // Disable if MCQ and no answer selected
+                                  : (currentPage < questions.length - 1
+                                      ? () => setState(() => currentPage++)
+                                      : _submit),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF3B82F6), // Web primary blue
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                currentPage < questions.length - 1 ? 'Next' : 'Submit',
+                                style: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -179,70 +272,93 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
   Widget _buildQuestion(Map<String, dynamic> q, int index) {
     final optionsData = q['options'];
     final Map<String, dynamic>? options = (optionsData is Map<String, dynamic>) ? optionsData : null;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              q['question_text'] ?? '',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 20),
-            if (options != null && options.isNotEmpty)
-              ...options.entries.map((entry) {
-                final selected = answers[index] == entry.key;
-                return GestureDetector(
-                  onTap: () => setState(() => answers[index] = entry.key),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: selected
-                          ? AppTheme.primary.withOpacity(0.1)
-                          : Colors.white,
-                      border: Border.all(
-                        color: selected ? AppTheme.primary : Colors.grey.shade300,
-                        width: selected ? 2 : 1,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Question Text
+        Text(
+          q['question_text'] ?? '',
+          style: const TextStyle(
+            fontSize: 24, // Matches large web title size
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F172A),
+            fontFamily: 'Outfit',
+            height: 1.45,
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // MCQ Options
+        if (options != null && options.isNotEmpty)
+          ...options.entries.map((entry) {
+            final selected = answers[index] == entry.key;
+            return GestureDetector(
+              onTap: () => setState(() => answers[index] = entry.key),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? const Color(0xFFEFF6FF) // Light blue selected bg
+                      : Colors.white,
+                  border: Border.all(
+                    color: selected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0),
+                    width: selected ? 2 : 1,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    // Circle Badge with Letter
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: selected ? const Color(0xFF3B82F6) : const Color(0xFFEFF6FF), // Blue when selected, light blue when not
+                        border: Border.all(color: const Color(0xFF3B82F6), width: 1.5),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 14,
-                          backgroundColor: selected
-                              ? AppTheme.primary
-                              : Colors.grey.shade200,
-                          child: Text(
-                            entry.key.toUpperCase(),
-                            style: TextStyle(
-                              color: selected ? Colors.white : Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
+                      child: Center(
+                        child: Text(
+                          entry.key.toUpperCase(),
+                          style: TextStyle(
+                            color: selected ? Colors.white : const Color(0xFF3B82F6),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            fontFamily: 'Outfit',
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(child: Text(entry.value ?? '')),
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              })
-            else
-              TextField(
-                maxLines: 4,
-                onChanged: (val) => answers[index] = val,
-                decoration: const InputDecoration(
-                  hintText: 'Type your answer here...',
-                  border: OutlineInputBorder(),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        entry.value ?? '',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF1E293B),
+                          fontFamily: 'Outfit',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-          ],
-        ),
-      ),
+            );
+          })
+        else
+          TextField(
+            maxLines: 4,
+            onChanged: (val) => answers[index] = val,
+            style: const TextStyle(fontFamily: 'Outfit'),
+            decoration: const InputDecoration(
+              hintText: 'Type your answer here...',
+              hintStyle: TextStyle(fontFamily: 'Outfit', color: Color(0xFF94A3B8)),
+              border: OutlineInputBorder(),
+            ),
+          ),
+      ],
     );
   }
 
