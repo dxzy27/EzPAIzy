@@ -2,7 +2,6 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 class TtsService {
   static final FlutterTts _flutterTts = FlutterTts();
-  static bool _isInitialized = false;
 
   static Future<void> _init() async {
     print("TTS: Initializing TtsService...");

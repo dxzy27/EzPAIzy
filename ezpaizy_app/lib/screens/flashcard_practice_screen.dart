@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../services/tts_service.dart';
+import '../widgets/visual_highlight_text.dart';
 
 class FlashcardPracticeScreen extends StatefulWidget {
   final int setId;
@@ -355,6 +356,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                                           text: card['term'] ?? '',
                                           hint: 'Click anywhere to reveal',
                                           cardBgColor: const Color(0xFFDDDDDD), // Grey matching web front
+                                          storageKey: 'hl_flash_term_${card['id']}',
                                         )
                                       : Transform(
                                           alignment: Alignment.center,
@@ -364,6 +366,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                                             text: card['definition'] ?? '',
                                             hint: 'Click anywhere to hide',
                                             cardBgColor: const Color(0xFFEDE9E6), // Warm light grey matching web back
+                                            storageKey: 'hl_flash_def_${card['id']}',
                                           ),
                                         ),
                                 );
@@ -469,9 +472,11 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     required String text,
     required String hint,
     required Color cardBgColor,
+    required String storageKey,
   }) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final isAuditory = auth.user?['learning_style'] == 'auditory';
+    final isVisual = auth.user?['learning_style'] == 'visual';
 
     return Container(
       decoration: BoxDecoration(
@@ -530,6 +535,20 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                 child: Builder(
                   builder: (context) {
                     final isList = RegExp(r'(?:\s+|^)\d+\.\s').hasMatch(text);
+                    if (isVisual) {
+                      return VisualHighlightText(
+                        text: text,
+                        storageKey: storageKey,
+                        textAlign: isList ? TextAlign.left : TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'Outfit',
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F172A),
+                          height: 1.6,
+                        ),
+                      );
+                    }
                     return Text(
                       text,
                       textAlign: isList ? TextAlign.left : TextAlign.center, // Left align lists to match web indentation

@@ -5,6 +5,7 @@ import '../services/api_service.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/study_notepad_widget.dart';
 import '../services/tts_service.dart';
+import '../widgets/visual_highlight_text.dart';
 
 class TakeQuizScreen extends StatefulWidget {
   final int quizId;
@@ -309,15 +310,34 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Text(
-                q['question_text'] ?? '',
-                style: const TextStyle(
-                  fontSize: 24, // Matches large web title size
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0F172A),
-                  fontFamily: 'Outfit',
-                  height: 1.45,
-                ),
+              child: Builder(
+                builder: (context) {
+                  final isVisual = auth.user?['learning_style'] == 'visual';
+                  if (isVisual) {
+                    return VisualHighlightText(
+                      text: q['question_text'] ?? '',
+                      storageKey: 'hl_quiz_q_${q['id']}',
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 24, // Matches large web title size
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                        fontFamily: 'Outfit',
+                        height: 1.45,
+                      ),
+                    );
+                  }
+                  return Text(
+                    q['question_text'] ?? '',
+                    style: const TextStyle(
+                      fontSize: 24, // Matches large web title size
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0F172A),
+                      fontFamily: 'Outfit',
+                      height: 1.45,
+                    ),
+                  );
+                }
               ),
             ),
             if (isAuditory) ...[
@@ -384,14 +404,32 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: Text(
-                        entry.value ?? '',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF1E293B),
-                          fontFamily: 'Outfit',
-                        ),
+                      child: Builder(
+                        builder: (context) {
+                          final isVisual = auth.user?['learning_style'] == 'visual';
+                          if (isVisual) {
+                            return VisualHighlightText(
+                              text: entry.value ?? '',
+                              storageKey: 'hl_quiz_opt_${q['id']}_${entry.key}',
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF1E293B),
+                                fontFamily: 'Outfit',
+                              ),
+                            );
+                          }
+                          return Text(
+                            entry.value ?? '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF1E293B),
+                              fontFamily: 'Outfit',
+                            ),
+                          );
+                        }
                       ),
                     ),
                   ],
