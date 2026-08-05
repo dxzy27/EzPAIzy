@@ -26,6 +26,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   int currentIndex = 0;
   bool isFlipped = false;
   bool isSubmitting = false;
+  bool isFinished = false;
 
   late AnimationController _flipCtrl;
   late Animation<double> _flipAnim;
@@ -80,9 +81,13 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
   void _undoLastReview() {
     TtsService.stop();
-    if (currentIndex > 0) {
+    if (currentIndex > 0 || isFinished) {
       setState(() {
-        currentIndex--;
+        if (isFinished) {
+          isFinished = false;
+        } else {
+          currentIndex--;
+        }
         isFlipped = false;
       });
       _flipCtrl.reset();
@@ -104,6 +109,8 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           if (!isLast) {
             currentIndex++;
             isFlipped = false;
+          } else {
+            isFinished = true;
           }
         });
         _flipCtrl.reset();
@@ -245,6 +252,55 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: Text('Go Back', style: GoogleFonts.outfit()),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (isFinished) {
+      return Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg1.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Container(
+            color: const Color(0xFFF1F5F9).withOpacity(0.15),
+            child: SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.check_circle_outline, size: 64, color: Color(0xFF10B981)),
+                    const SizedBox(height: 12),
+                    Text(
+                      'All Done! 🎉',
+                      style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF0F172A)),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "You've reviewed all flashcards in this set.",
+                      style: GoogleFonts.outfit(color: const Color(0xFF64748B), fontSize: 14),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => context.pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF3B82F6),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text('Back to Sets', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
