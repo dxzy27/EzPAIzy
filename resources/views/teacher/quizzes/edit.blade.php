@@ -43,7 +43,7 @@
 
                         @if(true)
                         <div class="mb-4">
-                            <h4 class="mb-3">Questions {{ $quiz->difficulty == 'medium' || $quiz->difficulty == 'hard' ? '(Short Answer/KBAT)' : '(MCQ)' }}</h4>
+                            <h4 class="mb-3">Questions {{ $quiz->difficulty == 'easy' ? '(MCQ)' : ($quiz->difficulty == 'medium' ? '(Short Answer)' : '(KBAT)') }}</h4>
                             <div id="questions-container"></div>
                             <div class="row g-2">
                                 <div class="col-md-6">
