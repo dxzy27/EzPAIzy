@@ -7,20 +7,18 @@ class TtsService {
   static Future<void> _init() async {
     print("TTS: Initializing TtsService...");
     try {
-      // Check if ms-MY (Malay) is available
-      final isMalayAvailable = await _flutterTts.isLanguageAvailable("ms-MY");
-      print("TTS: ms-MY availability: $isMalayAvailable");
+      // Directly attempt to set Malay language, checking if return value is 1 (success on Android/iOS) or true
+      final malayResult = await _flutterTts.setLanguage("ms-MY");
+      print("TTS: setLanguage ms-MY result: $malayResult");
       
-      if (isMalayAvailable == true) {
-        await _flutterTts.setLanguage("ms-MY");
-        print("TTS: Set language to ms-MY");
+      if (malayResult == 1 || malayResult == true) {
+        print("TTS: Set language to ms-MY successfully");
       } else {
         // Fallback to id-ID (Indonesian), which sounds very close and is standard on Google TTS
-        final isIndoAvailable = await _flutterTts.isLanguageAvailable("id-ID");
-        print("TTS: id-ID availability: $isIndoAvailable");
-        if (isIndoAvailable == true) {
-          await _flutterTts.setLanguage("id-ID");
-          print("TTS: Fallback to id-ID (Malay pronunciation compatible)");
+        final indoResult = await _flutterTts.setLanguage("id-ID");
+        print("TTS: setLanguage id-ID result: $indoResult");
+        if (indoResult == 1 || indoResult == true) {
+          print("TTS: Set language to id-ID successfully (Malay fallback)");
         } else {
           await _flutterTts.setLanguage("en-US");
           print("TTS: Fallback to en-US (no Malay/Indonesian engine available)");
