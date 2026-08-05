@@ -511,7 +511,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
   Widget _buildMotivationalCard() {
     final groups = topicGroups;
-    String bestTopic = 'Al-Quran';
+    String bestTopic = groups.isNotEmpty ? groups.keys.first : 'General';
     int bestPct = 0;
     if (groups.isNotEmpty) {
       for (var entry in groups.entries) {
