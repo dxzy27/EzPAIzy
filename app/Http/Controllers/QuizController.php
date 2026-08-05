@@ -285,18 +285,18 @@ class QuizController extends Controller
         $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
         $progressQuery = Progress::where('topic', $topic)->where('difficulty', $difficulty);
 
-        if ($hasTitleCol && !empty($titleParam)) {
-            // Always filter by exact title when one is provided
-            $query->where('title', $titleParam);
-            $progressQuery->where('title', $titleParam);
-        } elseif ($hasTitleCol) {
-            // No title given — delete questions/progress without a distinct title
-            $query->where(function ($q) use ($topic) {
-                $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
-            });
-            $progressQuery->where(function ($q) use ($topic) {
-                $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
-            });
+        if ($hasTitleCol) {
+            if (!empty($titleParam) && $titleParam !== $topic) {
+                $query->where('title', $titleParam);
+                $progressQuery->where('title', $titleParam);
+            } else {
+                $query->where(function ($q) use ($topic) {
+                    $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+                });
+                $progressQuery->where(function ($q) use ($topic) {
+                    $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+                });
+            }
         }
         $query->delete();
         $progressQuery->delete();
