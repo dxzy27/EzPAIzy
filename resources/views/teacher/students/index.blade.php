@@ -58,7 +58,7 @@
                             </td>
                             <td class="text-muted" style="font-size: 0.85rem;">{{ $student->created_at->format('M d, Y') }}</td>
                             <td>
-                                <span class="badge bg-info bg-opacity-15 text-info fw-bold px-2 py-1" style="border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px;">{{ $student->progress()->count() }}</span>
+                                <span class="badge fw-bold px-2 py-1" style="border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px; background-color: #3b82f6 !important; color: #ffffff !important;">{{ $student->progress()->count() }}</span>
                             </td>
                             <td class="pe-4 text-end">
                                 <a href="{{ route('teacher.students.show', $student) }}" class="btn btn-sm btn-outline-info me-1" title="View" style="border-radius: 8px;">
