@@ -7,7 +7,7 @@ import '../providers/auth_provider.dart';
 import '../widgets/study_notepad_widget.dart';
 import '../services/tts_service.dart';
 import '../widgets/visual_highlight_text.dart';
-import '../widgets/profile_dropdown_helper.dart';
+
 import '../widgets/app_top_bar.dart';
 
 class TakeQuizScreen extends StatefulWidget {
@@ -319,14 +319,14 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
     final selectedText = selectedKey != null ? (options?[selectedKey] ?? '') : '';
 
     return DragTarget<String>(
-      onWillAccept: (data) => true,
-      onAccept: (data) {
+      onWillAcceptWithDetails: (details) => true,
+      onAcceptWithDetails: (details) {
         setState(() {
-          answers[index] = data;
+          answers[index] = details.data;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Dropped Option ${data.toUpperCase()} into tray!'),
+            content: Text('Dropped Option ${details.data.toUpperCase()} into tray!'),
             duration: const Duration(milliseconds: 600),
           ),
         );
@@ -666,7 +666,6 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
 
     final authUser = Provider.of<AuthProvider>(context, listen: false).user;
     final userName = (authUser?['name'] ?? 'Student').toString();
-    final initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'S';
 
     return Scaffold(
       body: Container(
