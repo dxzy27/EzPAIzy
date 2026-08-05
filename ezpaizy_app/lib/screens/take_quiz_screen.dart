@@ -105,6 +105,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
     final q = questions[currentPage];
     final auth = context.read<AuthProvider>();
     final isReadWrite = auth.user?['learning_style'] == 'read_write';
+    final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9), // Soft grey background matching web
@@ -213,6 +214,11 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                         // Question & Options Content
                         _buildQuestion(q, currentPage),
 
+                        if (isKinesthetic && q['type'] == 'mcq') ...[
+                          const SizedBox(height: 24),
+                          _buildDragDropTray(currentPage, q['options']),
+                        ],
+
                         if (isReadWrite) ...[
                           const SizedBox(height: 20),
                           StudyNotepadWidget(
@@ -308,6 +314,102 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
     TtsService.speak(toSpeak);
   }
 
+  Widget _buildDragDropTray(int index, Map<String, dynamic>? options) {
+    final selectedKey = answers[index] as String?;
+    final selectedText = selectedKey != null ? (options?[selectedKey] ?? '') : '';
+
+    return DragTarget<String>(
+      onWillAccept: (data) => true,
+      onAccept: (data) {
+        setState(() {
+          answers[index] = data;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Dropped Option ${data.toUpperCase()} into tray!'),
+            duration: const Duration(milliseconds: 600),
+          ),
+        );
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovered = candidateData.isNotEmpty;
+        return Container(
+          width: double.infinity,
+          height: 90,
+          decoration: BoxDecoration(
+            color: selectedKey != null
+                ? const Color(0xFFEFF6FF)
+                : (isHovered ? const Color(0xFFEFF6FF) : const Color(0xFFF8FAFC)),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selectedKey != null
+                  ? const Color(0xFF3B82F6)
+                  : (isHovered ? const Color(0xFF3B82F6) : const Color(0xFFCBD5E1)),
+              width: (isHovered || selectedKey != null) ? 2.0 : 1.5,
+            ),
+          ),
+          child: Center(
+            child: selectedKey != null
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFF3B82F6),
+                        ),
+                        child: Center(
+                          child: Text(
+                            selectedKey.toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              fontFamily: 'Outfit',
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        selectedText,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E293B),
+                          fontFamily: 'Outfit',
+                        ),
+                      ),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.move_to_inbox,
+                        color: isHovered ? const Color(0xFF3B82F6) : const Color(0xFF94A3B8),
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        isHovered ? 'Drop Answer Here!' : 'Drag and Drop Chosen Answer Tray',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: isHovered ? const Color(0xFF3B82F6) : const Color(0xFF94A3B8),
+                          fontFamily: 'Outfit',
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildQuestion(Map<String, dynamic> q, int index) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final isAuditory = auth.user?['learning_style'] == 'auditory';
@@ -375,64 +477,54 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
         if (options != null && options.isNotEmpty)
           ...options.entries.map((entry) {
             final selected = answers[index] == entry.key;
-            return GestureDetector(
-              onTap: () => setState(() => answers[index] = entry.key),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: selected
-                      ? const Color(0xFFEFF6FF) // Light blue selected bg
-                      : Colors.white,
-                  border: Border.all(
-                    color: selected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0),
-                    width: selected ? 2 : 1,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
+            final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
+
+            final optionCard = Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: selected
+                    ? const Color(0xFFEFF6FF) // Light blue selected bg
+                    : Colors.white,
+                border: Border.all(
+                  color: selected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0),
+                  width: selected ? 2 : 1,
                 ),
-                child: Row(
-                  children: [
-                    // Circle Badge with Letter
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: selected ? const Color(0xFF3B82F6) : const Color(0xFFEFF6FF), // Blue when selected, light blue when not
-                        border: Border.all(color: const Color(0xFF3B82F6), width: 1.5),
-                      ),
-                      child: Center(
-                        child: Text(
-                          entry.key.toUpperCase(),
-                          style: TextStyle(
-                            color: selected ? Colors.white : const Color(0xFF3B82F6),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            fontFamily: 'Outfit',
-                          ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  // Circle Badge with Letter
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: selected ? const Color(0xFF3B82F6) : const Color(0xFFEFF6FF), // Blue when selected, light blue when not
+                      border: Border.all(color: const Color(0xFF3B82F6), width: 1.5),
+                    ),
+                    child: Center(
+                      child: Text(
+                        entry.key.toUpperCase(),
+                        style: TextStyle(
+                          color: selected ? Colors.white : const Color(0xFF3B82F6),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          fontFamily: 'Outfit',
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Builder(
-                        builder: (context) {
-                          final isVisual = auth.user?['learning_style'] == 'visual';
-                          if (isVisual) {
-                            return VisualHighlightText(
-                              text: entry.value ?? '',
-                              storageKey: 'hl_quiz_opt_${q['id']}_${entry.key}',
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF1E293B),
-                                fontFamily: 'Outfit',
-                              ),
-                            );
-                          }
-                          return Text(
-                            entry.value ?? '',
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        final isVisual = auth.user?['learning_style'] == 'visual';
+                        if (isVisual) {
+                          return VisualHighlightText(
+                            text: entry.value ?? '',
+                            storageKey: 'hl_quiz_opt_${q['id']}_${entry.key}',
+                            textAlign: TextAlign.left,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -441,12 +533,87 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                             ),
                           );
                         }
-                      ),
+                        return Text(
+                          entry.value ?? '',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF1E293B),
+                            fontFamily: 'Outfit',
+                          ),
+                        );
+                      }
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
+
+            Widget mainOptionWidget = GestureDetector(
+              onTap: () => setState(() => answers[index] = entry.key),
+              child: optionCard,
+            );
+
+            if (isKinesthetic) {
+              return Draggable<String>(
+                data: entry.key,
+                feedback: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF6FF).withOpacity(0.9),
+                      border: Border.all(color: const Color(0xFF3B82F6), width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFF3B82F6),
+                          ),
+                          child: Center(
+                            child: Text(
+                              entry.key.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            entry.value ?? '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF1E293B),
+                              fontFamily: 'Outfit',
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                childWhenDragging: Opacity(
+                  opacity: 0.4,
+                  child: optionCard,
+                ),
+                child: mainOptionWidget,
+              );
+            }
+
+            return mainOptionWidget;
           })
         else
           TextField(
