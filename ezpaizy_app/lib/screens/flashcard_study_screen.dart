@@ -52,8 +52,8 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
 
   Future<void> _load() async {
     try {
-      final d = await ApiService.getDueFlashcards(widget.setId);
-      final cards = List<dynamic>.from(d['due_cards'] ?? d['flashcards'] ?? []);
+      final d = await ApiService.getFlashcardDetail(widget.setId);
+      final cards = List<dynamic>.from(d['flashcards'] ?? []);
       final prefs = await SharedPreferences.getInstance();
       int savedIndex = prefs.getInt('flashcard_idx_${widget.setId}') ?? 0;
 
@@ -62,7 +62,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
       }
 
       setState(() {
-        set = d['flashcard_set'] ?? d;
+        set = d;
         _cards = cards;
         currentIndex = savedIndex;
         loading = false;
