@@ -434,7 +434,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
               child: showFront
                   ? _cardFace(
                       label: 'QUESTION',
-                      color: Colors.white,
+                      color: const Color(0xFFDDDDDD),
                       textColor: const Color(0xFF0F172A),
                       child: Text(
                         card['term'] ?? '',
@@ -459,7 +459,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                       transform: Matrix4.identity()..rotateY(3.14159),
                       child: _cardFace(
                         label: 'ANSWER',
-                        color: Colors.white,
+                        color: const Color(0xFFEDE9E6),
                         textColor: const Color(0xFF0F172A),
                         headerRightWidget: !isAnswerRevealed
                             ? OutlinedButton(
