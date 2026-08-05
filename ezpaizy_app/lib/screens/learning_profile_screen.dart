@@ -163,7 +163,9 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
       );
       styleIcon = Icons.sports_handball;
       styleDesc = 'You learn best through hands-on practice, physical interactions, and self-testing flashcards.';
-       final auth = Provider.of<AuthProvider>(context, listen: false);
+    }
+
+    final auth = Provider.of<AuthProvider>(context, listen: false);
     final userName = auth.user?['name'] ?? 'Student';
     final initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'D';
 
