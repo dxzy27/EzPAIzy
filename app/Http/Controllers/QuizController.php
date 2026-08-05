@@ -145,6 +145,9 @@ class QuizController extends Controller
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
         $quizTitle = trim($request->input('title', ''));
+        if (empty($quizTitle)) {
+            $quizTitle = $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ' Quiz)';
+        }
 
         foreach ($validated['questions'] as $q) {
             $questionData = [
@@ -157,7 +160,7 @@ class QuizController extends Controller
                 'difficulty' => $validated['difficulty'],
             ];
 
-            if ($hasTitleCol && !empty($quizTitle)) {
+            if ($hasTitleCol) {
                 $questionData['title'] = $quizTitle;
             }
 
@@ -418,6 +421,9 @@ class QuizController extends Controller
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
         $quizTitle = trim($request->input('title', ''));
+        if (empty($quizTitle)) {
+            $quizTitle = $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ' Quiz)';
+        }
 
         if (is_array($selectedQuestions)) {
             foreach ($selectedQuestions as $q) {
@@ -431,7 +437,7 @@ class QuizController extends Controller
                     'difficulty' => $validated['difficulty'],
                 ];
 
-                if ($hasTitleCol && !empty($quizTitle)) {
+                if ($hasTitleCol) {
                     $questionData['title'] = $quizTitle;
                 }
 
