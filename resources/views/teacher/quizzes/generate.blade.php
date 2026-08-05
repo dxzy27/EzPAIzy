@@ -1,19 +1,20 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-12 d-flex flex-column align-items-start">
-            <a href="{{ url()->previous() === url()->current() ? route('teacher.quizzes.index') : url()->previous() }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center mb-3" style="width: 36px; height: 36px;" title="Back">
-                <i class="bi bi-arrow-left fs-5"></i>
-            </a>
-            <h1>
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" class="text-primary me-2" style="vertical-align: text-bottom;">
-                    <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.0462 6.0462 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24.991a6.0462 6.0462 0 0 0 3.9977-2.9001 5.9847 5.9847 0 0 0-.7427-7.0966 5.98 5.98 0 0 0-.2223-1.1732h.005zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.5399-.7956l.0009-.0004-.0004-.0003h-1e-4c-1.353-.8273-2.126-2.2778-2.0232-3.794l.0003-.01.0718-.89 2.5843 1.4921-.005.0084a.6923.6923 0 0 0 .9794.2274.6973.6973 0 0 0 .2539-.9305l-.0133-.0212-3.3444-1.9309.0245-.2765a4.5422 4.5422 0 0 1 2.9822-3.861l.019-.0045 1.62-.3876v3.003h-1e-4a.6975.6975 0 0 0 .6975.6975.6975.6975 0 0 0 .6975-.6975h-.0001V8.214l1.2483.7208v5.5724a.6975.6975 0 0 0 .6975.6975.6975.6975 0 0 0 .6975-.6975V7.7493l.3662-.1282a4.4755 4.4755 0 0 1 2.5399.7956l-.0009.0004.0004.0003h1e-4c1.353.8273 2.126 2.2778 2.0232 3.794l-.0003.01-.0718.89-2.5843-1.4921.005-.0084a.6923.6923 0 0 0-.9794-.2274.6973.6973 0 0 0-.2539.9305l.0133.0212 3.3444 1.9309-.0245.2765a4.5422 4.5422 0 0 1-2.9822 3.861l-.019.0045-1.62.3876v-3.003h1e-4a.6975.6975 0 0 0-.6975-.6975.6975.6975 0 0 0-.6975.6975h.0001v6.3364l-1.2483-.7208v-5.5724a.6975.6975 0 0 0-.6975-.6975.6975.6975 0 0 0-.6975.6975v6.7621l-.3662.1282z"/>
-                </svg>
-                Generate Quiz with AI
-            </h1>
-            <p class="text-muted">Use Artificial Intelligence to automatically generate quiz questions from your topics or text.</p>
+<div class="container-fluid px-4 py-4" style="max-width: 1040px; margin: 0 auto;">
+    <div class="row mb-4 align-items-center">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ url()->previous() === url()->current() ? route('teacher.quizzes.index') : url()->previous() }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
+                    <i class="bi bi-arrow-left fs-5"></i>
+                </a>
+                <div>
+                    <h1 class="h2 fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-stars text-primary"></i> Generate Quiz with AI
+                    </h1>
+                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Use Artificial Intelligence to automatically generate quiz questions from your topics or text.</p>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -25,7 +26,7 @@
     @endif
 
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
                     <form action="{{ route('teacher.quizzes.process_generate') }}" method="POST" id="generate-form" enctype="multipart/form-data">

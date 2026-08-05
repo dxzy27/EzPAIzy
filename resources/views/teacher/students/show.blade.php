@@ -3,12 +3,19 @@
 @section('title', 'Student Details')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex flex-column align-items-start mb-4">
-        <a href="{{ route('teacher.students.index') }}" class="btn btn-secondary mb-3">
-            <i class="bi bi-arrow-left"></i> Back to Students
-        </a>
-        <h1 class="h2 fw-bold text-dark mb-0">Student Details</h1>
+<div class="container-fluid px-4 py-4" style="max-width: 1040px; margin: 0 auto;">
+    <div class="row mb-4 align-items-center">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('teacher.students.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Students">
+                    <i class="bi bi-arrow-left fs-5"></i>
+                </a>
+                <div>
+                    <h1 class="h2 fw-bold text-dark mb-0">Student Details</h1>
+                    <p class="text-muted mb-0" style="font-size: 0.9rem;">View student profile information and detailed quiz progress</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -173,11 +180,11 @@
                                                         <!-- Feedback Modal -->
                                                         <div class="modal fade" id="feedbackModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
                                                             <div class="modal-dialog modal-lg text-start">
-                                                                @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
-                                                                <form method="POST" action="{{ route('teacher.students.grade', $p->id) }}">
-                                                                    @csrf
-                                                                @endif
                                                                 <div class="modal-content">
+                                                                    @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
+                                                                    <form method="POST" action="{{ route('teacher.students.grade', $p->id) }}">
+                                                                        @csrf
+                                                                    @endif
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title">Quiz Results: {{ $p->title }}</h5>
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -291,10 +298,10 @@
                                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                         </div>
                                                                     @endif
+                                                                    @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
+                                                                    </form>
+                                                                    @endif
                                                                 </div>
-                                                                @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
-                                                                </form>
-                                                                @endif
                                                             </div>
                                                         </div>
                                                     @else
