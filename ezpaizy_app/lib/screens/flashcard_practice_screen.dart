@@ -84,22 +84,29 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
   Future<void> _submitReview(int quality) async {
     if (isSubmitting) return;
-    setState(() => isSubmitting = true);
-
     final card = allCards[currentIndex];
+    final isLastCard = currentIndex >= allCards.length - 1;
+
+    // Stop TTS and update card index synchronously to remove dismissed Dismissible immediately
+    TtsService.stop();
+    setState(() {
+      isSubmitting = true;
+      if (!isLastCard) {
+        currentIndex++;
+        isFlipped = false;
+      }
+    });
+    _flipCtrl.reset();
+
     try {
+      // Fire API call asynchronously
       await ApiService.submitFlashcardReview(card['id'], quality);
 
-      // Hide any active snackbars first
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      }
-
-      // Show Custom Undo Toast matching web version
-      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: const Color(0xFF1E293B), // Dark slate matching web toast bg
+            backgroundColor: const Color(0xFF1E293B),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -140,44 +147,39 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         );
       }
 
-      TtsService.stop();
-      if (currentIndex < allCards.length - 1) {
-        setState(() {
-          currentIndex++;
-          isFlipped = false;
-        });
-        _flipCtrl.reset();
-      } else {
-        if (mounted) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (ctx) => AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: Text('All Done! 🎉', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-              content: Text(
-                "You've reviewed all flashcards in this set. Great job!",
-                style: GoogleFonts.outfit(),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    context.pop();
-                  },
-                  child: Text('Back to Sets', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-                ),
-              ],
+      if (isLastCard && mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Text('All Done! 🎉', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+            content: Text(
+              "You've reviewed all flashcards in this set. Great job!",
+              style: GoogleFonts.outfit(),
             ),
-          );
-        }
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  context.pop();
+                },
+                child: Text('Back to Sets', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
       }
     } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to submit review')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to submit review')),
+        );
+      }
     } finally {
-      setState(() => isSubmitting = false);
+      if (mounted) {
+        setState(() => isSubmitting = false);
+      }
     }
   }
 
@@ -392,21 +394,9 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                           if (direction == DismissDirection.endToStart) {
                             // Swiped Left: Still learning (1)
                             _submitReview(1);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Marked: Still learning 🔴'),
-                                duration: Duration(milliseconds: 700),
-                              ),
-                            );
                           } else {
                             // Swiped Right: Know (5)
                             _submitReview(5);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Marked: Know 🟢'),
-                                duration: Duration(milliseconds: 700),
-                              ),
-                            );
                           }
                         },
                         background: Container(
