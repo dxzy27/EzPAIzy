@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
 import '../providers/auth_provider.dart';
@@ -317,6 +319,14 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
             ),
             const SizedBox(height: 30),
 
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: _buildModeToggle(context, true),
+              ),
+            ),
+            const SizedBox(height: 20),
+
             // Flashcard
             cardWidget,
 
@@ -463,6 +473,83 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildModeToggle(BuildContext context, bool isStudyMode) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (isStudyMode) {
+                  context.go('/flashcards/${widget.setId}');
+                }
+              },
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: !isStudyMode ? const Color(0xFF3B82F6) : Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Read Mode',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: !isStudyMode ? Colors.white : const Color(0xFF64748B),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (!isStudyMode) {
+                  context.go('/flashcards/${widget.setId}/study');
+                }
+              },
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: isStudyMode ? const Color(0xFF3B82F6) : Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Review Mode',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: isStudyMode ? Colors.white : const Color(0xFF64748B),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

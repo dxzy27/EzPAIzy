@@ -329,6 +329,16 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
                   const SizedBox(height: 24), // Compact Web Spacing instead of expanding Spacer
 
+                  if (isKinesthetic) ...[
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 800),
+                        child: _buildModeToggle(context, false),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
                   // Card Widget with Flip Animation
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -582,6 +592,81 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                 fontSize: 12,
                 fontWeight: FontWeight.bold, // Bold footer hint
                 color: Color(0xFF64748B), // Slate matching header
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  Widget _buildModeToggle(BuildContext context, bool isStudyMode) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (isStudyMode) {
+                  context.go('/flashcards/${widget.setId}');
+                }
+              },
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: !isStudyMode ? const Color(0xFF3B82F6) : Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Read Mode',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: !isStudyMode ? Colors.white : const Color(0xFF64748B),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (!isStudyMode) {
+                  context.go('/flashcards/${widget.setId}/study');
+                }
+              },
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: isStudyMode ? const Color(0xFF3B82F6) : Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Review Mode',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: isStudyMode ? Colors.white : const Color(0xFF64748B),
+                  ),
+                ),
               ),
             ),
           ),
