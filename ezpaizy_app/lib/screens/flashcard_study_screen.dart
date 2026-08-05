@@ -443,7 +443,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     final card = _cards[currentIndex];
 
     Widget cardWidget = SizedBox(
-      height: 350,
+      height: 400,
       child: GestureDetector(
         onTap: _flip,
         child: AnimatedBuilder(
@@ -451,10 +451,13 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
           builder: (_, child) {
             final angle = _flipAnim.value * 3.14159;
             final showFront = _flipAnim.value <= 0.5;
+            final termText = card['term'] ?? '';
+            final isList = RegExp(r'(?:\s+|^)\d+\.\s').hasMatch(termText);
+
             return Transform(
               alignment: Alignment.center,
               transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
+                ..setEntry(3, 2, 0.0015)
                 ..rotateY(angle),
               child: showFront
                   ? _cardFace(
@@ -462,20 +465,23 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                       color: const Color(0xFFDDDDDD),
                       textColor: const Color(0xFF0F172A),
                       child: Text(
-                        card['term'] ?? '',
-                        style: GoogleFonts.outfit(
-                          fontSize: 20,
+                        termText,
+                        style: const TextStyle(
+                          fontFamily: 'Outfit',
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF0F172A),
+                          color: Color(0xFF0F172A),
+                          height: 1.6,
                         ),
-                        textAlign: TextAlign.center,
+                        textAlign: isList ? TextAlign.left : TextAlign.center,
                       ),
-                      footerWidget: Text(
+                      footerWidget: const Text(
                         'Click anywhere to reveal',
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
+                          fontFamily: 'Outfit',
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF94A3B8),
+                          color: Color(0xFF64748B),
                         ),
                       ),
                     )
@@ -528,12 +534,13 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                                   ),
                                 ),
                               )
-                            : Text(
+                            : const Text(
                                 'Click anywhere to flip back',
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
+                                  fontFamily: 'Outfit',
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF94A3B8),
+                                  color: Color(0xFF64748B),
                                 ),
                               ),
                         child: _buildPlaceholderWidget(_currentItems, _typedVal),
@@ -791,59 +798,68 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
   }) {
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 350), // Standard high height
       decoration: BoxDecoration(
         color: color,
-        border: Border.all(color: const Color(0xFFCBD5E1), width: 1.5),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(6), // Sharp 6px radius matching Read Mode
+        border: Border.all(color: const Color(0xFFCBD5E1)), // Solid slate-300 border
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          )
+            color: Colors.black.withOpacity(0.08), // Web shadow color
+            blurRadius: 30, // 30px blur
+            offset: const Offset(0, 8), // 8px Y offset
+          ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            // Card Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF64748B),
-                    fontSize: 12,
-                    letterSpacing: 1.5,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (headerRightWidget != null) headerRightWidget,
-              ],
-            ),
-            const SizedBox(height: 12),
-            const Divider(color: Color(0xFFE2E8F0), height: 1),
-            
-            // Card Content
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: child,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Card Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF64748B),
+                  letterSpacing: 1.0,
                 ),
               ),
+              if (headerRightWidget != null) headerRightWidget,
+            ],
+          ),
+          const SizedBox(height: 12),
+          Divider(
+            color: const Color(0xFF0F172A).withOpacity(0.15), // Faint dark divider matching Read Mode
+            height: 1,
+            thickness: 1,
+          ),
+          
+          // Card Content
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                child: child,
+              ),
             ),
-            
-            const Divider(color: Color(0xFFE2E8F0), height: 1),
-            const SizedBox(height: 12),
-            
-            // Card Footer
-            if (footerWidget != null) footerWidget,
-          ],
-        ),
+          ),
+          
+          Divider(
+            color: const Color(0xFF0F172A).withOpacity(0.15), // Matching bottom divider
+            height: 1,
+            thickness: 1,
+          ),
+          const SizedBox(height: 12),
+          
+          // Card Footer
+          if (footerWidget != null)
+            Center(
+              child: footerWidget,
+            ),
+        ],
       ),
     );
   }
