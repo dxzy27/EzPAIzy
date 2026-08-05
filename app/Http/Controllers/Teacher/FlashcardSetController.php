@@ -126,6 +126,8 @@ class FlashcardSetController extends Controller
     public function destroy(FlashcardSet $flashcardSet)
     {
         $topic = $flashcardSet->topic;
+        $cardIds = $flashcardSet->flashcards()->pluck('id')->toArray();
+        \App\Models\FlashcardProgress::whereIn('flashcard_id', $cardIds)->delete();
         $flashcardSet->flashcards()->delete();
         $flashcardSet->delete();
 

@@ -22,6 +22,26 @@ class StudentManagementController extends Controller
         }
         
         $students = $query->paginate(10);
+
+        foreach ($students as $student) {
+            $quizzesProgress = $student->progress()->get();
+            $activeCount = 0;
+            foreach ($quizzesProgress as $qp) {
+                $quizExists = \App\Models\Question::where('topic', $qp->topic)
+                    ->where('difficulty', $qp->difficulty)
+                    ->where(function ($query) use ($qp) {
+                        if (!empty($qp->title)) {
+                            $query->where('title', $qp->title);
+                        } else {
+                            $query->whereNull('title')->orWhere('title', '');
+                        }
+                    })->exists();
+                if ($quizExists) {
+                    $activeCount++;
+                }
+            }
+            $student->active_quizzes_count = $activeCount;
+        }
         
         return view('teacher.students.index', compact('students', 'teacher'));
     }
@@ -88,6 +108,21 @@ class StudentManagementController extends Controller
             }
             // Apply type filter
             if ($selectedType && $selectedType !== 'quiz') {
+                continue;
+            }
+
+            // Check if the quiz actually still exists in questions database
+            $quizExists = \App\Models\Question::where('topic', $qp->topic)
+                ->where('difficulty', $qp->difficulty)
+                ->where(function ($query) use ($qp) {
+                    if (!empty($qp->title)) {
+                        $query->where('title', $qp->title);
+                    } else {
+                        $query->whereNull('title')->orWhere('title', '');
+                    }
+                })->exists();
+
+            if (!$quizExists) {
                 continue;
             }
 
