@@ -20,7 +20,7 @@ class AppTopBar extends StatelessWidget {
     final user = auth.user;
     final name = (user?['name'] ?? 'Student').toString();
     final initial = name.isNotEmpty ? name[0].toUpperCase() : 'S';
-    final learningStyle = user?['learning_style'] ?? auth.learningStyle;
+    final learningStyle = user?['learning_style'];
 
     Color accentColor = const Color(0xFF14B8A6);
     if (learningStyle == 'auditory') {
@@ -72,7 +72,7 @@ class AppTopBar extends StatelessWidget {
                 child: Image.asset(
                   'assets/images/newlogo.png',
                   height: 38,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6), size: 32),
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.school, color: Color(0xFF3B82F6), size: 32),
                 ),
               ),
             ],

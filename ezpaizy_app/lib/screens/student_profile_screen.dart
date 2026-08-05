@@ -213,25 +213,26 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         // Top Navigation Header
                         const AppTopBar(showBackButton: true),
                         const SizedBox(height: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'My Profile',
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xFF0F172A),
-                                      ),
-                                    ),
-                                    Text(
-                                      'Manage personal details and view account statistics',
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 12,
-                                        color: const Color(0xFF64748B),
-                                      ),
-                                    ),
-                                  ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'My Profile',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF0F172A),
+                                  ),
+                                ),
+                                Text(
+                                  'Manage personal details and view account statistics',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 12,
+                                    color: const Color(0xFF64748B),
+                                  ),
                                 ),
                               ],
                             ),
