@@ -34,10 +34,10 @@
                 <button class="btn btn-primary fw-bold px-3 py-2 dropdown-toggle d-inline-flex align-items-center" type="button" id="createQuizDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 10px; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(59,130,246,0.25);">
                     <i class="bi bi-plus-lg me-1 fs-6"></i> Create Quiz
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="createQuizDropdown" style="border-radius: 12px; padding: 8px;">
-                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'easy', 'topic' => $topic]) }}"><span class="badge bg-success bg-opacity-15 text-success me-2">🟢 Easy</span> Easy Quiz</a></li>
-                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'medium', 'topic' => $topic]) }}"><span class="badge bg-warning bg-opacity-15 text-warning me-2">🟡 Medium</span> Medium Quiz</a></li>
-                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'hard', 'topic' => $topic]) }}"><span class="badge bg-danger bg-opacity-15 text-danger me-2">🔴 Hard</span> Hard Quiz</a></li>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="createQuizDropdown" style="border-radius: 12px; padding: 6px;">
+                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'easy', 'topic' => $topic]) }}">Easy</a></li>
+                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'medium', 'topic' => $topic]) }}">Medium</a></li>
+                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'hard', 'topic' => $topic]) }}">Hard</a></li>
                 </ul>
             </div>
         </div>
