@@ -8,6 +8,8 @@ import '../providers/auth_provider.dart';
 import '../widgets/app_top_bar.dart';
 import '../widgets/study_notepad_widget.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import '../widgets/pdf_helper.dart';
 
 class ContentDetailScreen extends StatefulWidget {
   final int contentId;
@@ -276,11 +278,17 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                       ),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
-                                        child: SfPdfViewer.network(
-                                          filePath.startsWith('http')
-                                              ? filePath
-                                              : 'https://ezpaizy.app/storage/$filePath',
-                                        ),
+                                        child: kIsWeb
+                                            ? getPdfWebView(
+                                                filePath.startsWith('http')
+                                                    ? filePath
+                                                    : 'https://ezpaizy.app/storage/$filePath',
+                                              )
+                                            : SfPdfViewer.network(
+                                                filePath.startsWith('http')
+                                                    ? filePath
+                                                    : 'https://ezpaizy.app/storage/$filePath',
+                                              ),
                                       ),
                                     ),
                                   ],
