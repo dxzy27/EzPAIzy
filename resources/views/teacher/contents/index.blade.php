@@ -34,8 +34,8 @@
                         <i class="bi bi-arrow-left fs-5"></i>
                     </a>
                     <div>
-                        <h1 class="h2 fw-bold text-dark mb-0">Other Materials</h1>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Browse and manage learning materials and study guides</p>
+                        <h1 class="h2 fw-bold text-dark mb-0">Other</h1>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Browse available course content and study guides</p>
                     </div>
                 </div>
                 <div class="d-flex gap-2">
