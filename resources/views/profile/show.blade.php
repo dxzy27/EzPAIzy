@@ -33,9 +33,9 @@
             <h3 class="fw-bold mb-1 text-dark" style="font-size: 1.6rem; letter-spacing: -0.3px;">{{ $user->name }}</h3>
             <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
                 @if ($user->isTeacher())
-                    <span class="badge bg-primary bg-opacity-15 text-primary border border-primary border-opacity-25 fw-bold px-3 py-1" style="border-radius: 20px;">Teacher</span>
+                    <span class="badge" style="background-color: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 20px; font-weight: 700; padding: 6px 16px; font-size: 0.85rem;">Teacher</span>
                 @else
-                    <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 fw-bold px-3 py-1" style="border-radius: 20px;">Student</span>
+                    <span class="badge" style="background-color: #d1fae5; color: #047857; border: 1px solid #a7f3d0; border-radius: 20px; font-weight: 700; padding: 6px 16px; font-size: 0.85rem;">Student</span>
                 @endif
                 <span class="text-muted" style="font-size: 0.85rem;">• Member since {{ $user->created_at->format('M d, Y') }}</span>
             </div>
@@ -73,9 +73,9 @@
                     <span class="text-muted small fw-bold text-uppercase d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">Account Type</span>
                     <div>
                         @if ($user->isTeacher())
-                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20 fw-semibold px-2.5 py-1" style="border-radius: 8px;">Teacher</span>
+                            <span class="badge" style="background-color: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 8px; font-weight: 600; padding: 4px 12px; font-size: 0.85rem;">Teacher</span>
                         @else
-                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 fw-semibold px-2.5 py-1" style="border-radius: 8px;">Student</span>
+                            <span class="badge" style="background-color: #d1fae5; color: #047857; border: 1px solid #a7f3d0; border-radius: 8px; font-weight: 600; padding: 4px 12px; font-size: 0.85rem;">Student</span>
                         @endif
                     </div>
                 </div>
