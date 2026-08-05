@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/api_service.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/study_notepad_widget.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ContentDetailScreen extends StatefulWidget {
   final int contentId;
@@ -266,6 +267,36 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                       ],
                                     ),
                                   ),
+
+                                  if (filePath != null && filePath.toLowerCase().endsWith('.pdf')) ...[
+                                    const SizedBox(height: 24),
+                                    const Text(
+                                      'Material Preview',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF334155),
+                                        fontFamily: 'Outfit',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Container(
+                                      height: 500,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: SfPdfViewer.network(
+                                          filePath.startsWith('http')
+                                              ? filePath
+                                              : 'https://ezpaizy.app/storage/$filePath',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
 
                                   const SizedBox(height: 24),
                                   const Divider(color: Color(0xFFE2E8F0), height: 1),
