@@ -49,58 +49,58 @@
     </div>
     @else
     <!-- Responsive Scalable Grid -->
-    <div class="row g-3 mb-4">
+    <div class="row g-3.5 mb-4">
         @foreach($quizzes as $quiz)
             @php
                 $diffClass = $quiz->difficulty == 'easy' ? 'success' : ($quiz->difficulty == 'medium' ? 'warning' : 'danger');
                 $diffDot = $quiz->difficulty == 'easy' ? '🟢' : ($quiz->difficulty == 'medium' ? '🟡' : '🔴');
             @endphp
-            <div class="col-md-6 col-lg-6 col-xl-4 mb-3">
+            <div class="col-md-6 mb-3">
                 <div class="card h-100 border-0 shadow-sm overflow-hidden quiz-item-card" style="border-radius: 16px; background: #ffffff; transition: transform 0.25s ease, box-shadow 0.25s ease;">
                     <div class="card-body p-4 d-flex flex-column justify-content-between">
                         <!-- Top Row: Title & Larger Mastery Pill Badge -->
                         <div>
                             <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.1rem; line-height: 1.35;">{{ $quiz->title }}</h5>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.15rem; line-height: 1.35;">{{ $quiz->title }}</h5>
                                 <span class="badge bg-{{ $diffClass }} bg-opacity-15 text-{{ $diffClass }} border border-{{ $diffClass }} border-opacity-25 fw-bold px-3 py-1.5" style="border-radius: 20px; font-size: 0.78rem; letter-spacing: 0.3px;">
                                     {{ $diffDot }} {{ strtoupper($quiz->difficulty) }}
                                 </span>
                             </div>
 
                             <!-- Rich Info Icons with Breathing Room -->
-                            <div class="d-flex flex-column gap-2 mb-4 text-muted" style="font-size: 0.88rem;">
-                                <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex flex-column gap-2.5 mb-4 text-muted" style="font-size: 0.9rem;">
+                                <div class="d-flex align-items-center gap-2.5">
                                     <i class="bi bi-file-earmark-text text-primary fs-6"></i>
                                     <span><strong>{{ $quiz->questions_count }}</strong> {{ Str::plural('Question', $quiz->questions_count) }}</span>
                                 </div>
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-2.5">
                                     <i class="bi bi-people text-info fs-6"></i>
-                                    <span><strong>{{ $quiz->attempts_count }}</strong> {{ Str::plural('Student Attempt', $quiz->attempts_count) }}</span>
+                                    <span><strong>{{ $quiz->attempts_count }}</strong> {{ Str::plural('Attempt', $quiz->attempts_count) }}</span>
                                 </div>
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-2.5">
                                     <i class="bi bi-trophy text-warning fs-6"></i>
                                     <span>Avg Score: <strong>{{ $quiz->avg_score }}%</strong></span>
                                 </div>
-                                <div class="d-flex align-items-center gap-2 mt-1 pt-2 border-top border-light">
+                                <div class="d-flex align-items-center gap-2.5 mt-1 pt-2.5 border-top border-light">
                                     <i class="bi bi-clock text-secondary fs-6"></i>
-                                    <span style="font-size: 0.8rem;">Updated {{ $quiz->updated_at->format('M j, Y') }}</span>
+                                    <span style="font-size: 0.82rem;">Updated {{ $quiz->updated_at->format('M j, Y') }}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Card Action Buttons with High-Contrast Clean Palette -->
+                        <!-- Card Action Buttons with Equal Heights & High-Contrast Clean Palette -->
                         <div class="d-flex align-items-center gap-2 pt-2">
-                            <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-white border shadow-xs btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1" style="border-radius: 10px; font-size: 0.85rem; background: #ffffff;">
-                                <i class="bi bi-eye text-secondary"></i> View
+                            <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-white border shadow-xs btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1.5" style="border-radius: 10px; font-size: 0.88rem; height: 38px; background: #ffffff;">
+                                <i class="bi bi-eye text-secondary fs-6"></i><span>View</span>
                             </a>
-                            <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1" style="border-radius: 10px; font-size: 0.85rem;">
-                                <i class="bi bi-pencil-square"></i> Edit
+                            <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1.5" style="border-radius: 10px; font-size: 0.88rem; height: 38px;">
+                                <i class="bi bi-pencil-square fs-6"></i><span>Edit</span>
                             </a>
-                            <form action="{{ route('teacher.quizzes.destroy', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this quiz?')">
+                            <form action="{{ route('teacher.quizzes.destroy', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" class="d-inline flex-fill" onsubmit="return confirm('Are you sure you want to delete this quiz?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-light text-danger border-0 btn-sm fw-semibold px-3 py-2 d-inline-flex align-items-center justify-content-center gap-1" title="Delete Quiz" style="border-radius: 10px; font-size: 0.85rem;">
-                                    <i class="bi bi-trash3"></i>
+                                <button type="submit" class="btn btn-light text-danger border-0 btn-sm fw-semibold w-100 py-2 d-inline-flex align-items-center justify-content-center gap-1.5" title="Delete Quiz" style="border-radius: 10px; font-size: 0.88rem; height: 38px;">
+                                    <i class="bi bi-trash3 fs-6"></i><span>Delete</span>
                                 </button>
                             </form>
                         </div>
