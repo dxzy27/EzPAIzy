@@ -583,12 +583,13 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
                     ),
                   ],
                 ),
-              ),
             ],
           ),
         ),
       ),
-    );
+    ],
+  ),
+);
   }
 
   Widget _buildSituationPill(String key, String label) {
