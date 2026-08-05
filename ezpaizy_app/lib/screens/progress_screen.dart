@@ -444,7 +444,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
               Icon(Icons.bar_chart_rounded, size: 18, color: Color(0xFF10B981)),
               SizedBox(width: 6),
               Text(
-                'Topics Mastery',
+                'Recent Topic Mastery',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1E293B), fontFamily: 'Outfit'),
               ),
             ],

@@ -65,7 +65,7 @@
         <div class="col-md-7">
             <div class="card shadow-sm border-0 h-100" style="border-radius: 16px;">
                 <div class="card-body p-3">
-                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-line text-success"></i> Topics Mastery</h6>
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-line text-success"></i> Recent Topic Mastery</h6>
                     
                     @php
                         $topicGroups = $unified->groupBy('topic');
