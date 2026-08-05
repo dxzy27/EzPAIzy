@@ -129,7 +129,13 @@ class _RevisionScreenState extends State<RevisionScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
-                          onTap: () => context.pop(),
+                          onTap: () {
+                            if (context.canPop()) {
+                              context.pop();
+                            } else {
+                              context.go('/dashboard');
+                            }
+                          },
                           child: Container(
                             width: 36,
                             height: 36,
