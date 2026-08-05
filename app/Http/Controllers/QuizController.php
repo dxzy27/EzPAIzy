@@ -78,11 +78,11 @@ class QuizController extends Controller
             // Calculate progress attempts for this specific quiz title + topic + difficulty
             $progressQuery = Progress::where('topic', $topic)->where('difficulty', $diff);
             if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
-                if (!empty($titleVal) && $titleVal !== $topic) {
+                if (!empty($titleVal)) {
                     $progressQuery->where('title', $titleVal);
                 } else {
-                    $progressQuery->where(function ($q) use ($topic) {
-                        $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+                    $progressQuery->where(function ($q) {
+                        $q->whereNull('title')->orWhere('title', '');
                     });
                 }
             }

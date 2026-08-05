@@ -248,13 +248,13 @@ class StudentApiController extends Controller
 
                 $hasProgressTitle = \Illuminate\Support\Facades\Schema::hasColumn('progress', 'title');
                 $quizProgress = $progressRecords->where('difficulty', $diff)
-                    ->filter(function ($p) use ($hasProgressTitle, $displayTitle, $topic) {
+                    ->filter(function ($p) use ($hasProgressTitle, $displayTitle) {
                         if (!$hasProgressTitle) return true;
                         $pTitle = $p->title;
-                        if (!empty($displayTitle) && $displayTitle !== $topic) {
+                        if (!empty($displayTitle)) {
                             return $pTitle === $displayTitle;
                         } else {
-                            return empty($pTitle) || $pTitle === $topic;
+                            return empty($pTitle);
                         }
                     })
                     ->values()
@@ -319,30 +319,39 @@ class StudentApiController extends Controller
 
         $matchedTopic = null;
         $matchedDifficulty = null;
+        $matchedTitle = null;
+
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
 
         foreach ($topics as $topic) {
-            $difficulties = \App\Models\Question::where('topic', $topic)
-                ->select('difficulty')
-                ->distinct()
-                ->pluck('difficulty')
-                ->toArray();
+            if ($hasTitleCol) {
+                $quizGroups = \App\Models\Question::where('topic', $topic)
+                    ->select(['difficulty', 'title'])
+                    ->distinct()
+                    ->get();
+            } else {
+                $quizGroups = \App\Models\Question::where('topic', $topic)
+                    ->select('difficulty')
+                    ->distinct()
+                    ->get()
+                    ->map(function ($item) {
+                        $item->title = null;
+                        return $item;
+                    });
+            }
 
-            $pDiffs = \App\Models\Progress::where('student_id', $user->id)
-                ->where('topic', $topic)
-                ->select('difficulty')
-                ->distinct()
-                ->pluck('difficulty')
-                ->toArray();
+            foreach ($quizGroups as $group) {
+                $diff = $group->difficulty;
+                $titleVal = $group->title;
+                $displayTitle = !empty($titleVal) ? $titleVal : $topic;
 
-            $difficulties = array_values(array_unique(array_filter(array_merge($difficulties, $pDiffs))));
-
-            foreach ($difficulties as $diff) {
-                $quizIdStr = $topic . '_' . $diff;
+                $quizIdStr = $topic . '_' . $diff . '_' . $displayTitle;
                 $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
 
                 if ($quizIdInt == $id) {
                     $matchedTopic = $topic;
                     $matchedDifficulty = $diff;
+                    $matchedTitle = $displayTitle;
                     break 2;
                 }
             }
@@ -352,24 +361,36 @@ class StudentApiController extends Controller
             return response()->json(['error' => 'Quiz not found'], 404);
         }
 
-        $questions = \App\Models\Question::where('topic', $matchedTopic)
-            ->where('difficulty', $matchedDifficulty)
-            ->get();
+        $query = \App\Models\Question::where('topic', $matchedTopic)->where('difficulty', $matchedDifficulty);
+        if ($hasTitleCol && !empty($matchedTitle)) {
+            $query->where('title', $matchedTitle);
+        }
+        $questions = $query->get();
 
         $classTeacher = \App\Models\User::where('role', 'teacher')
             ->where('class_name', $user->class_name)
             ->first();
 
-        $quizProgress = \App\Models\Progress::where('student_id', $user->id)
+        $pQuery = \App\Models\Progress::where('student_id', $user->id)
             ->where('topic', $matchedTopic)
-            ->where('difficulty', $matchedDifficulty)
-            ->get();
+            ->where('difficulty', $matchedDifficulty);
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
+            if (!empty($matchedTitle)) {
+                $pQuery->where('title', $matchedTitle);
+            } else {
+                $pQuery->where(function ($q) {
+                    $q->whereNull('title')->orWhere('title', '');
+                });
+            }
+        }
+        $quizProgress = $pQuery->get();
 
         return response()->json([
             'id' => intval($id),
             'topic' => $matchedTopic,
             'difficulty' => $matchedDifficulty,
-            'title' => $matchedTopic . ' (' . ucfirst($matchedDifficulty) . ')',
+            'title' => !empty($matchedTitle) ? $matchedTitle : $matchedTopic,
             'questions' => $questions,
             'teacher' => $classTeacher ? [
                 'id' => $classTeacher->id,
