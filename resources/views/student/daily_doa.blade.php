@@ -1,9 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container-fluid px-4 py-5" style="min-height: 100vh; background-color: transparent;">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
+<div class="container py-5" style="min-height: 100vh; background-color: transparent;">
             <div class="d-flex justify-content-between align-items-center mb-5">
                 <div class="d-flex align-items-center gap-3">
                     <a href="{{ url()->previous() === url()->current() ? route('student.dashboard') : url()->previous() }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
@@ -130,7 +128,6 @@
                     <button onclick="window.location.reload()" class="btn btn-outline-warning mt-3">Try Again</button>
                 </div>
             @endif
-    </div>
 </div>
 
 @push('styles')
