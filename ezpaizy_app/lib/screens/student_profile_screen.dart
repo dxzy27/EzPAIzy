@@ -194,8 +194,8 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
             : SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 child: Center(
-                  child: Container(
-                    maxWidth: 800,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
