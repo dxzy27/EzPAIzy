@@ -343,53 +343,98 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                   ],
 
                   // Card Widget with Flip Animation
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 800), // Max width 800 matching web
-                        child: SizedBox(
-                          height: 400, // Height 400 matching web
-                          width: double.infinity,
-                          child: GestureDetector(
-                            onTap: _flip,
-                            child: AnimatedBuilder(
-                              animation: _flipAnim,
-                              builder: (_, __) {
-                                final angle = _flipAnim.value * 3.14159;
-                                final showFront = _flipAnim.value <= 0.5;
-                                return Transform(
-                                  alignment: Alignment.center,
-                                  transform: Matrix4.identity()
-                                    ..setEntry(3, 2, 0.0015)
-                                    ..rotateY(angle),
-                                  child: showFront
-                                      ? _buildCardFace(
-                                          label: 'QUESTION',
-                                          text: card['term'] ?? '',
-                                          hint: 'Click anywhere to reveal',
-                                          cardBgColor: const Color(0xFFDDDDDD), // Grey matching web front
-                                          storageKey: 'hl_flash_term_${card['id']}',
-                                        )
-                                      : Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.identity()..rotateY(3.14159),
-                                          child: _buildCardFace(
-                                            label: 'ANSWER',
-                                            text: card['definition'] ?? '',
-                                            hint: 'Click anywhere to hide',
-                                            cardBgColor: const Color(0xFFEDE9E6), // Warm light grey matching web back
-                                            storageKey: 'hl_flash_def_${card['id']}',
-                                          ),
-                                        ),
-                                );
-                              },
-                            ),
-                          ),
+                  (() {
+                    Widget cardWidget = SizedBox(
+                      height: 400, // Height 400 matching web
+                      width: double.infinity,
+                      child: GestureDetector(
+                        onTap: _flip,
+                        child: AnimatedBuilder(
+                          animation: _flipAnim,
+                          builder: (_, __) {
+                            final angle = _flipAnim.value * 3.14159;
+                            final showFront = _flipAnim.value <= 0.5;
+                            return Transform(
+                              alignment: Alignment.center,
+                              transform: Matrix4.identity()
+                                ..setEntry(3, 2, 0.0015)
+                                ..rotateY(angle),
+                              child: showFront
+                                  ? _buildCardFace(
+                                      label: 'QUESTION',
+                                      text: card['term'] ?? '',
+                                      hint: 'Click anywhere to reveal',
+                                      cardBgColor: const Color(0xFFDDDDDD), // Grey matching web front
+                                      storageKey: 'hl_flash_term_${card['id']}',
+                                    )
+                                  : Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.identity()..rotateY(3.14159),
+                                      child: _buildCardFace(
+                                        label: 'ANSWER',
+                                        text: card['definition'] ?? '',
+                                        hint: 'Click anywhere to hide',
+                                        cardBgColor: const Color(0xFFEDE9E6), // Warm light grey matching web back
+                                        storageKey: 'hl_flash_def_${card['id']}',
+                                      ),
+                                    ),
+                            );
+                          },
                         ),
                       ),
-                    ),
-                  ),
+                    );
+
+                    if (isKinesthetic) {
+                      cardWidget = Dismissible(
+                        key: ValueKey<int>(card['id']),
+                        direction: DismissDirection.horizontal,
+                        onDismissed: (direction) {
+                          if (direction == DismissDirection.endToStart) {
+                            // Swiped Left: Still learning (1)
+                            _submitReview(1);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Marked: Still learning 🔴'),
+                                duration: Duration(milliseconds: 700),
+                              ),
+                            );
+                          } else {
+                            // Swiped Right: Know (5)
+                            _submitReview(5);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Marked: Know 🟢'),
+                                duration: Duration(milliseconds: 700),
+                              ),
+                            );
+                          }
+                        },
+                        background: Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 20),
+                          color: Colors.green.withOpacity(0.1),
+                          child: const Icon(Icons.check, color: Colors.green, size: 50),
+                        ),
+                        secondaryBackground: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
+                          color: Colors.red.withOpacity(0.1),
+                          child: const Icon(Icons.close, color: Colors.red, size: 50),
+                        ),
+                        child: cardWidget,
+                      );
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 800), // Max width 800 matching web
+                          child: cardWidget,
+                        ),
+                      ),
+                    );
+                  })(),
 
                   const SizedBox(height: 28), // Compact Web Spacing instead of expanding Spacer
 
@@ -419,7 +464,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                                 GestureDetector(
                                   onTap: () => _submitReview(1),
                                   child: Container(
-                                    width: 56,
+                                    width: isKinesthetic ? 80 : 56,
                                     height: 56,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -433,8 +478,17 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                                         ),
                                       ],
                                     ),
-                                    child: const Center(
-                                      child: Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
+                                    child: Center(
+                                      child: isKinesthetic
+                                          ? Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: const [
+                                                Icon(Icons.arrow_back, color: Color(0xFFEF4444), size: 16),
+                                                SizedBox(width: 6),
+                                                Icon(Icons.close, color: Color(0xFFEF4444), size: 20),
+                                              ],
+                                            )
+                                          : const Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
                                     ),
                                   ),
                                 ),
@@ -443,7 +497,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                                 GestureDetector(
                                   onTap: () => _submitReview(5),
                                   child: Container(
-                                    width: 56,
+                                    width: isKinesthetic ? 80 : 56,
                                     height: 56,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -457,8 +511,17 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                                         ),
                                       ],
                                     ),
-                                    child: const Center(
-                                      child: Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
+                                    child: Center(
+                                      child: isKinesthetic
+                                          ? Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: const [
+                                                Icon(Icons.check, color: Color(0xFF22C55E), size: 20),
+                                                SizedBox(width: 6),
+                                                Icon(Icons.arrow_forward, color: Color(0xFF22C55E), size: 16),
+                                              ],
+                                            )
+                                          : const Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
                                     ),
                                   ),
                                 ),

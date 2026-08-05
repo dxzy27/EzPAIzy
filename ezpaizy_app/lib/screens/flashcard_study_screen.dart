@@ -520,40 +520,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
       ),
     );
 
-    if (isKinesthetic && showAnswer) {
-      cardWidget = Dismissible(
-        key: ValueKey<int>(card['id']),
-        direction: DismissDirection.horizontal,
-        onDismissed: (direction) {
-          if (direction == DismissDirection.endToStart) {
-            // Swiped Left: Again (0)
-            _submitReview(0);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Marked: Again 🔴'), duration: Duration(milliseconds: 700)),
-            );
-          } else {
-            // Swiped Right: Easy (5)
-            _submitReview(5);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Marked: Easy 🟢'), duration: Duration(milliseconds: 700)),
-            );
-          }
-        },
-        background: Container(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.only(left: 20),
-          color: Colors.blue.withOpacity(0.2),
-          child: const Icon(Icons.sentiment_very_satisfied, color: Colors.blue, size: 50),
-        ),
-        secondaryBackground: Container(
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 20),
-          color: Colors.red.withOpacity(0.2),
-          child: const Icon(Icons.sentiment_very_dissatisfied, color: Colors.red, size: 50),
-        ),
-        child: cardWidget,
-      );
-    }
+
 
     return Scaffold(
       body: Container(
@@ -690,7 +657,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                             GestureDetector(
                               onTap: () => _submitReview(1),
                               child: Container(
-                                width: 56,
+                                width: isKinesthetic ? 80 : 56,
                                 height: 56,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -704,8 +671,17 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                                     ),
                                   ],
                                 ),
-                                child: const Center(
-                                  child: Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
+                                child: Center(
+                                  child: isKinesthetic
+                                      ? Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(Icons.arrow_back, color: Color(0xFFEF4444), size: 16),
+                                            SizedBox(width: 6),
+                                            Icon(Icons.close, color: Color(0xFFEF4444), size: 20),
+                                          ],
+                                        )
+                                      : const Icon(Icons.close, color: Color(0xFFEF4444), size: 24),
                                 ),
                               ),
                             ),
@@ -714,7 +690,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                             GestureDetector(
                               onTap: () => _submitReview(5),
                               child: Container(
-                                width: 56,
+                                width: isKinesthetic ? 80 : 56,
                                 height: 56,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -728,8 +704,17 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                                     ),
                                   ],
                                 ),
-                                child: const Center(
-                                  child: Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
+                                child: Center(
+                                  child: isKinesthetic
+                                      ? Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(Icons.check, color: Color(0xFF22C55E), size: 20),
+                                            SizedBox(width: 6),
+                                            Icon(Icons.arrow_forward, color: Color(0xFF22C55E), size: 16),
+                                          ],
+                                        )
+                                      : const Icon(Icons.check, color: Color(0xFF22C55E), size: 24),
                                 ),
                               ),
                             ),
