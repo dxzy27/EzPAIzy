@@ -790,6 +790,18 @@ class StudentApiController extends Controller
             return $card->is_due;
         })->values();
 
+        if ($flashcards->isEmpty()) {
+            $flashcards = $set->flashcards()->get()->map(function ($card) use ($userId, $now) {
+                $progress = FlashcardProgress::firstOrCreate(
+                    ['user_id' => $userId, 'flashcard_id' => $card->id],
+                    ['ease_factor' => 2.5, 'interval' => 0, 'repetitions' => 0, 'next_review_date' => $now]
+                );
+                $card->progress = $progress;
+                $card->is_due = true;
+                return $card;
+            })->values();
+        }
+
         return response()->json([
             'flashcard_set' => $set,
             'due_cards' => $flashcards
