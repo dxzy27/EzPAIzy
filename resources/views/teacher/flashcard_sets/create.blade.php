@@ -55,7 +55,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3 mt-4 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
                 <h4 class="fw-bold text-dark mb-0">Flashcards</h4>
-                <span class="badge bg-primary bg-opacity-15 text-primary fw-bold px-2.5 py-1" id="cards-counter-badge" style="border-radius: 8px; font-size: 0.88rem;">0 Cards</span>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary fw-bold px-3 py-1.5 border border-secondary border-opacity-25" id="cards-counter-badge" style="border-radius: 20px; font-size: 0.82rem; letter-spacing: 0.2px;">0 Cards</span>
             </div>
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-primary btn-sm fw-bold px-3 d-inline-flex align-items-center" id="add-card-header-btn" style="border-radius: 8px; font-size: 0.88rem;">
