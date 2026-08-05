@@ -116,7 +116,9 @@ class StudentController extends Controller
             $quiz = new \stdClass();
             $quiz->topic = $topic;
             $quiz->difficulty = $diff;
-            $quiz->title = $topic . ' (' . ucfirst($diff) . ')';
+            // Fetch custom title if saved on questions, otherwise default to Topic name
+            $customTitleQ = \App\Models\Question::where('topic', $topic)->where('difficulty', $diff)->whereNotNull('title')->where('title', '!=', '')->first();
+            $quiz->title = $customTitleQ ? $customTitleQ->title : $topic;
             
             // Get student progress record
             $quiz->progress = Progress::where('student_id', $user->id)

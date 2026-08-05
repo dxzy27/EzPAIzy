@@ -56,8 +56,8 @@ class QuizController extends Controller
             $attemptsCount = $progressRecords->count();
             $avgScore = $attemptsCount > 0 ? round($progressRecords->avg('score')) : 0;
 
-            // Fetch custom title if saved on questions
-            $displayTitle = $topic . ' (' . ucfirst($diff) . ')';
+            // Fetch custom title if saved on questions, otherwise default to Topic name
+            $displayTitle = $topic;
             if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
                 $customTitleQ = Question::where('topic', $topic)->where('difficulty', $diff)->whereNotNull('title')->where('title', '!=', '')->first();
                 if ($customTitleQ) {
@@ -148,7 +148,7 @@ class QuizController extends Controller
      */
     public function show(string $topic, string $difficulty)
     {
-        $displayTitle = $topic . ' (' . ucfirst($difficulty) . ')';
+        $displayTitle = $topic;
         if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
             $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
             if ($customTitleQ) {
@@ -171,7 +171,7 @@ class QuizController extends Controller
      */
     public function edit(string $topic, string $difficulty)
     {
-        $displayTitle = $topic . ' (' . ucfirst($difficulty) . ')';
+        $displayTitle = $topic;
         if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
             $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
             if ($customTitleQ) {
