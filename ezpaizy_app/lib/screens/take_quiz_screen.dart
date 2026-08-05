@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/study_notepad_widget.dart';
 import '../services/tts_service.dart';
 import '../widgets/visual_highlight_text.dart';
+import '../widgets/profile_dropdown_helper.dart';
 
 class TakeQuizScreen extends StatefulWidget {
   final int quizId;
@@ -453,103 +455,363 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
   }
 
   Widget _buildResult() {
-    // KBAT quiz — pending teacher grading
-    if (_isPending) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Quiz Submitted')),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.hourglass_top_rounded,
-                    size: 80, color: Colors.deepPurple),
-                const SizedBox(height: 20),
-                const Text(
-                  'Submitted for Review',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'This is a KBAT (Higher Order Thinking) quiz.\nYour teacher will review your answers and assign a grade.',
-                  style: TextStyle(fontSize: 14, color: Colors.grey, height: 1.5),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => context.go('/progress'),
-                    child: const Text('View My Progress'),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () => context.go('/quizzes'),
-                    child: const Text('Back to Quizzes'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+    final score = result ?? 0;
+    final topic = (quiz?['topic'] ?? 'General').toString();
+    final quizTitle = (quiz?['title'] ?? topic).toString();
+
+    Color scoreColor = const Color(0xFFEF4444); // red
+    String scoreStatus = '💡 KEEP PRACTICING';
+    Color statusBg = const Color(0xFFFEE2E2);
+    Color statusFg = const Color(0xFF991B1B);
+    String subtitleText = "Don't give up! Review your study materials and try retaking the quiz to boost your score.";
+
+    if (score >= 70) {
+      scoreColor = const Color(0xFF10B981); // green
+      scoreStatus = '🎉 EXCELLENT PASS!';
+      statusBg = const Color(0xFFD1FAE5);
+      statusFg = const Color(0xFF065F46);
+      subtitleText = 'Great job! You have demonstrated strong mastery of this topic.';
+    } else if (score >= 50) {
+      scoreColor = const Color(0xFFF59E0B); // amber
+      scoreStatus = '👍 GOOD EFFORT!';
+      statusBg = const Color(0xFFFEF3C7);
+      statusFg = const Color(0xFF92400E);
+      subtitleText = 'You are getting closer! A quick revision will help you get a top score.';
     }
 
-    // Normal quiz result
-    final score = result ?? 0;
-    final passed = score >= 70;
+    if (_isPending) {
+      scoreColor = const Color(0xFF8B5CF6);
+      scoreStatus = '⏳ PENDING TEACHER REVIEW';
+      statusBg = const Color(0xFFEDE9FE);
+      statusFg = const Color(0xFF5B21B6);
+      subtitleText = 'This quiz contains KBAT essay questions. Your teacher will review your submission soon.';
+    }
+
+    final authUser = Provider.of<AuthProvider>(context, listen: false).user;
+    final userName = (authUser?['name'] ?? 'Student').toString();
+    final initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'S';
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Quiz Result')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                passed ? Icons.emoji_events : Icons.sentiment_dissatisfied,
-                size: 80,
-                color: passed ? Colors.amber : Colors.grey,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                '$score%',
-                style: TextStyle(
-                  fontSize: 64,
-                  fontWeight: FontWeight.bold,
-                  color: passed ? Colors.green : Colors.red,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.15),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Column(
+                    children: [
+                      // Universal Top Nav Bar
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () => context.go('/quizzes'),
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                  ),
+                                  child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF334155)),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Image.asset(
+                                'assets/images/newlogo.png',
+                                height: 38,
+                                errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
+                              ),
+                            ],
+                          ),
+                          GestureDetector(
+                            onTapDown: (details) => showProfileDropdown(context, details.globalPosition),
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF14B8A6),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  initial,
+                                  style: GoogleFonts.outfit(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Result Card Container
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(32),
+                        child: Column(
+                          children: [
+                            // Header Topic Badge & Title
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                topic.toUpperCase(),
+                                style: GoogleFonts.outfit(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF64748B),
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              quizTitle,
+                              style: GoogleFonts.outfit(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900,
+                                color: const Color(0xFF0F172A),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Score Circle Display
+                            Container(
+                              width: 140,
+                              height: 140,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: scoreColor.withOpacity(0.08),
+                                border: Border.all(color: scoreColor.withOpacity(0.3), width: 3),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (_isPending)
+                                      const Icon(Icons.hourglass_top_rounded, size: 44, color: Color(0xFF8B5CF6))
+                                    else
+                                      Text(
+                                        '$score%',
+                                        style: GoogleFonts.outfit(
+                                          fontSize: 42,
+                                          fontWeight: FontWeight.w900,
+                                          color: scoreColor,
+                                        ),
+                                      ),
+                                    if (!_isPending)
+                                      Text(
+                                        'FINAL SCORE',
+                                        style: GoogleFonts.outfit(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF64748B),
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 18),
+
+                            // Status Pill
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: statusBg,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                scoreStatus,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: statusFg,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // Subtitle Explanation
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 500),
+                              child: Text(
+                                subtitleText,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 13,
+                                  color: const Color(0xFF64748B),
+                                  height: 1.5,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(height: 28),
+                            const Divider(color: Color(0xFFF1F5F9), thickness: 1),
+                            const SizedBox(height: 24),
+
+                            // Action Buttons Row
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                final isWide = constraints.maxWidth > 500;
+                                return isWide
+                                    ? Row(
+                                        children: [
+                                          Expanded(
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {
+                                                setState(() {
+                                                  submitted = false;
+                                                  answers.clear();
+                                                  currentPage = 0;
+                                                  result = null;
+                                                });
+                                              },
+                                              icon: const Icon(Icons.refresh, size: 18, color: Colors.white),
+                                              label: Text('Retake Quiz', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xFF10B981),
+                                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                elevation: 0,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: ElevatedButton.icon(
+                                              onPressed: () => context.go('/quizzes'),
+                                              icon: const Icon(Icons.quiz_outlined, size: 18, color: Colors.white),
+                                              label: Text('Back to Quizzes', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xFF3B82F6),
+                                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                elevation: 0,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: OutlinedButton.icon(
+                                              onPressed: () => context.go('/progress'),
+                                              icon: const Icon(Icons.bar_chart, size: 18, color: Color(0xFF475569)),
+                                              label: Text('View Progress', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13, color: const Color(0xFF475569))),
+                                              style: OutlinedButton.styleFrom(
+                                                side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Column(
+                                        children: [
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {
+                                                setState(() {
+                                                  submitted = false;
+                                                  answers.clear();
+                                                  currentPage = 0;
+                                                  result = null;
+                                                });
+                                              },
+                                              icon: const Icon(Icons.refresh, size: 18, color: Colors.white),
+                                              label: Text('Retake Quiz', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xFF10B981),
+                                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                elevation: 0,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton.icon(
+                                              onPressed: () => context.go('/quizzes'),
+                                              icon: const Icon(Icons.quiz_outlined, size: 18, color: Colors.white),
+                                              label: Text('Back to Quizzes', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xFF3B82F6),
+                                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                elevation: 0,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: OutlinedButton.icon(
+                                              onPressed: () => context.go('/progress'),
+                                              icon: const Icon(Icons.bar_chart, size: 18, color: Color(0xFF475569)),
+                                              label: Text('View Progress', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13, color: const Color(0xFF475569))),
+                                              style: OutlinedButton.styleFrom(
+                                                side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                passed ? '🎉 Well done!' : 'Keep practicing!',
-                style: const TextStyle(fontSize: 18, color: Colors.grey),
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => context.go('/quizzes'),
-                  child: const Text('Back to Quizzes'),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () => context.go('/progress'),
-                  child: const Text('View Progress'),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
