@@ -57,8 +57,13 @@ class QuizController extends Controller
             $avgScore = $attemptsCount > 0 ? round($progressRecords->avg('score')) : 0;
 
             // Fetch custom title if saved on questions
-            $customTitleQ = Question::where('topic', $topic)->where('difficulty', $diff)->whereNotNull('title')->where('title', '!=', '')->first();
-            $displayTitle = $customTitleQ ? $customTitleQ->title : ($topic . ' (' . ucfirst($diff) . ')');
+            $displayTitle = $topic . ' (' . ucfirst($diff) . ')';
+            if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
+                $customTitleQ = Question::where('topic', $topic)->where('difficulty', $diff)->whereNotNull('title')->where('title', '!=', '')->first();
+                if ($customTitleQ) {
+                    $displayTitle = $customTitleQ->title;
+                }
+            }
 
             $quiz = new \stdClass();
             $quiz->topic = $topic;
@@ -111,8 +116,10 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+
         foreach ($validated['questions'] as $q) {
-            Question::create([
+            $data = [
                 'question_text' => $q['text'],
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
@@ -120,8 +127,13 @@ class QuizController extends Controller
                 'points' => 10,
                 'topic' => $validated['topic'],
                 'difficulty' => $validated['difficulty'],
-                'title' => $validated['title'] ?? null,
-            ]);
+            ];
+
+            if ($hasTitleCol && isset($validated['title'])) {
+                $data['title'] = $validated['title'];
+            }
+
+            Question::create($data);
         }
 
         // Clear generated questions session
@@ -136,8 +148,13 @@ class QuizController extends Controller
      */
     public function show(string $topic, string $difficulty)
     {
-        $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
-        $displayTitle = $customTitleQ ? $customTitleQ->title : ($topic . ' (' . ucfirst($difficulty) . ')');
+        $displayTitle = $topic . ' (' . ucfirst($difficulty) . ')';
+        if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
+            $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
+            if ($customTitleQ) {
+                $displayTitle = $customTitleQ->title;
+            }
+        }
 
         $quiz = new \stdClass();
         $quiz->topic = $topic;
@@ -154,8 +171,13 @@ class QuizController extends Controller
      */
     public function edit(string $topic, string $difficulty)
     {
-        $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
-        $displayTitle = $customTitleQ ? $customTitleQ->title : ($topic . ' (' . ucfirst($difficulty) . ')');
+        $displayTitle = $topic . ' (' . ucfirst($difficulty) . ')';
+        if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
+            $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
+            if ($customTitleQ) {
+                $displayTitle = $customTitleQ->title;
+            }
+        }
 
         $quiz = new \stdClass();
         $quiz->topic = $topic;
@@ -188,8 +210,10 @@ class QuizController extends Controller
         // Delete existing questions in this topic + difficulty
         Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
 
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+
         foreach ($validated['questions'] as $q) {
-            Question::create([
+            $data = [
                 'question_text' => $q['text'],
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
@@ -197,8 +221,13 @@ class QuizController extends Controller
                 'points' => 10,
                 'topic' => $validated['topic'],
                 'difficulty' => $difficulty,
-                'title' => $validated['title'] ?? null,
-            ]);
+            ];
+
+            if ($hasTitleCol && isset($validated['title'])) {
+                $data['title'] = $validated['title'];
+            }
+
+            Question::create($data);
         }
 
         return redirect()->route('teacher.quizzes.folder', $validated['topic'])
