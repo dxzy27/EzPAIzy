@@ -102,6 +102,12 @@ class AppRouter {
                 ),
               ),
               GoRoute(
+                path: '/flashcards/set/:id',
+                builder: (_, state) => FlashcardPracticeScreen(
+                  setId: int.parse(state.pathParameters['id']!),
+                ),
+              ),
+              GoRoute(
                 path: '/flashcards/:id/study',
                 builder: (_, state) => FlashcardStudyScreen(
                   setId: int.parse(state.pathParameters['id']!),

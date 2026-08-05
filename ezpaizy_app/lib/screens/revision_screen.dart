@@ -420,7 +420,7 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                                       onPressed: () {
                                                         if (isFlashcard) {
                                                           final targetId = item?['id'] ?? fav['flashcard_set_id'];
-                                                          context.push('/flashcards/set/$targetId');
+                                                          context.push('/flashcards/$targetId');
                                                         } else if (isContent) {
                                                           final targetId = item?['id'] ?? fav['content_id'];
                                                           context.push('/contents/$targetId');

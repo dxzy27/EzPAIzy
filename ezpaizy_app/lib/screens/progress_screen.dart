@@ -808,7 +808,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                           ElevatedButton.icon(
                             onPressed: () {
                               final setId = p['flashcard_set_id'] ?? p['id'];
-                              context.push('/flashcards/set/$setId');
+                              context.push('/flashcards/$setId');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF0D9488),
