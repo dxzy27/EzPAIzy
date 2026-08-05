@@ -117,6 +117,7 @@ class QuizController extends Controller
         ]);
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        $quizTitle = $request->input('title', '');
 
         foreach ($validated['questions'] as $q) {
             $questionData = [
@@ -130,10 +131,15 @@ class QuizController extends Controller
             ];
 
             if ($hasTitleCol) {
-                $questionData['title'] = $validated['title'] ?? '';
+                $questionData['title'] = $quizTitle;
             }
 
             Question::create($questionData);
+        }
+
+        // Guarantee all questions carry title
+        if ($hasTitleCol && $quizTitle !== '') {
+            Question::where('topic', $validated['topic'])->where('difficulty', $validated['difficulty'])->update(['title' => $quizTitle]);
         }
 
         // Clear generated questions session
