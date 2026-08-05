@@ -20,6 +20,7 @@ import '../screens/revision_screen.dart';
 
 import '../screens/learning_style_screen.dart';
 import '../screens/learning_profile_screen.dart';
+import '../screens/student_profile_screen.dart';
 import '../screens/notes_folder_screen.dart';
 import '../screens/register_screen.dart';
 import '../screens/daily_doa_screen.dart';
@@ -125,6 +126,10 @@ class AppRouter {
                   final retake = state.uri.queryParameters['retake'] == 'true';
                   return LearningStyleScreen(retake: retake);
                 },
+              ),
+              GoRoute(
+                path: '/profile',
+                builder: (_, _) => const StudentProfileScreen(),
               ),
               GoRoute(
                 path: '/learning-profile',

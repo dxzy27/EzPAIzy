@@ -1394,4 +1394,58 @@ class StudentApiController extends Controller
             'all_situations' => array_keys($doas)
         ]);
     }
+
+    /**
+     * Get Student Profile details and statistics.
+     */
+    public function getProfile(Request $request)
+    {
+        $user = $request->user();
+        $quizzesCount = $user->progress()->count();
+        $avgScore = $quizzesCount > 0 ? round($user->progress()->avg('score'), 1) : 0;
+        $savedCount = $user->favorites()->count();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone_number' => $user->phone_number,
+                'class_name' => $user->class_name,
+                'address' => $user->address,
+                'role' => $user->role ?? 'student',
+                'created_at' => $user->created_at ? $user->created_at->format('M d, Y') : null,
+                'avatar_color' => $user->avatar_color ?? '#7C3AED',
+                'stats' => [
+                    'quizzes_taken' => $quizzesCount,
+                    'average_score' => $avgScore,
+                    'saved_materials' => $savedCount,
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * Update Student Profile details.
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully!',
+            'user' => $user->fresh()
+        ]);
+    }
 }

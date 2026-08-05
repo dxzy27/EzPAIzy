@@ -68,5 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Daily Doa API
     Route::get('/student/daily-doa',             [StudentApiController::class, 'dailyDoa']);
+
+    // Profile API
+    Route::get('/student/profile',               [StudentApiController::class, 'getProfile']);
+    Route::put('/student/profile',               [StudentApiController::class, 'updateProfile']);
 });
 

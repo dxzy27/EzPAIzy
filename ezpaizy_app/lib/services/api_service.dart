@@ -437,4 +437,44 @@ class ApiService {
       return {};
     }
   }
+
+  static Future<Map<String, dynamic>> getProfile() async {
+    try {
+      final res = await http.get(
+        Uri.parse('$baseUrl/student/profile'),
+        headers: await _headers(),
+      );
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+        return (decoded is Map<String, dynamic>) ? decoded : {};
+      }
+      return {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateProfile({
+    required String name,
+    required String email,
+    String? phoneNumber,
+    String? address,
+  }) async {
+    try {
+      final res = await http.put(
+        Uri.parse('$baseUrl/student/profile'),
+        headers: await _headers(),
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'phone_number': phoneNumber,
+          'address': address,
+        }),
+      );
+      final decoded = jsonDecode(res.body);
+      return (decoded is Map<String, dynamic>) ? decoded : {};
+    } catch (_) {
+      return {};
+    }
+  }
 }

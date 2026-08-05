@@ -99,7 +99,7 @@ void showProfileDropdown(BuildContext context, Offset globalPosition) {
     ],
   ).then((value) async {
     if (value == 'profile') {
-      context.go('/learning-profile');
+      context.go('/profile');
     } else if (value == 'revision') {
       context.go('/revision');
     } else if (value == 'progress') {

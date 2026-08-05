@@ -275,7 +275,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ],
     ).then((value) async {
       if (value == 'profile') {
-        context.go('/learning-profile');
+        context.go('/profile');
       } else if (value == 'revision') {
         context.go('/revision');
       } else if (value == 'progress') {
@@ -899,74 +899,93 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildPersonalizeSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'PERSONALIZE YOUR CONTENT',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF64748B),
-            letterSpacing: 0.5,
-            fontFamily: 'Outfit',
+    final style = data?['diagnosis']?['primary_style'] as String?;
+    final hasCompletedDiagnosis = style != null && style.isNotEmpty;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Column(
-              children: [
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4255FF).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Image.asset(
-                      'assets/images/vark.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.psychology, color: Color(0xFF4255FF), size: 36),
-                    ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Column(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4255FF).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Image.asset(
+                    'assets/images/vark.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.psychology, color: Color(0xFF4255FF), size: 36),
                   ),
                 ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () => context.go('/learning-style'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4255FF),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  ),
-                  child: const Text(
-                    'Start Diagnosis',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
-                  ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  if (hasCompletedDiagnosis) {
+                    context.go('/learning-profile');
+                  } else {
+                    context.go('/learning-style');
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: hasCompletedDiagnosis ? const Color(0xFF10B981) : const Color(0xFF4255FF),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-              ],
-            ),
-            const SizedBox(width: 20),
-            const Expanded(
+                child: Text(
+                  hasCompletedDiagnosis ? 'View Profile' : 'Start Diagnosis',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (hasCompletedDiagnosis) {
+                  context.go('/learning-profile');
+                } else {
+                  context.go('/learning-style');
+                }
+              },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '🎯 Discover Your Learning Style',
-                    style: TextStyle(
+                    hasCompletedDiagnosis ? '🎯 Your VARK Learning Profile' : '🎯 Discover Your Learning Style',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1E293B),
                       fontFamily: 'Outfit',
                     ),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   Text(
-                    'Complete the VARK Questionnaire to customize materials to your personal study method.',
-                    style: TextStyle(
+                    hasCompletedDiagnosis
+                        ? 'Tap here to view your complete VARK diagnosis breakdown, learning preferences, and recommended strategies.'
+                        : 'Complete the VARK Questionnaire to customize materials to your personal study method.',
+                    style: const TextStyle(
                       fontSize: 13,
                       color: Color(0xFF64748B),
                       height: 1.4,
@@ -976,9 +995,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
