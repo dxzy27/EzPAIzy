@@ -136,21 +136,24 @@
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         border-radius: 1rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Premium shadow */
-        background-color: #212529; /* Deep Charcoal for Front */
-        color: white;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        background-color: #DDDDDD !important; /* Soft Light Gray for Front */
+        color: #0f172a !important;
         display: flex;
         flex-direction: column;
     }
     .flashcard-back {
         transform: rotateY(180deg);
-        background-color: #343a40; /* Graphite Grey for Back */
+        background-color: #EDE9E6 !important; /* Soft Warm Gray for Back */
+        color: #0f172a !important;
     }
     .flashcard-input {
         background: transparent !important;
         border: none !important;
-        color: white !important;
-        font-size: 1.5rem;
+        color: #0f172a !important;
+        font-size: 1.35rem;
+        font-weight: 600;
         text-align: center;
         width: 100%;
         height: 100%;
@@ -161,7 +164,8 @@
         outline: none !important;
     }
     .flashcard-input::placeholder {
-        color: rgba(255, 255, 255, 0.4);
+        color: rgba(15, 23, 42, 0.45);
+        font-weight: 500;
     }
 </style>
 @endpush
@@ -190,22 +194,22 @@
                             <!-- Front Face -->
                             <div class="flashcard-face flashcard-front p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-info bg-opacity-25 text-info border border-info fw-bold">FRONT</span>
-                                    <small class="text-white-50"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">FRONT / QUESTION</span>
+                                    <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb me-1"></i> Tap to flip</small>
                                 </div>
                                 <div class="flex-grow-1 d-flex align-items-center">
-                                    <textarea name="flashcards[${index-1}][term]" class="form-control flashcard-input" placeholder="Type front text here..." required>${term}</textarea>
+                                    <textarea name="flashcards[${index-1}][term]" class="form-control flashcard-input" placeholder="Type question / front text here..." required>${term}</textarea>
                                 </div>
                             </div>
 
                             <!-- Back Face -->
                             <div class="flashcard-face flashcard-back p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-bold">BACK</span>
-                                    <small class="text-white-50"><i class="bi bi-hand-index-thumb"></i> Tap to flip</small>
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">BACK / ANSWER</span>
+                                    <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb me-1"></i> Tap to flip</small>
                                 </div>
                                 <div class="flex-grow-1 d-flex align-items-center">
-                                    <textarea name="flashcards[${index-1}][definition]" class="form-control flashcard-input" placeholder="Type back text here..." required>${definition}</textarea>
+                                    <textarea name="flashcards[${index-1}][definition]" class="form-control flashcard-input" placeholder="Type answer / back text here..." required>${definition}</textarea>
                                 </div>
                             </div>
 
