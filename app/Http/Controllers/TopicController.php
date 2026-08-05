@@ -87,8 +87,19 @@ class TopicController extends Controller
     {
         abort_if($topic->user_id !== auth()->id() && !$topic->is_system, 403, 'Unauthorized');
 
+        $topicName = $topic->name;
+
+        // Cascade delete associated questions, flashcards, and contents if type matches
+        if ($topic->type === 'quiz') {
+            \App\Models\Question::where('topic', $topicName)->delete();
+        } elseif ($topic->type === 'flashcard') {
+            \App\Models\FlashcardSet::where('user_id', auth()->id())->where('topic', $topicName)->delete();
+        } elseif ($topic->type === 'material') {
+            \App\Models\Content::where('user_id', auth()->id())->where('topic', $topicName)->delete();
+        }
+
         $topic->delete();
 
-        return redirect()->back()->with('success', 'Folder deleted successfully!');
+        return redirect()->back()->with('success', 'Folder and its contents deleted successfully!');
     }
 }
