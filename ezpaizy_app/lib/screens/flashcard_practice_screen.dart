@@ -84,6 +84,8 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
   Future<void> _submitReview(int quality) async {
     if (isSubmitting) return;
+    if (currentIndex >= allCards.length) return;
+
     final card = allCards[currentIndex];
     final isLastCard = currentIndex >= allCards.length - 1;
 
@@ -91,10 +93,8 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     TtsService.stop();
     setState(() {
       isSubmitting = true;
-      if (!isLastCard) {
-        currentIndex++;
-        isFlipped = false;
-      }
+      currentIndex++;
+      isFlipped = false;
     });
     _flipCtrl.reset();
 
@@ -194,7 +194,8 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
       );
     }
 
-    if (set == null || allCards.isEmpty) {
+    if (set == null || allCards.isEmpty || currentIndex >= allCards.length) {
+      final isFinished = allCards.isNotEmpty && currentIndex >= allCards.length;
       return Scaffold(
         body: Container(
           width: double.infinity,
@@ -212,10 +213,16 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.menu_book, size: 64, color: Color(0xFFCBD5E1)),
+                    Icon(
+                      isFinished ? Icons.celebration : Icons.menu_book,
+                      size: 64,
+                      color: isFinished ? Colors.orange : const Color(0xFFCBD5E1),
+                    ),
                     const SizedBox(height: 12),
                     Text(
-                      'No cards in this set.',
+                      isFinished
+                          ? "You've reviewed all flashcards in this set!"
+                          : 'No cards in this set.',
                       style: GoogleFonts.outfit(color: const Color(0xFF64748B), fontSize: 16),
                     ),
                     const SizedBox(height: 20),
@@ -226,7 +233,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: Text('Go Back', style: GoogleFonts.outfit()),
+                      child: Text(isFinished ? 'Back to Sets' : 'Go Back', style: GoogleFonts.outfit()),
                     ),
                   ],
                 ),
