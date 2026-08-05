@@ -150,8 +150,8 @@ class _RevisionScreenState extends State<RevisionScreen> {
                       ),
                       const SizedBox(width: 12),
                       const Text(
-                        '🎴',
-                        style: TextStyle(fontSize: 22),
+                        '📚',
+                        style: TextStyle(fontSize: 24),
                       ),
                       const SizedBox(width: 8),
                       const Expanded(
@@ -181,8 +181,15 @@ class _RevisionScreenState extends State<RevisionScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(99),
                     border: Border.all(color: const Color(0xFFE2E8F0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.02),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: TextField(
                     controller: _search,
@@ -235,7 +242,7 @@ class _RevisionScreenState extends State<RevisionScreen> {
                               child: GridView.builder(
                                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 360,
+                                  maxCrossAxisExtent: 480,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16,
                                   mainAxisExtent: 200,
@@ -264,6 +271,7 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                   Color borderLeftColor;
                                   String badgeLabel;
                                   Color btnBg;
+                                  Color btnTextColor;
                                   String btnText;
 
                                   if (isFlashcard) {
@@ -272,6 +280,7 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                     borderLeftColor = const Color(0xFFFF8F00);
                                     badgeLabel = '🎴 Flashcard';
                                     btnBg = const Color(0xFFFFC107);
+                                    btnTextColor = const Color(0xFF1E293B);
                                     btnText = 'Open Flashcard Set';
                                   } else if (isContent) {
                                     badgeBg = const Color(0xFFE3F2FD);
@@ -279,6 +288,7 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                     borderLeftColor = const Color(0xFF1565C0);
                                     badgeLabel = '📄 Material';
                                     btnBg = const Color(0xFF3B82F6);
+                                    btnTextColor = Colors.white;
                                     btnText = 'Open Material';
                                   } else {
                                     badgeBg = const Color(0xFFE0F2F1);
@@ -286,6 +296,7 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                     borderLeftColor = const Color(0xFF00A896);
                                     badgeLabel = '❓ Quiz';
                                     btnBg = const Color(0xFF0D9488);
+                                    btnTextColor = Colors.white;
                                     btnText = 'Take Quiz';
                                   }
 
@@ -305,13 +316,11 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                       ),
                                       child: Row(
                                         children: [
-                                          // Left accent color strip
                                           Container(
                                             width: 5,
                                             height: double.infinity,
                                             color: borderLeftColor,
                                           ),
-                                          // Main card content
                                           Expanded(
                                             child: Padding(
                                               padding: const EdgeInsets.all(14),
@@ -319,7 +328,6 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  // Header Row: Badge & Delete Icon
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
@@ -349,8 +357,6 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                                       ),
                                                     ],
                                                   ),
-
-                                                  // Title & Info Block
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -407,8 +413,6 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                                       ),
                                                     ],
                                                   ),
-
-                                                  // Bottom Action Button
                                                   SizedBox(
                                                     width: double.infinity,
                                                     height: 36,
@@ -426,7 +430,7 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                         backgroundColor: btnBg,
-                                                        foregroundColor: Colors.white,
+                                                        foregroundColor: btnTextColor,
                                                         elevation: 0,
                                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                                       ),
@@ -435,14 +439,15 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                                         children: [
                                                           Text(
                                                             btnText,
-                                                            style: const TextStyle(
+                                                            style: TextStyle(
                                                               fontSize: 12,
                                                               fontWeight: FontWeight.bold,
+                                                              color: btnTextColor,
                                                               fontFamily: 'Outfit',
                                                             ),
                                                           ),
                                                           const SizedBox(width: 6),
-                                                          const Icon(Icons.arrow_forward, size: 14),
+                                                          Icon(Icons.arrow_forward, size: 14, color: btnTextColor),
                                                         ],
                                                       ),
                                                     ),
