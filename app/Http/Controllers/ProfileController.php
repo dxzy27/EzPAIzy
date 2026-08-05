@@ -39,15 +39,7 @@ class ProfileController extends Controller
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'class_name' => 'nullable|string|exists:school_classes,name',
-            'password' => 'nullable|string|min:8|confirmed',
         ]);
-
-        // Only update password if provided
-        if (!empty($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
-        } else {
-            unset($validated['password']);
-        }
 
         $user->update($validated);
 

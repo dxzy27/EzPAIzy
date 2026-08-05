@@ -80,24 +80,7 @@
                             @enderror
                         </div>
 
-                        <hr>
-                        <h6 class="mb-3">Change Password (Optional)</h6>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">New Password</label>
-                            <input type="password" class="form-control @error('password') is-invalid @enderror" 
-                                   id="password" name="password">
-                            <small class="form-text text-muted">Leave blank if you don't want to change your password</small>
-                            @error('password')
-                                <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" 
-                                   id="password_confirmation" name="password_confirmation">
-                        </div>
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
