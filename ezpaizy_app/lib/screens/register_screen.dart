@@ -605,54 +605,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/signup_bg.png'), // Match web signup background
-            fit: BoxFit.cover,
-            opacity: 0.70, // 0.70 overlay opacity matching web
+      body: Stack(
+        children: [
+          // Layer 1: Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/login_bg.png',
+              fit: BoxFit.cover,
+            ),
           ),
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF0C4150),
-              Color(0xFF083344),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+          // Layer 2: Dark teal overlay matching CSS linear-gradient(rgba(12, 65, 80, 0.70), rgba(12, 65, 80, 0.70))
+          Positioned.fill(
+            child: Container(
+              color: const Color(0xFF0C4150).withOpacity(0.70),
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 100),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: isWide ? 1040 : 520),
-                child: isWide
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 11,
-                            child: _buildIntroSide(),
-                          ),
-                          const SizedBox(width: 60),
-                          Expanded(
-                            flex: 9,
-                            child: _buildCardSide(),
-                          ),
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          _buildCardSide(),
-                        ],
-                      ),
+          // Layer 3: Foreground Content
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 100),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: isWide ? 1040 : 520),
+                  child: isWide
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 11,
+                              child: _buildIntroSide(),
+                            ),
+                            const SizedBox(width: 60),
+                            Expanded(
+                              flex: 9,
+                              child: _buildCardSide(),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            _buildCardSide(),
+                          ],
+                        ),
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
