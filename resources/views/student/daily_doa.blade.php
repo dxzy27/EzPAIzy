@@ -19,51 +19,51 @@
 
             @if($situationDoas && count($situationDoas) > 0)
                 <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 20px;">
-                    <div class="card-header border-0 py-4 px-5 text-center" style="background: linear-gradient(135deg, #0f0f2d 0%, #1a1a3c 100%); cursor: pointer;" onclick="window.location.reload()" title="Refresh Doa">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4358/4358686.png" alt="Bismillah" style="width: 80px; filter: invert(1); opacity: 0.8;" class="mb-3">
+                    <div class="card-header border-0 py-3 px-4 text-center" style="background: linear-gradient(135deg, #0f0f2d 0%, #1a1a3c 100%); cursor: pointer;" onclick="window.location.reload()" title="Refresh Doa">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4358/4358686.png" alt="Bismillah" style="width: 50px; filter: invert(1); opacity: 0.8;" class="mb-2">
                         <h5 class="text-white-50 mb-0 text-uppercase letter-spacing-2" id="doa-title">{{ $situationDoas[0]['title'] }}</h5>
                     </div>
 
                     <!-- Situation & Mode Selector -->
-                    <div class="bg-light py-3 px-3 text-center border-bottom">
-                         <div class="d-flex justify-content-center flex-wrap align-items-center gap-3">
-                             <div class="d-flex align-items-center flex-wrap justify-content-center">
-                                 <span class="text-muted small me-2 uppercase fw-bold">Situation:</span>
-                                 <a href="{{ route('student.daily_doa', ['situation' => 'study']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'study' ? 'active' : '' }}">📚 Studying</a>
-                                 <a href="{{ route('student.daily_doa', ['situation' => 'exam']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'exam' ? 'active' : '' }}">📝 Exam</a>
-                                 <a href="{{ route('student.daily_doa', ['situation' => 'memory']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'memory' ? 'active' : '' }}">🧠 Memory</a>
-                                 <a href="{{ route('student.daily_doa', ['situation' => 'anxious']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'anxious' ? 'active' : '' }}">😰 Anxious</a>
-                                 <a href="{{ route('student.daily_doa', ['situation' => 'unmotivated']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 m-1 {{ $situation == 'unmotivated' ? 'active' : '' }}">😐 Unmotivated</a>
-                             </div>
-
-                             <div class="d-flex align-items-center flex-wrap justify-content-center border-start ps-3 ms-3">
-                                 <span class="text-muted small me-2 uppercase fw-bold">Mode:</span>
-                                 <button class="btn btn-sm btn-outline-dark rounded-pill px-3 m-1 mode-btn memorize-active-btn" data-mode="normal">Normal</button>
-                                 <button class="btn btn-sm btn-outline-dark rounded-pill px-3 m-1 mode-btn" data-mode="memorize">Memorize</button>
-                             </div>
+                    <div class="bg-light py-3 px-4 border-bottom">
+                         <!-- Situation Selector -->
+                         <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 mb-2">
+                             <span class="text-muted small uppercase fw-bold me-2">Situation:</span>
+                             <a href="{{ route('student.daily_doa', ['situation' => 'study']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 {{ $situation == 'study' ? 'active' : '' }}">📚 Studying</a>
+                             <a href="{{ route('student.daily_doa', ['situation' => 'exam']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 {{ $situation == 'exam' ? 'active' : '' }}">📝 Exam</a>
+                             <a href="{{ route('student.daily_doa', ['situation' => 'memory']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 {{ $situation == 'memory' ? 'active' : '' }}">🧠 Memory</a>
+                             <a href="{{ route('student.daily_doa', ['situation' => 'anxious']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 {{ $situation == 'anxious' ? 'active' : '' }}">😰 Anxious</a>
+                             <a href="{{ route('student.daily_doa', ['situation' => 'unmotivated']) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 {{ $situation == 'unmotivated' ? 'active' : '' }}">😐 Unmotivated</a>
+                         </div>
+                         <hr class="my-2 opacity-10">
+                         <!-- Mode Selector -->
+                         <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                             <span class="text-muted small uppercase fw-bold me-2">Reading Mode:</span>
+                             <button class="btn btn-sm btn-outline-dark rounded-pill px-3 mode-btn memorize-active-btn" data-mode="normal">Normal</button>
+                             <button class="btn btn-sm btn-outline-dark rounded-pill px-3 mode-btn" data-mode="memorize">Memorize</button>
                          </div>
                     </div>
 
                     <div class="card-body p-5 text-center position-relative" id="doa-container">
                         <!-- Navigation Slider -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <button class="btn btn-outline-secondary rounded-circle" id="prevDoaBtn" style="width: 40px; height: 40px;"><i class="bi bi-chevron-left"></i></button>
+                            <button class="btn btn-outline-secondary rounded-circle" id="prevDoaBtn" style="width: 40px; height: 40px; border-color: #475569; color: #475569; font-weight: bold; border-width: 1.5px;"><i class="bi bi-chevron-left"></i></button>
                             <span class="text-muted small fw-bold" id="doaCounter">1 / {{ count($situationDoas) }}</span>
-                            <button class="btn btn-outline-secondary rounded-circle" id="nextDoaBtn" style="width: 40px; height: 40px;"><i class="bi bi-chevron-right"></i></button>
+                            <button class="btn btn-outline-secondary rounded-circle" id="nextDoaBtn" style="width: 40px; height: 40px; border-color: #475569; color: #475569; font-weight: bold; border-width: 1.5px;"><i class="bi bi-chevron-right"></i></button>
                         </div>
 
                         <!-- Normal Mode Elements -->
                         <!-- Arabic Text -->
-                        <div class="mb-5 pt-3 normal-element">
-                            <h2 class="display-6 quran-font mb-4" style="line-height: 2.2; color: #0f0f2d; font-family: 'Amiri', serif;" dir="rtl" id="doa-arabic">
+                        <div class="mb-3 pt-2 normal-element">
+                            <h2 class="quran-font mb-3" style="font-size: 3.2rem; line-height: 2.2; color: #0f0f2d; font-family: 'Amiri', serif; font-weight: bold;" dir="rtl" id="doa-arabic">
                                 {{ $situationDoas[0]['arabic'] }}
                             </h2>
                         </div>
 
-                        <hr class="w-25 mx-auto opacity-25 mb-5 normal-element">
+                        <hr class="w-25 mx-auto opacity-25 mb-3 normal-element">
 
                         <!-- English Translation -->
-                        <div class="mb-4 normal-element">
+                        <div class="mb-3 normal-element">
                             <h5 class="text-uppercase text-muted super-small letter-spacing-2 mb-2">English</h5>
                             <p class="lead fs-4 fst-italic text-dark opacity-75" style="line-height: 1.8;" id="doa-english">
                                 "{{ $situationDoas[0]['english'] }}"
@@ -71,7 +71,7 @@
                         </div>
                         
                         <!-- Malay Translation -->
-                        <div class="mb-5 normal-element">
+                        <div class="mb-3 normal-element">
                             <h5 class="text-uppercase text-muted super-small letter-spacing-2 mb-2">Bahasa Melayu</h5>
                             <p class="lead fs-4 fst-italic text-dark opacity-75" style="line-height: 1.8;" id="doa-malay">
                                 "{{ $situationDoas[0]['malay'] }}"
@@ -83,7 +83,7 @@
                             <div class="position-relative mx-auto my-5 p-4 rounded-4" id="mem-card-area" style="max-width: 800px; background: rgba(0,0,0,0.02); min-height: 250px; cursor: pointer; border: 2px dashed rgba(0,0,0,0.1);">
                                 
                                 <!-- Text Chunk to Memorize -->
-                                <h2 class="display-5 quran-font text-dark mb-0 d-flex align-items-center justify-content-center" style="line-height: 2; height: 100%; min-height: 200px;" dir="rtl" id="mem-chunk-display">
+                                <h2 class="quran-font text-dark mb-0 d-flex align-items-center justify-content-center" style="font-size: 3.2rem; line-height: 2; height: 100%; min-height: 200px; font-weight: bold;" dir="rtl" id="mem-chunk-display">
                                     <!-- JS inserts text -->
                                 </h2>
                                 
@@ -112,8 +112,8 @@
                                     <i class="bi bi-play-fill fs-4" id="playIcon"></i>
                                 </div>
                                 <div class="text-start">
-                                    <div class="fw-bold text-dark" style="font-size: 0.95rem;">Listen to Doa</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">Interactive Reading</div>
+                                    <div class="fw-bold text-dark" style="font-size: 0.95rem;">▶ Play Recitation</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Play Audio</div>
                                 </div>
                             </button>
                         </div>
