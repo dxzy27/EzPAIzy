@@ -298,9 +298,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final firstName = name.split(' ')[0];
 
     // Per-style config
-    Color accentColor = const Color(0xFF3B82F6);
-    Color accentLightColor = const Color(0xFFEFF6FF);
-    Color accentTextColor = const Color(0xFF1E3A8A);
+    Color accentColor = const Color(0xFF14B8A6);
+    Color accentLightColor = const Color(0xFFF0FDFA);
+    Color accentTextColor = const Color(0xFF134E4A);
     String tipIcon = '💡';
     String tipTitle = 'Study Tip';
     String tipText = 'Complete the learning style diagnosis to get personalized recommendations.';
