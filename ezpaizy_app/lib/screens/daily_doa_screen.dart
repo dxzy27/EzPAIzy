@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 
@@ -15,6 +16,7 @@ class DailyDoaScreen extends StatefulWidget {
 }
 
 class _DailyDoaScreenState extends State<DailyDoaScreen> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
   String _currentSituation = 'study';
   String _currentMode = 'normal'; // 'normal' or 'memorize'
   int _currentDoaIndex = 0;
@@ -194,6 +196,12 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
     _fetchDoas(_currentSituation);
   }
 
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
   Future<void> _fetchDoas(String situation) async {
     setState(() {
       _isLoading = true;
@@ -248,18 +256,31 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
   }
 
   Future<void> _playRecitation() async {
-    final audioUrl = _doas.isNotEmpty ? _doas[_currentDoaIndex]['audio'] : null;
-    if (audioUrl != null && audioUrl.toString().isNotEmpty) {
-      final Uri uri = Uri.parse(audioUrl);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-        return;
+    try {
+      final assetPath = 'audio/doas/${_currentSituation}_${_currentDoaIndex + 1}.mp3';
+      await _audioPlayer.play(AssetSource(assetPath));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Playing recitation audio...'),
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
-    }
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Playing recitation audio...')),
-      );
+    } catch (_) {
+      final audioUrl = _doas.isNotEmpty ? _doas[_currentDoaIndex]['audio'] : null;
+      if (audioUrl != null && audioUrl.toString().isNotEmpty) {
+        final Uri uri = Uri.parse(audioUrl);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+          return;
+        }
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not play recitation audio')),
+        );
+      }
     }
   }
 
