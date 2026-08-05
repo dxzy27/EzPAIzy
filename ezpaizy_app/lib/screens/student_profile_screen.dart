@@ -187,9 +187,19 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     final savedMaterials = stats?['saved_materials'] ?? 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      body: SafeArea(
-        child: _isLoading
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.15),
+          child: SafeArea(
+            child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -450,7 +460,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                   ),
                 ),
               ),
-      ),
+            ),
+          ),
+        ),
     );
   }
 
