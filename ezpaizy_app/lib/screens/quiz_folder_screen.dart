@@ -83,13 +83,7 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
   }
 
   void _onTakeQuiz(Map<String, dynamic> q) {
-    final style = Provider.of<AuthProvider>(context, listen: false).user?['learning_style']?.toString().toLowerCase();
-
-    if (style == 'kinesthetic') {
-      context.push('/quiz/${q['id']}/practice');
-    } else {
-      context.push('/quiz/${q['id']}');
-    }
+    context.push('/quiz/${q['id']}');
   }
 
   @override
