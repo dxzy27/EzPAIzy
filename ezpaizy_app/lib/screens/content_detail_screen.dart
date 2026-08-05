@@ -19,6 +19,7 @@ class ContentDetailScreen extends StatefulWidget {
 class _ContentDetailScreenState extends State<ContentDetailScreen> {
   Map<String, dynamic>? content;
   bool loading = true;
+  bool _showPreview = false;
 
   @override
   void initState() {
@@ -221,7 +222,9 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                             ElevatedButton.icon(
                                               onPressed: () {
                                                 if (filePath != null) {
-                                                  _downloadFile(filePath);
+                                                  setState(() {
+                                                    _showPreview = !_showPreview;
+                                                  });
                                                 }
                                               },
                                               icon: const Icon(Icons.menu_book, size: 16),
@@ -268,7 +271,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                     ),
                                   ),
 
-                                  if (filePath != null && filePath.toLowerCase().endsWith('.pdf')) ...[
+                                  if (_showPreview && filePath != null && filePath.toLowerCase().endsWith('.pdf')) ...[
                                     const SizedBox(height: 24),
                                     const Text(
                                       'Material Preview',
