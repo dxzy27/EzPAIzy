@@ -1,81 +1,117 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container py-4">
+<div class="container-fluid px-4 py-4" style="max-width: 1040px; margin: 0 auto;">
+    <!-- Top Navigation Header with Rich Context Metadata -->
     <div class="row mb-4 align-items-center">
-        <div class="col-md-8">
+        <div class="col-md-7 mb-3 mb-md-0">
             <div class="d-flex align-items-center gap-3">
                 <a href="{{ route('teacher.quizzes.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back to Folders">
                     <i class="bi bi-arrow-left fs-5"></i>
                 </a>
                 <div>
-                    <h1 class="h2 fw-bold text-dark mb-0 d-inline-block pe-2" id="topic-title-display" title="Double click to rename" style="cursor: pointer;" data-bs-toggle="tooltip">{{ $topic }} <i class="bi bi-pencil ms-2 text-muted" style="font-size: 0.8rem; opacity: 0.5;"></i></h1>
-                    <input type="text" id="topic-title-input" class="form-control d-none fw-bold text-dark mb-0" value="{{ $topic }}" style="font-size: 1.75rem; padding: 0.2rem 0.5rem; max-width: 300px;">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{ route('teacher.quizzes.index') }}" class="text-decoration-none">Quizzes</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ $topic }}</li>
-                        </ol>
-                    </nav>
+                    <div class="d-flex align-items-center gap-2">
+                        <h1 class="h2 fw-bold text-dark mb-0 pe-1" id="topic-title-display" title="Double click to rename" style="cursor: pointer;" data-bs-toggle="tooltip">{{ $topic }} <i class="bi bi-pencil ms-1 text-muted" style="font-size: 0.85rem; opacity: 0.5;"></i></h1>
+                        <input type="text" id="topic-title-input" class="form-control d-none fw-bold text-dark mb-0" value="{{ $topic }}" style="font-size: 1.75rem; padding: 0.2rem 0.5rem; max-width: 300px;">
+                    </div>
+                    <p class="text-muted mb-0 mt-1" style="font-size: 0.88rem;">
+                        <i class="bi bi-collection me-1"></i> {{ $quizzes->total() }} {{ Str::plural('Quiz', $quizzes->total()) }} • 
+                        <i class="bi bi-question-circle me-1 ms-1"></i> {{ $totalQuestionsCount }} Questions • 
+                        <i class="bi bi-clock-history me-1 ms-1"></i> Updated {{ $formattedLastUpdated }}
+                    </p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 text-end d-flex justify-content-end gap-2">
-            <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-dark">
-                <i class="bi bi-cpu me-1"></i> Generate with AI
+        <div class="col-md-5 text-end d-flex justify-content-end align-items-center gap-2">
+            <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-dark fw-bold px-3 py-2 d-inline-flex align-items-center" style="border-radius: 10px; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <i class="bi bi-cpu me-1.5 fs-6 text-warning"></i> Generate with AI
             </a>
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="createQuizDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    + Create Quiz
+                <button class="btn btn-primary fw-bold px-3 py-2 dropdown-toggle d-inline-flex align-items-center" type="button" id="createQuizDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 10px; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(59,130,246,0.25);">
+                    <i class="bi bi-plus-lg me-1 fs-6"></i> Create Quiz
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="createQuizDropdown">
-                    <li><a class="dropdown-item" href="{{ route('teacher.quizzes.create', ['difficulty' => 'easy', 'topic' => $topic]) }}">Easy</a></li>
-                    <li><a class="dropdown-item" href="{{ route('teacher.quizzes.create', ['difficulty' => 'medium', 'topic' => $topic]) }}">Medium</a></li>
-                    <li><a class="dropdown-item" href="{{ route('teacher.quizzes.create', ['difficulty' => 'hard', 'topic' => $topic]) }}">Hard</a></li>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="createQuizDropdown" style="border-radius: 12px; padding: 8px;">
+                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'easy', 'topic' => $topic]) }}"><span class="badge bg-success bg-opacity-15 text-success me-2">🟢 Easy</span> Easy Quiz</a></li>
+                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'medium', 'topic' => $topic]) }}"><span class="badge bg-warning bg-opacity-15 text-warning me-2">🟡 Medium</span> Medium Quiz</a></li>
+                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'hard', 'topic' => $topic]) }}"><span class="badge bg-danger bg-opacity-15 text-danger me-2">🔴 Hard</span> Hard Quiz</a></li>
                 </ul>
             </div>
         </div>
     </div>
 
-
-
     @if($quizzes->isEmpty())
-    <div class="card border-0 shadow-sm text-center py-5" style="border-radius:14px;">
-        <div class="text-muted">
-            <i class="bi bi-folder-x fs-1 d-block mb-3 text-warning" style="opacity: .6;"></i>
+    <div class="card border-0 shadow-sm text-center py-5" style="border-radius: 16px;">
+        <div class="text-muted p-4">
+            <i class="bi bi-journal-x display-3 d-block mb-3 text-warning" style="opacity: .6;"></i>
             <h4 class="fw-bold text-dark">This folder is empty</h4>
-            <p class="mb-4">No quizzes found in this folder. Select Create Quiz above or Generate with AI.</p>
+            <p class="mb-4 text-muted">No quizzes found in this folder. Select Create Quiz above or Generate with AI.</p>
         </div>
     </div>
     @else
-    <div class="row">
+    <!-- Responsive Scalable Grid -->
+    <div class="row g-3 mb-4">
         @foreach($quizzes as $quiz)
-            <div class="col-md-6 mb-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            {{ $quiz->title }}
-                            <span class="badge bg-{{ $quiz->difficulty == 'easy' ? 'success' : ($quiz->difficulty == 'medium' ? 'warning' : 'danger') }} ms-2" style="font-size: 0.8rem; padding: 0.35rem 0.7rem; font-weight: 700;">{{ ucfirst($quiz->difficulty) }}</span>
-                        </h5>
-                        <p class="text-muted small mb-1">Questions: {{ $quiz->questions_count }}</p>
-                        <p class="text-muted small">Topic Bank: Active</p>
-                    </div>
-                    <div class="card-footer bg-light">
-                        <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-sm btn-primary">View</a>
-                        <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('teacher.quizzes.destroy', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
+            @php
+                $diffClass = $quiz->difficulty == 'easy' ? 'success' : ($quiz->difficulty == 'medium' ? 'warning' : 'danger');
+                $diffDot = $quiz->difficulty == 'easy' ? '🟢' : ($quiz->difficulty == 'medium' ? '🟡' : '🔴');
+            @endphp
+            <div class="col-md-6 col-lg-6 col-xl-4 mb-3">
+                <div class="card h-100 border-0 shadow-sm overflow-hidden quiz-item-card" style="border-radius: 16px; background: #ffffff; transition: transform 0.25s ease, box-shadow 0.25s ease;">
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <!-- Top Row: Title & Larger Mastery Pill Badge -->
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.1rem; line-height: 1.35;">{{ $quiz->title }}</h5>
+                                <span class="badge bg-{{ $diffClass }} bg-opacity-15 text-{{ $diffClass }} border border-{{ $diffClass }} border-opacity-25 fw-bold px-3 py-1.5" style="border-radius: 20px; font-size: 0.78rem; letter-spacing: 0.3px;">
+                                    {{ $diffDot }} {{ strtoupper($quiz->difficulty) }}
+                                </span>
+                            </div>
+
+                            <!-- Rich Info Icons with Breathing Room -->
+                            <div class="d-flex flex-column gap-2 mb-4 text-muted" style="font-size: 0.88rem;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-file-earmark-text text-primary fs-6"></i>
+                                    <span><strong>{{ $quiz->questions_count }}</strong> {{ Str::plural('Question', $quiz->questions_count) }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-people text-info fs-6"></i>
+                                    <span><strong>{{ $quiz->attempts_count }}</strong> {{ Str::plural('Student Attempt', $quiz->attempts_count) }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-trophy text-warning fs-6"></i>
+                                    <span>Avg Score: <strong>{{ $quiz->avg_score }}%</strong></span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 mt-1 pt-2 border-top border-light">
+                                    <i class="bi bi-clock text-secondary fs-6"></i>
+                                    <span style="font-size: 0.8rem;">Updated {{ $quiz->updated_at->format('M j, Y') }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Action Buttons with High-Contrast Clean Palette -->
+                        <div class="d-flex align-items-center gap-2 pt-2">
+                            <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-white border shadow-xs btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1" style="border-radius: 10px; font-size: 0.85rem; background: #ffffff;">
+                                <i class="bi bi-eye text-secondary"></i> View
+                            </a>
+                            <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1" style="border-radius: 10px; font-size: 0.85rem;">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <form action="{{ route('teacher.quizzes.destroy', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this quiz?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-light text-danger border-0 btn-sm fw-semibold px-3 py-2 d-inline-flex align-items-center justify-content-center gap-1" title="Delete Quiz" style="border-radius: 10px; font-size: 0.85rem;">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         @endforeach
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-12">
+    <div class="row mt-3">
+        <div class="col-12">
             {{ $quizzes->links() }}
         </div>
     </div>

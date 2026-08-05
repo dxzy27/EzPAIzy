@@ -36,17 +36,40 @@ class QuizController extends Controller
 
         $quizzes = collect();
 
+        $totalQuestionsCount = 0;
+        $allAttemptsCount = 0;
+        $totalScoresSum = 0;
+        $latestUpdated = null;
+
         foreach ($difficulties as $diff) {
+            $quizQuestions = Question::where('topic', $topic)->where('difficulty', $diff);
+            $qCount = $quizQuestions->count();
+            $totalQuestionsCount += $qCount;
+
+            $lastQ = Question::where('topic', $topic)->where('difficulty', $diff)->latest('updated_at')->first();
+            if ($lastQ && (!$latestUpdated || $lastQ->updated_at > $latestUpdated)) {
+                $latestUpdated = $lastQ->updated_at;
+            }
+
+            // Calculate progress attempts for this topic & difficulty
+            $progressRecords = Progress::where('topic', $topic)->where('difficulty', $diff)->get();
+            $attemptsCount = $progressRecords->count();
+            $avgScore = $attemptsCount > 0 ? round($progressRecords->avg('score')) : 0;
+
             $quiz = new \stdClass();
             $quiz->topic = $topic;
             $quiz->difficulty = $diff;
             $quiz->title = $topic . ' (' . ucfirst($diff) . ')';
-            $quiz->questions_count = Question::where('topic', $topic)
-                ->where('difficulty', $diff)
-                ->count();
+            $quiz->questions_count = $qCount;
+            $quiz->attempts_count = $attemptsCount;
+            $quiz->avg_score = $avgScore;
+            $quiz->created_at = $lastQ ? $lastQ->created_at : now();
+            $quiz->updated_at = $lastQ ? $lastQ->updated_at : now();
 
             $quizzes->push($quiz);
         }
+
+        $formattedLastUpdated = $latestUpdated ? $latestUpdated->format('M j, Y') : date('M j, Y');
 
         // Return a LengthAwarePaginator to support views using pagination
         $quizzes = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -57,7 +80,7 @@ class QuizController extends Controller
             ['path' => request()->url()]
         );
 
-        return view('teacher.quizzes.folder', compact('quizzes', 'topic'));
+        return view('teacher.quizzes.folder', compact('quizzes', 'topic', 'totalQuestionsCount', 'formattedLastUpdated'));
     }
 
     /**
