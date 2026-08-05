@@ -44,7 +44,7 @@ dependencies:
   url_launcher: ^6.2.5        # Launch audio links
   audioplayers: ^6.0.0        # Native inline audio playback
   flutter_tts: ^4.0.2         # Text-to-speech support for Auditory learners
-  syncfusion_flutter_pdfviewer: ^26.2.3  # Embedded PDF viewer for Other Materials
+  syncfusion_flutter_pdfviewer: ^28.1.1  # Embedded PDF viewer for Other Materials
 
 
 
