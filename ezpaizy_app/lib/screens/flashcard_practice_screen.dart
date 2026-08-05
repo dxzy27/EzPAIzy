@@ -85,70 +85,75 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
   Future<void> _submitReview(int quality) async {
     if (isSubmitting) return;
-    setState(() => isSubmitting = true);
 
     final card = allCards[currentIndex];
+    final isLast = currentIndex >= allCards.length - 1;
+
+    // Immediately update index and state to avoid Dismissible assertion error
+    TtsService.stop();
+    setState(() {
+      isSubmitting = true;
+      if (!isLast) {
+        currentIndex++;
+        isFlipped = false;
+      }
+    });
+    _flipCtrl.reset();
+
+    // Hide any active snackbars first
+    if (mounted) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    }
+
+    // Show Custom Undo Toast matching web version
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xFF1E293B), // Dark slate matching web toast bg
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          content: Row(
+            children: [
+              Icon(
+                quality == 5 ? Icons.check : Icons.close,
+                color: quality == 5 ? const Color(0xFF22C55E) : const Color(0xFFEF4444),
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                quality == 5 ? 'Marked as Know' : 'Marked as Still learning',
+                style: GoogleFonts.outfit(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  _undoLastReview();
+                },
+                child: Text(
+                  'Undo',
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     try {
       await ApiService.submitFlashcardReview(card['id'], quality);
 
-      // Hide any active snackbars first
-      if (mounted) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      }
-
-      // Show Custom Undo Toast matching web version
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: const Color(0xFF1E293B), // Dark slate matching web toast bg
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            content: Row(
-              children: [
-                Icon(
-                  quality == 5 ? Icons.check : Icons.close,
-                  color: quality == 5 ? const Color(0xFF22C55E) : const Color(0xFFEF4444),
-                  size: 16,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  quality == 5 ? 'Marked as Know' : 'Marked as Still learning',
-                  style: GoogleFonts.outfit(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    _undoLastReview();
-                  },
-                  child: Text(
-                    'Undo',
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-
-      TtsService.stop();
-      if (currentIndex < allCards.length - 1) {
-        setState(() {
-          currentIndex++;
-          isFlipped = false;
-        });
-        _flipCtrl.reset();
-      } else {
+      if (isLast) {
         if (mounted) {
           showDialog(
             context: context,
@@ -174,11 +179,15 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         }
       }
     } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to submit review')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to submit review')),
+        );
+      }
     } finally {
-      setState(() => isSubmitting = false);
+      if (mounted) {
+        setState(() => isSubmitting = false);
+      }
     }
   }
 
