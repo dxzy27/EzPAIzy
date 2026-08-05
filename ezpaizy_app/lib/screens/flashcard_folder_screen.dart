@@ -150,11 +150,7 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
                     children: [
                       Row(
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back, color: Color(0xFF1E293B)),
-                            onPressed: () => context.go('/flashcards'),
-                          ),
-                          const SizedBox(width: 8),
+
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

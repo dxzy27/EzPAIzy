@@ -104,24 +104,6 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(20),
-                                    onTap: () => context.pop(),
-                                    child: Container(
-                                      width: 36,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: const Color(0xFFCBD5E1)),
-                                        color: Colors.white,
-                                      ),
-                                      child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,

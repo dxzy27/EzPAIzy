@@ -94,19 +94,6 @@ class _NotesFolderScreenState extends State<NotesFolderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          widget.topic,
-          style: const TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF64748B)),
-          onPressed: () => context.go('/dashboard'),
-        ),
-      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : Column(

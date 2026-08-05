@@ -130,30 +130,6 @@ class _RevisionScreenState extends State<RevisionScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(20),
-                          onTap: () {
-                            if (context.canPop()) {
-                              context.pop();
-                            } else {
-                              context.go('/dashboard');
-                            }
-                          },
-                          child: Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: const Color(0xFFCBD5E1)),
-                              color: Colors.white,
-                            ),
-                            child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
                       const Text(
                         '📚',
                         style: TextStyle(fontSize: 24),

@@ -106,11 +106,7 @@ class _ContentFolderScreenState extends State<ContentFolderScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Color(0xFF1E293B)),
-                        onPressed: () => context.pop(),
-                      ),
-                      const SizedBox(width: 8),
+
                       // Folder Icon and Topic
                       const Icon(Icons.folder, color: Color(0xFFFFC107), size: 28),
                       const SizedBox(width: 8),
