@@ -91,14 +91,18 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
     // Immediately update index and state to avoid Dismissible assertion error
     TtsService.stop();
-    setState(() {
-      isSubmitting = true;
-      if (!isLast) {
-        currentIndex++;
-        isFlipped = false;
+    Future.microtask(() {
+      if (mounted) {
+        setState(() {
+          isSubmitting = true;
+          if (!isLast) {
+            currentIndex++;
+            isFlipped = false;
+          }
+        });
+        _flipCtrl.reset();
       }
     });
-    _flipCtrl.reset();
 
     // Hide any active snackbars first
     if (mounted) {
