@@ -19,7 +19,8 @@ class Question {
 }
 
 class LearningStyleScreen extends StatefulWidget {
-  const LearningStyleScreen({super.key});
+  final bool retake;
+  const LearningStyleScreen({super.key, this.retake = false});
 
   @override
   State<LearningStyleScreen> createState() => _LearningStyleScreenState();
@@ -47,6 +48,30 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
 
   int _currentIndex = 0;
   bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.retake) {
+      _checkDiagnosis();
+    }
+  }
+
+  Future<void> _checkDiagnosis() async {
+    setState(() => _loading = true);
+    try {
+      final profile = await ApiService.getDiagnosis();
+      if (profile != null && profile['learning_style'] != null) {
+        if (mounted) {
+          context.go('/learning-profile');
+          return;
+        }
+      }
+    } catch (_) {}
+    if (mounted) {
+      setState(() => _loading = false);
+    }
+  }
 
   final List<Question> _questions = const [
     Question(

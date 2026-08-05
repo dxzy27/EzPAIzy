@@ -163,11 +163,21 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
       );
       styleIcon = Icons.sports_handball;
       styleDesc = 'You learn best through hands-on practice, physical interactions, and self-testing flashcards.';
-    }
-
-    final auth = Provider.of<AuthProvider>(context, listen: false);
+       final auth = Provider.of<AuthProvider>(context, listen: false);
     final userName = auth.user?['name'] ?? 'Student';
     final initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'D';
+
+    final isWide = MediaQuery.of(context).size.width > 700;
+
+    String dateStr = '05 Aug 2026';
+    final rawDate = _profile?['updated_at'] ?? _profile?['created_at'];
+    if (rawDate != null) {
+      try {
+        final dt = DateTime.parse(rawDate.toString());
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        dateStr = '${dt.day.toString().padLeft(2, '0')} ${months[dt.month - 1]} ${dt.year}';
+      } catch (_) {}
+    }
 
     return Scaffold(
       body: Container(
@@ -236,357 +246,263 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
                             const SizedBox(height: 20),
 
                             // Top Spacing / Title Row
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'My Profile',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF1E293B),
-                                    fontFamily: 'Outfit',
-                                  ),
-                                ),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ElevatedButton.icon(
-                                      onPressed: () {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Please update your profile details on the web portal.', style: TextStyle(fontFamily: 'Outfit')),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Material(
+                                            color: Colors.transparent,
+                                            child: InkWell(
+                                              borderRadius: BorderRadius.circular(20),
+                                              onTap: () => context.go('/dashboard'),
+                                              child: Container(
+                                                width: 36,
+                                                height: 36,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(color: const Color(0xFFCBD5E1)),
+                                                  color: Colors.white,
+                                                ),
+                                                child: const Icon(Icons.home_outlined, size: 18, color: Color(0xFF475569)),
+                                              ),
+                                            ),
                                           ),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.edit, size: 14, color: Color(0xFF1E293B)),
-                                      label: const Text('Edit Profile', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1E293B), fontFamily: 'Outfit')),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFFFFC107),
-                                        elevation: 0,
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  'Your Learning Profile',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w900,
+                                                    color: Color(0xFF1E293B),
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                                Text(
+                                                  style == null ? 'Not Diagnosed Yet' : 'Diagnosed on $dateStr',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xFF64748B),
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
-                                    ElevatedButton.icon(
-                                      onPressed: () => context.go('/dashboard'),
-                                      icon: const Icon(Icons.arrow_back, size: 14, color: Colors.white),
-                                      label: const Text('Back', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Outfit')),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF475569),
-                                        elevation: 0,
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-
-                            // Main Profile Card
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.04),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  // Avatar Circle
-                                  Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFF22C55E), // matching Green color
-                                      shape: BoxShape.circle,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      name.isNotEmpty ? name[0].toUpperCase() : 'D',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 40,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Outfit',
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-
-                                  // User Name
-                                  Text(
-                                    name,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF0F172A),
-                                      fontFamily: 'Outfit',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-
-                                  // Badge and member date
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF22C55E),
-                                          borderRadius: BorderRadius.circular(4),
+                                    if (style != null) ...[
+                                      if (isWide)
+                                        Row(
+                                          children: [
+                                            OutlinedButton.icon(
+                                              onPressed: _resetProfile,
+                                              icon: const Icon(Icons.delete_outline, size: 14, color: Colors.red),
+                                              label: const Text('Reset to Basic UI', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.red, fontFamily: 'Outfit')),
+                                              style: OutlinedButton.styleFrom(
+                                                side: const BorderSide(color: Colors.red),
+                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            OutlinedButton.icon(
+                                              onPressed: () => context.go('/learning-style?retake=true'),
+                                              icon: const Icon(Icons.refresh, size: 14, color: Color(0xFF475569)),
+                                              label: const Text('Retake Diagnosis', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF475569), fontFamily: 'Outfit')),
+                                              style: OutlinedButton.styleFrom(
+                                                side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        child: const Text(
-                                          'Student',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Outfit',
+                                    ],
+                                  ],
+                                ),
+                                if (style != null && !isWide) ...[
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton.icon(
+                                          onPressed: _resetProfile,
+                                          icon: const Icon(Icons.delete_outline, size: 14, color: Colors.red),
+                                          label: const Text('Reset to Basic UI', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.red, fontFamily: 'Outfit')),
+                                          style: OutlinedButton.styleFrom(
+                                            side: const BorderSide(color: Colors.red),
+                                            padding: const EdgeInsets.symmetric(vertical: 8),
                                           ),
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      Text(
-                                        '• Member since $memberSince',
-                                        style: const TextStyle(
-                                          color: Color(0xFF94A3B8),
-                                          fontSize: 12,
-                                          fontFamily: 'Outfit',
+                                      Expanded(
+                                        child: OutlinedButton.icon(
+                                          onPressed: () => context.go('/learning-style?retake=true'),
+                                          icon: const Icon(Icons.refresh, size: 14, color: Color(0xFF475569)),
+                                          label: const Text('Retake Diagnosis', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569), fontFamily: 'Outfit')),
+                                          style: OutlinedButton.styleFrom(
+                                            side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                            padding: const EdgeInsets.symmetric(vertical: 8),
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  const Divider(height: 32),
-
-                                  // Profile Information details - mb-2 spacing for compact look
-                                  _buildField('Full Name', name),
-                                  const SizedBox(height: 12),
-                                  _buildField('Email Address', email),
-                                  const SizedBox(height: 12),
-                                  _buildField('Phone Number', phone),
-                                  const SizedBox(height: 12),
-                                  _buildField('Class', className),
-                                  const SizedBox(height: 12),
-                                  _buildField('Address', address, isLongText: true),
-                                  const SizedBox(height: 12),
-                                  _buildField('Account Type', 'Student'),
                                 ],
-                              ),
+                              ],
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 20),
 
-                            // Learning Statistics Card
-                            Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.04),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
-                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                            if (style == null)
+                              _buildVarkEmptyState()
+                            else ...[
+                              // ── Hero Profile Card (grad-{style}) ──
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  gradient: heroGradient,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: accentColor.withValues(alpha: 0.15),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 8),
                                     ),
-                                    child: const Text(
-                                      'Learning Statistics',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF1E293B),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(alpha: 0.18),
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(styleIcon, color: Colors.white, size: 14),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            '${style.replaceAll('_', '/').toUpperCase()} LEARNER',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      persona.replaceAll('Emerging ', '').replaceAll('Strong ', ''),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.w800,
+                                        height: 1.2,
                                         fontFamily: 'Outfit',
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                                    child: Row(
-                                      children: [
-                                        _buildStatColumn('📝 Quizzes Taken', '${_progress.length}', const Color(0xFF3B82F6)),
-                                        _buildStatColumn('📊 Average Score', _progress.isEmpty ? 'N/A' : '${avgScore.toStringAsFixed(1)}%', const Color(0xFF10B981)),
-                                        _buildStatColumn('📚 Saved Materials', '${_revision.length}', const Color(0xFF06B6D4)),
-                                      ],
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      styleDesc,
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 13.5,
+                                        height: 1.45,
+                                        fontFamily: 'Outfit',
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-
-                            // Toggle VARK Analysis Card
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  setState(() {
-                                    _showVark = !_showVark;
-                                  });
-                                },
-                                icon: Icon(_showVark ? Icons.expand_less : Icons.insights, color: Colors.white),
-                                label: Text(
-                                  _showVark ? 'Hide VARK Analysis' : 'View VARK Analysis',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Outfit'),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: accentColor,
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ],
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 24),
+                              const SizedBox(height: 24),
 
-                            // VARK Assessment details (expandable)
-                            if (_showVark) ...[
-                              if (style == null)
-                                _buildVarkEmptyState()
+                              // Responsive Breakdown & Radar Chart
+                              if (isWide)
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(child: _buildBreakdownCard()),
+                                    const SizedBox(width: 20),
+                                    Expanded(child: _buildRadarChartCard(accentColor)),
+                                  ],
+                                )
                               else ...[
-                                // ── Hero Profile Card (grad-{style}) ──
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(24),
-                                  decoration: BoxDecoration(
-                                    gradient: heroGradient,
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: accentColor.withOpacity(0.3),
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 8),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.18),
-                                          borderRadius: BorderRadius.circular(20),
-                                          border: Border.all(color: Colors.white.withOpacity(0.25)),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(styleIcon, color: Colors.white, size: 14),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              '${style.replaceAll('_', '/').toUpperCase()} LEARNER',
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: 0.5,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        persona,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        styleDesc,
-                                        style: const TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 13.5,
-                                          height: 1.45,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 18),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.15),
-                                          borderRadius: BorderRadius.circular(20),
-                                          border: Border.all(color: Colors.white.withOpacity(0.2)),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const Icon(Icons.trending_up, color: Colors.white, size: 14),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              'Confidence Score: ${confidence.toStringAsFixed(1)}% — ${confidence >= 65 ? 'Strong Match' : confidence >= 45 ? 'Moderate Match' : 'Emerging Match'}',
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 24),
-
-                                // ── Evidence Score Breakdown Card ──
                                 _buildBreakdownCard(),
                                 const SizedBox(height: 24),
-
-                                // ── Radar Chart Card ──
                                 _buildRadarChartCard(accentColor),
-                                const SizedBox(height: 24),
-
-                                // ── Recommendations Card ──
-                                if (_profile?['recommendations'] != null) ...[
-                                  const Text(
-                                    'Personalized Recommendations',
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  ...(_profile!['recommendations'] as List).map(
-                                    (rec) => _buildRecommendationItem(rec.toString(), accentColor),
-                                  ),
-                                  const SizedBox(height: 24),
-                                ],
-
-                                // Reset Assessment
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: OutlinedButton.icon(
-                                    onPressed: _resetProfile,
-                                    icon: const Icon(Icons.delete_outline, color: Colors.red),
-                                    label: const Text('Reset Learning Style assessment', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                                    style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(vertical: 14),
-                                      side: const BorderSide(color: Colors.redAccent),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
                               ],
+                              const SizedBox(height: 24),
+
+                              // Bottom CTA Card
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: accentColor.withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: accentColor.withValues(alpha: 0.3)),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Ready to study your way?',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: style == 'read_write' ? const Color(0xFF453938) : accentColor,
+                                        fontFamily: 'Outfit',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    const Text(
+                                      'Your dashboard is now personalised for your learning style.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF64748B),
+                                        fontFamily: 'Outfit',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton.icon(
+                                        onPressed: () => context.go('/dashboard'),
+                                        icon: const Icon(Icons.home, color: Colors.white, size: 16),
+                                        label: const Text(
+                                          'Go to Dashboard',
+                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Outfit'),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: accentColor,
+                                          padding: const EdgeInsets.symmetric(vertical: 12),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                          elevation: 0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
                             ],
                           ],
                         ),

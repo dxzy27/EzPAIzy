@@ -121,7 +121,10 @@ class AppRouter {
 
               GoRoute(
                 path: '/learning-style',
-                builder: (_, _) => const LearningStyleScreen(),
+                builder: (_, state) {
+                  final retake = state.uri.queryParameters['retake'] == 'true';
+                  return LearningStyleScreen(retake: retake);
+                },
               ),
               GoRoute(
                 path: '/learning-profile',
