@@ -165,30 +165,54 @@
 @section('content')
 @php
     $flashcardSetsCount = \App\Models\FlashcardSet::where('user_id', auth()->id())->count();
+    $materialsOnlyCount = $user->contents()->count();
     
     $cardQuizzes = [
-        'title' => 'Quizzes',
-        'count' => $quizzes->count(),
-        'sub'   => 'Quizzes Created',
-        'color' => '#4255ff',
-        'type'  => 'quizzes',
+        'title'  => 'Quizzes',
+        'count'  => $quizzes->count(),
+        'label'  => 'Quizzes Created',
+        'color'  => '#4255ff',
+        'type'   => 'quizzes',
+        'icon'   => 'bi-pencil-square',
+        'img'    => 'slideshow 2.png',
+        'btn'    => ['text' => 'Generate Quiz', 'route' => route('teacher.quizzes.generate'), 'icon' => 'bi-stars', 'color' => '#4255ff'],
+        'secBtn' => ['text' => 'Manage', 'route' => route('teacher.quizzes.index')],
+    ];
+    $cardFlashcards = [
+        'title'  => 'Flashcards',
+        'count'  => $flashcardSetsCount,
+        'label'  => 'Flashcard Sets',
+        'color'  => '#8b5cf6',
+        'type'   => 'flashcards',
+        'icon'   => 'bi-card-text',
+        'img'    => 'slideshow 3.png',
+        'btn'    => ['text' => 'Create Set', 'route' => route('teacher.flashcard-sets.create'), 'icon' => 'bi-plus-lg', 'color' => '#8b5cf6'],
+        'secBtn' => ['text' => 'Browse', 'route' => route('teacher.flashcard-sets.index')],
     ];
     $cardMaterials = [
-        'title' => 'Materials',
-        'count' => $totalContentsCount,
-        'sub'   => 'Uploaded Materials',
-        'color' => '#10b981',
-        'type'  => 'materials',
+        'title'  => 'Materials',
+        'count'  => $materialsOnlyCount,
+        'label'  => 'Uploaded Materials',
+        'color'  => '#10b981',
+        'type'   => 'materials',
+        'icon'   => 'bi-file-earmark-text',
+        'img'    => 'slideshow 1.png',
+        'btn'    => ['text' => 'Add Material', 'route' => route('teacher.contents.create'), 'icon' => 'bi-plus-lg', 'color' => '#10b981'],
+        'secBtn' => ['text' => 'Browse', 'route' => route('teacher.contents.index')],
     ];
     $cardStudents = [
-        'title' => 'Students',
-        'count' => $studentsCount,
-        'sub'   => 'Registered Students',
-        'color' => '#f59e0b',
-        'type'  => 'students',
+        'title'  => 'Students',
+        'count'  => $studentsCount,
+        'label'  => 'Registered Students',
+        'color'  => '#f59e0b',
+        'type'   => 'students',
+        'icon'   => 'bi-people',
+        'img'    => 'slideshow 2.png',
+        'btn'    => ['text' => 'View Students', 'route' => route('teacher.students.index'), 'icon' => 'bi-people', 'color' => '#f59e0b'],
+        'secBtn' => ['text' => 'Add Student', 'route' => route('teacher.students.create')],
     ];
 
-    $orderedCards = [$cardQuizzes, $cardMaterials, $cardStudents];
+    $orderedCards = [$cardQuizzes, $cardFlashcards, $cardMaterials, $cardStudents];
 @endphp
 
 <div class="container-fluid px-4" style="max-width: 1040px; margin: 0 auto;">
@@ -215,11 +239,12 @@
         <div class="col-md-9 col-lg-8">
             <div id="teacherStatsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
                 
-                <!-- Indicators/Dots -->
+                <!-- Indicators/Dots (4 Slides) -->
                 <div class="carousel-indicators" style="bottom: 15px; margin-bottom: 0;">
                     <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Quizzes" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="1" aria-label="Materials" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="2" aria-label="Students" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="1" aria-label="Flashcards" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="2" aria-label="Materials" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="3" aria-label="Students" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
                 </div>
 
                 <!-- Carousel Items -->
@@ -233,30 +258,17 @@
                                     <div class="col-6 d-flex flex-column justify-content-center align-items-center text-center">
                                         <h1 class="display-3 fw-bold mb-0" style="color:{{ $card['color'] }}; line-height: 1;">{{ $card['count'] }}</h1>
                                         <p class="text-dark fw-bold mb-3 mt-1" style="font-size: 1.15rem; line-height: 1.25;">
-                                            {{ $card['sub'] }}
+                                            {{ $card['label'] }}
                                         </p>
                                         
                                         <!-- Actions -->
                                         <div class="d-flex gap-2 w-100 justify-content-center">
-                                            @if($card['type'] === 'quizzes')
-                                                <a href="{{ route('teacher.quizzes.generate') }}" class="quizlet-btn">
-                                                    <i class="bi bi-stars me-1"></i> Generate Quiz
-                                                </a>
-                                                <a href="{{ route('teacher.quizzes.index') }}" class="quizlet-btn-secondary">
-                                                    Manage
-                                                </a>
-                                            @elseif($card['type'] === 'materials')
-                                                <a href="{{ route('teacher.contents.create') }}" class="quizlet-btn" style="background-color: #10b981 !important; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;">
-                                                    <i class="bi bi-plus me-1"></i> Add Material
-                                                </a>
-                                                <a href="{{ route('teacher.contents.index') }}" class="quizlet-btn-secondary">
-                                                    Browse
-                                                </a>
-                                            @else
-                                                <a href="{{ route('teacher.students.index') }}" class="quizlet-btn" style="background-color: #f59e0b !important; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25) !important;">
-                                                    <i class="bi bi-people me-1"></i> View Students
-                                                </a>
-                                            @endif
+                                            <a href="{{ $card['btn']['route'] }}" class="quizlet-btn" style="background-color: {{ $card['btn']['color'] }} !important; box-shadow: 0 4px 14px {{ $card['btn']['color'] }}40 !important;">
+                                                <i class="bi {{ $card['btn']['icon'] }} me-1"></i> {{ $card['btn']['text'] }}
+                                            </a>
+                                            <a href="{{ $card['secBtn']['route'] }}" class="quizlet-btn-secondary">
+                                                {{ $card['secBtn']['text'] }}
+                                            </a>
                                         </div>
                                     </div>
 
@@ -267,7 +279,7 @@
 
                                     <!-- Right Side: Graphic illustration -->
                                     <div class="col-5 d-flex align-items-center justify-content-center">
-                                        <img src="{{ asset('images/' . ($card['type'] === 'quizzes' ? 'slideshow 2.png' : ($card['type'] === 'materials' ? 'slideshow 1.png' : 'slideshow 3.png'))) }}"
+                                        <img src="{{ asset('images/' . $card['img']) }}"
                                              alt="Illustration"
                                              style="max-height: 140px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));">
                                     </div>
