@@ -657,9 +657,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
     final status = (p['status'] ?? 'completed').toString();
 
     final borderLeftColor = isQuiz ? const Color(0xFF00A896) : const Color(0xFFFF8F00);
-    final badgeStyle = isQuiz
-        ? {'bg': const Color(0xFFE0F2F1), 'text': const Color(0xFF00A896), 'label': '❓ Quiz'}
-        : {'bg': const Color(0xFFFFF8E1), 'text': const Color(0xFFFF8F00), 'label': '🎴 Flashcard'};
+    final Color badgeBg = isQuiz ? const Color(0xFFE0F2F1) : const Color(0xFFFFF8E1);
+    final Color badgeTextColor = isQuiz ? const Color(0xFF00A896) : const Color(0xFFFF8F00);
+    final String badgeLabel = isQuiz ? '❓ Quiz' : '🎴 Flashcard';
 
     final topicBadge = _getTopicBadgeColors(topic);
 
@@ -717,12 +717,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                               decoration: BoxDecoration(
-                                color: badgeStyle['bg'],
+                                color: badgeBg,
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
-                                badgeStyle['label'].toString(),
-                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: badgeStyle['text'], fontFamily: 'Outfit'),
+                                badgeLabel,
+                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: badgeTextColor, fontFamily: 'Outfit'),
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -848,7 +848,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
         Wrap(
           spacing: 10,
           runSpacing: 10,
-          cross: WrapCrossAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             ElevatedButton.icon(
               onPressed: () => context.go('/quizzes'),
