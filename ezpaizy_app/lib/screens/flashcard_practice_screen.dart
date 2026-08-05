@@ -104,6 +104,17 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     }
   }
 
+  void _goBackToSets() {
+    final topic = set?['topic']?.toString();
+    if (context.canPop()) {
+      context.pop();
+    } else if (topic != null && topic.isNotEmpty) {
+      context.go('/flashcards/folder/${Uri.encodeComponent(topic)}');
+    } else {
+      context.go('/flashcards');
+    }
+  }
+
   Future<void> _submitReview(int quality) async {
     if (isSubmitting) return;
     if (currentIndex >= allCards.length) return;
@@ -185,7 +196,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop();
-                  context.pop();
+                  _goBackToSets();
                 },
                 child: Text('Back to Sets', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
               ),
@@ -250,7 +261,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () => context.pop(),
+                      onPressed: _goBackToSets,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0F9D58),
                         foregroundColor: Colors.white,
@@ -293,7 +304,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                       children: [
                         // Exit Study Button
                         InkWell(
-                          onTap: () => context.pop(),
+                          onTap: _goBackToSets,
                           borderRadius: BorderRadius.circular(8),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

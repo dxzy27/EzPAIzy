@@ -318,6 +318,17 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     _focusNode.requestFocus();
   }
 
+  void _goBackToSets() {
+    final topic = set?['topic']?.toString();
+    if (context.canPop()) {
+      context.pop();
+    } else if (topic != null && topic.isNotEmpty) {
+      context.go('/flashcards/folder/${Uri.encodeComponent(topic)}');
+    } else {
+      context.go('/flashcards');
+    }
+  }
+
   Future<void> _submitReview(int quality) async {
     if (isSubmitting) return;
     setState(() => isSubmitting = true);
@@ -350,7 +361,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                 TextButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    Navigator.of(context).pop();
+                    _goBackToSets();
                   },
                   child: const Text('Back to Sets'),
                 ),
@@ -397,7 +408,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: _goBackToSets,
                   child: const Text('Go Back'),
                 ),
               ],
@@ -431,7 +442,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
               const Text("There are no cards due for review right now."),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: _goBackToSets,
                 child: const Text('Go Back'),
               ),
             ],
@@ -552,8 +563,6 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
       ),
     );
 
-
-
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -578,7 +587,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                       children: [
                         // Exit Study Button
                         InkWell(
-                          onTap: () => context.pop(),
+                          onTap: _goBackToSets,
                           borderRadius: BorderRadius.circular(8),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
