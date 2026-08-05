@@ -108,7 +108,7 @@
                         <input type="hidden" name="type" value="flashcard">
                         <div class="mb-3">
                             <label for="name" class="form-label fw-semibold" style="font-size: 0.9rem;">Folder Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Al-Quran (Tajweed)" style="border-radius: 10px;">
+                            <input type="text" class="form-control" id="name" name="name" required style="border-radius: 10px;">
                         </div>
                     </div>
                     <div class="modal-footer border-0 pt-0">

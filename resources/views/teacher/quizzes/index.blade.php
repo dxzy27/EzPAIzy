@@ -109,7 +109,7 @@
                     <div class="modal-body py-3">
                         <div class="mb-3">
                             <label for="name" class="form-label fw-semibold" style="font-size: 0.9rem;">Folder Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Chapter 1 Quiz" style="border-radius: 10px;">
+                            <input type="text" class="form-control" id="name" name="name" required style="border-radius: 10px;">
                         </div>
                     </div>
                     <div class="modal-footer border-0 pt-0">
