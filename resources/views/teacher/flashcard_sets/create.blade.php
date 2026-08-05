@@ -61,7 +61,7 @@
                     <i class="bi bi-plus-lg me-1.5 fs-6"></i> Add Card
                 </button>
                 <button type="button" class="btn btn-outline-primary btn-sm fw-semibold px-3 d-inline-flex align-items-center" id="csv-import-btn-header" style="border-radius: 8px; font-size: 0.88rem;">
-                    <i class="bi bi-file-earmark-spreadsheet me-1.5 fs-6"></i> Import CSV
+                    <i class="bi bi-file-earmark-spreadsheet me-1.5 fs-6"></i> Import CSV/Excel
                 </button>
                 <button type="button" class="btn btn-light text-danger border btn-sm fw-semibold px-3 d-inline-flex align-items-center" id="delete-all-btn" style="border-radius: 8px; font-size: 0.88rem;">
                     <i class="bi bi-trash3 me-1.5 fs-6"></i> Delete All
@@ -256,7 +256,7 @@
             `;
         }
 
-        function addCard(data = null) {
+        function addCard(data = null, shouldScroll = false) {
             cardCount++;
             const term = data ? data.term : '';
             const definition = data ? data.definition : '';
@@ -293,6 +293,14 @@
 
             container.appendChild(newCardRow);
             updateCounter();
+
+            if (shouldScroll) {
+                newCardRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const firstInput = newCardRow.querySelector('textarea[name*="[term]"]');
+                if (firstInput) {
+                    setTimeout(() => firstInput.focus(), 300);
+                }
+            }
         }
 
         function reindexCards() {
@@ -311,17 +319,17 @@
         }
 
         if(addBtn) {
-            addBtn.addEventListener('click', () => addCard());
+            addBtn.addEventListener('click', () => addCard(null, true));
             if (addHeaderBtn) {
-                addHeaderBtn.addEventListener('click', () => addCard());
+                addHeaderBtn.addEventListener('click', () => addCard(null, true));
             }
             
             const initialCards = @json($flashcardSet->flashcards ?? []);
             
             if (initialCards.length > 0) {
-                initialCards.forEach(card => addCard(card));
+                initialCards.forEach(card => addCard(card, false));
             } else {
-                addCard(); // Ensure at least 1 card is ready
+                addCard(null, false); // Ensure at least 1 card is ready
             }
         }
 
