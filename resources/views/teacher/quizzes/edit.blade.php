@@ -1,17 +1,20 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h1>Edit Quiz</h1>
+<div class="container-fluid px-4 py-4" style="max-width: 1040px; margin: 0 auto;">
+    <!-- Top Navigation Header -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{{ url()->previous() === url()->current() ? route('teacher.quizzes.index') : url()->previous() }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
+            <i class="bi bi-arrow-left fs-5"></i>
+        </a>
+        <div>
+            <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.3px;">Edit Quiz</h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">Update quiz questions, title, or topic assignments</p>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
+    <div class="card shadow-sm border-0 mb-4" style="border-radius: 16px;">
+        <div class="card-body p-4">
                     <form action="{{ route('teacher.quizzes.update', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST">
                         @csrf
                         @method('PUT')

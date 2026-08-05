@@ -2,14 +2,17 @@
 
 @section('title', $quiz->title . ' – Quiz Details')
 
-@section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <a href="{{ $quiz->topic ? route('teacher.quizzes.folder', ['topic' => $quiz->topic]) : route('teacher.quizzes.index') }}" class="btn btn-outline-secondary btn-sm me-2">
-            <i class="bi bi-arrow-left me-1"></i>Back to Folder
-        </a>
-        <h4 class="d-inline-block mb-0 fw-bold">{{ $quiz->title }}</h4>
-    </div>
+<div class="container-fluid px-4 py-4" style="max-width: 1040px; margin: 0 auto;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ $quiz->topic ? route('teacher.quizzes.folder', ['topic' => $quiz->topic]) : route('teacher.quizzes.index') }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="Back">
+                <i class="bi bi-arrow-left fs-5"></i>
+            </a>
+            <div>
+                <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.3px;">{{ $quiz->title }}</h2>
+                <p class="text-muted mb-0" style="font-size: 0.88rem;">Review questions and details</p>
+            </div>
+        </div>
     <div class="d-flex gap-2">
         <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary btn-sm">
             <i class="bi bi-pencil me-1"></i>Edit Quiz
