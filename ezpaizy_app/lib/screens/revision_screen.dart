@@ -283,153 +283,170 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                     btnText = 'Take Quiz';
                                   }
 
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border(
-                                        left: BorderSide(color: borderLeftColor, width: 5),
-                                        top: const BorderSide(color: Color(0xFFE2E8F0)),
-                                        right: const BorderSide(color: Color(0xFFE2E8F0)),
-                                        bottom: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.04),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.04),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    padding: const EdgeInsets.all(14),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                                              decoration: BoxDecoration(
-                                                color: badgeBg,
-                                                borderRadius: BorderRadius.circular(20),
-                                              ),
-                                              child: Text(
-                                                badgeLabel,
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: badgeText,
-                                                  fontFamily: 'Outfit',
-                                                ),
-                                              ),
-                                            ),
-                                            GestureDetector(
-                                              onTap: () => _remove(i, fav),
-                                              child: const Icon(
-                                                Icons.delete_outline_rounded,
-                                                color: Color(0xFF94A3B8),
-                                                size: 18,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              title,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w800,
-                                                color: Color(0xFF1E293B),
-                                                fontFamily: 'Outfit',
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Row(
-                                              children: [
-                                                const Icon(Icons.person, size: 12, color: Color(0xFF94A3B8)),
-                                                const SizedBox(width: 4),
-                                                Flexible(
-                                                  child: Text(
-                                                    'By: $teacherName',
-                                                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
-                                                    overflow: TextOverflow.ellipsis,
+                                      child: Row(
+                                        children: [
+                                          // Left accent color strip
+                                          Container(
+                                            width: 5,
+                                            height: double.infinity,
+                                            color: borderLeftColor,
+                                          ),
+                                          // Main card content
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(14),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  // Header Row: Badge & Delete Icon
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                                        decoration: BoxDecoration(
+                                                          color: badgeBg,
+                                                          borderRadius: BorderRadius.circular(20),
+                                                        ),
+                                                        child: Text(
+                                                          badgeLabel,
+                                                          style: TextStyle(
+                                                            fontSize: 11,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: badgeText,
+                                                            fontFamily: 'Outfit',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () => _remove(i, fav),
+                                                        child: const Icon(
+                                                          Icons.delete_outline_rounded,
+                                                          color: Color(0xFF94A3B8),
+                                                          size: 18,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                                const Text(' • ', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
-                                                Text(
-                                                  countLabel,
-                                                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 3),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  '⭐ Saved $savedAgo',
-                                                  style: const TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(0xFF3B82F6),
-                                                    fontFamily: 'Outfit',
+
+                                                  // Title & Info Block
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        title,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight: FontWeight.w800,
+                                                          color: Color(0xFF1E293B),
+                                                          fontFamily: 'Outfit',
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Row(
+                                                        children: [
+                                                          const Icon(Icons.person, size: 12, color: Color(0xFF94A3B8)),
+                                                          const SizedBox(width: 4),
+                                                          Flexible(
+                                                            child: Text(
+                                                              'By: $teacherName',
+                                                              style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                          const Text(' • ', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                                                          Text(
+                                                            countLabel,
+                                                            style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 3),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            '⭐ Saved $savedAgo',
+                                                            style: const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color(0xFF3B82F6),
+                                                              fontFamily: 'Outfit',
+                                                            ),
+                                                          ),
+                                                          if (uploadDate.isNotEmpty) ...[
+                                                            const Text(' | ', style: TextStyle(fontSize: 10, color: Color(0xFFCBD5E1))),
+                                                            Text(
+                                                              'Uploaded: $uploadDate',
+                                                              style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
+                                                            ),
+                                                          ],
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                                if (uploadDate.isNotEmpty) ...[
-                                                  const Text(' | ', style: TextStyle(fontSize: 10, color: Color(0xFFCBD5E1))),
-                                                  Text(
-                                                    'Uploaded: $uploadDate',
-                                                    style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
+
+                                                  // Bottom Action Button
+                                                  SizedBox(
+                                                    width: double.infinity,
+                                                    height: 36,
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        if (isFlashcard) {
+                                                          final targetId = item?['id'] ?? fav['flashcard_set_id'];
+                                                          context.push('/flashcards/set/$targetId');
+                                                        } else if (isContent) {
+                                                          final targetId = item?['id'] ?? fav['content_id'];
+                                                          context.push('/contents/$targetId');
+                                                        } else {
+                                                          context.push('/take-quiz', extra: item);
+                                                        }
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: btnBg,
+                                                        foregroundColor: Colors.white,
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            btnText,
+                                                            style: const TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontFamily: 'Outfit',
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 6),
+                                                          const Icon(Icons.arrow_forward, size: 14),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height: 36,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              if (isFlashcard) {
-                                                final targetId = item?['id'] ?? fav['flashcard_set_id'];
-                                                context.push('/flashcards/set/$targetId');
-                                              } else if (isContent) {
-                                                final targetId = item?['id'] ?? fav['content_id'];
-                                                context.push('/contents/$targetId');
-                                              } else {
-                                                context.push('/take-quiz', extra: item);
-                                              }
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: btnBg,
-                                              foregroundColor: Colors.white,
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  btnText,
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'Outfit',
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 6),
-                                                const Icon(Icons.arrow_forward, size: 14),
-                                              ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
