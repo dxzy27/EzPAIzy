@@ -554,8 +554,11 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
         child: Container(
           color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: SingleChildScrollView(
+                  child: Column(
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
@@ -756,6 +759,8 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                     ),
                   ],
                 ],
+              ),
+                ),
               ),
             ),
           ),
