@@ -27,7 +27,6 @@ class TtsService {
       await _flutterTts.setSpeechRate(0.5);
       await _flutterTts.setVolume(1.0);
       await _flutterTts.setPitch(1.0);
-      _isInitialized = true;
       print("TTS: Initialized successfully");
     } catch (e) {
       print("TTS: Initialization failed with error: $e");
