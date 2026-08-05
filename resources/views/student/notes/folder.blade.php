@@ -163,7 +163,7 @@
                                     @if($note->resource_id)
                                         @php
                                             $goToUrl = match($note->resource_type) {
-                                                'quiz' => route('student.quiz.take', $note->resource_id),
+                                                'quiz' => route('student.quiz.take', ['topic' => $note->topic, 'difficulty' => $note->difficulty ?? 'easy']),
                                                 'flashcard' => route('student.flashcards.show', $note->resource_id),
                                                 default => route('student.contents.show', $note->resource_id)
                                             };
