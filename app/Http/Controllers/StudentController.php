@@ -155,19 +155,20 @@ class StudentController extends Controller
                 if (!empty($titleVal)) {
                     $progressQuery->where('title', $titleVal);
                 } else {
-                    $progressQuery->where(function ($q) {
-                        $q->whereNull('title')->orWhere('title', '');
+                    $progressQuery->where(function ($q) use ($topic) {
+                        $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
                     });
                 }
             }
             
             // Strictly filter the results in memory to prevent any SQL collation/caching mismatches
-            $quiz->progress = $progressQuery->get()->filter(function ($p) use ($titleVal) {
+            $quiz->progress = $progressQuery->get()->filter(function ($p) use ($titleVal, $topic) {
                 if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
+                    $pTitle = trim($p->title ?? '');
                     if (empty($titleVal)) {
-                        return empty($p->title);
+                        return empty($pTitle) || strcasecmp($pTitle, trim($topic)) === 0;
                     }
-                    return strcasecmp(trim($p->title), trim($titleVal)) === 0;
+                    return strcasecmp($pTitle, trim($titleVal)) === 0;
                 }
                 return true;
             })->values();
