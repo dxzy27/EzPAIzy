@@ -280,326 +280,385 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
     final currentQuestion = _questions[_currentIndex];
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: const Text(
-          'Learning Style Diagnosis',
-          style: TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF64748B)),
-          onPressed: () => context.go('/dashboard'),
-        ),
-      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFF0F7FF),
-              Color(0xFFE0EDFF),
-              Color(0xFFEDE9FE),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
           ),
         ),
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : SafeArea(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Introduction header info
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFEDE9FE), Color(0xFFE0E7FF)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: const Color(0xFFC4B5FD)),
-                        ),
-                        child: Row(
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.20),
+          child: _loading
+              ? const Center(child: CircularProgressIndicator())
+              : SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 850),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF7C3AED),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(Icons.assignment, color: Colors.white, size: 20),
+                            // Top Header Row
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(20),
+                                        onTap: () => context.go('/dashboard'),
+                                        child: Container(
+                                          width: 36,
+                                          height: 36,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(color: const Color(0xFFCBD5E1)),
+                                            color: Colors.white,
+                                          ),
+                                          child: const Icon(Icons.home_outlined, size: 18, color: Color(0xFF475569)),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'The VARK Questionnaire for Younger People',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w800,
+                                            color: Color(0xFF1E293B),
+                                            fontFamily: 'Outfit',
+                                          ),
+                                        ),
+                                        Text(
+                                          '16 scenario-based questions • ~6 minutes',
+                                          style: TextStyle(fontSize: 12, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                OutlinedButton.icon(
+                                  onPressed: () => context.go('/dashboard'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: const Color(0xFF64748B),
+                                    side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                                  ),
+                                  icon: const Icon(Icons.close, size: 14),
+                                  label: const Text('Skip for now', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, fontFamily: 'Outfit')),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 14),
-                            const Expanded(
-                              child: Column(
+                            const SizedBox(height: 20),
+
+                            // How Do I Learn Best? Banner
+                            Container(
+                              padding: const EdgeInsets.all(18),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFFEDE9FE), Color(0xFFE0E7FF)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(color: const Color(0xFFC4B5FD)),
+                              ),
+                              child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'How this works',
-                                    style: TextStyle(
-                                      color: Color(0xFF4C1D95),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
+                                  Container(
+                                    width: 42,
+                                    height: 42,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF7C3AED),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
+                                    child: const Icon(Icons.assignment_outlined, color: Colors.white, size: 22),
                                   ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'Answer honestly based on how you actually behave. Each scenario reveals patterns across multiple learning dimensions.',
-                                    style: TextStyle(color: Color(0xFF6B7280), fontSize: 12, height: 1.45),
+                                  const SizedBox(width: 14),
+                                  const Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'How Do I Learn Best?',
+                                          style: TextStyle(
+                                            color: Color(0xFF4C1D95),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                            fontFamily: 'Outfit',
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Choose the answers which best explain your preference. Please click more than one if a single answer does not match your perception. Leave blank any question that does not apply.',
+                                          style: TextStyle(color: Color(0xFF6B7280), fontSize: 12, height: 1.45, fontFamily: 'Outfit'),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Progress bar and step labels
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Question ${currentQuestion.number} of ${_questions.length}',
+                                  style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280), fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
+                                ),
+                                Text(
+                                  '${((_currentIndex + 1) / _questions.length * 100).round()}% complete',
+                                  style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280), fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(99),
+                              child: LinearProgressIndicator(
+                                value: (_currentIndex + 1) / _questions.length,
+                                color: const Color(0xFF7C3AED),
+                                backgroundColor: Colors.white,
+                                minHeight: 6,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Question Card Block
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                key: ValueKey<int>(_currentIndex),
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(18),
+                                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF7C3AED).withOpacity(0.06),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 18,
+                                          backgroundColor: const Color(0xFF7C3AED),
+                                          child: Text(
+                                            currentQuestion.number,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              fontFamily: 'Outfit',
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFFEDE9FE),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                child: Text(
+                                                  currentQuestion.dimension.toUpperCase(),
+                                                  style: const TextStyle(
+                                                    fontSize: 9,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFF7C3AED),
+                                                    letterSpacing: 0.5,
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                currentQuestion.text,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF111827),
+                                                  height: 1.4,
+                                                  fontFamily: 'Outfit',
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 24),
+
+                                    // Options List with Checkboxes
+                                    ...currentQuestion.options.entries.map((entry) {
+                                      final letter = entry.key;
+                                      final optionText = entry.value;
+                                      final selectedList = _answers['q${currentQuestion.number}'] ?? [];
+                                      final isSelected = selectedList.contains(letter);
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            final qKey = 'q${currentQuestion.number}';
+                                            final currentList = List<String>.from(_answers[qKey] ?? []);
+                                            if (currentList.contains(letter)) {
+                                              currentList.remove(letter);
+                                            } else {
+                                              currentList.add(letter);
+                                            }
+                                            _answers[qKey] = currentList;
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.only(bottom: 10),
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                          decoration: BoxDecoration(
+                                            color: isSelected ? const Color(0xFFEDE9FE) : Colors.white,
+                                            borderRadius: BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: isSelected ? const Color(0xFF7C3AED) : const Color(0xFFE5E7EB),
+                                              width: isSelected ? 2 : 1.5,
+                                            ),
+                                            boxShadow: isSelected
+                                                ? [
+                                                    BoxShadow(
+                                                      color: const Color(0xFF7C3AED).withOpacity(0.08),
+                                                      blurRadius: 10,
+                                                      offset: const Offset(0, 4),
+                                                    ),
+                                                  ]
+                                                : null,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              // Explicit Checkbox
+                                              Icon(
+                                                isSelected ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+                                                color: isSelected ? const Color(0xFF7C3AED) : const Color(0xFF94A3B8),
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              // Option Letter Badge
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                  color: isSelected ? const Color(0xFF7C3AED) : const Color(0xFFF3F4F6),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    letter,
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: isSelected ? Colors.white : const Color(0xFF374151),
+                                                      fontSize: 14,
+                                                      fontFamily: 'Outfit',
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 14),
+                                              Expanded(
+                                                child: Text(
+                                                  optionText,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: const Color(0xFF111827),
+                                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                                    height: 1.4,
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Navigation Buttons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _currentIndex > 0
+                                    ? OutlinedButton.icon(
+                                        onPressed: _prev,
+                                        icon: const Icon(Icons.arrow_back, size: 16),
+                                        label: const Text('Previous', style: TextStyle(fontFamily: 'Outfit')),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: const Color(0xFF6B7280),
+                                          side: const BorderSide(color: Color(0xFFE5E7EB)),
+                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                                ElevatedButton(
+                                  onPressed: _next,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF7C3AED),
+                                    foregroundColor: Colors.white,
+                                    disabledBackgroundColor: const Color(0xFFC4B5FD),
+                                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        _currentIndex == _questions.length - 1 ? 'Get Results' : 'Next',
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, fontFamily: 'Outfit'),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Icon(
+                                        _currentIndex == _questions.length - 1 ? Icons.check_circle : Icons.arrow_forward,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 24),
-
-                      // Progress bar and labels
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Question ${currentQuestion.number} of ${_questions.length}',
-                            style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280), fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '${((_currentIndex + 1) / _questions.length * 100).round()}% complete',
-                            style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280), fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: LinearProgressIndicator(
-                          value: (_currentIndex + 1) / _questions.length,
-                          color: const Color(0xFF7C3AED),
-                          backgroundColor: Colors.white,
-                          minHeight: 8,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Question Card
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        child: Container(
-                          key: ValueKey<int>(_currentIndex),
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF7C3AED).withOpacity(0.06),
-                                blurRadius: 24,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 18,
-                                    backgroundColor: const Color(0xFF7C3AED),
-                                    child: Text(
-                                      currentQuestion.number,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFEDE9FE),
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          child: Text(
-                                            currentQuestion.dimension.toUpperCase(),
-                                            style: const TextStyle(
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFF7C3AED),
-                                              letterSpacing: 0.5,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          currentQuestion.text,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF111827),
-                                            height: 1.4,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 24),
-
-                              // Options
-                              ...currentQuestion.options.entries.map((entry) {
-                                final letter = entry.key;
-                                final optionText = entry.value;
-                                final selectedList = _answers['q${currentQuestion.number}'] ?? [];
-                                final isSelected = selectedList.contains(letter);
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      final qKey = 'q${currentQuestion.number}';
-                                      final currentList = List<String>.from(_answers[qKey] ?? []);
-                                      if (currentList.contains(letter)) {
-                                        currentList.remove(letter);
-                                      } else {
-                                        currentList.add(letter);
-                                      }
-                                      _answers[qKey] = currentList;
-                                    });
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 12),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: isSelected ? const Color(0xFFEDE9FE) : Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: isSelected ? const Color(0xFF7C3AED) : const Color(0xFFE5E7EB),
-                                        width: isSelected ? 2 : 1.5,
-                                      ),
-                                      boxShadow: isSelected
-                                          ? [
-                                              BoxShadow(
-                                                color: const Color(0xFF7C3AED).withOpacity(0.08),
-                                                blurRadius: 10,
-                                                offset: const Offset(0, 4),
-                                              ),
-                                            ]
-                                          : null,
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            color: isSelected ? const Color(0xFF7C3AED) : const Color(0xFFF3F4F6),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              letter,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: isSelected ? Colors.white : const Color(0xFF374151),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 14),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 4),
-                                            child: Text(
-                                              optionText,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: const Color(0xFF111827),
-                                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                                height: 1.4,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Navigation Buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _currentIndex > 0
-                              ? OutlinedButton.icon(
-                                  onPressed: _prev,
-                                  icon: const Icon(Icons.arrow_back, size: 16),
-                                  label: const Text('Previous'),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: const Color(0xFF6B7280),
-                                    side: const BorderSide(color: Color(0xFFE5E7EB)),
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                          ElevatedButton(
-                            onPressed: _next,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF7C3AED),
-                              foregroundColor: Colors.white,
-                              disabledBackgroundColor: const Color(0xFFC4B5FD),
-                              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  _currentIndex == _questions.length - 1 ? 'Get Results' : 'Next',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                ),
-                                const SizedBox(width: 6),
-                                Icon(
-                                  _currentIndex == _questions.length - 1 ? Icons.check_circle : Icons.arrow_forward,
-                                  size: 16,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+            ),
+        ),
       ),
     );
   }
