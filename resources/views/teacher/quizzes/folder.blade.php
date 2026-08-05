@@ -72,28 +72,20 @@
                             <h5 class="fw-bold text-dark mb-3" style="font-size: 1.15rem; line-height: 1.35;">{{ $quiz->title }}</h5>
 
                             <!-- Rich Info Icons with Breathing Room -->
-                            <div class="d-flex flex-column gap-2.5 mb-4 text-muted" style="font-size: 0.9rem;">
-                                <div class="d-flex align-items-center gap-2.5">
-                                    <i class="bi bi-file-earmark-text text-primary fs-6"></i>
-                                    <span><strong>{{ $quiz->questions_count }}</strong> {{ Str::plural('Question', $quiz->questions_count) }}</span>
+                            <div class="d-flex align-items-center justify-content-between text-muted border-top border-light pt-3 mt-3" style="font-size: 0.88rem;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-file-earmark-text text-primary fs-5"></i>
+                                    <span class="fw-semibold"><strong class="text-dark">{{ $quiz->questions_count }}</strong> {{ Str::plural('Question', $quiz->questions_count) }}</span>
                                 </div>
-                                <div class="d-flex align-items-center gap-2.5">
-                                    <i class="bi bi-people text-info fs-6"></i>
-                                    <span><strong>{{ $quiz->attempts_count }}</strong> {{ Str::plural('Attempt', $quiz->attempts_count) }}</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-2.5">
-                                    <i class="bi bi-trophy text-warning fs-6"></i>
-                                    <span>Avg Score: <strong>{{ $quiz->avg_score }}%</strong></span>
-                                </div>
-                                <div class="d-flex align-items-center gap-2.5 mt-1 pt-2.5 border-top border-light">
-                                    <i class="bi bi-clock text-secondary fs-6"></i>
-                                    <span style="font-size: 0.82rem;">Updated {{ $quiz->updated_at->format('M j, Y') }}</span>
+                                <div class="d-flex align-items-center gap-2 text-secondary">
+                                    <i class="bi bi-clock-history"></i>
+                                    <span style="font-size: 0.8rem;">{{ $quiz->updated_at->format('M j, Y') }}</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card Action Buttons with Equal Heights & High-Contrast Clean Palette -->
-                        <div class="d-flex align-items-center gap-2 pt-2">
+                        <div class="d-flex align-items-center gap-2 mt-4">
                             <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty, 'title' => $quiz->title]) }}" class="btn btn-white border shadow-xs btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1.5" style="border-radius: 10px; font-size: 0.88rem; height: 38px; background: #ffffff;">
                                 <i class="bi bi-eye text-secondary fs-6"></i><span>View</span>
                             </a>
