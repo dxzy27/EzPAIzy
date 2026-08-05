@@ -584,12 +584,15 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
                     ),
                   ],
                 ),
+              ),
             ],
           ),
         ),
       ),
     ),
   ),
+),
+),
 );
   }
 
