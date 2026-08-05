@@ -246,7 +246,19 @@ class StudentApiController extends Controller
                 $quizIdStr = $topic . '_' . $diff . '_' . $displayTitle;
                 $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
 
-                $quizProgress = $progressRecords->where('difficulty', $diff)->values()->toArray();
+                $hasProgressTitle = \Illuminate\Support\Facades\Schema::hasColumn('progress', 'title');
+                $quizProgress = $progressRecords->where('difficulty', $diff)
+                    ->filter(function ($p) use ($hasProgressTitle, $displayTitle, $topic) {
+                        if (!$hasProgressTitle) return true;
+                        $pTitle = $p->title;
+                        if (!empty($displayTitle) && $displayTitle !== $topic) {
+                            return $pTitle === $displayTitle;
+                        } else {
+                            return empty($pTitle) || $pTitle === $topic;
+                        }
+                    })
+                    ->values()
+                    ->toArray();
 
                 $quiz = [
                     'id' => $quizIdInt,

@@ -155,11 +155,11 @@
                                 
                                 @if($quiz->questions_count > 0)
                                     @if($p)
-                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-outline-primary w-100 rounded-pill py-2.5 fw-bold d-flex align-items-center justify-content-center gap-2">
+                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty, 'title' => $quiz->title]) }}" class="btn btn-outline-primary w-100 rounded-pill py-2.5 fw-bold d-flex align-items-center justify-content-center gap-2">
                                             <i class="bi bi-arrow-repeat"></i> Retake Quiz
                                         </a>
                                     @else
-                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-success text-white w-100 py-2.5 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                        <a href="{{ route('student.quiz.take', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty, 'title' => $quiz->title]) }}" class="btn btn-success text-white w-100 py-2.5 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
                                             Take Quiz <i class="bi bi-arrow-right"></i>
                                         </a>
                                     @endif

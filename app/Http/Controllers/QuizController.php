@@ -446,15 +446,26 @@ class QuizController extends Controller
     /**
      * Show student quiz taking page.
      */
-    public function take(string $topic, string $difficulty)
+    public function take(Request $request, string $topic, string $difficulty)
     {
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        $titleParam = $request->query('title');
+
+        $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
+        if ($hasTitleCol && !empty($titleParam) && $titleParam !== $topic) {
+            $query->where('title', $titleParam);
+        } else if ($hasTitleCol) {
+            $query->where(function ($q) use ($topic) {
+                $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+            });
+        }
+
         $quiz = new \stdClass();
         $quiz->topic = $topic;
         $quiz->difficulty = $difficulty;
-        $quiz->title = $topic . ' (' . ucfirst($difficulty) . ')';
-        $quiz->questions = Question::where('topic', $topic)
-            ->where('difficulty', $difficulty)
-            ->get();
+        $quiz->title = !empty($titleParam) ? $titleParam : $topic;
+        $quiz->questions = $query->get();
+
         return view('student.quiz.take', compact('quiz'));
     }
 

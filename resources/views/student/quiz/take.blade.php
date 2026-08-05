@@ -74,10 +74,11 @@
                     
                     <p id="feedback-text" class="mb-4 lead"></p>
                     
-                    <form action="{{ route('student.submit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" id="submit-form">
+                    <form action="{{ route('student.submit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty, 'title' => $quiz->title]) }}" method="POST" id="submit-form">
                         @csrf
                         <input type="hidden" name="score" id="score-input">
                         <input type="hidden" name="answers" id="answers-input">
+                        <input type="hidden" name="title" value="{{ $quiz->title }}">
                         <button type="submit" class="btn btn-primary btn-lg px-5">
                             <i class="bi bi-check-circle me-2"></i> Submit Result
                         </button>
