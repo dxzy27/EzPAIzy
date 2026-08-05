@@ -360,8 +360,14 @@ class StudentApiController extends Controller
         }
 
         $query = \App\Models\Question::where('topic', $matchedTopic)->where('difficulty', $matchedDifficulty);
-        if ($hasTitleCol && !empty($matchedTitle)) {
-            $query->where('title', $matchedTitle);
+        if ($hasTitleCol) {
+            if (!empty($matchedTitle)) {
+                $query->where('title', $matchedTitle);
+            } else {
+                $query->where(function ($q) {
+                    $q->whereNull('title')->orWhere('title', '');
+                });
+            }
         }
         $questions = $query->get();
 
@@ -461,8 +467,14 @@ class StudentApiController extends Controller
         }
 
         $query = \App\Models\Question::where('topic', $matchedTopic)->where('difficulty', $matchedDifficulty);
-        if ($hasTitleCol && !empty($matchedTitle) && $matchedTitle !== $matchedTopic) {
-            $query->where('title', $matchedTitle);
+        if ($hasTitleCol) {
+            if (!empty($matchedTitle)) {
+                $query->where('title', $matchedTitle);
+            } else {
+                $query->where(function ($q) {
+                    $q->whereNull('title')->orWhere('title', '');
+                });
+            }
         }
         $questions = $query->get();
 
@@ -485,8 +497,8 @@ class StudentApiController extends Controller
             'topic' => $matchedTopic,
             'difficulty' => $matchedDifficulty,
         ];
-        if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title') && !empty($matchedTitle)) {
-            $searchCriteria['title'] = $matchedTitle;
+        if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
+            $searchCriteria['title'] = !empty($matchedTitle) ? $matchedTitle : $matchedTopic;
         }
 
         $progress = \App\Models\Progress::updateOrCreate(
@@ -1257,9 +1269,19 @@ class StudentApiController extends Controller
         $classTeacher = \App\Models\User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
         $teacherName = $classTeacher ? $classTeacher->name : 'Teacher';
 
-        $questions = \App\Models\Question::where('topic', $progress->topic)
-            ->where('difficulty', $progress->difficulty)
-            ->get();
+        $qQuery = \App\Models\Question::where('topic', $progress->topic)
+            ->where('difficulty', $progress->difficulty);
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
+            if (!empty($progress->title)) {
+                $qQuery->where('title', $progress->title);
+            } else {
+                $qQuery->where(function ($q) {
+                    $q->whereNull('title')->orWhere('title', '');
+                });
+            }
+        }
+        $questions = $qQuery->get();
 
         return response()->json([
             'id'              => $progress->id,
