@@ -96,8 +96,11 @@ class _NotesFolderScreenState extends State<NotesFolderScreen> {
       backgroundColor: const Color(0xFFF8FAFC),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
+          : Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: Column(
+                children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: AppTopBar(
@@ -217,6 +220,8 @@ class _NotesFolderScreenState extends State<NotesFolderScreen> {
                 ),
               ],
             ),
+          ),
+        ),
     );
   }
 

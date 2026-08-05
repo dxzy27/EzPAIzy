@@ -119,13 +119,16 @@ class _RevisionScreenState extends State<RevisionScreen> {
         child: Container(
           color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: AppTopBar(showBackButton: true),
-                ),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: AppTopBar(showBackButton: true),
+                    ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
@@ -468,6 +471,8 @@ class _RevisionScreenState extends State<RevisionScreen> {
                 ),
               ],
             ),
+          ),
+        ),
           ),
         ),
       ),

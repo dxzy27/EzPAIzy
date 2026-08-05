@@ -97,10 +97,13 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                 : content == null
                     ? const Center(child: Text('Failed to load content', style: TextStyle(fontFamily: 'Outfit')))
                     : SingleChildScrollView(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 800),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                             const AppTopBar(showBackButton: true),
                             // Header Row (Back Button + Title + Subtitle)
                             Row(
@@ -359,6 +362,8 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                           ],
                         ),
                       ),
+                    ),
+                  ),
           ),
         ),
       ),

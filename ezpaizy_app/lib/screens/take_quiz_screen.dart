@@ -664,8 +664,6 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
       subtitleText = 'This quiz contains KBAT essay questions. Your teacher will review your submission soon.';
     }
 
-    final authUser = Provider.of<AuthProvider>(context, listen: false).user;
-    final userName = (authUser?['name'] ?? 'Student').toString();
 
     return Scaffold(
       body: Container(
