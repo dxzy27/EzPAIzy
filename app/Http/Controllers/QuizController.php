@@ -97,6 +97,7 @@ class QuizController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'title' => 'nullable|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string|in:easy,medium,hard',
             'questions' => 'required|array|min:1',

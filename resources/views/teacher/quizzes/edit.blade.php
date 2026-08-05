@@ -18,9 +18,17 @@
 
 
                         <div class="mb-3">
-                            <label for="topic" class="form-label">Topic</label>
-                            <select name="topic" id="topic" class="form-select @error('topic') is-invalid @enderror" required>
-                                <option value="" disabled>Select a Topic</option>
+                            <label for="title" class="form-label text-muted small fw-bold text-uppercase mb-1">Quiz Title</label>
+                            <input type="text" class="form-control form-control-lg fw-semibold @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $quiz->title ?? '') }}" placeholder="e.g. Surah Al-Baqarah Quiz" required style="border-radius: 10px; font-size: 1.05rem;">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="topic" class="form-label text-muted small fw-bold text-uppercase mb-1">Topic</label>
+                            <select name="topic" id="topic" class="form-select form-select-lg fw-semibold @error('topic') is-invalid @enderror" required style="border-radius: 10px; font-size: 0.95rem;">
+                                <option value="" disabled>Select Topic</option>
                                 @foreach($topics as $t)
                                     <option value="{{ $t->name }}" {{ (old('topic', $quiz->topic) == $t->name) ? 'selected' : '' }}>{{ $t->name }}</option>
                                 @endforeach
