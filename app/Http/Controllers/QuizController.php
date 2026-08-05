@@ -211,6 +211,7 @@ class QuizController extends Controller
         Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        $newTitle = $request->input('title', '');
 
         foreach ($validated['questions'] as $q) {
             $questionData = [
@@ -224,7 +225,7 @@ class QuizController extends Controller
             ];
 
             if ($hasTitleCol) {
-                $questionData['title'] = $validated['title'] ?? '';
+                $questionData['title'] = $newTitle;
             }
 
             Question::create($questionData);
