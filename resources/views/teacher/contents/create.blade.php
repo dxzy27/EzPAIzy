@@ -52,7 +52,7 @@
                         </div>
                         @error('file')
                             <div class="invalid-feedback">{{ $message }}</div>
-                        @error
+                        @enderror
                     </div>
 
                     <!-- Text Content / Description -->
