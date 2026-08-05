@@ -38,12 +38,9 @@
                     </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary fw-semibold px-3" style="border-radius: 10px; font-size: 0.9rem;" data-bs-toggle="modal" data-bs-target="#createTopicModal">
+                    <button type="button" class="btn btn-primary fw-semibold px-3" style="border-radius: 10px; font-size: 0.9rem;" data-bs-toggle="modal" data-bs-target="#createTopicModal">
                         <i class="bi bi-folder-plus me-1"></i> Add Folder
                     </button>
-                    <a href="{{ route('teacher.flashcard-sets.create') }}" class="btn btn-primary fw-semibold px-3" style="border-radius: 10px; font-size: 0.9rem;">
-                        <i class="bi bi-plus-lg me-1"></i> New Flashcard Set
-                    </a>
                 </div>
             </div>
         </div>
