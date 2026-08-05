@@ -183,6 +183,9 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final isKinesthetic = auth.user?['learning_style']?.toString().toLowerCase() == 'kinesthetic';
+
     if (loading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -598,6 +601,8 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         ],
       ),
     );
+  }
+
   Widget _buildModeToggle(BuildContext context, bool isStudyMode) {
     return Container(
       decoration: BoxDecoration(
