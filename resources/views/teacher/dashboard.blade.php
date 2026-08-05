@@ -333,9 +333,10 @@
 
     <div class="row justify-content-center mb-5">
         <div class="col-md-9 col-lg-8">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <h4 class="fw-bold text-dark mb-0">Recents</h4>
-                <a href="{{ route('teacher.quizzes.index') }}" class="text-decoration-none fw-semibold" style="font-size: 0.88rem; color: #4255ff;">View all</a>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <h4 class="fw-bold text-dark mb-0">Recents</h4>
+                </div>
             </div>
             
             <div class="row">
