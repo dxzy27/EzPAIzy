@@ -116,12 +116,10 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
-        if ($hasTitleCol) {
-            $data['title'] = $validated['title'] ?? '';
-        }
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
 
         foreach ($validated['questions'] as $q) {
-            $questionData = array_merge([
+            $questionData = [
                 'question_text' => $q['text'],
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
@@ -129,7 +127,11 @@ class QuizController extends Controller
                 'points' => 10,
                 'topic' => $validated['topic'],
                 'difficulty' => $validated['difficulty'],
-            ], $hasTitleCol ? ['title' => $validated['title'] ?? ''] : []);
+            ];
+
+            if ($hasTitleCol) {
+                $questionData['title'] = $validated['title'] ?? '';
+            }
 
             Question::create($questionData);
         }
