@@ -528,55 +528,60 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
     final isSelected = _currentSituation == key;
     return Padding(
       padding: const EdgeInsets.only(right: 6.0),
-      child: ChoiceChip(
-        label: Text(
-          label,
-          style: GoogleFonts.outfit(
-            fontSize: 11,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected ? Colors.white : const Color(0xFF1E293B),
+      child: InkWell(
+        onTap: () => _fetchDoas(key),
+        borderRadius: BorderRadius.circular(50),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF2563EB) : Colors.white,
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(
+              color: isSelected ? const Color(0xFF2563EB) : const Color(0xFF3B82F6).withValues(alpha: 0.3),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            label,
+            style: GoogleFonts.outfit(
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color: isSelected ? Colors.white : const Color(0xFF2563EB),
+            ),
           ),
         ),
-        selected: isSelected,
-        selectedColor: const Color(0xFF3B82F6),
-        backgroundColor: Colors.white,
-        side: BorderSide(
-          color: isSelected ? const Color(0xFF3B82F6) : Colors.grey.shade300,
-        ),
-        onSelected: (bool selected) {
-          if (selected) {
-            _fetchDoas(key);
-          }
-        },
       ),
     );
   }
 
   Widget _buildModeButton(String modeKey, String label) {
     final isSelected = _currentMode == modeKey;
-    return ElevatedButton(
-      onPressed: () {
+    return InkWell(
+      onTap: () {
         setState(() {
           _currentMode = modeKey;
           _memChunkIndex = 0;
           _isMemRevealed = false;
         });
       },
-      style: ElevatedButton.styleFrom(
-        elevation: 0,
-        backgroundColor: isSelected ? const Color(0xFF1E293B) : Colors.white,
-        foregroundColor: isSelected ? Colors.white : const Color(0xFF1E293B),
-        side: BorderSide(
-          color: isSelected ? const Color(0xFF1E293B) : Colors.grey.shade300,
+      borderRadius: BorderRadius.circular(50),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF212529) : Colors.white,
+          borderRadius: BorderRadius.circular(50),
+          border: Border.all(
+            color: isSelected ? const Color(0xFF212529) : const Color(0xFF6C757D),
+            width: 1,
+          ),
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.outfit(
-          fontSize: 11,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        child: Text(
+          label,
+          style: GoogleFonts.outfit(
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            color: isSelected ? Colors.white : const Color(0xFF212529),
+          ),
         ),
       ),
     );
@@ -589,12 +594,12 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
       children: [
         // Arabic Hero Text
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Text(
             doa['arabic'] ?? '',
             textAlign: TextAlign.center,
             style: GoogleFonts.amiri(
-              fontSize: 30,
+              fontSize: 38,
               fontWeight: FontWeight.bold,
               height: 2.1,
               color: const Color(0xFF0F172A),
