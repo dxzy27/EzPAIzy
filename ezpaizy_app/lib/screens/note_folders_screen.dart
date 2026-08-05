@@ -66,79 +66,84 @@ class _NoteFoldersScreenState extends State<NoteFoldersScreen> {
         child: Container(
           color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AppTopBar(showBackButton: true),
-                  const SizedBox(height: 10),
-                  Text(
-                    'My Folders',
-                    style: GoogleFonts.outfit(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w900,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    'Access and edit your saved study notepad entries',
-                    style: GoogleFonts.outfit(
-                      fontSize: 14,
-                      color: const Color(0xFF64748B),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Search Bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const AppTopBar(showBackButton: true),
+                      const SizedBox(height: 10),
+                      Text(
+                        'My Folders',
+                        style: GoogleFonts.outfit(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w900,
+                          color: const Color(0xFF0F172A),
                         ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      style: GoogleFonts.outfit(fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: 'Search folders...',
-                        hintStyle: GoogleFonts.outfit(color: const Color(0xFF94A3B8)),
-                        prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                      Text(
+                        'Access and edit your saved study notepad entries',
+                        style: GoogleFonts.outfit(
+                          fontSize: 14,
+                          color: const Color(0xFF64748B),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Search Bar
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          style: GoogleFonts.outfit(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: 'Search folders...',
+                            hintStyle: GoogleFonts.outfit(color: const Color(0xFF94A3B8)),
+                            prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
 
-                  // Folders Grid/List
-                  Expanded(
-                    child: _loading
-                        ? const Center(child: CircularProgressIndicator())
-                        : _filteredFolders.isEmpty
-                            ? _buildEmptyState()
-                            : GridView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 1.1,
-                                ),
-                                itemCount: _filteredFolders.length,
-                                itemBuilder: (context, index) {
-                                  final folderName = _filteredFolders[index];
-                                  return _buildFolderCard(folderName);
-                                },
-                              ),
+                      // Folders Grid/List
+                      Expanded(
+                        child: _loading
+                            ? const Center(child: CircularProgressIndicator())
+                            : _filteredFolders.isEmpty
+                                ? _buildEmptyState()
+                                : GridView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16,
+                                      childAspectRatio: 1.1,
+                                    ),
+                                    itemCount: _filteredFolders.length,
+                                    itemBuilder: (context, index) {
+                                      final folderName = _filteredFolders[index];
+                                      return _buildFolderCard(folderName);
+                                    },
+                                  ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -374,154 +379,159 @@ class _FolderNotesScreenState extends State<FolderNotesScreen> {
         child: Container(
           color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AppTopBar(showBackButton: true),
-                  const SizedBox(height: 10),
-                  
-                  // Folder Info Banner
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF4F46E5).withOpacity(0.2),
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const AppTopBar(showBackButton: true),
+                      const SizedBox(height: 10),
+                      
+                      // Folder Info Banner
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF4F46E5).withOpacity(0.2),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.folder_open, color: Colors.white70, size: 16),
-                            const SizedBox(width: 6),
+                            Row(
+                              children: [
+                                const Icon(Icons.folder_open, color: Colors.white70, size: 16),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'TOPIC FOLDER',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 11,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
                             Text(
-                              'TOPIC FOLDER',
+                              widget.topic,
                               style: GoogleFonts.outfit(
-                                fontSize: 11,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              _notes.isEmpty
+                                  ? 'No study notes in this folder'
+                                  : 'You have ${_notes.length} study note${_notes.length > 1 ? 's' : ''} in this folder',
+                              style: GoogleFonts.outfit(
+                                fontSize: 13,
+                                color: Colors.white.withOpacity(0.8),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.topic,
-                          style: GoogleFonts.outfit(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          _notes.isEmpty
-                              ? 'No study notes in this folder'
-                              : 'You have ${_notes.length} study note${_notes.length > 1 ? 's' : ''} in this folder',
-                          style: GoogleFonts.outfit(
-                            fontSize: 13,
-                            color: Colors.white.withOpacity(0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                      ),
+                      const SizedBox(height: 16),
 
-                  // Search & Filter
-                  Row(
-                    children: [
-                      // Search field
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            style: GoogleFonts.outfit(fontSize: 13),
-                            decoration: InputDecoration(
-                              hintText: 'Search notes...',
-                              hintStyle: GoogleFonts.outfit(color: const Color(0xFF94A3B8)),
-                              prefixIcon: const Icon(Icons.search, size: 18, color: Color(0xFF94A3B8)),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      // Search & Filter
+                      Row(
+                        children: [
+                          // Search field
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                              ),
+                              child: TextField(
+                                controller: _searchController,
+                                style: GoogleFonts.outfit(fontSize: 13),
+                                decoration: InputDecoration(
+                                  hintText: 'Search notes...',
+                                  hintStyle: GoogleFonts.outfit(color: const Color(0xFF94A3B8)),
+                                  prefixIcon: const Icon(Icons.search, size: 18, color: Color(0xFF94A3B8)),
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Dropdown filter
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: _selectedType,
-                            icon: const Icon(Icons.keyboard_arrow_down, size: 18, color: Color(0xFF64748B)),
-                            style: GoogleFonts.outfit(fontSize: 12, color: const Color(0xFF0F172A), fontWeight: FontWeight.bold),
-                            onChanged: (val) {
-                              if (val != null) {
-                                setState(() {
-                                  _selectedType = val;
-                                  _applyFilters();
-                                });
-                              }
-                            },
-                            items: _typesList.map((type) {
-                              return DropdownMenuItem<String>(
-                                value: type,
-                                child: Text(type),
-                              );
-                            }).toList(),
+                          const SizedBox(width: 8),
+                          // Dropdown filter
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: _selectedType,
+                                icon: const Icon(Icons.keyboard_arrow_down, size: 18, color: Color(0xFF64748B)),
+                                style: GoogleFonts.outfit(fontSize: 12, color: const Color(0xFF0F172A), fontWeight: FontWeight.bold),
+                                onChanged: (val) {
+                                  if (val != null) {
+                                    setState(() {
+                                      _selectedType = val;
+                                      _applyFilters();
+                                    });
+                                  }
+                                },
+                                items: _typesList.map((type) {
+                                  return DropdownMenuItem<String>(
+                                    value: type,
+                                    child: Text(type),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Notes List
+                      Expanded(
+                        child: _loading
+                            ? const Center(child: CircularProgressIndicator())
+                            : _filteredNotes.isEmpty
+                                ? _buildEmptyState()
+                                : ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: _filteredNotes.length,
+                                    itemBuilder: (context, index) {
+                                      final note = _filteredNotes[index];
+                                      return _NoteCardWidget(
+                                        note: note,
+                                        onSave: (title, content) => _saveChanges(note, title, content),
+                                        onDelete: () => _deleteNote(note['id']),
+                                      );
+                                    },
+                                  ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-
-                  // Notes List
-                  Expanded(
-                    child: _loading
-                        ? const Center(child: CircularProgressIndicator())
-                        : _filteredNotes.isEmpty
-                            ? _buildEmptyState()
-                            : ListView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: _filteredNotes.length,
-                                itemBuilder: (context, index) {
-                                  final note = _filteredNotes[index];
-                                  return _NoteCardWidget(
-                                    note: note,
-                                    onSave: (title, content) => _saveChanges(note, title, content),
-                                    onDelete: () => _deleteNote(note['id']),
-                                  );
-                                },
-                              ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
