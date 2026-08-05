@@ -135,310 +135,296 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
         child: Container(
           color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: AppTopBar(showBackButton: true),
-                ),
-                // Top Custom aligned Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 20, 24, 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: AppTopBar(showBackButton: true),
+                    ),
+                    // Top Custom aligned Header
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 24, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.topic,
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF1E293B),
-                                    fontFamily: 'Outfit',
-                                  ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.topic,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w900,
+                                        color: Color(0xFF1E293B),
+                                        fontFamily: 'Outfit',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      'Flashcards / ${widget.topic}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF94A3B8),
+                                        fontFamily: 'Outfit',
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  'Flashcards / ${widget.topic}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF94A3B8),
-                                    fontFamily: 'Outfit',
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          // Search input styled like web
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: TextField(
+                              controller: _search,
+                              decoration: InputDecoration(
+                                hintText: 'Search sets...',
+                                hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
+                                prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
                                 ),
-                              ],
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(color: Color(0xFF3B82F6)),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          // Sub-section category header
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              'SETS IN ${widget.topic.toUpperCase()}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF64748B),
+                                letterSpacing: 1.0,
+                                fontFamily: 'Outfit',
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-
-                      // Search input styled like web
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller: _search,
-                          decoration: InputDecoration(
-                            hintText: 'Search sets...',
-                            hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
-                            prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFF3B82F6)),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Sub-section category header
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(
-                          'SETS IN ${widget.topic.toUpperCase()}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF64748B),
-                            letterSpacing: 1.0,
-                            fontFamily: 'Outfit',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Sets Grid
-                Expanded(
-                  child: loading
-                      ? const Center(child: CircularProgressIndicator())
-                      : filteredSets.isEmpty
-                          ? const Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.style, size: 64, color: Colors.grey),
-                                  SizedBox(height: 12),
-                                  Text('No flashcard sets in this folder', style: TextStyle(color: Colors.grey, fontFamily: 'Outfit')),
-                                ],
-                              ),
-                            )
-                          : RefreshIndicator(
-                              onRefresh: _load,
-                              child: GridView.builder(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 280,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  mainAxisExtent: 260, // Increased height to provide clean breathing room at the bottom
-                                ),
-                                itemCount: filteredSets.length,
-                                itemBuilder: (context, i) {
-                                  final s = filteredSets[i];
-                                  final cards = (s['flashcards'] as List?)?.length ?? 0;
-                                  final stats = s['stats'];
-                                  final mastered = stats?['mastered'] ?? 0;
-                                  final review = stats?['review'] ?? 0;
-                                  final learning = stats?['learning'] ?? 0;
-                                  final newCount = stats?['new'] ?? (cards - (mastered + review + learning));
-
-                                  final double pct = cards == 0 ? 0.0 : ((mastered + review) / cards);
-                                  final pctText = '${(pct * 100).toStringAsFixed(0)}%';
-
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.02),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
+                    ),
+                    // Sets Grid
+                    Expanded(
+                      child: loading
+                          ? const Center(child: CircularProgressIndicator())
+                          : filteredSets.isEmpty
+                              ? const Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.style, size: 64, color: Colors.grey),
+                                      SizedBox(height: 12),
+                                      Text('No flashcard sets in this folder', style: TextStyle(color: Colors.grey, fontFamily: 'Outfit')),
+                                    ],
+                                  ),
+                                )
+                              : RefreshIndicator(
+                                  onRefresh: _load,
+                                  child: GridView.builder(
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 280,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16,
+                                      mainAxisExtent: 260,
                                     ),
-                                    padding: const EdgeInsets.all(12),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // Title and Star Row
-                                        Row(
+                                    itemCount: filteredSets.length,
+                                    itemBuilder: (context, i) {
+                                      final s = filteredSets[i];
+                                      final cards = (s['flashcards'] as List?)?.length ?? 0;
+                                      final stats = s['stats'];
+                                      final mastered = stats?['mastered'] ?? 0;
+                                      final review = stats?['review'] ?? 0;
+                                      final learning = stats?['learning'] ?? 0;
+                                      final newCount = stats?['new'] ?? (cards - (mastered + review + learning));
+                                      final double pct = cards == 0 ? 0.0 : ((mastered + review) / cards);
+                                      final pctText = '${(pct * 100).toStringAsFixed(0)}%';
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(16),
+                                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.02),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: const EdgeInsets.all(12),
+                                        child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Expanded(
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    s['title'] ?? '',
+                                                    style: const TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 14,
+                                                      color: Color(0xFF0F172A),
+                                                      fontFamily: 'Outfit',
+                                                    ),
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  padding: EdgeInsets.zero,
+                                                  constraints: const BoxConstraints(),
+                                                  icon: Icon(
+                                                    s['is_favorited'] == true ? Icons.star : Icons.star_border,
+                                                    color: Colors.amber,
+                                                    size: 20,
+                                                  ),
+                                                  onPressed: () => _toggleFavorite(s),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFF1F5F9),
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
                                               child: Text(
-                                                s['title'] ?? '',
+                                                widget.topic,
                                                 style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: Color(0xFF64748B),
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                  color: Color(0xFF0F172A),
                                                   fontFamily: 'Outfit',
                                                 ),
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            IconButton(
-                                              padding: EdgeInsets.zero,
-                                              constraints: const BoxConstraints(),
-                                              icon: Icon(
-                                                s['is_favorited'] == true ? Icons.star : Icons.star_border,
-                                                color: Colors.amber,
-                                                size: 20,
+                                            const SizedBox(height: 12),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                const Text(
+                                                  'Mastery Progress',
+                                                  style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                                ),
+                                                Text(
+                                                  pctText,
+                                                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF10B981), fontFamily: 'Outfit'),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 4),
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(50),
+                                              child: Container(
+                                                height: 8,
+                                                color: const Color(0xFFF1F5F9),
+                                                child: cards == 0
+                                                    ? const SizedBox.shrink()
+                                                    : Row(
+                                                        children: [
+                                                          if (mastered + review > 0)
+                                                            Expanded(
+                                                              flex: mastered + review,
+                                                              child: Container(color: const Color(0xFF10B981)),
+                                                            ),
+                                                          if (learning > 0)
+                                                            Expanded(
+                                                              flex: learning,
+                                                              child: Container(color: const Color(0xFFF97316)),
+                                                            ),
+                                                          if (newCount > 0)
+                                                            Expanded(
+                                                              flex: newCount,
+                                                              child: Container(color: Colors.transparent),
+                                                            ),
+                                                        ],
+                                                      ),
                                               ),
-                                              onPressed: () => _toggleFavorite(s),
+                                            ),
+                                            const SizedBox(height: 12),
+                                            Wrap(
+                                              spacing: 4,
+                                              runSpacing: 4,
+                                              children: [
+                                                _buildBadge('$newCount New', const Color(0xFF64748B), const Color(0xFFF1F5F9)),
+                                                _buildBadge('Learning $learning', const Color(0xFFEA580C), const Color(0xFFFFF7ED)),
+                                                _buildBadge('Mastered ${mastered + review}', const Color(0xFF16A34A), const Color(0xFFF0FDF4)),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 12),
+                                            SizedBox(
+                                              width: double.infinity,
+                                              height: 32,
+                                              child: ElevatedButton(
+                                                onPressed: () => _openFlashcardModes(s, cards),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: const Color(0xFF0D9488),
+                                                  foregroundColor: Colors.white,
+                                                  elevation: 0,
+                                                  padding: EdgeInsets.zero,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                ),
+                                                child: const Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text('Open Flashcards', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+                                                    SizedBox(width: 4),
+                                                    Icon(Icons.arrow_forward, size: 10),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Center(
+                                              child: InkWell(
+                                                onTap: () => _resetProgress(s['id']),
+                                                child: const Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Icon(Icons.refresh, size: 12, color: Color(0xFF94A3B8)),
+                                                    SizedBox(width: 4),
+                                                    Text('Reset Progress', style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 6),
-
-                                        // Topic badge
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFF1F5F9),
-                                            borderRadius: BorderRadius.circular(4),
-                                          ),
-                                          child: Text(
-                                            widget.topic,
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              color: Color(0xFF64748B),
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Outfit',
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 12),
-
-                                        // Mastery Progress text
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text(
-                                              'Mastery Progress',
-                                              style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontFamily: 'Outfit'),
-                                            ),
-                                            Text(
-                                              pctText,
-                                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF10B981), fontFamily: 'Outfit'),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 4),
-
-                                        // Progress Bar (Custom stacked bar matching web)
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(50),
-                                          child: Container(
-                                            height: 8,
-                                            color: const Color(0xFFF1F5F9), // Background grey
-                                            child: cards == 0
-                                                ? const SizedBox.shrink()
-                                                : Row(
-                                                    children: [
-                                                      if (mastered + review > 0)
-                                                        Expanded(
-                                                          flex: mastered + review,
-                                                          child: Container(color: const Color(0xFF10B981)), // Green (Mastered)
-                                                        ),
-                                                      if (learning > 0)
-                                                        Expanded(
-                                                          flex: learning,
-                                                          child: Container(color: const Color(0xFFF97316)), // Orange/Red (Learning)
-                                                        ),
-                                                      if (newCount > 0)
-                                                        Expanded(
-                                                          flex: newCount,
-                                                          child: Container(color: Colors.transparent), // Remaining grey
-                                                        ),
-                                                    ],
-                                                  ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 12),
-
-                                         // Status Pills
-                                         Wrap(
-                                           spacing: 4,
-                                           runSpacing: 4,
-                                           children: [
-                                             _buildBadge('$newCount New', const Color(0xFF64748B), const Color(0xFFF1F5F9)),
-                                             _buildBadge('Learning $learning', const Color(0xFFEA580C), const Color(0xFFFFF7ED)),
-                                             _buildBadge('Mastered ${mastered + review}', const Color(0xFF16A34A), const Color(0xFFF0FDF4)),
-                                           ],
-                                         ),
-                                        const SizedBox(height: 12),
-
-                                        // Open button
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height: 32,
-                                          child: ElevatedButton(
-                                            onPressed: () => _openFlashcardModes(s, cards),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(0xFF0D9488), // Teal color
-                                              foregroundColor: Colors.white,
-                                              elevation: 0,
-                                              padding: EdgeInsets.zero,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                            ),
-                                            child: const Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text('Open Flashcards', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
-                                                SizedBox(width: 4),
-                                                Icon(Icons.arrow_forward, size: 10),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-
-                                        // Reset button
-                                        Center(
-                                          child: InkWell(
-                                            onTap: () => _resetProgress(s['id']),
-                                            child: const Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(Icons.refresh, size: 12, color: Color(0xFF94A3B8)),
-                                                SizedBox(width: 4),
-                                                Text('Reset Progress', style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontWeight: FontWeight.bold, fontFamily: 'Outfit')),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

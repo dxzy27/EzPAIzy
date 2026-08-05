@@ -101,9 +101,12 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
         child: Container(
           color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: AppTopBar(showBackButton: true),
@@ -482,6 +485,8 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
           ),
         ),
       ),
+    ),
+    ),
     );
   }
 }
