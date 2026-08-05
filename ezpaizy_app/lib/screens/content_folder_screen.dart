@@ -109,6 +109,27 @@ class _ContentFolderScreenState extends State<ContentFolderScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
+                          InkWell(
+                            onTap: () {
+                              if (context.canPop()) {
+                                context.pop();
+                              } else {
+                                context.go('/dashboard');
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: const Color(0xFFCBD5E1)),
+                                color: Colors.white,
+                              ),
+                              child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
                           // Folder Icon and Topic
                           const Icon(Icons.folder, color: Color(0xFFFFC107), size: 28),
                           const SizedBox(width: 8),

@@ -77,20 +77,52 @@ class _NoteFoldersScreenState extends State<NoteFoldersScreen> {
                     children: [
                       const AppTopBar(showBackButton: true),
                       const SizedBox(height: 10),
-                      Text(
-                        'My Folders',
-                        style: GoogleFonts.outfit(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w900,
-                          color: const Color(0xFF0F172A),
-                        ),
-                      ),
-                      Text(
-                        'Access and edit your saved study notepad entries',
-                        style: GoogleFonts.outfit(
-                          fontSize: 14,
-                          color: const Color(0xFF64748B),
-                        ),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (context.canPop()) {
+                                context.pop();
+                              } else {
+                                context.go('/dashboard');
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: const Color(0xFFCBD5E1)),
+                                color: Colors.white,
+                              ),
+                              child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'My Folders',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w900,
+                                    color: const Color(0xFF0F172A),
+                                  ),
+                                ),
+                                Text(
+                                  'Access and edit your saved study notepad entries',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 14,
+                                    color: const Color(0xFF64748B),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       
@@ -390,6 +422,40 @@ class _FolderNotesScreenState extends State<FolderNotesScreen> {
                     children: [
                       const AppTopBar(showBackButton: true),
                       const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (context.canPop()) {
+                                context.pop();
+                              } else {
+                                context.go('/notes');
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: const Color(0xFFCBD5E1)),
+                                color: Colors.white,
+                              ),
+                              child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Back to Folders',
+                            style: GoogleFonts.outfit(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF475569),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
                       
                       // Folder Info Banner
                       Container(

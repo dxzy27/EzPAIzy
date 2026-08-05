@@ -216,25 +216,54 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'My Profile',
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF0F172A),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      if (context.canPop()) {
+                                        context.pop();
+                                      } else {
+                                        context.go('/dashboard');
+                                      }
+                                    },
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: const Color(0xFFCBD5E1)),
+                                        color: Colors.white,
+                                      ),
+                                      child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  'Manage personal details and view account statistics',
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 12,
-                                    color: const Color(0xFF64748B),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'My Profile',
+                                          style: GoogleFonts.outfit(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                            color: const Color(0xFF0F172A),
+                                          ),
+                                        ),
+                                        Text(
+                                          'Manage personal details and view account statistics',
+                                          style: GoogleFonts.outfit(
+                                            fontSize: 12,
+                                            color: const Color(0xFF64748B),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             ElevatedButton.icon(
                               onPressed: _showEditProfileModal,

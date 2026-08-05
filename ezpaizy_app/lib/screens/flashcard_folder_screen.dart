@@ -153,6 +153,27 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
                         children: [
                           Row(
                             children: [
+                              InkWell(
+                                onTap: () {
+                                  if (context.canPop()) {
+                                    context.pop();
+                                  } else {
+                                    context.go('/flashcards');
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                                    color: Colors.white,
+                                  ),
+                                  child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
