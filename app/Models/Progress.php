@@ -9,7 +9,7 @@ class Progress extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['student_id', 'topic', 'difficulty', 'score', 'student_answers', 'status', 'teacher_notes'];
+    protected $fillable = ['student_id', 'topic', 'difficulty', 'title', 'score', 'student_answers', 'status', 'teacher_notes'];
     
     protected $casts = [
         'student_answers' => 'array',

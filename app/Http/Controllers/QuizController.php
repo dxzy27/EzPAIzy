@@ -75,8 +75,18 @@ class QuizController extends Controller
                 $latestUpdated = $lastQ->updated_at;
             }
 
-            // Calculate progress attempts for this topic & difficulty
-            $progressRecords = Progress::where('topic', $topic)->where('difficulty', $diff)->get();
+            // Calculate progress attempts for this specific quiz title + topic + difficulty
+            $progressQuery = Progress::where('topic', $topic)->where('difficulty', $diff);
+            if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
+                if (!empty($titleVal) && $titleVal !== $topic) {
+                    $progressQuery->where('title', $titleVal);
+                } else {
+                    $progressQuery->where(function ($q) use ($topic) {
+                        $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+                    });
+                }
+            }
+            $progressRecords = $progressQuery->get();
             $attemptsCount = $progressRecords->count();
             $avgScore = $attemptsCount > 0 ? round($progressRecords->avg('score')) : 0;
 
@@ -456,16 +466,26 @@ class QuizController extends Controller
         $validated = $request->validate([
             'score' => 'required|integer',
             'answers' => 'required|string', // JSON string
+            'title' => 'nullable|string',
         ]);
 
         $status = ($difficulty === 'hard' || $difficulty === 'medium') ? 'pending' : 'completed';
+        $titleVal = $request->input('title', $topic);
+
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('progress', 'title');
+
+        $searchCriteria = [
+            'student_id' => auth()->id(), 
+            'topic' => $topic,
+            'difficulty' => $difficulty
+        ];
+
+        if ($hasTitleCol && !empty($titleVal)) {
+            $searchCriteria['title'] = $titleVal;
+        }
 
         Progress::updateOrCreate(
-            [
-                'student_id' => auth()->id(), 
-                'topic' => $topic,
-                'difficulty' => $difficulty
-            ],
+            $searchCriteria,
             [
                 'score' => $validated['score'],
                 'student_answers' => json_decode($validated['answers'], true),

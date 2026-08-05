@@ -388,29 +388,38 @@ class StudentApiController extends Controller
         $matchedTopic = null;
         $matchedDifficulty = null;
 
+        $matchedTitle = null;
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+
         foreach ($topics as $topic) {
-            $difficulties = \App\Models\Question::where('topic', $topic)
-                ->select('difficulty')
-                ->distinct()
-                ->pluck('difficulty')
-                ->toArray();
+            if ($hasTitleCol) {
+                $quizGroups = \App\Models\Question::where('topic', $topic)
+                    ->select(['difficulty', 'title'])
+                    ->distinct()
+                    ->get();
+            } else {
+                $quizGroups = \App\Models\Question::where('topic', $topic)
+                    ->select('difficulty')
+                    ->distinct()
+                    ->get()
+                    ->map(function ($item) {
+                        $item->title = null;
+                        return $item;
+                    });
+            }
 
-            $pDiffs = \App\Models\Progress::where('student_id', $user->id)
-                ->where('topic', $topic)
-                ->select('difficulty')
-                ->distinct()
-                ->pluck('difficulty')
-                ->toArray();
+            foreach ($quizGroups as $group) {
+                $diff = $group->difficulty;
+                $titleVal = $group->title;
+                $displayTitle = !empty($titleVal) ? $titleVal : $topic;
 
-            $difficulties = array_values(array_unique(array_filter(array_merge($difficulties, $pDiffs))));
-
-            foreach ($difficulties as $diff) {
-                $quizIdStr = $topic . '_' . $diff;
+                $quizIdStr = $topic . '_' . $diff . '_' . $displayTitle;
                 $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
 
                 if ($quizIdInt == $id) {
                     $matchedTopic = $topic;
                     $matchedDifficulty = $diff;
+                    $matchedTitle = $displayTitle;
                     break 2;
                 }
             }
@@ -420,9 +429,11 @@ class StudentApiController extends Controller
             return response()->json(['error' => 'Quiz not found'], 404);
         }
 
-        $questions = \App\Models\Question::where('topic', $matchedTopic)
-            ->where('difficulty', $matchedDifficulty)
-            ->get();
+        $query = \App\Models\Question::where('topic', $matchedTopic)->where('difficulty', $matchedDifficulty);
+        if ($hasTitleCol && !empty($matchedTitle) && $matchedTitle !== $matchedTopic) {
+            $query->where('title', $matchedTitle);
+        }
+        $questions = $query->get();
 
         $correct = 0;
         foreach ($questions as $i => $q) {
@@ -438,12 +449,17 @@ class StudentApiController extends Controller
             
         $status = ($matchedDifficulty === 'hard' || $matchedDifficulty === 'medium') ? 'pending' : 'completed';
 
+        $searchCriteria = [
+            'student_id' => $user->id,
+            'topic' => $matchedTopic,
+            'difficulty' => $matchedDifficulty,
+        ];
+        if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title') && !empty($matchedTitle)) {
+            $searchCriteria['title'] = $matchedTitle;
+        }
+
         $progress = \App\Models\Progress::updateOrCreate(
-            [
-                'student_id' => $user->id,
-                'topic' => $matchedTopic,
-                'difficulty' => $matchedDifficulty,
-            ],
+            $searchCriteria,
             [
                 'score' => $score,
                 'student_answers' => $answers,

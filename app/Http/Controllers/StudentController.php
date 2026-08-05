@@ -146,11 +146,20 @@ class StudentController extends Controller
             $quiz->difficulty = $diff;
             $quiz->title = !empty($titleVal) ? $titleVal : $topic;
             
-            // Get student progress record
-            $quiz->progress = Progress::where('student_id', $user->id)
+            // Get student progress record for this specific quiz title
+            $progressQuery = Progress::where('student_id', $user->id)
                 ->where('topic', $topic)
-                ->where('difficulty', $diff)
-                ->get();
+                ->where('difficulty', $diff);
+            if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
+                if (!empty($titleVal) && $titleVal !== $topic) {
+                    $progressQuery->where('title', $titleVal);
+                } else {
+                    $progressQuery->where(function ($q) use ($topic) {
+                        $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+                    });
+                }
+            }
+            $quiz->progress = $progressQuery->get();
             
             $quiz->questions_count = $qCount;
             $quiz->teacher = $classTeacher;
