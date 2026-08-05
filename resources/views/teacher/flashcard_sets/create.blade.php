@@ -1,9 +1,6 @@
 @extends('layouts.dashboard')
 
 @section('content')
-@extends('layouts.dashboard')
-
-@section('content')
 <div class="container-fluid px-4 py-4" style="max-width: 960px; margin: 0 auto;">
     <form action="{{ isset($flashcardSet) ? route('teacher.flashcard-sets.update', $flashcardSet->id) : route('teacher.flashcard-sets.store') }}" method="POST" id="flashcardForm">
         @csrf
@@ -89,35 +86,6 @@
 
     </form>
 </div>
-
-
-<!-- Template for a Card Row -->
-<template id="card-template">
-    <div class="card shadow-sm border-0 mb-3 flashcard-row">
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-between border-bottom pb-3 mb-3">
-                <span class="card-index fw-bold text-muted h5 mb-0">1</span>
-                <div>
-                     <button type="button" class="btn btn-link text-muted p-0 delete-row"><i class="bi bi-trash fs-5"></i></button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-2 focused-input-container">
-                         <input type="text" class="form-control card-term form-control-lg bg-light border-0 border-bottom border-3" placeholder="Enter term" required>
-                         <label class="text-uppercase text-muted small fw-bold mt-2">Term</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-2 focused-input-container">
-                         <input type="text" class="form-control card-definition form-control-lg bg-light border-0 border-bottom border-3" placeholder="Enter definition" required>
-                         <label class="text-uppercase text-muted small fw-bold mt-2">Definition</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
 
 @endsection
 
