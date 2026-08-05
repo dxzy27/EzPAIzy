@@ -410,14 +410,14 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                           }
                         },
                         background: Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(left: 20),
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
                           color: Colors.green.withOpacity(0.1),
                           child: const Icon(Icons.check, color: Colors.green, size: 50),
                         ),
                         secondaryBackground: Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 20),
                           color: Colors.red.withOpacity(0.1),
                           child: const Icon(Icons.close, color: Colors.red, size: 50),
                         ),
