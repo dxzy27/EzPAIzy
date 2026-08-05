@@ -150,6 +150,7 @@ class StudentController extends Controller
             $progressQuery = Progress::where('student_id', $user->id)
                 ->where('topic', $topic)
                 ->where('difficulty', $diff);
+            
             if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
                 if (!empty($titleVal)) {
                     $progressQuery->where('title', $titleVal);
@@ -159,7 +160,17 @@ class StudentController extends Controller
                     });
                 }
             }
-            $quiz->progress = $progressQuery->get();
+            
+            // Strictly filter the results in memory to prevent any SQL collation/caching mismatches
+            $quiz->progress = $progressQuery->get()->filter(function ($p) use ($titleVal) {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
+                    if (empty($titleVal)) {
+                        return empty($p->title);
+                    }
+                    return strcasecmp(trim($p->title), trim($titleVal)) === 0;
+                }
+                return true;
+            })->values();
             
             $quiz->questions_count = $qCount;
             $quiz->teacher = $classTeacher;

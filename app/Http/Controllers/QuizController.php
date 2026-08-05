@@ -86,7 +86,16 @@ class QuizController extends Controller
                     });
                 }
             }
-            $progressRecords = $progressQuery->get();
+            // Strictly filter the results in memory to prevent any SQL collation/caching mismatches
+            $progressRecords = $progressQuery->get()->filter(function ($p) use ($titleVal) {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
+                    if (empty($titleVal)) {
+                        return empty($p->title);
+                    }
+                    return strcasecmp(trim($p->title), trim($titleVal)) === 0;
+                }
+                return true;
+            })->values();
             $attemptsCount = $progressRecords->count();
             $avgScore = $attemptsCount > 0 ? round($progressRecords->avg('score')) : 0;
 

@@ -248,14 +248,12 @@ class StudentApiController extends Controller
 
                 $hasProgressTitle = \Illuminate\Support\Facades\Schema::hasColumn('progress', 'title');
                 $quizProgress = $progressRecords->where('difficulty', $diff)
-                    ->filter(function ($p) use ($hasProgressTitle, $displayTitle) {
+                    ->filter(function ($p) use ($hasProgressTitle, $titleVal) {
                         if (!$hasProgressTitle) return true;
-                        $pTitle = $p->title;
-                        if (!empty($displayTitle)) {
-                            return $pTitle === $displayTitle;
-                        } else {
-                            return empty($pTitle);
+                        if (empty($titleVal)) {
+                            return empty($p->title);
                         }
+                        return strcasecmp(trim($p->title ?? ''), trim($titleVal)) === 0;
                     })
                     ->values()
                     ->toArray();
