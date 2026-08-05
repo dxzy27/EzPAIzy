@@ -176,134 +176,6 @@
                                                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ $p->id }}">
                                                             <i class="bi bi-eye"></i> Details
                                                         </button>
-
-                                                        <!-- Feedback Modal -->
-                                                        <div class="modal fade" id="feedbackModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
-                                                            <div class="modal-dialog modal-lg text-start">
-                                                                <div class="modal-content">
-                                                                    @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
-                                                                    <form method="POST" action="{{ route('teacher.students.grade', $p->id) }}">
-                                                                        @csrf
-                                                                    @endif
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Quiz Results: {{ $p->title }}</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-                                                                        @php
-                                                                            $answers = $p->raw_progress->student_answers ?? [];
-                                                                            $questions = \App\Models\Question::where('topic', $p->raw_progress->topic)
-                                                                                ->where('difficulty', $p->raw_progress->difficulty)
-                                                                                ->get();
-                                                                            $notes = $p->raw_progress->teacher_notes ?? [];
-                                                                        @endphp
-                                                                        
-                                                                        @foreach($questions as $index => $q)
-                                                                            <div class="mb-4 p-3 border rounded bg-white shadow-sm">
-                                                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                                    @php
-                                                                                        $studentAnsRaw = $answers[$index] ?? null;
-                                                                                        $isWrong = false;
-                                                                                        if (isset($notes[$index]['status'])) {
-                                                                                            if ($notes[$index]['status'] === 'incorrect') {
-                                                                                                $isWrong = true;
-                                                                                            }
-                                                                                        } else {
-                                                                                            if ($p->difficulty !== 'hard' && $studentAnsRaw !== null && $q->correct_answer) {
-                                                                                                if (strtolower(trim($studentAnsRaw)) !== strtolower(trim($q->correct_answer))) {
-                                                                                                    $isWrong = true;
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    @endphp
-                                                                                    <h6 class="fw-bold mb-0">
-                                                                                        @if($isWrong)
-                                                                                            <span class="text-danger me-1" title="Incorrect Answer">●</span>
-                                                                                        @endif
-                                                                                        Q{{ $index + 1 }}: {{ $q->question_text }}
-                                                                                    </h6>
-                                                                                    @if(isset($notes[$index]['status']))
-                                                                                        @if($notes[$index]['status'] == 'correct')
-                                                                                            <span class="badge bg-success text-white"><i class="bi bi-check-lg"></i> Approved</span>
-                                                                                        @elseif($notes[$index]['status'] == 'incorrect')
-                                                                                            <span class="badge bg-danger text-white"><i class="bi bi-x-lg"></i> Disapproved</span>
-                                                                                        @endif
-                                                                                    @endif
-                                                                                </div>
-                                                                                
-                                                                                <div class="mt-3">
-                                                                                    <p class="mb-1 text-primary small fw-bold">STUDENT ANSWER:</p>
-                                                                                    <div class="p-3 border rounded bg-light text-dark" style="white-space: pre-wrap;">
-                                                                                        @php
-                                                                                            $studentAns = $answers[$index] ?? 'No answer provided';
-                                                                                            if($q->options && isset($q->options[$studentAns])) {
-                                                                                                $studentAns = strtoupper($studentAns) . ': ' . $q->options[$studentAns];
-                                                                                            }
-                                                                                        @endphp
-                                                                                        {{ $studentAns }}
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                @if(isset($notes[$index]['feedback']) && $notes[$index]['feedback'])
-                                                                                    <div class="mt-3">
-                                                                                        <p class="mb-1 text-warning small fw-bold">FEEDBACK/SUGGESTION:</p>
-                                                                                        <div class="p-3 border rounded bg-light-warning shadow-sm" style="background-color: #fffcf0; border-color: #ffeeba;">
-                                                                                            <i class="bi bi-chat-left-dots-fill me-1"></i> {{ $notes[$index]['feedback'] }}
-                                                                                        </div>
-                                                                                    </div>
-                                                                                @endif
-                                                                                <div class="mt-3">
-                                                                                    <p class="mb-1 text-success small fw-bold">
-                                                                                        @if($p->difficulty === 'easy')
-                                                                                            CORRECT ANSWER:
-                                                                                        @else
-                                                                                            SUGGESTED ANSWER / KEY POINTS:
-                                                                                        @endif
-                                                                                    </p>
-                                                                                    <div class="p-3 border rounded bg-white text-muted small">
-                                                                                        @if($q->options && isset($q->options[$q->correct_answer]))
-                                                                                            <span class="text-success fw-bold">{{ strtoupper($q->correct_answer) }}:</span> {{ $q->options[$q->correct_answer] }}
-                                                                                        @else
-                                                                                            {{ $q->correct_answer }}
-                                                                                        @endif
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        @endforeach
-                                                                    </div>
-                                                                    
-                                                                    @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
-                                                                        <div class="modal-body border-top bg-light">
-                                                                            <h6 class="fw-bold mb-3"><i class="bi bi-pencil-square text-primary"></i> Teacher Grading</h6>
-                                                                            <div class="row g-3">
-                                                                                <div class="col-md-3">
-                                                                                    <label for="score{{ $p->id }}" class="form-label fw-bold small">Score (%)</label>
-                                                                                    <div class="input-group">
-                                                                                        <input type="number" class="form-control" id="score{{ $p->id }}" name="score" min="0" max="100" value="{{ intval(str_replace('%', '', $p->score)) }}" required>
-                                                                                        <span class="input-group-text">%</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="col-md-9">
-                                                                                    <label for="overall_comment{{ $p->id }}" class="form-label fw-bold small">Teacher's Comment</label>
-                                                                                    <textarea class="form-control" id="overall_comment{{ $p->id }}" name="overall_comment" rows="2" placeholder="Leave a feedback for the student...">{{ $notes['overall_comment'] ?? '' }}</textarea>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                            <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Save Grade</button>
-                                                                        </div>
-                                                                    @else
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                        </div>
-                                                                    @endif
-                                                                    @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
-                                                                    </form>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                     @else
                                                         <span class="badge bg-light text-dark border">Auto-graded</span>
                                                     @endif
@@ -316,6 +188,138 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Feedback Modals (Rendered outside of the table to prevent backdrop/overlay bugs) -->
+                        @foreach($progress as $p)
+                            @if($p->type === 'Quiz' && ($p->difficulty === 'hard' || $p->difficulty === 'medium' || $p->raw_progress->student_answers))
+                                <div class="modal fade" id="feedbackModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg text-start">
+                                        <div class="modal-content">
+                                            @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
+                                                <form method="POST" action="{{ route('teacher.students.grade', $p->id) }}">
+                                                    @csrf
+                                            @endif
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Quiz Results: {{ $p->title }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                                                @php
+                                                    $answers = $p->raw_progress->student_answers ?? [];
+                                                    $questions = \App\Models\Question::where('topic', $p->raw_progress->topic)
+                                                        ->where('difficulty', $p->raw_progress->difficulty)
+                                                        ->get();
+                                                    $notes = $p->raw_progress->teacher_notes ?? [];
+                                                @endphp
+                                                
+                                                @foreach($questions as $index => $q)
+                                                    <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            @php
+                                                                $studentAnsRaw = $answers[$index] ?? null;
+                                                                $isWrong = false;
+                                                                if (isset($notes[$index]['status'])) {
+                                                                    if ($notes[$index]['status'] === 'incorrect') {
+                                                                        $isWrong = true;
+                                                                    }
+                                                                } else {
+                                                                    if ($p->difficulty !== 'hard' && $studentAnsRaw !== null && $q->correct_answer) {
+                                                                        if (strtolower(trim($studentAnsRaw)) !== strtolower(trim($q->correct_answer))) {
+                                                                            $isWrong = true;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            <h6 class="fw-bold mb-0">
+                                                                @if($isWrong)
+                                                                    <span class="text-danger me-1" title="Incorrect Answer">●</span>
+                                                                @endif
+                                                                Q{{ $index + 1 }}: {{ $q->question_text }}
+                                                            </h6>
+                                                            @if(isset($notes[$index]['status']))
+                                                                @if($notes[$index]['status'] == 'correct')
+                                                                    <span class="badge bg-success text-white"><i class="bi bi-check-lg"></i> Approved</span>
+                                                                @elseif($notes[$index]['status'] == 'incorrect')
+                                                                    <span class="badge bg-danger text-white"><i class="bi bi-x-lg"></i> Disapproved</span>
+                                                                @endif
+                                                            @endif
+                                                        </div>
+                                                        
+                                                        <div class="mt-3">
+                                                            <p class="mb-1 text-primary small fw-bold">STUDENT ANSWER:</p>
+                                                            <div class="p-3 border rounded bg-light text-dark" style="white-space: pre-wrap;">
+                                                                @php
+                                                                    $studentAns = $answers[$index] ?? 'No answer provided';
+                                                                    if($q->options && isset($q->options[$studentAns])) {
+                                                                        $studentAns = strtoupper($studentAns) . ': ' . $q->options[$studentAns];
+                                                                    }
+                                                                @endphp
+                                                                {{ $studentAns }}
+                                                            </div>
+                                                        </div>
+
+                                                        @if(isset($notes[$index]['feedback']) && $notes[$index]['feedback'])
+                                                            <div class="mt-3">
+                                                                <p class="mb-1 text-warning small fw-bold">FEEDBACK/SUGGESTION:</p>
+                                                                <div class="p-3 border rounded bg-light-warning shadow-sm" style="background-color: #fffcf0; border-color: #ffeeba;">
+                                                                    <i class="bi bi-chat-left-dots-fill me-1"></i> {{ $notes[$index]['feedback'] }}
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                        <div class="mt-3">
+                                                            <p class="mb-1 text-success small fw-bold">
+                                                                @if($p->difficulty === 'easy')
+                                                                    CORRECT ANSWER:
+                                                                @else
+                                                                    SUGGESTED ANSWER / KEY POINTS:
+                                                                @endif
+                                                            </p>
+                                                            <div class="p-3 border rounded bg-white text-muted small">
+                                                                @if($q->options && isset($q->options[$q->correct_answer]))
+                                                                    <span class="text-success fw-bold">{{ strtoupper($q->correct_answer) }}:</span> {{ $q->options[$q->correct_answer] }}
+                                                                @else
+                                                                    {{ $q->correct_answer }}
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            
+                                            @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
+                                                <div class="modal-body border-top bg-light">
+                                                    <h6 class="fw-bold mb-3"><i class="bi bi-pencil-square text-primary"></i> Teacher Grading</h6>
+                                                    <div class="row g-3">
+                                                        <div class="col-md-3">
+                                                            <label for="score{{ $p->id }}" class="form-label fw-bold small">Score (%)</label>
+                                                            <div class="input-group">
+                                                                <input type="number" class="form-control" id="score{{ $p->id }}" name="score" min="0" max="100" value="{{ intval(str_replace('%', '', $p->score)) }}" required>
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <label for="overall_comment{{ $p->id }}" class="form-label fw-bold small">Teacher's Comment</label>
+                                                            <textarea class="form-control" id="overall_comment{{ $p->id }}" name="overall_comment" rows="2" placeholder="Leave a feedback for the student...">{{ $notes['overall_comment'] ?? '' }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Save Grade</button>
+                                                </div>
+                                            @else
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            @endif
+                                            @if($p->difficulty === 'hard' || $p->difficulty === 'medium')
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
                         <div class="p-3 border-top">
                             {{ $progress->links('pagination::bootstrap-5') }}
                         </div>
