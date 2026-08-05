@@ -619,7 +619,14 @@ class StudentApiController extends Controller
         $unified = collect();
 
         // 1. Fetch Quiz Progress
-        $quizzesProgress = $user->progress()->latest()->get();
+        $quizzesProgress = $user->progress()->latest()->get()->filter(function ($p) {
+            $pTitle = trim($p->title ?? '');
+            $pTopic = trim($p->topic ?? '');
+            if (empty($pTitle) || strcasecmp($pTitle, $pTopic) === 0) {
+                return false;
+            }
+            return true;
+        });
         foreach ($quizzesProgress as $p) {
             $unified->push([
                 'id'              => $p->id,
