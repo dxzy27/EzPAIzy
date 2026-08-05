@@ -658,6 +658,23 @@
             font-size: 1rem;
             flex-shrink: 0;
         }
+
+        /* Pagination overrides to prevent invisible link text */
+        .pagination .page-item .page-link {
+            color: var(--accent, #3b82f6) !important;
+            background-color: #ffffff !important;
+            border-color: #dee2e6 !important;
+        }
+        .pagination .page-item.active .page-link {
+            color: #ffffff !important;
+            background-color: var(--accent, #3b82f6) !important;
+            border-color: var(--accent, #3b82f6) !important;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d !important;
+            background-color: #ffffff !important;
+            border-color: #dee2e6 !important;
+        }
     </style>
 </head>
 <body>
