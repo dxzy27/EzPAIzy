@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 
 class DailyDoaScreen extends StatefulWidget {
@@ -263,89 +265,154 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final userName = auth.user?['name'] ?? 'Student';
+    final initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'D';
     final dateStr = DateFormat('EEEE, MMM dd, yyyy').format(DateTime.now());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Header Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: [
+          // Background Watermark Pattern Image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg1.png',
+              fit: BoxFit.cover,
+              opacity: const AlwaysStoppedAnimation(0.22),
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
+
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Top Navigation Bar (Logo & Profile Avatar)
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          if (context.canPop()) {
-                            context.pop();
-                          } else {
-                            context.go('/dashboard');
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          width: 38,
-                          height: 38,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey.shade400),
-                            color: Colors.white,
+                      Image.asset(
+                        'assets/images/newlogo.png',
+                        height: 38,
+                        errorBuilder: (_, __, ___) => Text(
+                          'EzPAIzy',
+                          style: GoogleFonts.outfit(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF14B8A6),
                           ),
-                          child: const Icon(Icons.arrow_back, size: 18, color: Colors.black87),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Text(
-                            'Daily Doa',
-                            style: GoogleFonts.outfit(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF0F172A),
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF14B8A6),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
-                          ),
-                          Text(
-                            'Your daily dose of supplications and guidance.',
-                            style: GoogleFonts.outfit(
-                              fontSize: 11,
-                              color: Colors.grey.shade600,
+                            child: Center(
+                              child: Text(
+                                initial,
+                                style: GoogleFonts.outfit(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.calendar_today_outlined, size: 12, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        Text(
-                          dateStr,
-                          style: GoogleFonts.outfit(fontSize: 10, color: Colors.grey.shade700),
+
+                  const SizedBox(height: 16),
+
+                  // Page Header Bar
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (context.canPop()) {
+                                context.pop();
+                              } else {
+                                context.go('/dashboard');
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.grey.shade400),
+                                color: Colors.white,
+                              ),
+                              child: const Icon(Icons.arrow_back, size: 18, color: Colors.black87),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Daily Doa',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF0F172A),
+                                ),
+                              ),
+                              Text(
+                                'Your daily dose of supplications and guidance.',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 11,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.calendar_today_outlined, size: 12, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Text(
+                              dateStr,
+                              style: GoogleFonts.outfit(fontSize: 10, color: Colors.grey.shade700),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
 
-              const SizedBox(height: 20),
+                  const SizedBox(height: 16),
 
-              // Main Card Container
+                  // Main Card Container
               Card(
                 elevation: 4,
                 shadowColor: Colors.black12,
