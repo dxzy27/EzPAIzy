@@ -234,6 +234,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         PopupMenuItem(
+          value: 'revision',
+          child: Row(
+            children: [
+              Icon(Icons.star_outline_rounded, size: 18, color: Colors.amber[800]),
+              const SizedBox(width: 8),
+              const Text('My Revision List', style: TextStyle(fontSize: 13, fontFamily: 'Outfit', fontWeight: FontWeight.w600)),
+            ],
+          ),
+        ),
+        PopupMenuItem(
           value: 'progress',
           child: Row(
             children: [
@@ -266,6 +276,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ).then((value) async {
       if (value == 'profile') {
         context.go('/learning-profile');
+      } else if (value == 'revision') {
+        context.go('/revision');
       } else if (value == 'progress') {
         context.go('/progress');
       } else if (value == 'signout') {
@@ -372,35 +384,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         height: 40,
                                         errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
                                       ),
-                                      GestureDetector(
-                                        onTapDown: (details) {
-                                          _showProfileDropdown(context, details.globalPosition, name, accentColor, auth);
-                                        },
-                                        child: Container(
-                                          width: 36,
-                                          height: 36,
-                                          decoration: BoxDecoration(
-                                            color: accentColor,
-                                            borderRadius: BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(0.1),
-                                                blurRadius: 4,
-                                                offset: const Offset(0, 2),
+                                      Row(
+                                        children: [
+                                          // Revision List Button (Star Icon)
+                                          IconButton(
+                                            onPressed: () => context.go('/revision'),
+                                            tooltip: 'My Revision List',
+                                            icon: Container(
+                                              width: 36,
+                                              height: 36,
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFFFF8E1),
+                                                borderRadius: BorderRadius.circular(10),
+                                                border: Border.all(color: const Color(0xFFFFE082)),
                                               ),
-                                            ],
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            firstName.isNotEmpty ? firstName[0].toUpperCase() : 'S',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              fontFamily: 'Outfit',
+                                              child: const Icon(Icons.star_rounded, color: Color(0xFFFFA000), size: 20),
                                             ),
                                           ),
-                                        ),
+                                          const SizedBox(width: 6),
+                                          GestureDetector(
+                                            onTapDown: (details) {
+                                              _showProfileDropdown(context, details.globalPosition, name, accentColor, auth);
+                                            },
+                                            child: Container(
+                                              width: 36,
+                                              height: 36,
+                                              decoration: BoxDecoration(
+                                                color: accentColor,
+                                                borderRadius: BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.1),
+                                                    blurRadius: 4,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                firstName.isNotEmpty ? firstName[0].toUpperCase() : 'S',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                  fontFamily: 'Outfit',
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
