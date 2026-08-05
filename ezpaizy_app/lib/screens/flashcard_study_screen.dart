@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
 import '../providers/auth_provider.dart';
@@ -47,6 +48,40 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     _typeController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  Future<void> _load() async {
+    try {
+      final d = await ApiService.getDueFlashcards(widget.setId);
+      final cards = List<dynamic>.from(d['due_cards'] ?? d['flashcards'] ?? []);
+      final prefs = await SharedPreferences.getInstance();
+      int savedIndex = prefs.getInt('flashcard_idx_${widget.setId}') ?? 0;
+
+      if (savedIndex >= cards.length && cards.isNotEmpty) {
+        savedIndex = 0;
+      }
+
+      setState(() {
+        set = d['flashcard_set'] ?? d;
+        _cards = cards;
+        currentIndex = savedIndex;
+        loading = false;
+        _initCardItems();
+      });
+    } catch (_) {
+      setState(() => loading = false);
+    }
+  }
+
+  Future<void> _saveIndex(int idx) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (idx >= _cards.length) {
+        await prefs.remove('flashcard_idx_${widget.setId}');
+      } else {
+        await prefs.setInt('flashcard_idx_${widget.setId}', idx);
+      }
+    } catch (_) {}
   }
 
   List<Map<String, dynamic>> _parseDefinitionItems(String definition) {
@@ -312,7 +347,9 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
           _initCardItems();
         });
         _flipCtrl.reset();
+        _saveIndex(currentIndex);
       } else {
+        _saveIndex(_cards.length);
         if (mounted) {
           showDialog(
             context: context,

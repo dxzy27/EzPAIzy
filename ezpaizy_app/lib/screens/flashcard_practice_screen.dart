@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../services/tts_service.dart';
@@ -51,23 +52,34 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   Future<void> _load() async {
     try {
       final d = await ApiService.getFlashcardDetail(widget.setId);
-      final rawDue = d['due_cards'] as List?;
-      final rawCards = d['flashcards'] as List?;
+      final cards = List<dynamic>.from(d['flashcards'] ?? []);
+      final prefs = await SharedPreferences.getInstance();
+      int savedIndex = prefs.getInt('flashcard_idx_${widget.setId}') ?? 0;
+
+      if (savedIndex >= cards.length && cards.isNotEmpty) {
+        savedIndex = 0;
+      }
 
       setState(() {
         set = d;
-        if (rawDue != null && rawDue.isNotEmpty) {
-          allCards = List<dynamic>.from(rawDue);
-        } else if (rawDue != null && rawDue.isEmpty && rawCards != null && rawCards.isNotEmpty) {
-          allCards = [];
-        } else {
-          allCards = List<dynamic>.from(rawCards ?? []);
-        }
+        allCards = cards;
+        currentIndex = savedIndex;
         loading = false;
       });
     } catch (_) {
       setState(() => loading = false);
     }
+  }
+
+  Future<void> _saveIndex(int idx) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (idx >= allCards.length) {
+        await prefs.remove('flashcard_idx_${widget.setId}');
+      } else {
+        await prefs.setInt('flashcard_idx_${widget.setId}', idx);
+      }
+    } catch (_) {}
   }
 
   void _flip() {
@@ -88,6 +100,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         isFlipped = false;
       });
       _flipCtrl.reset();
+      _saveIndex(currentIndex);
     }
   }
 
@@ -106,6 +119,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
       isFlipped = false;
     });
     _flipCtrl.reset();
+    _saveIndex(currentIndex);
 
     try {
       // Fire API call asynchronously
