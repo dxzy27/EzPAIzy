@@ -249,7 +249,9 @@ class StudentApiController extends Controller
                 $hasProgressTitle = \Illuminate\Support\Facades\Schema::hasColumn('progress', 'title');
                 $quizProgress = $progressRecords->where('difficulty', $diff)
                     ->filter(function ($p) use ($hasProgressTitle, $titleVal, $topic) {
-                        if (!$hasProgressTitle) return true;
+                        if (!$hasProgressTitle) {
+                            return empty($titleVal);
+                        }
                         $pTitle = trim($p->title ?? '');
                         if (empty($titleVal)) {
                             return empty($pTitle) || strcasecmp($pTitle, trim($topic)) === 0;
@@ -361,14 +363,8 @@ class StudentApiController extends Controller
         }
 
         $query = \App\Models\Question::where('topic', $matchedTopic)->where('difficulty', $matchedDifficulty);
-        if ($hasTitleCol) {
-            if (!empty($matchedTitle)) {
-                $query->where('title', $matchedTitle);
-            } else {
-                $query->where(function ($q) {
-                    $q->whereNull('title')->orWhere('title', '');
-                });
-            }
+        if ($hasTitleCol && !empty($matchedTitle)) {
+            $query->where('title', $matchedTitle);
         }
         $questions = $query->get();
 
@@ -468,14 +464,8 @@ class StudentApiController extends Controller
         }
 
         $query = \App\Models\Question::where('topic', $matchedTopic)->where('difficulty', $matchedDifficulty);
-        if ($hasTitleCol) {
-            if (!empty($matchedTitle)) {
-                $query->where('title', $matchedTitle);
-            } else {
-                $query->where(function ($q) {
-                    $q->whereNull('title')->orWhere('title', '');
-                });
-            }
+        if ($hasTitleCol && !empty($matchedTitle) && $matchedTitle !== $matchedTopic) {
+            $query->where('title', $matchedTitle);
         }
         $questions = $query->get();
 
@@ -498,8 +488,8 @@ class StudentApiController extends Controller
             'topic' => $matchedTopic,
             'difficulty' => $matchedDifficulty,
         ];
-        if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title')) {
-            $searchCriteria['title'] = !empty($matchedTitle) ? $matchedTitle : $matchedTopic;
+        if (\Illuminate\Support\Facades\Schema::hasColumn('progress', 'title') && !empty($matchedTitle)) {
+            $searchCriteria['title'] = $matchedTitle;
         }
 
         $progress = \App\Models\Progress::updateOrCreate(
@@ -610,37 +600,11 @@ class StudentApiController extends Controller
 
 
     /**
-     * Single flashcard set with cards and due cards status for authenticated user.
+     * Single flashcard set with cards.
      */
-    public function flashcardDetail(Request $request, FlashcardSet $set)
+    public function flashcardDetail(FlashcardSet $set)
     {
-        $userId = $request->user()->id;
-        $now = now();
-        $allCards = $set->flashcards()->get();
-
-        $progressMap = FlashcardProgress::where('user_id', $userId)
-            ->whereIn('flashcard_id', $allCards->pluck('id'))
-            ->get()
-            ->keyBy('flashcard_id');
-
-        $dueCards = collect();
-
-        foreach ($allCards as $card) {
-            $prog = $progressMap->get($card->id);
-            $card->progress = $prog;
-            $card->status = $prog ? $prog->status : 'new';
-            $isDue = !$prog || ($prog->next_review_date && $prog->next_review_date <= $now);
-            $card->is_due = $isDue;
-            if ($isDue) {
-                $dueCards->push($card);
-            }
-        }
-
-        $set->setRelation('flashcards', $allCards);
-        $result = $set->toArray();
-        $result['due_cards'] = $dueCards->values()->toArray();
-
-        return response()->json($result);
+        return response()->json($set->load('flashcards'));
     }
 
     /**
@@ -1270,19 +1234,9 @@ class StudentApiController extends Controller
         $classTeacher = \App\Models\User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
         $teacherName = $classTeacher ? $classTeacher->name : 'Teacher';
 
-        $qQuery = \App\Models\Question::where('topic', $progress->topic)
-            ->where('difficulty', $progress->difficulty);
-
-        if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
-            if (!empty($progress->title)) {
-                $qQuery->where('title', $progress->title);
-            } else {
-                $qQuery->where(function ($q) {
-                    $q->whereNull('title')->orWhere('title', '');
-                });
-            }
-        }
-        $questions = $qQuery->get();
+        $questions = \App\Models\Question::where('topic', $progress->topic)
+            ->where('difficulty', $progress->difficulty)
+            ->get();
 
         return response()->json([
             'id'              => $progress->id,

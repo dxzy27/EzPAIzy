@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../services/tts_service.dart';
@@ -52,34 +51,14 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   Future<void> _load() async {
     try {
       final d = await ApiService.getFlashcardDetail(widget.setId);
-      final cards = List<dynamic>.from(d['flashcards'] ?? []);
-      final prefs = await SharedPreferences.getInstance();
-      int savedIndex = prefs.getInt('flashcard_idx_${widget.setId}') ?? 0;
-
-      if (savedIndex >= cards.length && cards.isNotEmpty) {
-        savedIndex = 0;
-      }
-
       setState(() {
         set = d;
-        allCards = cards;
-        currentIndex = savedIndex;
+        allCards = List<dynamic>.from(d['flashcards'] ?? []);
         loading = false;
       });
     } catch (_) {
       setState(() => loading = false);
     }
-  }
-
-  Future<void> _saveIndex(int idx) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (idx >= allCards.length) {
-        await prefs.remove('flashcard_idx_${widget.setId}');
-      } else {
-        await prefs.setInt('flashcard_idx_${widget.setId}', idx);
-      }
-    } catch (_) {}
   }
 
   void _flip() {
@@ -100,47 +79,27 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         isFlipped = false;
       });
       _flipCtrl.reset();
-      _saveIndex(currentIndex);
-    }
-  }
-
-  void _goBackToSets() {
-    final topic = set?['topic']?.toString();
-    if (context.canPop()) {
-      context.pop();
-    } else if (topic != null && topic.isNotEmpty) {
-      context.go('/flashcards/folder/${Uri.encodeComponent(topic)}');
-    } else {
-      context.go('/flashcards');
     }
   }
 
   Future<void> _submitReview(int quality) async {
     if (isSubmitting) return;
-    if (currentIndex >= allCards.length) return;
+    setState(() => isSubmitting = true);
 
     final card = allCards[currentIndex];
-    final isLastCard = currentIndex >= allCards.length - 1;
-
-    // Stop TTS and update card index synchronously to remove dismissed Dismissible immediately
-    TtsService.stop();
-    setState(() {
-      isSubmitting = true;
-      currentIndex++;
-      isFlipped = false;
-    });
-    _flipCtrl.reset();
-    _saveIndex(currentIndex);
-
     try {
-      // Fire API call asynchronously
       await ApiService.submitFlashcardReview(card['id'], quality);
 
+      // Hide any active snackbars first
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      }
+
+      // Show Custom Undo Toast matching web version
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: const Color(0xFF1E293B),
+            backgroundColor: const Color(0xFF1E293B), // Dark slate matching web toast bg
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -181,39 +140,44 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         );
       }
 
-      if (isLastCard && mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (ctx) => AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            title: Text('All Done! 🎉', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-            content: Text(
-              "You've reviewed all flashcards in this set. Great job!",
-              style: GoogleFonts.outfit(),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                  _goBackToSets();
-                },
-                child: Text('Back to Sets', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+      TtsService.stop();
+      if (currentIndex < allCards.length - 1) {
+        setState(() {
+          currentIndex++;
+          isFlipped = false;
+        });
+        _flipCtrl.reset();
+      } else {
+        if (mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) => AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: Text('All Done! 🎉', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+              content: Text(
+                "You've reviewed all flashcards in this set. Great job!",
+                style: GoogleFonts.outfit(),
               ),
-            ],
-          ),
-        );
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    context.pop();
+                  },
+                  child: Text('Back to Sets', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+          );
+        }
       }
     } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to submit review')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to submit review')),
+      );
     } finally {
-      if (mounted) {
-        setState(() => isSubmitting = false);
-      }
+      setState(() => isSubmitting = false);
     }
   }
 
@@ -228,8 +192,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
       );
     }
 
-    if (set == null || allCards.isEmpty || currentIndex >= allCards.length) {
-      final isFinished = allCards.isNotEmpty && currentIndex >= allCards.length;
+    if (set == null || allCards.isEmpty) {
       return Scaffold(
         body: Container(
           width: double.infinity,
@@ -247,27 +210,21 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      isFinished ? Icons.celebration : Icons.menu_book,
-                      size: 64,
-                      color: isFinished ? Colors.orange : const Color(0xFFCBD5E1),
-                    ),
+                    const Icon(Icons.menu_book, size: 64, color: Color(0xFFCBD5E1)),
                     const SizedBox(height: 12),
                     Text(
-                      isFinished
-                          ? "You've reviewed all flashcards in this set!"
-                          : 'No cards in this set.',
+                      'No cards in this set.',
                       style: GoogleFonts.outfit(color: const Color(0xFF64748B), fontSize: 16),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: _goBackToSets,
+                      onPressed: () => context.pop(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0F9D58),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: Text(isFinished ? 'Back to Sets' : 'Go Back', style: GoogleFonts.outfit()),
+                      child: Text('Go Back', style: GoogleFonts.outfit()),
                     ),
                   ],
                 ),
@@ -304,7 +261,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                       children: [
                         // Exit Study Button
                         InkWell(
-                          onTap: _goBackToSets,
+                          onTap: () => context.pop(),
                           borderRadius: BorderRadius.circular(8),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -435,20 +392,32 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                           if (direction == DismissDirection.endToStart) {
                             // Swiped Left: Still learning (1)
                             _submitReview(1);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Marked: Still learning 🔴'),
+                                duration: Duration(milliseconds: 700),
+                              ),
+                            );
                           } else {
                             // Swiped Right: Know (5)
                             _submitReview(5);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Marked: Know 🟢'),
+                                duration: Duration(milliseconds: 700),
+                              ),
+                            );
                           }
                         },
                         background: Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 20),
                           color: Colors.green.withOpacity(0.1),
                           child: const Icon(Icons.check, color: Colors.green, size: 50),
                         ),
                         secondaryBackground: Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(left: 20),
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
                           color: Colors.red.withOpacity(0.1),
                           child: const Icon(Icons.close, color: Colors.red, size: 50),
                         ),
@@ -740,6 +709,40 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           Expanded(
             child: InkWell(
               onTap: () {
+                if (!isStudyMode) {
+                  context.go('/flashcards/${widget.setId}/study');
+                }
+              },
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: isStudyMode ? const Color(0xFF3B82F6) : Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Review Mode',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: isStudyMode ? Colors.white : const Color(0xFF64748B),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
                 if (!isStudyMode) {
                   context.go('/flashcards/${widget.setId}/study');
                 }

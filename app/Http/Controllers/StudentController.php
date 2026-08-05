@@ -155,8 +155,8 @@ class StudentController extends Controller
                 if (!empty($titleVal)) {
                     $progressQuery->where('title', $titleVal);
                 } else {
-                    $progressQuery->where(function ($q) use ($topic) {
-                        $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+                    $progressQuery->where(function ($q) {
+                        $q->whereNull('title')->orWhere('title', '');
                     });
                 }
             }
@@ -170,7 +170,7 @@ class StudentController extends Controller
                     }
                     return strcasecmp($pTitle, trim($titleVal)) === 0;
                 }
-                return true;
+                return empty($titleVal);
             })->values();
             
             $quiz->questions_count = $qCount;

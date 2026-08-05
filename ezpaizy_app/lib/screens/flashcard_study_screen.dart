@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
 import '../providers/auth_provider.dart';
@@ -48,40 +47,6 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     _typeController.dispose();
     _focusNode.dispose();
     super.dispose();
-  }
-
-  Future<void> _load() async {
-    try {
-      final d = await ApiService.getFlashcardDetail(widget.setId);
-      final cards = List<dynamic>.from(d['flashcards'] ?? []);
-      final prefs = await SharedPreferences.getInstance();
-      int savedIndex = prefs.getInt('flashcard_idx_${widget.setId}') ?? 0;
-
-      if (savedIndex >= cards.length && cards.isNotEmpty) {
-        savedIndex = 0;
-      }
-
-      setState(() {
-        set = d;
-        _cards = cards;
-        currentIndex = savedIndex;
-        loading = false;
-        _initCardItems();
-      });
-    } catch (_) {
-      setState(() => loading = false);
-    }
-  }
-
-  Future<void> _saveIndex(int idx) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (idx >= _cards.length) {
-        await prefs.remove('flashcard_idx_${widget.setId}');
-      } else {
-        await prefs.setInt('flashcard_idx_${widget.setId}', idx);
-      }
-    } catch (_) {}
   }
 
   List<Map<String, dynamic>> _parseDefinitionItems(String definition) {
@@ -229,7 +194,19 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     );
   }
 
-
+  Future<void> _load() async {
+    try {
+      final d = await ApiService.getDueFlashcards(widget.setId);
+      setState(() {
+        set = d['flashcard_set'];
+        _cards = List<dynamic>.from(d['due_cards'] ?? []);
+        loading = false;
+        _initCardItems();
+      });
+    } catch (_) {
+      setState(() => loading = false);
+    }
+  }
 
   void _flip() {
     if (showAnswer) return; // Prevent flipping back while studying
@@ -318,17 +295,6 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     _focusNode.requestFocus();
   }
 
-  void _goBackToSets() {
-    final topic = set?['topic']?.toString();
-    if (context.canPop()) {
-      context.pop();
-    } else if (topic != null && topic.isNotEmpty) {
-      context.go('/flashcards/folder/${Uri.encodeComponent(topic)}');
-    } else {
-      context.go('/flashcards');
-    }
-  }
-
   Future<void> _submitReview(int quality) async {
     if (isSubmitting) return;
     setState(() => isSubmitting = true);
@@ -346,9 +312,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
           _initCardItems();
         });
         _flipCtrl.reset();
-        _saveIndex(currentIndex);
       } else {
-        _saveIndex(_cards.length);
         if (mounted) {
           showDialog(
             context: context,
@@ -361,7 +325,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                 TextButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    _goBackToSets();
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Back to Sets'),
                 ),
@@ -408,7 +372,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _goBackToSets,
+                  onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Go Back'),
                 ),
               ],
@@ -442,7 +406,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
               const Text("There are no cards due for review right now."),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _goBackToSets,
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Go Back'),
               ),
             ],
@@ -454,7 +418,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     final card = _cards[currentIndex];
 
     Widget cardWidget = SizedBox(
-      height: 400,
+      height: 350,
       child: GestureDetector(
         onTap: _flip,
         child: AnimatedBuilder(
@@ -462,13 +426,10 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
           builder: (_, child) {
             final angle = _flipAnim.value * 3.14159;
             final showFront = _flipAnim.value <= 0.5;
-            final termText = card['term'] ?? '';
-            final isList = RegExp(r'(?:\s+|^)\d+\.\s').hasMatch(termText);
-
             return Transform(
               alignment: Alignment.center,
               transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.0015)
+                ..setEntry(3, 2, 0.001)
                 ..rotateY(angle),
               child: showFront
                   ? _cardFace(
@@ -476,23 +437,20 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                       color: const Color(0xFFDDDDDD),
                       textColor: const Color(0xFF0F172A),
                       child: Text(
-                        termText,
-                        style: const TextStyle(
-                          fontFamily: 'Outfit',
-                          fontSize: 24,
+                        card['term'] ?? '',
+                        style: GoogleFonts.outfit(
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF0F172A),
-                          height: 1.6,
+                          color: const Color(0xFF0F172A),
                         ),
-                        textAlign: isList ? TextAlign.left : TextAlign.center,
+                        textAlign: TextAlign.center,
                       ),
-                      footerWidget: const Text(
+                      footerWidget: Text(
                         'Click anywhere to reveal',
-                        style: TextStyle(
-                          fontFamily: 'Outfit',
+                        style: GoogleFonts.outfit(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF64748B),
+                          color: const Color(0xFF94A3B8),
                         ),
                       ),
                     )
@@ -545,13 +503,12 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                                   ),
                                 ),
                               )
-                            : const Text(
+                            : Text(
                                 'Click anywhere to flip back',
-                                style: TextStyle(
-                                  fontFamily: 'Outfit',
+                                style: GoogleFonts.outfit(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF64748B),
+                                  color: const Color(0xFF94A3B8),
                                 ),
                               ),
                         child: _buildPlaceholderWidget(_currentItems, _typedVal),
@@ -562,6 +519,8 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
         ),
       ),
     );
+
+
 
     return Scaffold(
       body: Container(
@@ -587,7 +546,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                       children: [
                         // Exit Study Button
                         InkWell(
-                          onTap: _goBackToSets,
+                          onTap: () => context.pop(),
                           borderRadius: BorderRadius.circular(8),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -807,68 +766,59 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
   }) {
     return Container(
       width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 350), // Standard high height
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(6), // Sharp 6px radius matching Read Mode
-        border: Border.all(color: const Color(0xFFCBD5E1)), // Solid slate-300 border
+        border: Border.all(color: const Color(0xFFCBD5E1), width: 1.5),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08), // Web shadow color
-            blurRadius: 30, // 30px blur
-            offset: const Offset(0, 8), // 8px Y offset
-          ),
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          )
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Card Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontFamily: 'Outfit',
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF64748B),
-                  letterSpacing: 1.0,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            // Card Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF64748B),
+                    fontSize: 12,
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (headerRightWidget != null) headerRightWidget,
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Divider(color: Color(0xFFE2E8F0), height: 1),
+            
+            // Card Content
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: child,
                 ),
               ),
-              if (headerRightWidget != null) headerRightWidget,
-            ],
-          ),
-          const SizedBox(height: 12),
-          Divider(
-            color: const Color(0xFF0F172A).withOpacity(0.15), // Faint dark divider matching Read Mode
-            height: 1,
-            thickness: 1,
-          ),
-          
-          // Card Content
-          Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                child: child,
-              ),
             ),
-          ),
-          
-          Divider(
-            color: const Color(0xFF0F172A).withOpacity(0.15), // Matching bottom divider
-            height: 1,
-            thickness: 1,
-          ),
-          const SizedBox(height: 12),
-          
-          // Card Footer
-          if (footerWidget != null)
-            Center(
-              child: footerWidget,
-            ),
-        ],
+            
+            const Divider(color: Color(0xFFE2E8F0), height: 1),
+            const SizedBox(height: 12),
+            
+            // Card Footer
+            if (footerWidget != null) footerWidget,
+          ],
+        ),
       ),
     );
   }

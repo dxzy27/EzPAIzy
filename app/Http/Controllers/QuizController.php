@@ -284,11 +284,11 @@ class QuizController extends Controller
 
         $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
         if ($hasTitleCol) {
-            if (!empty($titleParam)) {
+            if (!empty($titleParam) && $titleParam !== $topic) {
                 $query->where('title', $titleParam);
             } else {
-                $query->where(function ($q) {
-                    $q->whereNull('title')->orWhere('title', '');
+                $query->where(function ($q) use ($topic) {
+                    $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
                 });
             }
         }
@@ -461,14 +461,12 @@ class QuizController extends Controller
         $titleParam = $request->query('title');
 
         $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
-        if ($hasTitleCol) {
-            if (!empty($titleParam)) {
-                $query->where('title', $titleParam);
-            } else {
-                $query->where(function ($q) {
-                    $q->whereNull('title')->orWhere('title', '');
-                });
-            }
+        if ($hasTitleCol && !empty($titleParam) && $titleParam !== $topic) {
+            $query->where('title', $titleParam);
+        } else if ($hasTitleCol) {
+            $query->where(function ($q) use ($topic) {
+                $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+            });
         }
 
         $quiz = new \stdClass();
@@ -502,8 +500,8 @@ class QuizController extends Controller
             'difficulty' => $difficulty
         ];
 
-        if ($hasTitleCol) {
-            $searchCriteria['title'] = !empty($titleVal) ? $titleVal : $topic;
+        if ($hasTitleCol && !empty($titleVal)) {
+            $searchCriteria['title'] = $titleVal;
         }
 
         Progress::updateOrCreate(
