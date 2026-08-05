@@ -2,4 +2,4 @@
 
 ## Git Workflow Rule
 - Automatically commit and push code changes to git after executing each task or completing file modifications.
-- Standard commit command: `git add . && git commit -m "<descriptive message>" && git push`
+- Standard commit command: `git add . ; git commit -m "changes made" ; git push`
