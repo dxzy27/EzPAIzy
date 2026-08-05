@@ -116,11 +116,41 @@
         backface-visibility: hidden;
         border-radius: 1rem;
         border: 1px solid #cbd5e1;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         background-color: #DDDDDD !important; /* Soft Light Gray for Front */
         color: #0f172a !important;
         display: flex;
         flex-direction: column;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .flashcard-item-card {
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+    }
+    .flashcard-item-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08) !important;
+    }
+    .flashcard-item-card:hover .edit-hover-overlay {
+        opacity: 1 !important;
+        transform: translate(-50%, -50%) scale(1) !important;
+    }
+    .edit-hover-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.92);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+        z-index: 10;
+        background: rgba(15, 23, 42, 0.78);
+        backdrop-filter: blur(4px);
+        color: #ffffff;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
     }
     .flashcard-back {
         transform: rotateY(180deg);
@@ -172,21 +202,27 @@
             const updatedText = updatedAt ? ' • Updated ' + updatedAt : '';
 
             return `
-            <div class="row justify-content-center mb-4 flashcard-row" data-id="${index}">
+            <div class="row justify-content-center mb-3 flashcard-row" data-id="${index}">
                 <div class="col-12">
                     <div class="card border-0 shadow-sm overflow-hidden flashcard-item-card" style="border-radius: 16px; background: #ffffff;">
-                        <!-- Card Header bar: Card # & Metadata Context -->
+                        <!-- Card Header bar: Card #, Metadata & Header Delete Button -->
                         <div class="card-header bg-white border-bottom-0 pt-3 px-4 pb-0 d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="drag-handle text-muted" style="cursor: grab;" title="Drag to reorder"><i class="bi bi-grip-vertical fs-5"></i></span>
                                 <span class="badge bg-dark bg-opacity-10 text-dark fw-bold px-2.5 py-1 card-index-badge" style="border-radius: 8px; font-size: 0.88rem;">Card #${index}</span>
                                 <small class="text-muted ms-1 d-none d-sm-inline" style="font-size: 0.78rem;">${createdText}${updatedText}</small>
                             </div>
+                            <button type="button" class="btn btn-sm btn-light text-danger border-0 px-2.5 py-1 fw-semibold delete-row d-inline-flex align-items-center gap-1.5" title="Delete Card" style="font-size: 0.82rem; border-radius: 8px;">
+                                <i class="bi bi-trash3 fs-6"></i><span class="d-none d-sm-inline">Delete</span>
+                            </button>
                         </div>
 
                         <!-- Card Body: Interactive Flashcard Face with Subtle Hover Cue -->
-                        <div class="card-body p-4 pt-3">
-                            <div class="flashcard-perspective" style="height: 240px;">
+                        <div class="card-body p-4 pt-3 pb-4 position-relative">
+                            <div class="edit-hover-overlay">
+                                <i class="bi bi-pencil-square me-1"></i> Click anywhere to edit
+                            </div>
+                            <div class="flashcard-perspective" style="height: 230px;">
                                 <div class="flashcard-inner">
                                     
                                     <!-- Front Face -->
@@ -213,13 +249,6 @@
 
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Card Footer: Right-aligned Delete Action (Far from Add Card CTA) -->
-                        <div class="card-footer bg-white border-top-0 pb-3 px-4 pt-0 d-flex justify-content-end">
-                            <button type="button" class="btn btn-sm btn-light text-danger border-0 px-3 py-1.5 fw-semibold delete-row d-inline-flex align-items-center gap-1.5" title="Delete Card" style="font-size: 0.85rem; border-radius: 8px;">
-                                <i class="bi bi-trash3 fs-6"></i><span>Delete</span>
-                            </button>
                         </div>
                     </div>
                 </div>
