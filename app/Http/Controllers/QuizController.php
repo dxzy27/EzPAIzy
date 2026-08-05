@@ -116,10 +116,12 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
-        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        if ($hasTitleCol) {
+            $data['title'] = $validated['title'] ?? '';
+        }
 
         foreach ($validated['questions'] as $q) {
-            $data = [
+            $questionData = array_merge([
                 'question_text' => $q['text'],
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
@@ -127,13 +129,9 @@ class QuizController extends Controller
                 'points' => 10,
                 'topic' => $validated['topic'],
                 'difficulty' => $validated['difficulty'],
-            ];
+            ], $hasTitleCol ? ['title' => $validated['title'] ?? ''] : []);
 
-            if ($hasTitleCol && isset($validated['title'])) {
-                $data['title'] = $validated['title'];
-            }
-
-            Question::create($data);
+            Question::create($questionData);
         }
 
         // Clear generated questions session
@@ -213,7 +211,7 @@ class QuizController extends Controller
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
 
         foreach ($validated['questions'] as $q) {
-            $data = [
+            $questionData = [
                 'question_text' => $q['text'],
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
@@ -223,11 +221,11 @@ class QuizController extends Controller
                 'difficulty' => $difficulty,
             ];
 
-            if ($hasTitleCol && isset($validated['title'])) {
-                $data['title'] = $validated['title'];
+            if ($hasTitleCol) {
+                $questionData['title'] = $validated['title'] ?? '';
             }
 
-            Question::create($data);
+            Question::create($questionData);
         }
 
         return redirect()->route('teacher.quizzes.folder', $validated['topic'])
