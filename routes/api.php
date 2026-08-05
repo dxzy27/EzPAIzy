@@ -65,5 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/student/notes/save',           [StudentApiController::class, 'saveNote']);
     Route::get('/student/notes/resource-note',   [StudentApiController::class, 'getResourceNote']);
     Route::delete('/student/notes/{note}',       [StudentApiController::class, 'deleteNote']);
+
+    // Daily Doa API
+    Route::get('/student/daily-doa',             [StudentApiController::class, 'dailyDoa']);
 });
 

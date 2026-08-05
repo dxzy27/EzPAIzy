@@ -421,4 +421,20 @@ class ApiService {
       return false;
     }
   }
+
+  static Future<Map<String, dynamic>> getDailyDoa({String situation = 'study'}) async {
+    try {
+      final res = await http.get(
+        Uri.parse('$baseUrl/student/daily-doa?situation=$situation'),
+        headers: await _headers(),
+      );
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+        return (decoded is Map<String, dynamic>) ? decoded : {};
+      }
+      return {};
+    } catch (_) {
+      return {};
+    }
+  }
 }

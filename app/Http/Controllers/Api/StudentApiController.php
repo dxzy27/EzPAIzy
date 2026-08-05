@@ -1298,4 +1298,32 @@ class StudentApiController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    /**
+     * Get Daily Doas by situation.
+     */
+    public function dailyDoa(Request $request)
+    {
+        $webController = new \App\Http\Controllers\StudentController();
+        $reflection = new \ReflectionClass($webController);
+        $method = $reflection->getMethod('getStudentDoas');
+        $method->setAccessible(true);
+        $doas = $method->invoke($webController);
+
+        $requestedSituation = $request->query('situation', 'study');
+        if (!array_key_exists($requestedSituation, $doas)) {
+            $requestedSituation = 'study';
+        }
+
+        $situationDoas = $doas[$requestedSituation];
+        foreach ($situationDoas as $index => &$doa) {
+            $doa['audio'] = asset('audio/doas/' . $requestedSituation . '_' . ($index + 1) . '.mp3');
+        }
+
+        return response()->json([
+            'situation' => $requestedSituation,
+            'doas' => $situationDoas,
+            'all_situations' => array_keys($doas)
+        ]);
+    }
 }

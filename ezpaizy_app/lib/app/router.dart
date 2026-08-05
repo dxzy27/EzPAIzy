@@ -22,6 +22,7 @@ import '../screens/learning_style_screen.dart';
 import '../screens/learning_profile_screen.dart';
 import '../screens/notes_folder_screen.dart';
 import '../screens/register_screen.dart';
+import '../screens/daily_doa_screen.dart';
 
 class AppRouter {
   static GoRouter router(AuthProvider auth) => GoRouter(
@@ -113,6 +114,10 @@ class AppRouter {
                 path: '/revision',
                 builder: (_, _) => const RevisionScreen(),
               ),
+              GoRoute(
+                path: '/daily-doa',
+                builder: (_, _) => const DailyDoaScreen(),
+              ),
 
               GoRoute(
                 path: '/learning-style',
@@ -143,7 +148,8 @@ class ScaffoldWithNav extends StatelessWidget {
     if (loc.startsWith('/quizzes') || loc.startsWith('/quiz')) return 1;
     if (loc.startsWith('/flashcards')) return 2;
     if (loc.startsWith('/contents')) return 3;
-    if (loc.startsWith('/learning-style')) return 4;
+    if (loc.startsWith('/daily-doa')) return 4;
+    if (loc.startsWith('/learning-style')) return 5;
     return 0; // Default to Home/Dashboard
   }
 
@@ -156,8 +162,8 @@ class ScaffoldWithNav extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.grey,
-        selectedLabelStyle: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
-        unselectedLabelStyle: const TextStyle(fontFamily: 'Outfit'),
+        selectedLabelStyle: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold, fontSize: 11),
+        unselectedLabelStyle: const TextStyle(fontFamily: 'Outfit', fontSize: 11),
         onTap: (i) {
           switch (i) {
             case 0:
@@ -173,6 +179,9 @@ class ScaffoldWithNav extends StatelessWidget {
               context.go('/contents');
               break;
             case 4:
+              context.go('/daily-doa');
+              break;
+            case 5:
               context.go('/learning-style');
               break;
           }
@@ -197,6 +206,11 @@ class ScaffoldWithNav extends StatelessWidget {
             icon: Icon(Icons.article_outlined),
             activeIcon: Icon(Icons.article),
             label: 'Materials',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.nights_stay_outlined),
+            activeIcon: Icon(Icons.nights_stay),
+            label: 'Daily Doa',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.psychology_outlined),
