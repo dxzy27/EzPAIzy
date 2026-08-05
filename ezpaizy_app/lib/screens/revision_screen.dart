@@ -43,11 +43,11 @@ class _RevisionScreenState extends State<RevisionScreen> {
     setState(() {
       filteredFavorites = favorites.where((fav) {
         final isContent = fav['content'] != null;
-        final isFlashcard = fav['flashcard_set'] != null;
+        final isFlashcard = fav['flashcard_set'] != null || fav['flashcardSet'] != null;
         final item = isContent
             ? fav['content']
-            : (isFlashcard ? fav['flashcard_set'] : fav);
-        final title = (item['title'] ?? item['topic'] ?? '').toString().toLowerCase();
+            : (isFlashcard ? (fav['flashcard_set'] ?? fav['flashcardSet']) : fav);
+        final title = (item['title'] ?? item['topic'] ?? fav['quiz_topic'] ?? '').toString().toLowerCase();
         return title.contains(q);
       }).toList();
     });
@@ -238,22 +238,20 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                 itemBuilder: (context, i) {
                                   final fav = filteredFavorites[i];
                                   final isContent = fav['content'] != null;
-                                  final isFlashcard = fav['flashcard_set'] != null;
+                                  final isFlashcard = fav['flashcard_set'] != null || fav['flashcardSet'] != null;
                                   final item = isContent
                                       ? fav['content']
-                                      : (isFlashcard ? fav['flashcard_set'] : fav);
+                                      : (isFlashcard ? (fav['flashcard_set'] ?? fav['flashcardSet']) : fav);
 
-                                  if (item == null) return const SizedBox.shrink();
-
-                                  final title = item['title'] ?? item['topic'] ?? 'Untitled';
+                                  final title = (item?['title'] ?? item?['topic'] ?? fav['quiz_topic'] ?? 'Untitled').toString();
                                   final teacherName = isContent
-                                      ? (item['teacher']?['name'] ?? 'Hamzah')
-                                      : (isFlashcard ? (item['user']?['name'] ?? 'Hamzah') : 'PAI Teacher');
+                                      ? (item?['teacher']?['name'] ?? 'Hamzah')
+                                      : (isFlashcard ? (item?['user']?['name'] ?? 'Hamzah') : 'PAI Teacher');
                                   final countLabel = isFlashcard
-                                      ? '${item['flashcards_count'] ?? (item['flashcards'] as List?)?.length ?? 1} Cards'
-                                      : (isContent ? (item['file_type'] ?? 'PDF').toString().toUpperCase() : 'Quiz');
+                                      ? '${item?['flashcards_count'] ?? (item?['flashcards'] as List?)?.length ?? 1} Cards'
+                                      : (isContent ? (item?['file_type'] ?? 'PDF').toString().toUpperCase() : 'Quiz');
                                   final savedAgo = _timeAgo(fav['created_at']);
-                                  final uploadDate = _formatDate(item['created_at']);
+                                  final uploadDate = _formatDate(item?['created_at'] ?? fav['created_at']);
 
                                   Color badgeBg;
                                   Color badgeText;
@@ -303,15 +301,16 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                         ),
                                       ],
                                     ),
-                                    padding: const EdgeInsets.all(16),
+                                    padding: const EdgeInsets.all(14),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                                               decoration: BoxDecoration(
                                                 color: badgeBg,
                                                 borderRadius: BorderRadius.circular(20),
@@ -336,70 +335,73 @@ class _RevisionScreenState extends State<RevisionScreen> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          title,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w800,
-                                            color: Color(0xFF1E293B),
-                                            fontFamily: 'Outfit',
-                                          ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Row(
-                                          children: [
-                                            const Icon(Icons.person, size: 12, color: Color(0xFF94A3B8)),
-                                            const SizedBox(width: 4),
-                                            Flexible(
-                                              child: Text(
-                                                'By: $teacherName',
-                                                style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const Text(' • ', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
-                                            Text(
-                                              countLabel,
-                                              style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Row(
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              '⭐ Saved $savedAgo',
+                                              title,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF3B82F6),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w800,
+                                                color: Color(0xFF1E293B),
                                                 fontFamily: 'Outfit',
                                               ),
                                             ),
-                                            if (uploadDate.isNotEmpty) ...[
-                                              const Text(' | ', style: TextStyle(fontSize: 10, color: Color(0xFFCBD5E1))),
-                                              Text(
-                                                'Uploaded: $uploadDate',
-                                                style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
-                                              ),
-                                            ],
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.person, size: 12, color: Color(0xFF94A3B8)),
+                                                const SizedBox(width: 4),
+                                                Flexible(
+                                                  child: Text(
+                                                    'By: $teacherName',
+                                                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                                const Text(' • ', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                                                Text(
+                                                  countLabel,
+                                                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  '⭐ Saved $savedAgo',
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFF3B82F6),
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                                if (uploadDate.isNotEmpty) ...[
+                                                  const Text(' | ', style: TextStyle(fontSize: 10, color: Color(0xFFCBD5E1))),
+                                                  Text(
+                                                    'Uploaded: $uploadDate',
+                                                    style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
+                                                  ),
+                                                ],
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                        const Spacer(),
-                                        const Divider(color: Color(0xFFF1F5F9), height: 1),
-                                        const SizedBox(height: 8),
                                         SizedBox(
                                           width: double.infinity,
                                           height: 36,
                                           child: ElevatedButton(
                                             onPressed: () {
                                               if (isFlashcard) {
-                                                context.push('/flashcards/set/${item['id']}');
+                                                final targetId = item?['id'] ?? fav['flashcard_set_id'];
+                                                context.push('/flashcards/set/$targetId');
                                               } else if (isContent) {
-                                                context.push('/contents/${item['id']}');
+                                                final targetId = item?['id'] ?? fav['content_id'];
+                                                context.push('/contents/$targetId');
                                               } else {
                                                 context.push('/take-quiz', extra: item);
                                               }
