@@ -48,9 +48,15 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
     final urlString = filePath.startsWith('http')
         ? filePath
         : 'https://ezpaizy.app/storage/$filePath';
-    final uri = Uri.parse(urlString);
+        
+    // Wrap PDF files in Google Docs viewer so they display inside the in-app webview on both Android & iOS
+    final viewUrl = urlString.toLowerCase().endsWith('.pdf')
+        ? 'https://docs.google.com/gview?embedded=true&url=${Uri.encodeComponent(urlString)}'
+        : urlString;
+
+    final uri = Uri.parse(viewUrl);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
