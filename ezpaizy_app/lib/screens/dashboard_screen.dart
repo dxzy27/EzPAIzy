@@ -333,7 +333,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       accentTextColor = const Color(0xFF701A75);
       tipIcon = '🤸';
       tipTitle = 'Kinaesthetic Study Tip';
-      tipText = 'Interact directly with your study tools! Use swipe flashcards and timed challenges.';
+      tipText = 'Interact directly with your study tools! Use swipe flashcards.';
     }
 
     final isWide = MediaQuery.of(context).size.width > 900;
@@ -841,8 +841,107 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildPersonalizeSection() {
-    final style = data?['diagnosis']?['primary_style'] as String?;
+    final style = (data?['user']?['learning_style'] ?? data?['profile']?['learning_style'] ?? data?['diagnosis']?['primary_style']) as String?;
     final hasCompletedDiagnosis = style != null && style.isNotEmpty;
+
+    if (hasCompletedDiagnosis) {
+      Color cardBgColor = const Color(0xFF8C7A77);
+      String styleLabel = 'READ/WRITE LEARNER';
+      String styleTitle = 'Read/Write Learner';
+      String styleDesc = 'You process and retain information most effectively through active textual manipulation — note-taking, acronyms, and summarizing key written details are your strongest memory anchors.';
+      IconData styleIcon = Icons.edit_note;
+
+      final normStyle = style.toLowerCase().replaceAll('_', '').replaceAll(' ', '');
+      if (normStyle == 'auditory') {
+        cardBgColor = const Color(0xFFC27E58);
+        styleLabel = 'AUDITORY LEARNER';
+        styleTitle = 'Auditory Learner';
+        styleDesc = 'You learn best through listening and speaking. Lectures, discussions, talking things through, and hearing explanations are key to your learning process.';
+        styleIcon = Icons.hearing;
+      } else if (normStyle == 'visual') {
+        cardBgColor = const Color(0xFF4B9CB0);
+        styleLabel = 'VISUAL LEARNER';
+        styleTitle = 'Visual Learner';
+        styleDesc = 'You understand and retain information best when it is presented in diagrams, charts, color-coded notes, and other visual formats.';
+        styleIcon = Icons.visibility;
+      } else if (normStyle == 'kinesthetic') {
+        cardBgColor = const Color(0xFFA259B2);
+        styleLabel = 'KINESTHETIC LEARNER';
+        styleTitle = 'Kinesthetic Learner';
+        styleDesc = 'You process and remember concepts best through hands-on practice, physical activity, real-world examples, and tactile experiences.';
+        styleIcon = Icons.directions_run;
+      }
+
+      return InkWell(
+        onTap: () => context.go('/learning-profile'),
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: cardBgColor,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(styleIcon, color: Colors.white, size: 14),
+                    const SizedBox(width: 6),
+                    Text(
+                      styleLabel,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Outfit',
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                styleTitle,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Outfit',
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                styleDesc,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: 13,
+                  height: 1.4,
+                  fontFamily: 'Outfit',
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -881,21 +980,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  if (hasCompletedDiagnosis) {
-                    context.go('/learning-profile');
-                  } else {
-                    context.go('/learning-style');
-                  }
+                  context.go('/learning-style');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: hasCompletedDiagnosis ? const Color(0xFF10B981) : const Color(0xFF4255FF),
+                  backgroundColor: const Color(0xFF4255FF),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                child: Text(
-                  hasCompletedDiagnosis ? 'View Profile' : 'Start Diagnosis',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
+                child: const Text(
+                  'Start Diagnosis',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Outfit'),
                 ),
               ),
             ],
@@ -904,18 +999,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Expanded(
             child: InkWell(
               onTap: () {
-                if (hasCompletedDiagnosis) {
-                  context.go('/learning-profile');
-                } else {
-                  context.go('/learning-style');
-                }
+                context.go('/learning-style');
               },
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    hasCompletedDiagnosis ? '🎯 Your VARK Learning Profile' : '🎯 Discover Your Learning Style',
-                    style: const TextStyle(
+                    '🎯 Discover Your Learning Style',
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1E293B),
@@ -924,10 +1015,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    hasCompletedDiagnosis
-                        ? 'Tap here to view your complete VARK diagnosis breakdown, learning preferences, and recommended strategies.'
-                        : 'Complete the VARK Questionnaire to customize materials to your personal study method.',
-                    style: const TextStyle(
+                    'Complete the VARK Questionnaire to customize materials to your personal study method.',
+                    style: TextStyle(
                       fontSize: 13,
                       color: Color(0xFF64748B),
                       height: 1.4,
