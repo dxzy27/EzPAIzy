@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../services/api_service.dart';
 import '../widgets/app_top_bar.dart';
 
@@ -466,7 +467,7 @@ class _FolderNotesScreenState extends State<FolderNotesScreen> {
                                 controller: _searchController,
                                 style: GoogleFonts.outfit(fontSize: 13),
                                 decoration: InputDecoration(
-                                  hintText: 'Search notes...',
+                                  hintText: 'Search notes by title or acronym content...',
                                   hintStyle: GoogleFonts.outfit(color: const Color(0xFF94A3B8)),
                                   prefixIcon: const Icon(Icons.search, size: 18, color: Color(0xFF94A3B8)),
                                   border: InputBorder.none,
@@ -516,16 +517,42 @@ class _FolderNotesScreenState extends State<FolderNotesScreen> {
                             ? const Center(child: CircularProgressIndicator())
                             : _filteredNotes.isEmpty
                                 ? _buildEmptyState()
-                                : ListView.builder(
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: _filteredNotes.length,
-                                    itemBuilder: (context, index) {
-                                      final note = _filteredNotes[index];
-                                      return _NoteCardWidget(
-                                        note: note,
-                                        onSave: (title, content) => _saveChanges(note, title, content),
-                                        onDelete: () => _deleteNote(note['id']),
-                                      );
+                                : LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final isWide = constraints.maxWidth > 600;
+                                      if (isWide) {
+                                        final cardWidth = (constraints.maxWidth - 16) / 2;
+                                        return SingleChildScrollView(
+                                          physics: const BouncingScrollPhysics(),
+                                          child: Wrap(
+                                            spacing: 16,
+                                            runSpacing: 16,
+                                            children: _filteredNotes.map((note) {
+                                              return SizedBox(
+                                                width: cardWidth,
+                                                child: _NoteCardWidget(
+                                                  note: note,
+                                                  onSave: (title, content) => _saveChanges(note, title, content),
+                                                  onDelete: () => _deleteNote(note['id']),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        );
+                                      } else {
+                                        return ListView.builder(
+                                          physics: const BouncingScrollPhysics(),
+                                          itemCount: _filteredNotes.length,
+                                          itemBuilder: (context, index) {
+                                            final note = _filteredNotes[index];
+                                            return _NoteCardWidget(
+                                              note: note,
+                                              onSave: (title, content) => _saveChanges(note, title, content),
+                                              onDelete: () => _deleteNote(note['id']),
+                                            );
+                                          },
+                                        );
+                                      }
                                     },
                                   ),
                       ),
@@ -609,20 +636,32 @@ class _NoteCardWidgetState extends State<_NoteCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final type = (widget.note['resource_type'] ?? 'General').toString().toUpperCase();
-    final difficulty = widget.note['difficulty'] != null
-        ? widget.note['difficulty'].toString().toUpperCase()
-        : null;
+    final typeVal = (widget.note['resource_type'] ?? 'content').toString().toLowerCase();
+    String typeLabel = '📄 Other';
+    if (typeVal == 'quiz') {
+      typeLabel = '📝 Quiz';
+    } else if (typeVal == 'flashcard') {
+      typeLabel = '🃏 Quiz'; // wait, in pic 1, both badges say "Quiz" and "Go to Quiz", wait, let's look at the badge: in pic 1 the badge on the right note also says "Quiz" and "Go to Quiz". Oh, actually, let's keep the real label but with the exact formatting!
+      typeLabel = '🃏 Flashcard';
+    }
+
+    String formattedDate = '';
+    try {
+      if (widget.note['updated_at'] != null) {
+        final parsedDate = DateTime.parse(widget.note['updated_at'].toString());
+        formattedDate = DateFormat('MMM dd, yyyy h:mm a').format(parsedDate.toLocal());
+      }
+    } catch (_) {}
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFF1F5F9), // Light grey background matching pic 1
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: const Color(0xFFCBD5E1)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -631,133 +670,257 @@ class _NoteCardWidgetState extends State<_NoteCardWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: Badges & Trash icon
+          // Header: Badges & Saved Status & Trash icon
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        type,
+                    Row(
+                      children: [
+                        // White Badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: const Color(0xFFCBD5E1)),
+                          ),
+                          child: Text(
+                            typeLabel,
+                            style: GoogleFonts.outfit(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF475569),
+                            ),
+                          ),
+                        ),
+                        // "Go to" blue button badge if resource_id exists
+                        if (widget.note['resource_id'] != null) ...[
+                          const SizedBox(width: 6),
+                          GestureDetector(
+                            onTap: () {
+                              final resId = widget.note['resource_id'];
+                              if (typeVal == 'quiz') {
+                                context.push('/quizzes/$resId');
+                              } else if (typeVal == 'flashcard') {
+                                context.push('/flashcards/$resId');
+                              } else {
+                                context.push('/contents/$resId');
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF3B82F6), // Blue background
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.edit_note, color: Colors.white, size: 10),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    typeVal == 'quiz'
+                                        ? 'Go to Quiz'
+                                        : typeVal == 'flashcard'
+                                            ? 'Go to Flashcard'
+                                            : 'Go to Material',
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          _isEditing ? 'Unsaved' : 'Saved',
+                          style: GoogleFonts.outfit(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: _isEditing ? const Color(0xFFF59E0B) : const Color(0xFF64748B),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Color(0xFFEF4444), size: 20),
+                          onPressed: widget.onDelete,
+                          constraints: const BoxConstraints(),
+                          padding: EdgeInsets.zero,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                if (formattedDate.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      const Icon(Icons.access_time, size: 12, color: Color(0xFF94A3B8)),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Last updated: $formattedDate',
                         style: GoogleFonts.outfit(
                           fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF475569),
-                        ),
-                      ),
-                    ),
-                    if (difficulty != null) ...[
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFDCFCE7),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          difficulty,
-                          style: GoogleFonts.outfit(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF15803D),
-                          ),
+                          color: const Color(0xFF64748B),
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
-                  ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+          
+          const Divider(height: 1, color: Color(0xFFCBD5E1)),
+          
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Note Title Section
+                Text(
+                  'NOTE TITLE',
+                  style: GoogleFonts.outfit(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF64748B),
+                    letterSpacing: 0.5,
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Color(0xFFEF4444), size: 20),
-                  onPressed: widget.onDelete,
-                  constraints: const BoxConstraints(),
-                  padding: EdgeInsets.zero,
+                const SizedBox(height: 6),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: TextField(
+                    controller: _titleController,
+                    onChanged: (_) => setState(() => _isEditing = true),
+                    style: GoogleFonts.outfit(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0F172A),
+                    ),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter note title...',
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Notes & Acronyms Section
+                Text(
+                  'NOTES & ACRONYMS',
+                  style: GoogleFonts.outfit(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF64748B),
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: CustomPaint(
+                    painter: RuledPaperPainter(),
+                    child: TextField(
+                      controller: _contentController,
+                      maxLines: null,
+                      minLines: 8,
+                      onChanged: (_) => setState(() => _isEditing = true),
+                      style: GoogleFonts.outfit(
+                        fontSize: 13,
+                        color: const Color(0xFF334155),
+                        height: 2.15, // matches lineSpacing in painter
+                      ),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Write your notes or acronyms here...',
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Save Changes button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      widget.onSave(_titleController.text, _contentController.text);
+                      setState(() => _isEditing = false);
+                    },
+                    icon: const Icon(Icons.cloud_upload, size: 16, color: Colors.white),
+                    label: Text(
+                      'Save Changes',
+                      style: GoogleFonts.outfit(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6D28D9), // Purple color matching web
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      elevation: 0,
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-
-          // Title field
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextField(
-              controller: _titleController,
-              onChanged: (_) => setState(() => _isEditing = true),
-              style: GoogleFonts.outfit(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF0F172A),
-              ),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Note Title...',
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Content Box (acronyms & notes)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFF8FAFC),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFF1F5F9)),
-              ),
-              padding: const EdgeInsets.all(12),
-              child: TextField(
-                controller: _contentController,
-                maxLines: 8,
-                minLines: 4,
-                onChanged: (_) => setState(() => _isEditing = true),
-                style: GoogleFonts.outfit(fontSize: 13, color: const Color(0xFF334155), height: 1.4),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Write your notes or acronyms here...',
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-            ),
-          ),
-          
-          // Save Button
-          if (_isEditing) ...[
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    widget.onSave(_titleController.text, _contentController.text);
-                    setState(() => _isEditing = false);
-                  },
-                  icon: const Icon(Icons.cloud_upload_outlined, size: 16, color: Colors.white),
-                  label: Text('Save Changes', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6366F1),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                ),
-              ),
-            ),
-          ] else ...[
-            const SizedBox(height: 16),
-          ],
         ],
       ),
     );
   }
 }
+
+class RuledPaperPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFFE2E8F0)
+      ..strokeWidth = 1.0;
+    
+    // Line spacing matches the fontSize * height factor
+    const double lineSpacing = 28.0;
+    // Offset down slightly to align nicely below the first text row baseline
+    const double startOffset = 24.0;
+    for (double y = startOffset; y < size.height; y += lineSpacing) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
