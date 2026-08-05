@@ -733,6 +733,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                     color: isStudyMode ? Colors.white : const Color(0xFF64748B),
+                  ),
                 ),
               ),
             ),
