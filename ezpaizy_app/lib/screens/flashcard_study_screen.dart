@@ -229,19 +229,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     );
   }
 
-  Future<void> _load() async {
-    try {
-      final d = await ApiService.getDueFlashcards(widget.setId);
-      setState(() {
-        set = d['flashcard_set'];
-        _cards = List<dynamic>.from(d['due_cards'] ?? []);
-        loading = false;
-        _initCardItems();
-      });
-    } catch (_) {
-      setState(() => loading = false);
-    }
-  }
+
 
   void _flip() {
     if (showAnswer) return; // Prevent flipping back while studying
