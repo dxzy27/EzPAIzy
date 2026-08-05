@@ -484,21 +484,9 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                           if (direction == DismissDirection.endToStart) {
                             // Swiped Left: Still learning (1)
                             _submitReview(1);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Marked: Still learning 🔴'),
-                                duration: Duration(milliseconds: 700),
-                              ),
-                            );
                           } else {
                             // Swiped Right: Know (5)
                             _submitReview(5);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Marked: Know 🟢'),
-                                duration: Duration(milliseconds: 700),
-                              ),
-                            );
                           }
                         },
                         background: Container(
