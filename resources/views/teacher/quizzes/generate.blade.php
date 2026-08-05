@@ -4,8 +4,8 @@
 <div class="container py-4">
     <div class="row mb-4">
         <div class="col-md-12 d-flex flex-column align-items-start">
-            <a href="{{ route('teacher.quizzes.index') }}" class="btn btn-secondary mb-3">
-                <i class="bi bi-arrow-left"></i> Back to Quizzes
+            <a href="{{ url()->previous() === url()->current() ? route('teacher.quizzes.index') : url()->previous() }}" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center mb-3" style="width: 36px; height: 36px;" title="Back">
+                <i class="bi bi-arrow-left fs-5"></i>
             </a>
             <h1>
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" class="text-primary me-2" style="vertical-align: text-bottom;">
