@@ -2,6 +2,7 @@
 
 @section('title', $quiz->title . ' – Quiz Details')
 
+@section('content')
 <div class="container-fluid px-4 py-4" style="max-width: 1040px; margin: 0 auto;">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center gap-3">
