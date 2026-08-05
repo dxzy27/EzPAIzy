@@ -379,7 +379,13 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/flashcards');
+                    }
+                  },
                   child: const Text('Go Back'),
                 ),
               ],
@@ -413,7 +419,13 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
               const Text("There are no cards due for review right now."),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/flashcards');
+                  }
+                },
                 child: const Text('Go Back'),
               ),
             ],

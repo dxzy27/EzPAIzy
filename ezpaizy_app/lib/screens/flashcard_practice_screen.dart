@@ -293,7 +293,13 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () => context.pop(),
+                      onPressed: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go('/flashcards');
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF3B82F6),
                         foregroundColor: Colors.white,
@@ -341,7 +347,13 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                       children: [
                         // Exit Study Button
                         InkWell(
-                          onTap: () => context.pop(),
+                          onTap: () {
+                            if (context.canPop()) {
+                              context.pop();
+                            } else {
+                              context.go('/flashcards');
+                            }
+                          },
                           borderRadius: BorderRadius.circular(8),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
