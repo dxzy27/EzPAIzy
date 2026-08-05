@@ -176,36 +176,25 @@
             <div class="row justify-content-center mb-4 flashcard-row" data-id="${index}">
                 <div class="col-12">
                     <div class="card border-0 shadow-sm overflow-hidden flashcard-item-card" style="border-radius: 16px; background: #ffffff;">
-                        <!-- Card Header bar -->
+                        <!-- Card Header bar: Card # & Metadata Context -->
                         <div class="card-header bg-white border-bottom-0 pt-3 px-4 pb-0 d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="drag-handle text-muted" style="cursor: grab;" title="Drag to reorder"><i class="bi bi-grip-vertical fs-5"></i></span>
                                 <span class="badge bg-dark bg-opacity-10 text-dark fw-bold px-2.5 py-1 card-index-badge" style="border-radius: 8px; font-size: 0.88rem;">Card #${index}</span>
                                 <small class="text-muted ms-1 d-none d-sm-inline" style="font-size: 0.78rem;">${createdText}${updatedText}</small>
                             </div>
-                            <!-- Inline Card Actions with Enlarged Icons & Text -->
-                            <div class="d-flex align-items-center gap-1.5">
-                                <button type="button" class="btn btn-sm btn-light border-0 px-3 py-1.5 text-primary fw-semibold focus-term-btn d-inline-flex align-items-center gap-1.5" title="Edit Question" style="font-size: 0.85rem; border-radius: 8px;">
-                                    <i class="bi bi-pencil fs-6"></i><span>Edit</span>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-light border-0 px-3 py-1.5 text-secondary fw-semibold toggle-preview-btn d-inline-flex align-items-center gap-1.5" title="Preview Answer" style="font-size: 0.85rem; border-radius: 8px;">
-                                    <i class="bi bi-eye fs-6"></i><span>Preview</span>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-light border-0 px-3 py-1.5 text-danger fw-semibold delete-row d-inline-flex align-items-center gap-1.5" title="Delete Card" style="font-size: 0.85rem; border-radius: 8px;">
-                                    <i class="bi bi-trash3 fs-6"></i><span>Delete</span>
-                                </button>
-                            </div>
                         </div>
 
-                        <div class="card-body p-4 pt-2">
-                            <div class="flashcard-perspective" style="height: 250px;">
+                        <!-- Card Body: Interactive Flashcard Face with Subtle Hover Cue -->
+                        <div class="card-body p-4 pt-3">
+                            <div class="flashcard-perspective" style="height: 240px;">
                                 <div class="flashcard-inner">
                                     
                                     <!-- Front Face -->
                                     <div class="flashcard-face flashcard-front p-4">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">FRONT / QUESTION</span>
-                                            <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb me-1 fs-6"></i> Click to flip</small>
+                                            <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-arrow-repeat me-1 fs-6"></i> Click to flip</small>
                                         </div>
                                         <div class="flex-grow-1 d-flex align-items-center justify-content-center px-3">
                                             <textarea name="flashcards[${index-1}][term]" class="form-control flashcard-input" placeholder="Type question / term here..." required>${term}</textarea>
@@ -216,7 +205,7 @@
                                     <div class="flashcard-face flashcard-back p-4">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">BACK / ANSWER</span>
-                                            <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-hand-index-thumb me-1 fs-6"></i> Click to flip</small>
+                                            <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-arrow-repeat me-1 fs-6"></i> Click to flip</small>
                                         </div>
                                         <div class="flex-grow-1 d-flex align-items-center justify-content-center px-3">
                                             <textarea name="flashcards[${index-1}][definition]" class="form-control flashcard-input" placeholder="Type answer / definition here..." required>${definition}</textarea>
@@ -225,6 +214,13 @@
 
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Card Footer: Right-aligned Delete Action (Far from Add Card CTA) -->
+                        <div class="card-footer bg-white border-top-0 pb-3 px-4 pt-0 d-flex justify-content-end">
+                            <button type="button" class="btn btn-sm btn-light text-danger border-0 px-3 py-1.5 fw-semibold delete-row d-inline-flex align-items-center gap-1.5" title="Delete Card" style="font-size: 0.85rem; border-radius: 8px;">
+                                <i class="bi bi-trash3 fs-6"></i><span>Delete</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -255,18 +251,6 @@
 
             inputs[0].addEventListener('focus', () => innerCard.classList.remove('is-flipped')); 
             inputs[1].addEventListener('focus', () => innerCard.classList.add('is-flipped'));
-
-            // Action Buttons: Edit (Focus) & Preview (Toggle Flip)
-            newCardRow.querySelector('.focus-term-btn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                innerCard.classList.remove('is-flipped');
-                inputs[0].focus();
-            });
-
-            newCardRow.querySelector('.toggle-preview-btn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                innerCard.classList.toggle('is-flipped');
-            });
 
             // Delete Logic
             newCardRow.querySelector('.delete-row').addEventListener('click', function(e) {
