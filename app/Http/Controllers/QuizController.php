@@ -164,46 +164,43 @@ class QuizController extends Controller
     /**
      * Show quiz details.
      */
-    public function show(string $topic, string $difficulty)
+    public function show(Request $request, string $topic, string $difficulty)
     {
-        $displayTitle = $topic;
-        if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
-            $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
-            if ($customTitleQ) {
-                $displayTitle = $customTitleQ->title;
-            }
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        $titleParam = $request->query('title');
+
+        $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
+        if ($hasTitleCol && !empty($titleParam)) {
+            $query->where('title', $titleParam);
         }
 
         $quiz = new \stdClass();
         $quiz->topic = $topic;
         $quiz->difficulty = $difficulty;
-        $quiz->title = $displayTitle;
-        $quiz->questions = Question::where('topic', $topic)
-            ->where('difficulty', $difficulty)
-            ->get();
+        $quiz->title = !empty($titleParam) ? $titleParam : $topic;
+        $quiz->questions = $query->get();
+
         return view('teacher.quizzes.show', compact('quiz'));
     }
 
     /**
      * Show quiz edit form.
      */
-    public function edit(string $topic, string $difficulty)
+    public function edit(Request $request, string $topic, string $difficulty)
     {
-        $displayTitle = $topic;
-        if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
-            $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
-            if ($customTitleQ) {
-                $displayTitle = $customTitleQ->title;
-            }
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        $titleParam = $request->query('title');
+
+        $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
+        if ($hasTitleCol && !empty($titleParam)) {
+            $query->where('title', $titleParam);
         }
 
         $quiz = new \stdClass();
         $quiz->topic = $topic;
         $quiz->difficulty = $difficulty;
-        $quiz->title = $displayTitle;
-        $quiz->questions = Question::where('topic', $topic)
-            ->where('difficulty', $difficulty)
-            ->get();
+        $quiz->title = !empty($titleParam) ? $titleParam : $topic;
+        $quiz->questions = $query->get();
 
         $topics = Topic::where('user_id', auth()->id())->where('type', 'quiz')->get();
 
@@ -225,12 +222,16 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
-        // Update existing questions in this topic + difficulty
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
-        $newTitle = $request->input('title', '');
+        $oldTitle = $request->query('title');
+        $newTitle = trim($request->input('title', ''));
 
-        // Delete existing questions in this topic + difficulty
-        Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
+        // Target delete query for existing questions in this specific quiz set
+        $deleteQuery = Question::where('topic', $topic)->where('difficulty', $difficulty);
+        if ($hasTitleCol && !empty($oldTitle)) {
+            $deleteQuery->where('title', $oldTitle);
+        }
+        $deleteQuery->delete();
 
         foreach ($validated['questions'] as $q) {
             $questionData = [
@@ -243,31 +244,33 @@ class QuizController extends Controller
                 'difficulty' => $difficulty,
             ];
 
-            if ($hasTitleCol) {
+            if ($hasTitleCol && !empty($newTitle)) {
                 $questionData['title'] = $newTitle;
             }
 
             Question::create($questionData);
         }
 
-        // Guarantee all questions in the target topic + difficulty carry the new title
-        if ($hasTitleCol) {
-            Question::where('topic', $validated['topic'])->where('difficulty', $difficulty)->update(['title' => $newTitle]);
-        }
-
         return redirect()->route('teacher.quizzes.folder', $validated['topic'])
-            ->with('success', 'Questions updated successfully!');
+            ->with('success', 'Quiz updated successfully!');
     }
 
     /**
      * Delete quiz.
      */
-    public function destroy(string $topic, string $difficulty)
+    public function destroy(Request $request, string $topic, string $difficulty)
     {
-        Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        $titleParam = $request->query('title');
+
+        $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
+        if ($hasTitleCol && !empty($titleParam)) {
+            $query->where('title', $titleParam);
+        }
+        $query->delete();
 
         return redirect()->route('teacher.quizzes.folder', $topic)
-            ->with('success', 'Questions deleted successfully!');
+            ->with('success', 'Quiz deleted successfully!');
     }
 
     /**

@@ -94,13 +94,13 @@
 
                         <!-- Card Action Buttons with Equal Heights & High-Contrast Clean Palette -->
                         <div class="d-flex align-items-center gap-2 pt-2">
-                            <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-white border shadow-xs btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1.5" style="border-radius: 10px; font-size: 0.88rem; height: 38px; background: #ffffff;">
+                            <a href="{{ route('teacher.quizzes.show', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty, 'title' => $quiz->title]) }}" class="btn btn-white border shadow-xs btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1.5" style="border-radius: 10px; font-size: 0.88rem; height: 38px; background: #ffffff;">
                                 <i class="bi bi-eye text-secondary fs-6"></i><span>View</span>
                             </a>
-                            <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" class="btn btn-primary btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1.5" style="border-radius: 10px; font-size: 0.88rem; height: 38px;">
+                            <a href="{{ route('teacher.quizzes.edit', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty, 'title' => $quiz->title]) }}" class="btn btn-primary btn-sm fw-semibold flex-fill py-2 d-inline-flex align-items-center justify-content-center gap-1.5" style="border-radius: 10px; font-size: 0.88rem; height: 38px;">
                                 <i class="bi bi-pencil-square fs-6"></i><span>Edit</span>
                             </a>
-                            <form action="{{ route('teacher.quizzes.destroy', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty]) }}" method="POST" class="d-inline flex-fill" onsubmit="return confirm('Are you sure you want to delete this quiz?')">
+                            <form action="{{ route('teacher.quizzes.destroy', ['topic' => $quiz->topic, 'difficulty' => $quiz->difficulty, 'title' => $quiz->title]) }}" method="POST" class="d-inline flex-fill" onsubmit="return confirm('Are you sure you want to delete this quiz?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-light text-danger border-0 btn-sm fw-semibold w-100 py-2 d-inline-flex align-items-center justify-content-center gap-1.5" title="Delete Quiz" style="border-radius: 10px; font-size: 0.88rem; height: 38px;">
