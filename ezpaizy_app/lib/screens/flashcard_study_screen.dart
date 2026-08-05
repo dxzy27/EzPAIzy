@@ -556,79 +556,158 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Study: ${set!['title'] ?? ''}'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Reviewing Card ${currentIndex + 1} of ${_cards.length}',
-                  style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: (currentIndex + 1) / _cards.length,
-              color: AppTheme.primaryLight,
-              backgroundColor: Colors.grey.shade200,
-            ),
-            const SizedBox(height: 30),
-
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 800),
-                child: _buildModeToggle(context, true),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Flashcard
-            cardWidget,
-
-            const SizedBox(height: 24),
-
-            if (isAnswerRevealed)
-              Column(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.15),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  const Text('How well did you remember this?',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  // Header Area matching Web layout
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Exit Study Button
+                        InkWell(
+                          onTap: () => context.pop(),
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.arrow_back, size: 16, color: Color(0xFF64748B)),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Exit Study',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF64748B),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Set Title
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              set!['title'] ?? '',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.outfit(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: const Color(0xFF0F172A),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+
+                        // Progress indicator
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '${currentIndex + 1} / ${_cards.length}',
+                              style: GoogleFonts.outfit(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF64748B),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            SizedBox(
+                              width: 60,
+                              height: 3,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(2),
+                                child: LinearProgressIndicator(
+                                  value: (currentIndex + 1) / _cards.length,
+                                  backgroundColor: const Color(0xFFE2E8F0),
+                                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF3B82F6)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: _buildModeToggle(context, true),
+                    ),
+                  ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _ratingBtn('Again', Colors.red, 0),
-                      _ratingBtn('Hard', Colors.orange, 3),
-                      _ratingBtn('Good', Colors.green, 4),
-                      _ratingBtn('Easy', Colors.blue, 5),
-                    ],
+
+                  // Flashcard
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 800),
+                        child: cardWidget,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  TextButton.icon(
-                    onPressed: _tryAgain,
-                    icon: const Icon(Icons.refresh, size: 18),
-                    label: const Text('Try Again'),
-                  ),
+
+                  const SizedBox(height: 24),
+
+                  if (isAnswerRevealed)
+                    Column(
+                      children: [
+                        const Text('How well did you remember this?',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _ratingBtn('Again', Colors.red, 0),
+                            _ratingBtn('Hard', Colors.orange, 3),
+                            _ratingBtn('Good', Colors.green, 4),
+                            _ratingBtn('Easy', Colors.blue, 5),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton.icon(
+                          onPressed: _tryAgain,
+                          icon: const Icon(Icons.refresh, size: 18),
+                          label: const Text('Try Again'),
+                        ),
+                      ],
+                    ),
+
+                  if (isReadWrite) ...[
+                    const SizedBox(height: 24),
+                    StudyNotepadWidget(
+                      resourceType: 'flashcard',
+                      resourceId: widget.setId,
+                      topic: set!['topic'] ?? 'General',
+                      defaultTitle: 'Notes: ${set!['title'] ?? ''}',
+                    ),
+                  ],
                 ],
               ),
-            if (isReadWrite) ...[
-              const SizedBox(height: 24),
-              StudyNotepadWidget(
-                resourceType: 'flashcard',
-                resourceId: widget.setId,
-                topic: set!['topic'] ?? 'General',
-                defaultTitle: 'Notes: ${set!['title'] ?? ''}',
-              ),
-            ],
-          ],
+            ),
+          ),
         ),
       ),
     );
