@@ -33,6 +33,11 @@
                         @csrf
                         
                         <div class="mb-4">
+                            <label for="title" class="form-label fw-bold">Quiz Title (Optional)</label>
+                            <input type="text" class="form-control form-control-lg fw-semibold" id="title" name="title" placeholder="Enter Quiz Title" style="border-radius: 10px; font-size: 1.05rem;">
+                        </div>
+
+                        <div class="mb-4">
                             <label for="topic" class="form-label fw-bold">1. Select Topic</label>
                             <select name="topic" id="topic" class="form-select" required>
                                 <option value="" disabled selected>Select a Topic</option>

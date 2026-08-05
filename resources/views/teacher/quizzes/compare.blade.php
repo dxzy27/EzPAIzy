@@ -215,6 +215,7 @@
 <div class="sticky-save">
     <form id="save-form" action="{{ route('teacher.quizzes.save_selected') }}" method="POST">
         @csrf
+        <input type="hidden" name="title"      value="{{ $title ?? '' }}">
         <input type="hidden" name="topic"      value="{{ $topic }}">
         <input type="hidden" name="difficulty" value="{{ $difficulty }}">
         <input type="hidden" name="questions"  id="questions-input" value="[]">

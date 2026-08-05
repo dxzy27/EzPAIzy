@@ -289,6 +289,7 @@ class QuizController extends Controller
     public function processGenerate(Request $request)
     {
         $request->validate([
+            'title' => 'nullable|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string|in:easy,medium,hard',
             'question_count' => 'required|integer|min:1|max:20',
@@ -328,7 +329,8 @@ class QuizController extends Controller
 
         return redirect()->route('teacher.quizzes.create', [
             'difficulty' => $request->difficulty,
-            'topic' => $request->topic
+            'topic' => $request->topic,
+            'title' => $request->input('title', '')
         ]);
     }
 
@@ -338,6 +340,7 @@ class QuizController extends Controller
     public function processCompare(Request $request)
     {
         $request->validate([
+            'title' => 'nullable|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string|in:easy,medium,hard',
             'question_count' => 'required|integer|min:1|max:20',
@@ -378,7 +381,8 @@ class QuizController extends Controller
             'gemini' => $gemini,
             'gpt' => $gpt,
             'topic' => $request->topic,
-            'difficulty' => $request->difficulty
+            'difficulty' => $request->difficulty,
+            'title' => $request->input('title', '')
         ]);
     }
 
@@ -388,6 +392,7 @@ class QuizController extends Controller
     public function saveSelected(Request $request)
     {
         $validated = $request->validate([
+            'title' => 'nullable|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string',
             'questions' => 'required|string', // JSON string
@@ -395,9 +400,12 @@ class QuizController extends Controller
 
         $selectedQuestions = json_decode($validated['questions'], true);
 
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+        $quizTitle = trim($request->input('title', ''));
+
         if (is_array($selectedQuestions)) {
             foreach ($selectedQuestions as $q) {
-                Question::create([
+                $questionData = [
                     'question_text' => $q['text'] ?? $q['question_text'],
                     'type' => $q['type'] ?? (($validated['difficulty'] === 'easy') ? 'mcq' : 'short_answer'),
                     'options' => $q['options'] ?? null,
@@ -405,7 +413,13 @@ class QuizController extends Controller
                     'points' => 10,
                     'topic' => $validated['topic'],
                     'difficulty' => $validated['difficulty'],
-                ]);
+                ];
+
+                if ($hasTitleCol && !empty($quizTitle)) {
+                    $questionData['title'] = $quizTitle;
+                }
+
+                Question::create($questionData);
             }
         }
 
