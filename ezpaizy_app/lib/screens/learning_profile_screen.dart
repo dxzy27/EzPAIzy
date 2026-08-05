@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 
 class LearningProfileScreen extends StatefulWidget {
@@ -163,6 +165,10 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
       styleDesc = 'You learn best through hands-on practice, physical interactions, and self-testing flashcards.';
     }
 
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final userName = auth.user?['name'] ?? 'Student';
+    final initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'D';
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -174,7 +180,7 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
           ),
         ),
         child: Container(
-          color: const Color(0xFFF1F5F9).withOpacity(0.15), // Translucent overlay matching dashboard
+          color: const Color(0xFFF1F5F9).withValues(alpha: 0.15), // Translucent overlay matching dashboard
           child: SafeArea(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -186,6 +192,49 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Top Navigation Bar
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset(
+                                  'assets/images/newlogo.png',
+                                  height: 38,
+                                  errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF14B8A6),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.1),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          initial,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            fontFamily: 'Outfit',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+
                             // Top Spacing / Title Row
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
