@@ -828,5 +828,6 @@ document.addEventListener('DOMContentLoaded', function () {
     overlay.addEventListener('click', closeMobile);
 });
 </script>
+@stack('modals')
 </body>
 </html>

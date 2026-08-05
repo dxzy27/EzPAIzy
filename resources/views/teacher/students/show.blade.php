@@ -189,6 +189,7 @@
                             </table>
                         </div>
 
+                        @push('modals')
                         <!-- Feedback Modals (Rendered outside of the table to prevent backdrop/overlay bugs) -->
                         @foreach($progress as $p)
                             @if($p->type === 'Quiz' && ($p->difficulty === 'hard' || $p->difficulty === 'medium' || $p->raw_progress->student_answers))
@@ -320,6 +321,7 @@
                                 </div>
                             @endif
                         @endforeach
+                        @endpush
                         <div class="p-3 border-top">
                             {{ $progress->links('pagination::bootstrap-5') }}
                         </div>
