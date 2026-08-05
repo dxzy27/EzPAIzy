@@ -545,19 +545,24 @@ class StudentApiController extends Controller
     public function progress(Request $request)
     {
         $user = $request->user();
-        $progress = $user->progress()->latest()->get();
-
         $classTeacher = \App\Models\User::where('role', 'teacher')->where('class_name', $user->class_name)->first();
         $teacherName = $classTeacher ? $classTeacher->name : 'Teacher';
 
-        $mappedProgress = $progress->map(function ($p) use ($teacherName, $classTeacher) {
-            return [
+        $unified = collect();
+
+        // 1. Fetch Quiz Progress
+        $quizzesProgress = $user->progress()->latest()->get();
+        foreach ($quizzesProgress as $p) {
+            $unified->push([
                 'id'              => $p->id,
+                'type'            => 'Quiz',
                 'student_id'      => $p->student_id,
-                'topic'           => $p->topic,
-                'difficulty'      => $p->difficulty,
+                'topic'           => $p->topic ?? 'General',
+                'title'           => ($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')',
+                'difficulty'      => $p->difficulty ?? 'easy',
                 'score'           => $p->score,
                 'status'          => $p->status,
+                'teacher'         => $teacherName,
                 'student_answers' => $p->student_answers,
                 'teacher_notes'   => $p->teacher_notes,
                 'created_at'      => $p->created_at->toIso8601String(),
@@ -571,10 +576,57 @@ class StudentApiController extends Controller
                         'name' => $teacherName,
                     ],
                 ]
-            ];
-        });
+            ]);
+        }
 
-        return response()->json($mappedProgress);
+        // 2. Fetch Flashcard Progress
+        $attemptedSetIds = \App\Models\FlashcardProgress::where('user_id', $user->id)
+            ->join('flashcards', 'flashcard_progress.flashcard_id', '=', 'flashcards.id')
+            ->pluck('flashcard_set_id')
+            ->unique();
+
+        $flashcardSets = \App\Models\FlashcardSet::whereIn('id', $attemptedSetIds)->with(['user', 'flashcards'])->get();
+
+        foreach ($flashcardSets as $set) {
+            $total = $set->flashcards->count();
+            $cardIds = $set->flashcards->pluck('id')->toArray();
+            $progressRecords = \App\Models\FlashcardProgress::where('user_id', $user->id)
+                ->whereIn('flashcard_id', $cardIds)
+                ->get();
+
+            $mastered = $progressRecords->where('status', 'mastered')->count();
+            $review = $progressRecords->where('status', 'review')->count();
+
+            $latestProgress = $progressRecords->sortByDesc('updated_at')->first();
+            $date = $latestProgress ? $latestProgress->updated_at : $set->updated_at;
+
+            $masteredCount = $mastered + $review;
+            $percentage = $total > 0 ? round(($masteredCount / $total) * 100) : 0;
+
+            $status = 'Learning';
+            if ($masteredCount === $total && $total > 0) {
+                $status = 'Mastered';
+            }
+
+            $unified->push([
+                'id'               => $set->id,
+                'flashcard_set_id' => $set->id,
+                'type'             => 'Flashcard',
+                'student_id'       => $user->id,
+                'topic'            => $set->topic ?? 'General',
+                'title'            => $set->title ?? 'Untitled Flashcards',
+                'teacher'          => $set->user?->name ?? $teacherName,
+                'score'            => $percentage,
+                'status'           => $status,
+                'created_at'       => $date->toIso8601String(),
+                'updated_at'       => $date->toIso8601String(),
+            ]);
+        }
+
+        // Sort by updated_at descending
+        $sorted = $unified->sortByDesc('updated_at')->values();
+
+        return response()->json($sorted);
     }
 
     /**

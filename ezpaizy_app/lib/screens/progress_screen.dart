@@ -45,8 +45,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
     final query = _searchController.text.toLowerCase().trim();
     setState(() {
       filteredProgress = progress.where((p) {
-        final isQuiz = p['quiz'] != null || p['difficulty'] != null;
-        final type = isQuiz ? 'quiz' : 'flashcards';
+        final isFlashcard = (p['type'] == 'Flashcard') || p['flashcard_set_id'] != null;
+        final type = isFlashcard ? 'flashcards' : 'quiz';
 
         if (selectedType != 'all' && type != selectedType) {
           return false;
@@ -649,7 +649,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
   }
 
   Widget _buildProgressRowCard(dynamic p) {
-    final isQuiz = p['quiz'] != null || p['difficulty'] != null;
+    final isFlashcard = (p['type'] == 'Flashcard') || p['flashcard_set_id'] != null;
+    final isQuiz = !isFlashcard;
     final topic = (p['topic'] ?? p['quiz']?['topic'] ?? 'General').toString();
     final title = (p['title'] ?? p['quiz']?['title'] ?? topic).toString();
     final teacherName = (p['teacher'] ?? p['quiz']?['teacher']?['name'] ?? 'Hamzah').toString();
