@@ -46,9 +46,7 @@
                             <td class="text-muted">{{ $student->email }}</td>
                             <td class="text-muted">{{ $student->phone_number ?? 'N/A' }}</td>
                             <td>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold px-2 py-1" style="border-radius: 6px;">
-                                    {{ $student->class_name ?? 'N/A' }}
-                                </span>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold px-2 py-1" style="border-radius: 6px;">{{ $student->class_name ?? 'N/A' }}</span>
                             </td>
                             <td class="text-muted text-truncate" style="max-width: 150px;" title="{{ $student->address }}">{{ $student->address ?? 'N/A' }}</td>
                             <td>
@@ -60,9 +58,7 @@
                             </td>
                             <td class="text-muted" style="font-size: 0.85rem;">{{ $student->created_at->format('M d, Y') }}</td>
                             <td>
-                                <span class="badge bg-info bg-opacity-15 text-info fw-bold px-2 py-1" style="border-radius: 6px;">
-                                    {{ $student->progress()->count() }}
-                                </span>
+                                <span class="badge bg-info bg-opacity-15 text-info fw-bold px-2 py-1" style="border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px;">{{ $student->progress()->count() }}</span>
                             </td>
                             <td class="pe-4 text-end">
                                 <a href="{{ route('teacher.students.show', $student) }}" class="btn btn-sm btn-outline-info me-1" title="View" style="border-radius: 8px;">
