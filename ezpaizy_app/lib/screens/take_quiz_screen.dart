@@ -123,7 +123,15 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 800), // Match web container max-width 800
-                  child: Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppTopBar(
+                        showBackButton: true,
+                        onBack: () => context.go('/quizzes'),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16), // Rounded card corners
@@ -279,7 +287,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
