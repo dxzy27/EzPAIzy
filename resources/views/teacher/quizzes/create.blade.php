@@ -8,8 +8,12 @@
             <i class="bi bi-arrow-left fs-5"></i>
         </a>
         <div>
-            <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.3px;">
-                Create Quiz
+            @php
+                $diffClass = $difficulty == 'easy' ? 'success' : ($difficulty == 'medium' ? 'warning' : 'danger');
+                $diffDot = $difficulty == 'easy' ? '🟢' : ($difficulty == 'medium' ? '🟡' : '🔴');
+            @endphp
+            <h2 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="letter-spacing: -0.3px;">
+                Create Quiz <span class="badge px-3 py-1.5 rounded-pill fw-bold text-uppercase bg-{{ $diffClass }} bg-opacity-10 text-{{ $diffClass }}" style="font-size: 0.78rem;">{{ $diffDot }} {{ strtoupper($difficulty) }}</span>
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">Add questions manually or import from the question bank</p>
         </div>
@@ -19,40 +23,28 @@
         <div class="card-body p-4">
                     <form action="{{ route('teacher.quizzes.store') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="difficulty" value="{{ $difficulty }}">
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="title" class="form-label text-muted small fw-bold text-uppercase mb-1">Quiz Title</label>
-                                <input type="text" class="form-control form-control-lg fw-semibold @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" placeholder="Enter Quiz Title" required style="border-radius: 10px; font-size: 1.05rem;">
-                                @error('title')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
-                            <div class="col-md-3 mb-3">
-                                <label for="topic" class="form-label text-muted small fw-bold text-uppercase mb-1">Topic</label>
-                                <select name="topic" id="topic" class="form-select form-select-lg fw-semibold @error('topic') is-invalid @enderror" required style="border-radius: 10px; font-size: 0.95rem;">
-                                    <option value="" disabled selected>Select Topic</option>
-                                    @foreach($topics as $t)
-                                        <option value="{{ $t->name }}" {{ (old('topic') ?? request('topic')) == $t->name ? 'selected' : '' }}>{{ $t->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('topic')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label text-muted small fw-bold text-uppercase mb-1">Quiz Title</label>
+                            <input type="text" class="form-control form-control-lg fw-semibold @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" placeholder="Enter Quiz Title" required style="border-radius: 10px; font-size: 1.05rem;">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                            <div class="col-md-3 mb-3">
-                                <label for="difficulty" class="form-label text-muted small fw-bold text-uppercase mb-1">Difficulty</label>
-                                <select name="difficulty" id="difficulty" class="form-select form-select-lg fw-semibold @error('difficulty') is-invalid @enderror" required style="border-radius: 10px; font-size: 0.95rem;">
-                                    <option value="easy" {{ old('difficulty', $difficulty) == 'easy' ? 'selected' : '' }}>🟢 Easy</option>
-                                    <option value="medium" {{ old('difficulty', $difficulty) == 'medium' ? 'selected' : '' }}>🟡 Medium</option>
-                                    <option value="hard" {{ old('difficulty', $difficulty) == 'hard' ? 'selected' : '' }}>🔴 Hard</option>
-                                </select>
-                                @error('difficulty')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <div class="mb-3">
+                            <label for="topic" class="form-label text-muted small fw-bold text-uppercase mb-1">Topic</label>
+                            <select name="topic" id="topic" class="form-select form-select-lg fw-semibold @error('topic') is-invalid @enderror" required style="border-radius: 10px; font-size: 0.95rem;">
+                                <option value="" disabled selected>Select Topic</option>
+                                @foreach($topics as $t)
+                                    <option value="{{ $t->name }}" {{ (old('topic') ?? request('topic')) == $t->name ? 'selected' : '' }}>{{ $t->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('topic')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         @if(true)
