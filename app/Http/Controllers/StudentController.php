@@ -104,21 +104,47 @@ class StudentController extends Controller
             ->where('class_name', $user->class_name)
             ->first();
 
-        // Query unique difficulties from Questions table
-        $difficulties = \App\Models\Question::where('topic', $topic)
-            ->select('difficulty')
-            ->distinct()
-            ->pluck('difficulty')
-            ->toArray();
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+
+        if ($hasTitleCol) {
+            $quizGroups = \App\Models\Question::where('topic', $topic)
+                ->select(['difficulty', 'title'])
+                ->distinct()
+                ->get();
+        } else {
+            $quizGroups = \App\Models\Question::where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->get()
+                ->map(function ($item) {
+                    $item->title = null;
+                    return $item;
+                });
+        }
         
         $allQuizzes = collect();
-        foreach ($difficulties as $diff) {
+        foreach ($quizGroups as $group) {
+            $diff = $group->difficulty;
+            $titleVal = $group->title;
+
+            $query = \App\Models\Question::where('topic', $topic)->where('difficulty', $diff);
+            if ($hasTitleCol) {
+                if (!empty($titleVal)) {
+                    $query->where('title', $titleVal);
+                } else {
+                    $query->where(function ($q) {
+                        $q->whereNull('title')->orWhere('title', '');
+                    });
+                }
+            }
+
+            $qCount = $query->count();
+            if ($qCount === 0) continue;
+
             $quiz = new \stdClass();
             $quiz->topic = $topic;
             $quiz->difficulty = $diff;
-            // Fetch custom title if saved on questions, otherwise default to Topic name
-            $customTitleQ = \App\Models\Question::where('topic', $topic)->where('difficulty', $diff)->whereNotNull('title')->where('title', '!=', '')->first();
-            $quiz->title = $customTitleQ ? $customTitleQ->title : $topic;
+            $quiz->title = !empty($titleVal) ? $titleVal : $topic;
             
             // Get student progress record
             $quiz->progress = Progress::where('student_id', $user->id)
@@ -126,10 +152,7 @@ class StudentController extends Controller
                 ->where('difficulty', $diff)
                 ->get();
             
-            $quiz->questions_count = \App\Models\Question::where('topic', $topic)
-                ->where('difficulty', $diff)
-                ->count();
-
+            $quiz->questions_count = $qCount;
             $quiz->teacher = $classTeacher;
 
             $allQuizzes->push($quiz);

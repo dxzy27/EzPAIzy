@@ -197,21 +197,25 @@ class StudentApiController extends Controller
 
         $allQuizzes = collect();
 
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+
         foreach ($topics as $topic) {
-            $difficulties = \App\Models\Question::where('topic', $topic)
-                ->select('difficulty')
-                ->distinct()
-                ->pluck('difficulty')
-                ->toArray();
+            if ($hasTitleCol) {
+                $quizGroups = \App\Models\Question::where('topic', $topic)
+                    ->select(['difficulty', 'title'])
+                    ->distinct()
+                    ->get();
+            } else {
+                $quizGroups = \App\Models\Question::where('topic', $topic)
+                    ->select('difficulty')
+                    ->distinct()
+                    ->get()
+                    ->map(function ($item) {
+                        $item->title = null;
+                        return $item;
+                    });
+            }
 
-            $pDiffs = \App\Models\Progress::where('student_id', $user->id)
-                ->where('topic', $topic)
-                ->select('difficulty')
-                ->distinct()
-                ->pluck('difficulty')
-                ->toArray();
-
-            $difficulties = array_values(array_unique(array_filter(array_merge($difficulties, $pDiffs))));
             $progressRecords = \App\Models\Progress::where('student_id', $user->id)
                 ->where('topic', $topic)
                 ->get();
@@ -220,13 +224,27 @@ class StudentApiController extends Controller
                 ->where('class_name', $user->class_name)
                 ->first();
 
-            foreach ($difficulties as $diff) {
-                $quizIdStr = $topic . '_' . $diff;
-                $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
+            foreach ($quizGroups as $group) {
+                $diff = $group->difficulty;
+                $titleVal = $group->title;
 
-                $qCount = \App\Models\Question::where('topic', $topic)
-                    ->where('difficulty', $diff)
-                    ->count();
+                $query = \App\Models\Question::where('topic', $topic)->where('difficulty', $diff);
+                if ($hasTitleCol) {
+                    if (!empty($titleVal)) {
+                        $query->where('title', $titleVal);
+                    } else {
+                        $query->where(function ($q) {
+                            $q->whereNull('title')->orWhere('title', '');
+                        });
+                    }
+                }
+
+                $qCount = $query->count();
+                if ($qCount === 0) continue;
+
+                $displayTitle = !empty($titleVal) ? $titleVal : $topic;
+                $quizIdStr = $topic . '_' . $diff . '_' . $displayTitle;
+                $quizIdInt = crc32($quizIdStr) & 0x7FFFFFFF;
 
                 $quizProgress = $progressRecords->where('difficulty', $diff)->values()->toArray();
 
@@ -234,7 +252,7 @@ class StudentApiController extends Controller
                     'id' => $quizIdInt,
                     'topic' => $topic,
                     'difficulty' => $diff,
-                    'title' => $topic . ' (' . ucfirst($diff) . ')',
+                    'title' => $displayTitle,
                     'questions_count' => $qCount,
                     'teacher' => $classTeacher ? [
                         'id' => $classTeacher->id,
