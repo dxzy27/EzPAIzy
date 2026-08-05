@@ -256,8 +256,10 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
   }
 
   Future<void> _playRecitation() async {
+    final audioUrl = _doas.isNotEmpty ? _doas[_currentDoaIndex]['audio'] : null;
     try {
       final assetPath = 'audio/doas/${_currentSituation}_${_currentDoaIndex + 1}.mp3';
+      debugPrint('Attempting local asset playback: $assetPath');
       await _audioPlayer.play(AssetSource(assetPath));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -267,8 +269,26 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
           ),
         );
       }
-    } catch (_) {
-      final audioUrl = _doas.isNotEmpty ? _doas[_currentDoaIndex]['audio'] : null;
+    } catch (e) {
+      debugPrint('Local playback failed: $e. Attempting remote inline stream...');
+      try {
+        if (audioUrl != null && audioUrl.toString().isNotEmpty) {
+          await _audioPlayer.play(UrlSource(audioUrl.toString()));
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Streaming recitation audio...'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+          return;
+        }
+      } catch (e2) {
+        debugPrint('Remote inline playback failed: $e2');
+      }
+
+      // Last resort: Launch in browser
       if (audioUrl != null && audioUrl.toString().isNotEmpty) {
         final Uri uri = Uri.parse(audioUrl);
         if (await canLaunchUrl(uri)) {
@@ -276,6 +296,7 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
           return;
         }
       }
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Could not play recitation audio')),
