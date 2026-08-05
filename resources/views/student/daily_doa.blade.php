@@ -19,8 +19,8 @@
 
             @if($situationDoas && count($situationDoas) > 0)
                 <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 20px;">
-                    <div class="card-header border-0 py-3 px-4 text-center text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; cursor: pointer;" onclick="window.location.reload()" title="Refresh Doa">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4358/4358686.png" alt="Bismillah" style="width: 50px; filter: brightness(0) invert(1); opacity: 0.9;" class="mb-2">
+                    <div class="card-header border-0 py-3 px-4 text-center text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;">
+                        <div class="mb-1"><i class="bi bi-moon-stars-fill text-warning fs-2"></i></div>
                         <h5 class="text-white mb-0 text-uppercase letter-spacing-2 fw-bold" style="font-size: 0.95rem; font-weight: 700;" id="doa-title">{{ $situationDoas[0]['title'] }}</h5>
                     </div>
 
