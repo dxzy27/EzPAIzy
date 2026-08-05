@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid px-4 py-4" style="max-width: 1040px; margin: 0 auto;">
-    <!-- Top Navigation Header with Rich Context Metadata -->
+    <!-- Top Navigation Header Matching Student Web Reference -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-7 mb-3 mb-md-0">
             <div class="d-flex align-items-center gap-3">
@@ -11,14 +11,18 @@
                 </a>
                 <div>
                     <div class="d-flex align-items-center gap-2">
-                        <h1 class="h2 fw-bold text-dark mb-0 pe-1" id="topic-title-display" title="Double click to rename" style="cursor: pointer;" data-bs-toggle="tooltip">{{ $topic }} <i class="bi bi-pencil ms-1 text-muted" style="font-size: 0.85rem; opacity: 0.5;"></i></h1>
+                        <h1 class="fw-extrabold text-dark mb-0 pe-1" id="topic-title-display" title="Double click to rename" style="font-size: 2rem; font-weight: 800; cursor: pointer;" data-bs-toggle="tooltip">
+                            <i class="bi bi-folder-fill text-warning me-2"></i>{{ $topic }} <i class="bi bi-pencil ms-1 text-muted" style="font-size: 0.85rem; opacity: 0.5;"></i>
+                        </h1>
                         <input type="text" id="topic-title-input" class="form-control d-none fw-bold text-dark mb-0" value="{{ $topic }}" style="font-size: 1.75rem; padding: 0.2rem 0.5rem; max-width: 300px;">
                     </div>
-                    <p class="text-muted mb-0 mt-1" style="font-size: 0.88rem;">
-                        <i class="bi bi-collection me-1"></i> {{ $quizzes->total() }} {{ Str::plural('Quiz', $quizzes->total()) }} • 
-                        <i class="bi bi-question-circle me-1 ms-1"></i> {{ $totalQuestionsCount }} Questions • 
-                        <i class="bi bi-clock-history me-1 ms-1"></i> Updated {{ $formattedLastUpdated }}
-                    </p>
+                    <nav aria-label="breadcrumb" class="mt-1">
+                        <ol class="breadcrumb mb-0" style="font-size: 0.88rem;">
+                            <li class="breadcrumb-item"><a href="{{ route('teacher.quizzes.index') }}" class="text-decoration-none text-primary fw-semibold">Quizzes</a></li>
+                            <li class="breadcrumb-item active text-muted fw-semibold" aria-current="page">{{ $topic }}</li>
+                            <li class="breadcrumb-item text-muted" style="font-size: 0.82rem;">{{ $quizzes->total() }} {{ Str::plural('Quiz', $quizzes->total()) }} • {{ $totalQuestionsCount }} Questions</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
