@@ -24,7 +24,7 @@
 
                         <div class="mb-3">
                             <label for="title" class="form-label text-muted small fw-bold text-uppercase mb-1">Quiz Title</label>
-                            <input type="text" class="form-control form-control-lg fw-semibold @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" placeholder="e.g. Surah Al-Baqarah Quiz" required style="border-radius: 10px; font-size: 1.05rem;">
+                            <input type="text" class="form-control form-control-lg fw-semibold @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" placeholder="Enter Quiz Title" required style="border-radius: 10px; font-size: 1.05rem;">
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
