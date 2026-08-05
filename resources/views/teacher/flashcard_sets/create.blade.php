@@ -130,28 +130,6 @@
         transform: translateY(-3px);
         box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08) !important;
     }
-    .flashcard-item-card:hover .edit-hover-overlay {
-        opacity: 1 !important;
-        transform: translate(-50%, -50%) scale(1) !important;
-    }
-    .edit-hover-overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.92);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.22s ease, transform 0.22s ease;
-        z-index: 10;
-        background: rgba(15, 23, 42, 0.78);
-        backdrop-filter: blur(4px);
-        color: #ffffff;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-    }
     .flashcard-back {
         transform: rotateY(180deg);
         background-color: #EDE9E6 !important; /* Soft Warm Gray for Back */
@@ -217,33 +195,30 @@
                             </button>
                         </div>
 
-                        <!-- Card Body: Interactive Flashcard Face with Subtle Hover Cue -->
-                        <div class="card-body p-4 pt-3 pb-4 position-relative">
-                            <div class="edit-hover-overlay">
-                                <i class="bi bi-pencil-square me-1"></i> Click anywhere to edit
-                            </div>
+                        <!-- Card Body: Interactive Flashcard Face -->
+                        <div class="card-body p-4 pt-3 pb-4">
                             <div class="flashcard-perspective" style="height: 230px;">
                                 <div class="flashcard-inner">
                                     
                                     <!-- Front Face -->
                                     <div class="flashcard-face flashcard-front p-4">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">FRONT / QUESTION</span>
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">QUESTION</span>
                                             <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-arrow-repeat me-1 fs-6"></i> Click to flip</small>
                                         </div>
                                         <div class="flex-grow-1 d-flex align-items-center justify-content-center px-3">
-                                            <textarea name="flashcards[${index-1}][term]" class="form-control flashcard-input" placeholder="Type question / term here..." required>${term}</textarea>
+                                            <textarea name="flashcards[${index-1}][term]" class="form-control flashcard-input" placeholder="Type question here..." required>${term}</textarea>
                                         </div>
                                     </div>
 
                                     <!-- Back Face -->
                                     <div class="flashcard-face flashcard-back p-4">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">BACK / ANSWER</span>
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">ANSWER</span>
                                             <small class="text-muted fw-semibold" style="font-size: 0.8rem;"><i class="bi bi-arrow-repeat me-1 fs-6"></i> Click to flip</small>
                                         </div>
                                         <div class="flex-grow-1 d-flex align-items-center justify-content-center px-3">
-                                            <textarea name="flashcards[${index-1}][definition]" class="form-control flashcard-input" placeholder="Type answer / definition here..." required>${definition}</textarea>
+                                            <textarea name="flashcards[${index-1}][definition]" class="form-control flashcard-input" placeholder="Type answer here..." required>${definition}</textarea>
                                         </div>
                                     </div>
 
