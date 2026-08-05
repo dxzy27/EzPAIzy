@@ -593,7 +593,6 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
           child: Text(
             doa['arabic'] ?? '',
             textAlign: TextAlign.center,
-            textDirection: TextDirection.rtl,
             style: GoogleFonts.amiri(
               fontSize: 30,
               fontWeight: FontWeight.bold,
@@ -732,7 +731,7 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
           },
           child: Container(
             width: double.infinity,
-            minHeight: 200,
+            constraints: const BoxConstraints(minHeight: 200),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: const Color(0xFFF8FAFC),
@@ -750,7 +749,6 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
                 Text(
                   _currentMemChunkText,
                   textAlign: TextAlign.center,
-                  textDirection: TextDirection.rtl,
                   style: GoogleFonts.amiri(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
