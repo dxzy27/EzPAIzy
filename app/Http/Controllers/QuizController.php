@@ -264,8 +264,14 @@ class QuizController extends Controller
         $titleParam = $request->query('title');
 
         $query = Question::where('topic', $topic)->where('difficulty', $difficulty);
-        if ($hasTitleCol && !empty($titleParam)) {
-            $query->where('title', $titleParam);
+        if ($hasTitleCol) {
+            if (!empty($titleParam) && $titleParam !== $topic) {
+                $query->where('title', $titleParam);
+            } else {
+                $query->where(function ($q) use ($topic) {
+                    $q->whereNull('title')->orWhere('title', '')->orWhere('title', $topic);
+                });
+            }
         }
         $query->delete();
 
