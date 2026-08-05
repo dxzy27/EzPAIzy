@@ -104,21 +104,12 @@ class StudentController extends Controller
             ->where('class_name', $user->class_name)
             ->first();
 
-        // Query unique difficulties from Questions and Progress tables
-        $qDiffs = \App\Models\Question::where('topic', $topic)
+        // Query unique difficulties from Questions table
+        $difficulties = \App\Models\Question::where('topic', $topic)
             ->select('difficulty')
             ->distinct()
             ->pluck('difficulty')
             ->toArray();
-            
-        $pDiffs = Progress::where('student_id', $user->id)
-            ->where('topic', $topic)
-            ->select('difficulty')
-            ->distinct()
-            ->pluck('difficulty')
-            ->toArray();
-
-        $difficulties = array_values(array_unique(array_filter(array_merge($qDiffs, $pDiffs))));
         
         $allQuizzes = collect();
         foreach ($difficulties as $diff) {
