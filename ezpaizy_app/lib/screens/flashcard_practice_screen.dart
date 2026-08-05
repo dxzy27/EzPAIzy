@@ -740,40 +740,5 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
           ),
         ],
       ),
-    );
-  }
-}
-                if (!isStudyMode) {
-                  context.go('/flashcards/${widget.setId}/study');
-                }
-              },
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(8),
-                bottomRight: Radius.circular(8),
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: isStudyMode ? const Color(0xFF3B82F6) : Colors.transparent,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
-                  ),
-                ),
-                child: Text(
-                  'Review Mode',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                    color: isStudyMode ? Colors.white : const Color(0xFF64748B),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
