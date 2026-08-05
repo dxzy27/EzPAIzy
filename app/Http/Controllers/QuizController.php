@@ -207,11 +207,12 @@ class QuizController extends Controller
             'questions.*.options' => 'nullable|array',
         ]);
 
-        // Delete existing questions in this topic + difficulty
-        Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
-
+        // Update existing questions in this topic + difficulty
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
         $newTitle = $request->input('title', '');
+
+        // Delete existing questions in this topic + difficulty
+        Question::where('topic', $topic)->where('difficulty', $difficulty)->delete();
 
         foreach ($validated['questions'] as $q) {
             $questionData = [
@@ -229,6 +230,11 @@ class QuizController extends Controller
             }
 
             Question::create($questionData);
+        }
+
+        // Guarantee all questions in the target topic + difficulty carry the new title
+        if ($hasTitleCol) {
+            Question::where('topic', $validated['topic'])->where('difficulty', $difficulty)->update(['title' => $newTitle]);
         }
 
         return redirect()->route('teacher.quizzes.folder', $validated['topic'])
