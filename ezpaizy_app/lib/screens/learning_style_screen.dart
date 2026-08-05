@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 
 class Question {
@@ -278,6 +280,9 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
   @override
   Widget build(BuildContext context) {
     final currentQuestion = _questions[_currentIndex];
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final userName = auth.user?['name'] ?? 'Student';
+    final initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'D';
 
     return Scaffold(
       body: Container(
@@ -290,18 +295,61 @@ class _LearningStyleScreenState extends State<LearningStyleScreen> {
           ),
         ),
         child: Container(
-          color: const Color(0xFFF1F5F9).withOpacity(0.20),
+          color: const Color(0xFFF1F5F9).withValues(alpha: 0.15),
           child: _loading
               ? const Center(child: CircularProgressIndicator())
               : SafeArea(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     child: Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 850),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Top Navigation Bar
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset(
+                                  'assets/images/newlogo.png',
+                                  height: 38,
+                                  errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF14B8A6),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.1),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          initial,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            fontFamily: 'Outfit',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+
                             // Top Header Row
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
