@@ -62,14 +62,14 @@
             <div class="col-md-6 mb-3">
                 <div class="card h-100 border-0 shadow-sm overflow-hidden quiz-item-card" style="border-radius: 16px; background: #ffffff; transition: transform 0.25s ease, box-shadow 0.25s ease;">
                     <div class="card-body p-4 d-flex flex-column justify-content-between">
-                        <!-- Top Row: Title & Larger Mastery Pill Badge -->
+                        <!-- Top Row: Badge above Card Title (Matching Student Web Reference) -->
                         <div>
-                            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.15rem; line-height: 1.35;">{{ $quiz->title }}</h5>
-                                <span class="badge bg-{{ $diffClass }} bg-opacity-15 text-{{ $diffClass }} border border-{{ $diffClass }} border-opacity-25 fw-bold px-3 py-1.5" style="border-radius: 20px; font-size: 0.78rem; letter-spacing: 0.3px;">
+                            <div class="mb-2">
+                                <span class="badge px-3 py-1.5 rounded-pill fw-bold text-uppercase bg-{{ $diffClass }} bg-opacity-10 text-{{ $diffClass }}" style="font-size: 0.78rem;">
                                     {{ $diffDot }} {{ strtoupper($quiz->difficulty) }}
                                 </span>
                             </div>
+                            <h5 class="fw-bold text-dark mb-3" style="font-size: 1.15rem; line-height: 1.35;">{{ $quiz->title }}</h5>
 
                             <!-- Rich Info Icons with Breathing Room -->
                             <div class="d-flex flex-column gap-2.5 mb-4 text-muted" style="font-size: 0.9rem;">
