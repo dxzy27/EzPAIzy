@@ -28,25 +28,49 @@ class QuizController extends Controller
 
     public function folder($topic)
     {
-        $difficulties = Question::where('topic', $topic)
-            ->select('difficulty')
-            ->distinct()
-            ->pluck('difficulty')
-            ->toArray();
+        $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
+
+        if ($hasTitleCol) {
+            $quizGroups = Question::where('topic', $topic)
+                ->select(['difficulty', 'title'])
+                ->distinct()
+                ->get();
+        } else {
+            $quizGroups = Question::where('topic', $topic)
+                ->select('difficulty')
+                ->distinct()
+                ->get()
+                ->map(function ($item) {
+                    $item->title = null;
+                    return $item;
+                });
+        }
 
         $quizzes = collect();
-
         $totalQuestionsCount = 0;
-        $allAttemptsCount = 0;
-        $totalScoresSum = 0;
         $latestUpdated = null;
 
-        foreach ($difficulties as $diff) {
-            $quizQuestions = Question::where('topic', $topic)->where('difficulty', $diff);
-            $qCount = $quizQuestions->count();
+        foreach ($quizGroups as $group) {
+            $diff = $group->difficulty;
+            $titleVal = $group->title;
+
+            $query = Question::where('topic', $topic)->where('difficulty', $diff);
+            if ($hasTitleCol) {
+                if (!empty($titleVal)) {
+                    $query->where('title', $titleVal);
+                } else {
+                    $query->where(function ($q) {
+                        $q->whereNull('title')->orWhere('title', '');
+                    });
+                }
+            }
+
+            $qCount = $query->count();
+            if ($qCount === 0) continue;
+
             $totalQuestionsCount += $qCount;
 
-            $lastQ = Question::where('topic', $topic)->where('difficulty', $diff)->latest('updated_at')->first();
+            $lastQ = (clone $query)->latest('updated_at')->first();
             if ($lastQ && (!$latestUpdated || $lastQ->updated_at > $latestUpdated)) {
                 $latestUpdated = $lastQ->updated_at;
             }
@@ -56,14 +80,7 @@ class QuizController extends Controller
             $attemptsCount = $progressRecords->count();
             $avgScore = $attemptsCount > 0 ? round($progressRecords->avg('score')) : 0;
 
-            // Fetch custom title if saved on questions, otherwise default to Topic name
-            $displayTitle = $topic;
-            if (\Illuminate\Support\Facades\Schema::hasColumn('questions', 'title')) {
-                $customTitleQ = Question::where('topic', $topic)->where('difficulty', $diff)->whereNotNull('title')->where('title', '!=', '')->first();
-                if ($customTitleQ) {
-                    $displayTitle = $customTitleQ->title;
-                }
-            }
+            $displayTitle = !empty($titleVal) ? $titleVal : $topic;
 
             $quiz = new \stdClass();
             $quiz->topic = $topic;
@@ -117,7 +134,7 @@ class QuizController extends Controller
         ]);
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
-        $quizTitle = $request->input('title', '');
+        $quizTitle = trim($request->input('title', ''));
 
         foreach ($validated['questions'] as $q) {
             $questionData = [
@@ -130,23 +147,18 @@ class QuizController extends Controller
                 'difficulty' => $validated['difficulty'],
             ];
 
-            if ($hasTitleCol) {
+            if ($hasTitleCol && !empty($quizTitle)) {
                 $questionData['title'] = $quizTitle;
             }
 
             Question::create($questionData);
         }
 
-        // Guarantee all questions carry title
-        if ($hasTitleCol && $quizTitle !== '') {
-            Question::where('topic', $validated['topic'])->where('difficulty', $validated['difficulty'])->update(['title' => $quizTitle]);
-        }
-
         // Clear generated questions session
         session()->forget('generated_questions');
 
         return redirect()->route('teacher.quizzes.folder', $validated['topic'])
-            ->with('success', 'Questions added to Question Bank successfully!');
+            ->with('success', 'Quiz created successfully!');
     }
 
     /**
