@@ -8,6 +8,7 @@ import 'package:audioplayers/audioplayers.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../widgets/profile_dropdown_helper.dart';
+import '../widgets/app_top_bar.dart';
 
 class DailyDoaScreen extends StatefulWidget {
   const DailyDoaScreen({super.key});
@@ -335,55 +336,7 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                   // Top Navigation Bar (Logo & Profile Avatar)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset(
-                        'assets/images/newlogo.png',
-                        height: 38,
-                        errorBuilder: (_, __, ___) => Text(
-                          'EzPAIzy',
-                          style: GoogleFonts.outfit(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF14B8A6),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTapDown: (details) => showProfileDropdown(context, details.globalPosition),
-                            child: Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF14B8A6),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  initial,
-                                  style: GoogleFonts.outfit(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  const AppTopBar(),
 
                   const SizedBox(height: 16),
 

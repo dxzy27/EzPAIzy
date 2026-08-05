@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/api_service.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/app_top_bar.dart';
 import '../widgets/study_notepad_widget.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -98,6 +99,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const AppTopBar(showBackButton: true),
                             // Header Row (Back Button + Title + Subtitle)
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/app_top_bar.dart';
 
 class QuizFolderScreen extends StatefulWidget {
   final String topic;
@@ -109,6 +110,10 @@ class _QuizFolderScreenState extends State<QuizFolderScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: AppTopBar(showBackButton: true),
+                ),
                 // AppBar Header Row
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

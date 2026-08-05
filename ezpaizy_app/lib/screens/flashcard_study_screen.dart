@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/app_top_bar.dart';
 import '../widgets/study_notepad_widget.dart';
 
 class FlashcardStudyScreen extends StatefulWidget {
@@ -538,6 +539,10 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: AppTopBar(showBackButton: true),
+                  ),
                   // Header Area matching Web layout
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../services/api_service.dart';
+import '../widgets/app_top_bar.dart';
 
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
@@ -171,6 +172,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Universal Top Nav Bar
+                              const AppTopBar(showBackButton: true),
                               // Header Row
                               Row(
                                 children: [

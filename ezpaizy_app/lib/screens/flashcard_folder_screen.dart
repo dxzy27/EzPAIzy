@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/app_top_bar.dart';
 
 class FlashcardFolderScreen extends StatefulWidget {
   final String topic;
@@ -137,6 +138,10 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: AppTopBar(showBackButton: true),
+                ),
                 // Top Custom aligned Header
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 20, 24, 8),

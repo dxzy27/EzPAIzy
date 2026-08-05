@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/api_service.dart';
 import '../app/theme.dart';
+import '../widgets/app_top_bar.dart';
 
 class NotesFolderScreen extends StatefulWidget {
   final String topic;
@@ -110,6 +111,13 @@ class _NotesFolderScreenState extends State<NotesFolderScreen> {
           ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: AppTopBar(
+                    showBackButton: true,
+                    onBack: () => context.go('/dashboard'),
+                  ),
+                ),
                 // Banner
                 Container(
                   width: double.infinity,

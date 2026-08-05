@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../widgets/profile_dropdown_helper.dart';
+import '../widgets/app_top_bar.dart';
 
 class LearningProfileScreen extends StatefulWidget {
   const LearningProfileScreen({super.key});
@@ -206,49 +207,7 @@ class _LearningProfileScreenState extends State<LearningProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Top Navigation Bar
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Image.asset(
-                                  'assets/images/newlogo.png',
-                                  height: 38,
-                                  errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
-                                ),
-                                Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTapDown: (details) => showProfileDropdown(context, details.globalPosition),
-                                      child: Container(
-                                        width: 36,
-                                        height: 36,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF14B8A6),
-                                          borderRadius: BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withValues(alpha: 0.1),
-                                              blurRadius: 4,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            initial,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              fontFamily: 'Outfit',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                            const AppTopBar(),
                             const SizedBox(height: 20),
 
                             // Top Spacing / Title Row

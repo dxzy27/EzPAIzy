@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/app_top_bar.dart';
 import '../services/api_service.dart';
 import '../services/tts_service.dart';
 import '../widgets/visual_highlight_text.dart';
@@ -253,6 +254,10 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: AppTopBar(showBackButton: true),
+                  ),
                   // Header Area matching Web layout
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

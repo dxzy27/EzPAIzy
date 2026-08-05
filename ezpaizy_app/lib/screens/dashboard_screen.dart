@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/app_top_bar.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -376,51 +377,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   // Top Nav Bar
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/newlogo.png',
-                                        height: 40,
-                                        errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
-                                      ),
-                                      Row(
-                                        children: [
-                                          GestureDetector(
-                                            onTapDown: (details) {
-                                              _showProfileDropdown(context, details.globalPosition, name, accentColor, auth);
-                                            },
-                                            child: Container(
-                                              width: 36,
-                                              height: 36,
-                                              decoration: BoxDecoration(
-                                                color: accentColor,
-                                                borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black.withOpacity(0.1),
-                                                    blurRadius: 4,
-                                                    offset: const Offset(0, 2),
-                                                  ),
-                                                ],
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                firstName.isNotEmpty ? firstName[0].toUpperCase() : 'S',
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                  fontFamily: 'Outfit',
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 24),
+                                  const AppTopBar(),
+                                  const SizedBox(height: 8),
 
                                   // Greeting Header
                                   Row(

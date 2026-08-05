@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../services/api_service.dart';
+import '../providers/auth_provider.dart';
+import '../widgets/app_top_bar.dart';
 
 class ContentFolderScreen extends StatefulWidget {
   final String topic;
@@ -95,6 +97,10 @@ class _ContentFolderScreenState extends State<ContentFolderScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: AppTopBar(showBackButton: true),
+                ),
                 // AppBar Header Row
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

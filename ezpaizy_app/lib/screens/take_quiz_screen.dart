@@ -8,6 +8,7 @@ import '../widgets/study_notepad_widget.dart';
 import '../services/tts_service.dart';
 import '../widgets/visual_highlight_text.dart';
 import '../widgets/profile_dropdown_helper.dart';
+import '../widgets/app_top_bar.dart';
 
 class TakeQuizScreen extends StatefulWidget {
   final int quizId;
@@ -512,61 +513,9 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                   child: Column(
                     children: [
                       // Universal Top Nav Bar
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () => context.go('/quizzes'),
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                                  ),
-                                  child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF334155)),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Image.asset(
-                                'assets/images/newlogo.png',
-                                height: 38,
-                                errorBuilder: (_, __, ___) => const Icon(Icons.school, color: Color(0xFF3B82F6)),
-                              ),
-                            ],
-                          ),
-                          GestureDetector(
-                            onTapDown: (details) => showProfileDropdown(context, details.globalPosition),
-                            child: Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF14B8A6),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  initial,
-                                  style: GoogleFonts.outfit(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      AppTopBar(
+                        showBackButton: true,
+                        onBack: () => context.go('/quizzes'),
                       ),
                       const SizedBox(height: 24),
 
