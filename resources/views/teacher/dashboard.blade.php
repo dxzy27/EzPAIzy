@@ -217,9 +217,9 @@
                 
                 <!-- Indicators/Dots -->
                 <div class="carousel-indicators" style="bottom: 15px; margin-bottom: 0;">
-                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Quizzes" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="1" aria-label="Materials" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
-                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="2" aria-label="Students" style="background-color: #1F6E68; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Quizzes" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="1" aria-label="Materials" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                    <button type="button" data-bs-target="#teacherStatsCarousel" data-bs-slide-to="2" aria-label="Students" style="background-color: #1e3a5f; width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
                 </div>
 
                 <!-- Carousel Items -->

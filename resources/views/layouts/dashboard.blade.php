@@ -32,13 +32,13 @@
                 $accentSoft = '#f5f3ff';
                 $pageBg = '#f8fafc';
             } elseif ($isTeacher) {
-                $sidebarBg = '#134e4a';
-                $sidebarHover = '#1a6460';
-                $sidebarActive = '#2dd4bf';
-                $sidebarActiveBg = 'rgba(45,212,191,.18)';
-                $accent = '#14b8a6';
-                $accentSoft = '#f0fdfa';
-                $pageBg = '#f0fdfb';
+                $sidebarBg = '#1e3a5f';
+                $sidebarHover = '#2a4f7c';
+                $sidebarActive = '#60a5fa';
+                $sidebarActiveBg = 'rgba(96,165,250,.18)';
+                $accent = '#3b82f6';
+                $accentSoft = '#eff6ff';
+                $pageBg = '#f0f7ff';
             } else {
                 if ($style === 'auditory') {
                     $sidebarBg = '#3c1704'; // dark brown-orange

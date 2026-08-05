@@ -59,68 +59,44 @@
 
             {{-- ── TEACHER LINKS ──────────────────────── --}}
 
-            {{-- Contents --}}
+            {{-- Flashcards --}}
             <li>
-                <a href="#contentsSubmenu" data-bs-toggle="collapse"
-                   class="nav-link"
-                   role="button"
-                   data-tooltip="Contents"
-                   aria-expanded="{{ request()->routeIs('teacher.contents.*') || request()->routeIs('teacher.flashcard-sets.*') ? 'true' : 'false' }}">
-                    <i class="bi bi-collection nav-icon"></i>
-                    <span class="nav-label">Contents</span>
-                    <i class="bi bi-chevron-down nav-chevron"></i>
+                <a href="{{ route('teacher.flashcard-sets.index') }}"
+                   class="nav-link {{ request()->routeIs('teacher.flashcard-sets.*') ? 'active' : '' }}"
+                   data-tooltip="Flashcards">
+                    <i class="bi bi-card-text nav-icon"></i>
+                    <span class="nav-label">Flashcards</span>
                 </a>
-                <div class="collapse {{ request()->routeIs('teacher.contents.*') || request()->routeIs('teacher.flashcard-sets.*') ? 'show' : '' }}"
-                     id="contentsSubmenu">
-                    <ul class="submenu-list">
-                        <li>
-                            <a href="{{ route('teacher.flashcard-sets.index') }}"
-                               class="nav-link {{ request()->routeIs('teacher.flashcard-sets.*') ? 'active' : '' }}">
-                                <i class="bi bi-card-text nav-icon"></i>
-                                <span class="nav-label">Flashcards</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('teacher.contents.index') }}"
-                               class="nav-link {{ request()->routeIs('teacher.contents.*') ? 'active' : '' }}">
-                                <i class="bi bi-file-earmark-text nav-icon"></i>
-                                <span class="nav-label">Other</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            </li>
+
+            {{-- Other --}}
+            <li>
+                <a href="{{ route('teacher.contents.index') }}"
+                   class="nav-link {{ request()->routeIs('teacher.contents.*') ? 'active' : '' }}"
+                   data-tooltip="Other">
+                    <i class="bi bi-journal-text nav-icon"></i>
+                    <span class="nav-label">Other</span>
+                </a>
             </li>
 
             {{-- Quizzes --}}
             <li>
-                <a href="#quizzesSubmenu" data-bs-toggle="collapse"
-                   class="nav-link"
-                   role="button"
-                   data-tooltip="Quizzes"
-                   aria-expanded="{{ request()->routeIs('teacher.quizzes.*') ? 'true' : 'false' }}">
-                    <i class="bi bi-question-circle nav-icon"></i>
+                <a href="{{ route('teacher.quizzes.index') }}"
+                   class="nav-link {{ request()->routeIs('teacher.quizzes.index') || request()->routeIs('teacher.quizzes.folder') || request()->routeIs('teacher.quizzes.show') ? 'active' : '' }}"
+                   data-tooltip="Quizzes">
+                    <i class="bi bi-pencil-square nav-icon"></i>
                     <span class="nav-label">Quizzes</span>
-                    <i class="bi bi-chevron-down nav-chevron"></i>
                 </a>
-                <div class="collapse {{ request()->routeIs('teacher.quizzes.*') ? 'show' : '' }}"
-                     id="quizzesSubmenu">
-                    <ul class="submenu-list">
-                        <li>
-                            <a href="{{ route('teacher.quizzes.index') }}"
-                               class="nav-link {{ request()->routeIs('teacher.quizzes.index') ? 'active' : '' }}">
-                                <i class="bi bi-clipboard-check nav-icon"></i>
-                                <span class="nav-label">Manage Quizzes</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('teacher.quizzes.generate') }}"
-                               class="nav-link {{ request()->routeIs('teacher.quizzes.generate') ? 'active' : '' }}">
-                                <i class="bi bi-stars nav-icon"></i>
-                                <span class="nav-label">AI Generate</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            </li>
+
+            {{-- AI Generate --}}
+            <li>
+                <a href="{{ route('teacher.quizzes.generate') }}"
+                   class="nav-link {{ request()->routeIs('teacher.quizzes.generate') ? 'active' : '' }}"
+                   data-tooltip="AI Generate">
+                    <i class="bi bi-stars nav-icon"></i>
+                    <span class="nav-label">AI Generate</span>
+                </a>
             </li>
 
             {{-- Students --}}
