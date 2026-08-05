@@ -293,8 +293,10 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 
   void _speakQuestion(Map<String, dynamic> q) {
     final text = q['question_text'] ?? '';
