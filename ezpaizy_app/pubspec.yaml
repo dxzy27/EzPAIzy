@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.19.0               # Date formatting
   url_launcher: ^6.2.5        # Launch audio links
   audioplayers: ^6.0.0        # Native inline audio playback
+  flutter_tts: ^4.0.2         # Text-to-speech support for Auditory learners
 
 
 

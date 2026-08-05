@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
-import '../app/theme.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/study_notepad_widget.dart';
+import '../services/tts_service.dart';
 
 class TakeQuizScreen extends StatefulWidget {
   final int quizId;
@@ -29,6 +29,12 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    TtsService.stop();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -220,9 +226,12 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             // Previous Button
-                            OutlinedButton(
+                             OutlinedButton(
                               onPressed: currentPage > 0
-                                  ? () => setState(() => currentPage--)
+                                  ? () {
+                                      TtsService.stop();
+                                      setState(() => currentPage--);
+                                    }
                                   : null,
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: const Color(0xFF64748B),
@@ -241,8 +250,14 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                               onPressed: (q['type'] == 'mcq' && answers[currentPage] == null)
                                   ? null // Disable if MCQ and no answer selected
                                   : (currentPage < questions.length - 1
-                                      ? () => setState(() => currentPage++)
-                                      : _submit),
+                                      ? () {
+                                          TtsService.stop();
+                                          setState(() => currentPage++);
+                                        }
+                                      : () {
+                                          TtsService.stop();
+                                          _submit();
+                                        }),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF3B82F6), // Web primary blue
                                 foregroundColor: Colors.white,
@@ -269,22 +284,59 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
     );
   }
 
+  void _speakQuestion(Map<String, dynamic> q) {
+    final text = q['question_text'] ?? '';
+    final optionsData = q['options'];
+    String toSpeak = text;
+    if (optionsData is Map<String, dynamic>) {
+      optionsData.forEach((key, val) {
+        toSpeak += ", Pilihan $key, $val";
+      });
+    }
+    TtsService.speak(toSpeak);
+  }
+
   Widget _buildQuestion(Map<String, dynamic> q, int index) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final isAuditory = auth.user?['learning_style'] == 'auditory';
     final optionsData = q['options'];
     final Map<String, dynamic>? options = (optionsData is Map<String, dynamic>) ? optionsData : null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Question Text
-        Text(
-          q['question_text'] ?? '',
-          style: const TextStyle(
-            fontSize: 24, // Matches large web title size
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
-            fontFamily: 'Outfit',
-            height: 1.45,
-          ),
+        // Question Text Row with speaker button
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                q['question_text'] ?? '',
+                style: const TextStyle(
+                  fontSize: 24, // Matches large web title size
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0F172A),
+                  fontFamily: 'Outfit',
+                  height: 1.45,
+                ),
+              ),
+            ),
+            if (isAuditory) ...[
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: () => _speakQuestion(q),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    shape: BoxShape.circle,
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  child: const Icon(Icons.volume_up, color: Color(0xFF3B82F6), size: 20),
+                ),
+              ),
+            ],
+          ],
         ),
         const SizedBox(height: 24),
 

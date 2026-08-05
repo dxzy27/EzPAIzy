@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
+import '../services/tts_service.dart';
 
 class FlashcardPracticeScreen extends StatefulWidget {
   final int setId;
@@ -39,6 +42,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
   @override
   void dispose() {
+    TtsService.stop();
     _flipCtrl.dispose();
     super.dispose();
   }
@@ -57,6 +61,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   }
 
   void _flip() {
+    TtsService.stop();
     if (isFlipped) {
       _flipCtrl.reverse();
     } else {
@@ -66,6 +71,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   }
 
   void _undoLastReview() {
+    TtsService.stop();
     if (currentIndex > 0) {
       setState(() {
         currentIndex--;
@@ -133,6 +139,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         );
       }
 
+      TtsService.stop();
       if (currentIndex < allCards.length - 1) {
         setState(() {
           currentIndex++;
@@ -463,6 +470,9 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
     required String hint,
     required Color cardBgColor,
   }) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final isAuditory = auth.user?['learning_style'] == 'auditory';
+
     return Container(
       decoration: BoxDecoration(
         color: cardBgColor,
@@ -481,15 +491,30 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header Label
-          Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'Outfit',
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF64748B),
-              letterSpacing: 1.0,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF64748B),
+                  letterSpacing: 1.0,
+                ),
+              ),
+              if (isAuditory)
+                GestureDetector(
+                  onTap: () {
+                    TtsService.speak(text);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Icon(Icons.volume_up, color: Color(0xFF3B82F6), size: 20),
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 12),
           Divider(
