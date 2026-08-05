@@ -386,22 +386,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ),
                                       Row(
                                         children: [
-                                          // Revision List Button (Star Icon)
-                                          IconButton(
-                                            onPressed: () => context.go('/revision'),
-                                            tooltip: 'My Revision List',
-                                            icon: Container(
-                                              width: 36,
-                                              height: 36,
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFFFFF8E1),
-                                                borderRadius: BorderRadius.circular(10),
-                                                border: Border.all(color: const Color(0xFFFFE082)),
-                                              ),
-                                              child: const Icon(Icons.star_rounded, color: Color(0xFFFFA000), size: 20),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 6),
                                           GestureDetector(
                                             onTapDown: (details) {
                                               _showProfileDropdown(context, details.globalPosition, name, accentColor, auth);
