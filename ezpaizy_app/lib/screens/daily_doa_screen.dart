@@ -271,25 +271,26 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
     final dateStr = DateFormat('EEEE, MMM dd, yyyy').format(DateTime.now());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
-      body: Stack(
-        children: [
-          // Background Watermark Pattern Image
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg1.png',
-              fit: BoxFit.cover,
-              opacity: const AlwaysStoppedAnimation(0.22),
-              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
           ),
-
-          SafeArea(
+        ),
+        child: Container(
+          color: const Color(0xFFF1F5F9).withValues(alpha: 0.15),
+          child: SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                   // Top Navigation Bar (Logo & Profile Avatar)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -583,12 +584,11 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
                     ),
                   ],
                 ),
-              ),
             ],
           ),
         ),
       ),
-    ],
+    ),
   ),
 );
   }
