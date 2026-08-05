@@ -98,9 +98,15 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
   Map<String, List<dynamic>> get topicGroups {
     final map = <String, List<dynamic>>{};
+    for (var topic in availableTopics) {
+      map[topic] = [];
+    }
     for (var p in progress) {
-      final topic = (p['topic'] ?? p['quiz']?['topic'] ?? 'General').toString();
-      map.putIfAbsent(topic, () => []).add(p);
+      final isFlashcard = (p['type'] == 'Flashcard') || p['flashcard_set_id'] != null;
+      if (isFlashcard) {
+        final topic = (p['topic'] ?? p['quiz']?['topic'] ?? 'General').toString();
+        map.putIfAbsent(topic, () => []).add(p);
+      }
     }
     return map;
   }
