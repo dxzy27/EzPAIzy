@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'profile_dropdown_helper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppTopBar extends StatelessWidget {
   final bool showBackButton;
@@ -77,33 +78,71 @@ class AppTopBar extends StatelessWidget {
               ),
             ],
           ),
-          GestureDetector(
-            onTapDown: (details) => showProfileDropdown(context, details.globalPosition),
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (learningStyle?.toString().toLowerCase() == 'read_write') ...[
+                GestureDetector(
+                  onTap: () async {
+                    final uri = Uri.parse('https://ezpaizy.app/student/dashboard');
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  },
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.folder_open,
+                      size: 18,
+                      color: Color(0xFF475569),
+                    ),
                   ),
-                ],
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                initial,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  fontFamily: 'Outfit',
+                ),
+                const SizedBox(width: 10),
+              ],
+              GestureDetector(
+                onTapDown: (details) => showProfileDropdown(context, details.globalPosition),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: accentColor,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    initial,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontFamily: 'Outfit',
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),

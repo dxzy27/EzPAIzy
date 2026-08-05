@@ -7,6 +7,7 @@ import '../widgets/app_top_bar.dart';
 import '../services/api_service.dart';
 import '../services/tts_service.dart';
 import '../widgets/visual_highlight_text.dart';
+import '../widgets/study_notepad_widget.dart';
 
 class FlashcardPracticeScreen extends StatefulWidget {
   final int setId;
@@ -212,6 +213,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final isKinesthetic = auth.user?['learning_style']?.toString().toLowerCase() == 'kinesthetic';
+    final isReadWrite = auth.user?['learning_style']?.toString().toLowerCase() == 'read_write';
 
     if (loading) {
       return const Scaffold(
@@ -612,7 +614,15 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  if (isReadWrite) ...[
+                    StudyNotepadWidget(
+                      resourceType: 'flashcard',
+                      resourceId: widget.setId,
+                      topic: set!['topic'] ?? 'General',
+                      defaultTitle: 'Notes: ${set!['title'] ?? ''}',
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ],
               ),
             ),
