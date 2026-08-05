@@ -8,8 +8,12 @@
             <i class="bi bi-arrow-left fs-5"></i>
         </a>
         <div>
+            @php
+                $diffClass = $difficulty == 'easy' ? 'success' : ($difficulty == 'medium' ? 'warning' : 'danger');
+                $diffDot = $difficulty == 'easy' ? '🟢' : ($difficulty == 'medium' ? '🟡' : '🔴');
+            @endphp
             <h2 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="letter-spacing: -0.3px;">
-                Create Quiz <span class="badge bg-{{ $difficulty == 'easy' ? 'success' : ($difficulty == 'medium' ? 'warning' : 'danger') }} bg-opacity-15 text-{{ $difficulty == 'easy' ? 'success' : ($difficulty == 'medium' ? 'warning' : 'danger') }} border border-{{ $difficulty == 'easy' ? 'success' : ($difficulty == 'medium' ? 'warning' : 'danger') }} border-opacity-25 rounded-pill px-3" style="font-size: 0.82rem;">{{ ucfirst($difficulty) }}</span>
+                Create Quiz <span class="badge px-3 py-1.5 rounded-pill fw-bold text-uppercase bg-{{ $diffClass }} bg-opacity-10 text-{{ $diffClass }}" style="font-size: 0.78rem;">{{ $diffDot }} {{ strtoupper($difficulty) }}</span>
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">Add questions manually or import from the question bank</p>
         </div>
