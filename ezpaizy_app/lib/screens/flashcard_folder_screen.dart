@@ -111,8 +111,8 @@ class _FlashcardFolderScreenState extends State<FlashcardFolderScreen> {
     final style = Provider.of<AuthProvider>(context, listen: false).user?['learning_style']?.toString().toLowerCase();
 
     if (style == 'kinesthetic') {
-      // Kinesthetic learners go directly to Practice Mode
-      context.push('/flashcards/${s['id']}/practice').then((_) => _load());
+      // Kinesthetic learners go directly to Practice Mode (Study Screen)
+      context.push('/flashcards/${s['id']}/study').then((_) => _load());
     } else {
       // All other styles (visual, auditory, read_write, null) go directly to Read Mode
       context.push('/flashcards/${s['id']}').then((_) => _load());
