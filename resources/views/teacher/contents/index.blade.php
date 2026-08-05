@@ -11,11 +11,14 @@
         box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08) !important;
     }
     .delete-folder-btn {
-        opacity: 0.6;
+        opacity: 0;
         transition: opacity 0.2s ease, transform 0.2s ease;
     }
+    .topic-folder-col:hover .delete-folder-btn {
+        opacity: 0.7;
+    }
     .delete-folder-btn:hover {
-        opacity: 1;
+        opacity: 1 !important;
         transform: scale(1.15);
     }
 </style>
