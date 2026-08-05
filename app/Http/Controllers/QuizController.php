@@ -56,10 +56,14 @@ class QuizController extends Controller
             $attemptsCount = $progressRecords->count();
             $avgScore = $attemptsCount > 0 ? round($progressRecords->avg('score')) : 0;
 
+            // Fetch custom title if saved on questions
+            $customTitleQ = Question::where('topic', $topic)->where('difficulty', $diff)->whereNotNull('title')->where('title', '!=', '')->first();
+            $displayTitle = $customTitleQ ? $customTitleQ->title : ($topic . ' (' . ucfirst($diff) . ')');
+
             $quiz = new \stdClass();
             $quiz->topic = $topic;
             $quiz->difficulty = $diff;
-            $quiz->title = $topic . ' (' . ucfirst($diff) . ')';
+            $quiz->title = $displayTitle;
             $quiz->questions_count = $qCount;
             $quiz->attempts_count = $attemptsCount;
             $quiz->avg_score = $avgScore;
@@ -116,6 +120,7 @@ class QuizController extends Controller
                 'points' => 10,
                 'topic' => $validated['topic'],
                 'difficulty' => $validated['difficulty'],
+                'title' => $validated['title'] ?? null,
             ]);
         }
 
@@ -131,10 +136,13 @@ class QuizController extends Controller
      */
     public function show(string $topic, string $difficulty)
     {
+        $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
+        $displayTitle = $customTitleQ ? $customTitleQ->title : ($topic . ' (' . ucfirst($difficulty) . ')');
+
         $quiz = new \stdClass();
         $quiz->topic = $topic;
         $quiz->difficulty = $difficulty;
-        $quiz->title = $topic . ' (' . ucfirst($difficulty) . ')';
+        $quiz->title = $displayTitle;
         $quiz->questions = Question::where('topic', $topic)
             ->where('difficulty', $difficulty)
             ->get();
@@ -146,10 +154,13 @@ class QuizController extends Controller
      */
     public function edit(string $topic, string $difficulty)
     {
+        $customTitleQ = Question::where('topic', $topic)->where('difficulty', $difficulty)->whereNotNull('title')->where('title', '!=', '')->first();
+        $displayTitle = $customTitleQ ? $customTitleQ->title : ($topic . ' (' . ucfirst($difficulty) . ')');
+
         $quiz = new \stdClass();
         $quiz->topic = $topic;
         $quiz->difficulty = $difficulty;
-        $quiz->title = $topic . ' (' . ucfirst($difficulty) . ')';
+        $quiz->title = $displayTitle;
         $quiz->questions = Question::where('topic', $topic)
             ->where('difficulty', $difficulty)
             ->get();
@@ -165,6 +176,7 @@ class QuizController extends Controller
     public function update(Request $request, string $topic, string $difficulty)
     {
         $validated = $request->validate([
+            'title' => 'nullable|string|max:255',
             'topic' => 'required|string',
             'questions' => 'required|array|min:1',
             'questions.*.text' => 'required|string',
@@ -185,6 +197,7 @@ class QuizController extends Controller
                 'points' => 10,
                 'topic' => $validated['topic'],
                 'difficulty' => $difficulty,
+                'title' => $validated['title'] ?? null,
             ]);
         }
 
