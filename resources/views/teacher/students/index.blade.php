@@ -30,6 +30,9 @@
                         <th style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Email</th>
                         <th style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Phone</th>
                         <th style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Class</th>
+                        <th style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Address</th>
+                        <th style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Learning Style</th>
+                        <th style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Joined</th>
                         <th style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Quizzes Taken</th>
                         <th class="pe-4 text-end" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Actions</th>
                     </tr>
@@ -47,6 +50,15 @@
                                     {{ $student->class_name ?? 'N/A' }}
                                 </span>
                             </td>
+                            <td class="text-muted text-truncate" style="max-width: 150px;" title="{{ $student->address }}">{{ $student->address ?? 'N/A' }}</td>
+                            <td>
+                                @if($student->learning_style)
+                                    <span class="badge bg-primary bg-opacity-10 text-primary text-capitalize fw-semibold px-2 py-1" style="border-radius: 6px;">{{ $student->learning_style }}</span>
+                                @else
+                                    <span class="text-muted fst-italic" style="font-size: 0.85rem;">Pending</span>
+                                @endif
+                            </td>
+                            <td class="text-muted" style="font-size: 0.85rem;">{{ $student->created_at->format('M d, Y') }}</td>
                             <td>
                                 <span class="badge bg-info bg-opacity-15 text-info fw-bold px-2 py-1" style="border-radius: 6px;">
                                     {{ $student->progress()->count() }}
@@ -70,7 +82,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-5">
+                            <td colspan="9" class="text-center text-muted py-5">
                                 <i class="bi bi-people fs-2 d-block mb-2 opacity-50"></i>
                                 No students found. <a href="{{ route('teacher.students.create') }}" class="fw-semibold text-primary">Create one now</a>
                             </td>

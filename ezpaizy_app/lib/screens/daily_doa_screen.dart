@@ -237,8 +237,8 @@ class _DailyDoaScreenState extends State<DailyDoaScreen> {
 
   List<String> get _currentDoaWords {
     if (_doas.isEmpty) return [];
-    final text = _doas[_currentDoaIndex]['arabic'] ?? '';
-    return text.split(' ').where((w) => w.trim().isNotEmpty).toList();
+    final String text = (_doas[_currentDoaIndex]['arabic'] ?? '').toString();
+    return text.split(' ').where((String w) => w.trim().isNotEmpty).toList();
   }
 
   int get _totalMemChunks {

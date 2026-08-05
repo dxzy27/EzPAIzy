@@ -95,7 +95,7 @@ class StudentManagementController extends Controller
                 'id' => $qp->id,
                 'type' => 'Quiz',
                 'topic' => $qp->topic ?? 'General',
-                'title' => ($qp->topic ?? 'General') . ' (' . ucfirst($qp->difficulty ?? 'easy') . ')',
+                'title' => !empty($qp->title) ? $qp->title : (($qp->topic ?? 'General') . ' (' . ucfirst($qp->difficulty ?? 'easy') . ')'),
                 'teacher' => $teacher->name ?? 'Unknown',
                 'date' => $qp->updated_at,
                 'status' => $qp->status, 
