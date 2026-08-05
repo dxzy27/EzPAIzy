@@ -19,8 +19,8 @@ void showProfileDropdown(BuildContext context, Offset globalPosition) {
     ),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     elevation: 8,
-    items: [
-      PopupMenuItem(
+    items: <PopupMenuEntry<dynamic>>[
+      PopupMenuItem<dynamic>(
         enabled: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +47,7 @@ void showProfileDropdown(BuildContext context, Offset globalPosition) {
         ),
       ),
       const PopupMenuDivider(),
-      PopupMenuItem(
+      PopupMenuItem<dynamic>(
         value: 'profile',
         child: Row(
           children: [
@@ -57,7 +57,7 @@ void showProfileDropdown(BuildContext context, Offset globalPosition) {
           ],
         ),
       ),
-      PopupMenuItem(
+      PopupMenuItem<dynamic>(
         value: 'revision',
         child: Row(
           children: [
@@ -67,7 +67,7 @@ void showProfileDropdown(BuildContext context, Offset globalPosition) {
           ],
         ),
       ),
-      PopupMenuItem(
+      PopupMenuItem<dynamic>(
         value: 'progress',
         child: Row(
           children: [
@@ -78,7 +78,7 @@ void showProfileDropdown(BuildContext context, Offset globalPosition) {
         ),
       ),
       const PopupMenuDivider(),
-      PopupMenuItem(
+      PopupMenuItem<dynamic>(
         value: 'signout',
         child: Row(
           children: const [
