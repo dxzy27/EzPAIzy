@@ -28,6 +28,8 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
   bool isSubmitting = false;
   final TextEditingController _typeController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  List<Map<String, dynamic>> _currentItems = [];
+  String _typedVal = '';
 
   @override
   void initState() {
@@ -47,6 +49,151 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     super.dispose();
   }
 
+  List<Map<String, dynamic>> _parseDefinitionItems(String definition) {
+    final normalized = definition.trim();
+    final regex = RegExp(r'(?:^|\s+)(\d+\.)\s+');
+    final matches = regex.allMatches(normalized).toList();
+    final List<Map<String, dynamic>> items = [];
+
+    if (matches.isNotEmpty) {
+      for (int i = 0; i < matches.length; i++) {
+        final start = matches[i].end;
+        final end = (i + 1 < matches.length) ? matches[i + 1].start : normalized.length;
+        final text = normalized.substring(start, end).trim();
+        items.add({
+          'number': matches[i].group(1) ?? '',
+          'text': text,
+          'cleanText': text.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), ''),
+          'revealed': false,
+        });
+      }
+    } else {
+      items.add({
+        'number': '',
+        'text': normalized,
+        'cleanText': normalized.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), ''),
+        'revealed': false,
+      });
+    }
+    return items;
+  }
+
+  void _initCardItems() {
+    if (_cards.isNotEmpty && currentIndex < _cards.length) {
+      _currentItems = _parseDefinitionItems(_cards[currentIndex]['definition'] ?? '');
+      _typedVal = '';
+    }
+  }
+
+  Widget _buildPlaceholderWidget(List<Map<String, dynamic>> items, String typedVal) {
+    final isList = items.length > 1 || (items.isNotEmpty && items[0]['number'].toString().isNotEmpty);
+    final activeIndex = items.indexWhere((item) => !item['revealed']);
+
+    return Column(
+      crossAxisAlignment: isList ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      children: List.generate(items.length, (idx) {
+        final item = items[idx];
+        
+        Widget textWidget;
+        if (item['revealed']) {
+          textWidget = Text(
+            item['text'],
+            style: const TextStyle(
+              color: Color(0xFF22C55E),
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          );
+        } else if (idx == activeIndex && typedVal.isNotEmpty) {
+          final correctText = item['text'] as String;
+          String display = '';
+          int tIdx = 0;
+          
+          for (int i = 0; i < correctText.length; i++) {
+            final c = correctText[i];
+            if (c == ' ') {
+              display += '   ';
+              if (tIdx < typedVal.length && typedVal[tIdx] == ' ') {
+                tIdx++;
+              }
+            } else {
+              if (tIdx < typedVal.length) {
+                if (typedVal[tIdx] == ' ') {
+                  display += '   ';
+                } else {
+                  display += typedVal[tIdx];
+                }
+                tIdx++;
+              } else {
+                if (RegExp(r'[a-zA-Z0-9]').hasMatch(c)) {
+                  display += '_';
+                } else {
+                  display += c;
+                }
+              }
+            }
+          }
+          
+          textWidget = Text(
+            display,
+            style: const TextStyle(
+              color: Color(0xFF64748B),
+              fontFamily: 'monospace',
+              letterSpacing: 2,
+              fontSize: 18,
+            ),
+          );
+        } else {
+          final correctText = item['text'] as String;
+          final underscores = correctText.split(RegExp(r'\s+')).map((word) {
+            return word.split('').map((c) {
+              return RegExp(r'[a-zA-Z0-9]').hasMatch(c) ? '_' : c;
+            }).join('');
+          }).join('   ');
+
+          textWidget = Text(
+            underscores,
+            style: const TextStyle(
+              color: Color(0xFF94A3B8),
+              fontFamily: 'monospace',
+              letterSpacing: 2,
+              fontSize: 18,
+            ),
+          );
+        }
+
+        if (isList && item['number'].toString().isNotEmpty) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 35,
+                  child: Text(
+                    item['number'],
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color(0xFF334155),
+                    ),
+                  ),
+                ),
+                Expanded(child: textWidget),
+              ],
+            ),
+          );
+        } else {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: textWidget,
+          );
+        }
+      }),
+    );
+  }
+
   Future<void> _load() async {
     try {
       final d = await ApiService.getDueFlashcards(widget.setId);
@@ -54,6 +201,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
         set = d['flashcard_set'];
         _cards = List<dynamic>.from(d['due_cards'] ?? []);
         loading = false;
+        _initCardItems();
       });
     } catch (_) {
       setState(() => loading = false);
@@ -77,10 +225,60 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
   }
 
   void _checkTyping(String val) {
-    final correct = (_cards[currentIndex]['definition'] as String).trim().toLowerCase();
-    if (val.trim().toLowerCase() == correct) {
-      setState(() => isAnswerRevealed = true);
+    setState(() {
+      _typedVal = val;
+    });
+
+    final cleanInput = val.trim().toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+    if (cleanInput.isEmpty) return;
+
+    // Full phrase match check
+    final correctAllClean = _cards[currentIndex]['definition'].toString().toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+    final correctItemsClean = _currentItems.map((item) => item['cleanText']).join('');
+
+    if (cleanInput == correctAllClean || cleanInput == correctItemsClean) {
+      setState(() {
+        for (var item in _currentItems) {
+          item['revealed'] = true;
+        }
+        isAnswerRevealed = true;
+        _typedVal = '';
+      });
+      _typeController.clear();
       _focusNode.unfocus();
+      return;
+    }
+
+    // Individual item check
+    int matchedIndex = -1;
+    for (int i = 0; i < _currentItems.length; i++) {
+      if (!_currentItems[i]['revealed']) {
+        final cleanText = _currentItems[i]['cleanText'];
+        final cleanTextWithNumber = (_currentItems[i]['number'] + _currentItems[i]['text'])
+            .toString()
+            .toLowerCase()
+            .replaceAll(RegExp(r'[^a-z0-9]'), '');
+
+        if (cleanInput == cleanText || cleanInput == cleanTextWithNumber) {
+          matchedIndex = i;
+          break;
+        }
+      }
+    }
+
+    if (matchedIndex != -1) {
+      setState(() {
+        _currentItems[matchedIndex]['revealed'] = true;
+        _typedVal = '';
+        
+        // Check if all are done
+        final allDone = _currentItems.every((item) => item['revealed']);
+        if (allDone) {
+          isAnswerRevealed = true;
+          _focusNode.unfocus();
+        }
+      });
+      _typeController.clear();
     }
   }
 
@@ -111,6 +309,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
           showAnswer = false;
           isAnswerRevealed = false;
           _typeController.clear();
+          _initCardItems();
         });
         _flipCtrl.reset();
       } else {
@@ -219,7 +418,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
     final card = _cards[currentIndex];
 
     Widget cardWidget = SizedBox(
-      height: 300,
+      height: 350,
       child: GestureDetector(
         onTap: _flip,
         child: AnimatedBuilder(
@@ -234,20 +433,85 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
                 ..rotateY(angle),
               child: showFront
                   ? _cardFace(
-                      label: 'TERM',
-                      text: card['term'] ?? '',
-                      color: AppTheme.primary,
-                      icon: Icons.help_outline,
+                      label: 'QUESTION',
+                      color: Colors.white,
+                      textColor: const Color(0xFF0F172A),
+                      child: Text(
+                        card['term'] ?? '',
+                        style: GoogleFonts.outfit(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF0F172A),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      footerWidget: Text(
+                        'Click anywhere to reveal',
+                        style: GoogleFonts.outfit(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF94A3B8),
+                        ),
+                      ),
                     )
                   : Transform(
                       alignment: Alignment.center,
                       transform: Matrix4.identity()..rotateY(3.14159),
                       child: _cardFace(
-                        label: 'DEFINITION',
-                        isTypingMode: true,
-                        text: card['definition'] ?? '',
-                        color: isAnswerRevealed ? Colors.teal.shade700 : Colors.indigo.shade700,
-                        icon: isAnswerRevealed ? Icons.check_circle_outline : Icons.keyboard,
+                        label: 'ANSWER',
+                        color: Colors.white,
+                        textColor: const Color(0xFF0F172A),
+                        headerRightWidget: !isAnswerRevealed
+                            ? OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    for (var item in _currentItems) {
+                                      item['revealed'] = true;
+                                    }
+                                    isAnswerRevealed = true;
+                                  });
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: const Color(0xFF64748B),
+                                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                ),
+                                child: Text('Reveal', style: GoogleFonts.outfit(fontSize: 11)),
+                              )
+                            : null,
+                        footerWidget: !isAnswerRevealed
+                            ? TextField(
+                                controller: _typeController,
+                                focusNode: _focusNode,
+                                onChanged: _checkTyping,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.outfit(fontSize: 14),
+                                decoration: InputDecoration(
+                                  hintText: 'Type the exact answer...',
+                                  hintStyle: GoogleFonts.outfit(color: const Color(0xFF94A3B8), fontSize: 13),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                'Click anywhere to flip back',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF94A3B8),
+                                ),
+                              ),
+                        child: _buildPlaceholderWidget(_currentItems, _typedVal),
                       ),
                     ),
             );
@@ -332,33 +596,6 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
 
             const SizedBox(height: 24),
 
-            if (!showAnswer)
-              const Text('Tap the card to reveal and start typing',
-                  style: TextStyle(color: Colors.grey, fontSize: 14)),
-
-            if (showAnswer && !isAnswerRevealed)
-              Column(
-                children: [
-                  TextField(
-                    controller: _typeController,
-                    focusNode: _focusNode,
-                    onChanged: _checkTyping,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      hintText: 'Type the answer...',
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextButton(
-                    onPressed: _giveUp,
-                    child: const Text('I give up, show answer', style: TextStyle(color: Colors.grey)),
-                  ),
-                ],
-              ),
-
             if (isAnswerRevealed)
               Column(
                 children: [
@@ -414,63 +651,65 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
 
   Widget _cardFace({
     required String label,
-    required String text,
     required Color color,
-    required IconData icon,
-    bool isTypingMode = false,
+    required Color textColor,
+    required Widget child,
+    Widget? headerRightWidget,
+    Widget? footerWidget,
   }) {
-    String placeholder = '';
-    if (isTypingMode && !isAnswerRevealed) {
-      placeholder = text.split(' ').map((word) => '_ ' * word.length).join('   ');
-    }
-
     return Container(
       width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 350), // Standard high height
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFCBD5E1), width: 1.5),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 8))
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          )
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: const EdgeInsets.all(24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.white54, size: 36),
-            const SizedBox(height: 8),
-            Text(label,
-                style: const TextStyle(
-                    color: Colors.white54,
+            // Card Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF64748B),
                     fontSize: 12,
-                    letterSpacing: 2,
-                    fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            if (isTypingMode && !isAnswerRevealed)
-              Text(
-                placeholder,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 22,
-                    letterSpacing: 4,
-                    fontFamily: 'monospace',
-                    fontWeight: FontWeight.bold),
-              )
-            else
-              Text(
-                text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5),
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (headerRightWidget != null) headerRightWidget,
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Divider(color: Color(0xFFE2E8F0), height: 1),
+            
+            // Card Content
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: child,
+                ),
               ),
+            ),
+            
+            const Divider(color: Color(0xFFE2E8F0), height: 1),
+            const SizedBox(height: 12),
+            
+            // Card Footer
+            if (footerWidget != null) footerWidget,
           ],
         ),
       ),
