@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'profile_dropdown_helper.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AppTopBar extends StatelessWidget {
   final bool showBackButton;
@@ -83,12 +82,7 @@ class AppTopBar extends StatelessWidget {
             children: [
               if (learningStyle?.toString().toLowerCase() == 'read_write') ...[
                 GestureDetector(
-                  onTap: () async {
-                    final uri = Uri.parse('https://ezpaizy.app/student/dashboard');
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
-                    }
-                  },
+                  onTap: () => context.push('/notes'),
                   child: Container(
                     width: 36,
                     height: 36,

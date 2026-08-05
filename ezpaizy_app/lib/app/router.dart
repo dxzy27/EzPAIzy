@@ -22,6 +22,7 @@ import '../screens/learning_style_screen.dart';
 import '../screens/learning_profile_screen.dart';
 import '../screens/student_profile_screen.dart';
 import '../screens/notes_folder_screen.dart';
+import '../screens/note_folders_screen.dart';
 import '../screens/register_screen.dart';
 import '../screens/daily_doa_screen.dart';
 
@@ -154,9 +155,13 @@ class AppRouter {
                 builder: (_, _) => const LearningProfileScreen(),
               ),
               GoRoute(
+                path: '/notes',
+                builder: (_, _) => const NoteFoldersScreen(),
+              ),
+              GoRoute(
                 path: '/notes/folder/:topic',
-                builder: (_, state) => NotesFolderScreen(
-                  topic: state.pathParameters['topic']!,
+                builder: (_, state) => FolderNotesScreen(
+                  topic: Uri.decodeComponent(state.pathParameters['topic']!),
                 ),
               ),
             ],

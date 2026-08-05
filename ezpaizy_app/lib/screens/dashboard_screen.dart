@@ -319,14 +319,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       accentTextColor = const Color(0xFF7C2D12);
       tipIcon = '🎵';
       tipTitle = 'Auditory Study Tip';
-      tipText = 'After reading any material today, close it and say aloud — in your own words — what you just learned.';
+      tipText = 'Use the audio button in flashcards and quizzes to listen to the questions and answers.';
     } else if (style == 'visual') {
       accentColor = const Color(0xFF06B6D4);
       accentLightColor = const Color(0xFFECFEFF);
       accentTextColor = const Color(0xFF083344);
       tipIcon = '👁️';
       tipTitle = 'Visual Study Tip';
-      tipText = 'You can highlight or underline the text that you read in flashcards, quizzes and other materials.';
+      tipText = 'You can highlight or underline the text that you read in flashcards and quizzes.';
     } else if (style == 'kinesthetic') {
       accentColor = const Color(0xFFD946EF);
       accentLightColor = const Color(0xFFFDF4FF);
