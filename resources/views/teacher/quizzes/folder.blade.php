@@ -30,16 +30,9 @@
             <a href="{{ route('teacher.quizzes.generate') }}" class="btn btn-dark fw-bold px-3 py-2 d-inline-flex align-items-center" style="border-radius: 10px; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                 <i class="bi bi-cpu me-1.5 fs-6 text-warning"></i> Generate with AI
             </a>
-            <div class="dropdown">
-                <button class="btn btn-primary fw-bold px-3 py-2 dropdown-toggle d-inline-flex align-items-center" type="button" id="createQuizDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 10px; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(59,130,246,0.25);">
-                    <i class="bi bi-plus-lg me-1 fs-6"></i> Create Quiz
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="createQuizDropdown" style="border-radius: 12px; padding: 6px;">
-                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'easy', 'topic' => $topic]) }}">Easy</a></li>
-                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'medium', 'topic' => $topic]) }}">Medium</a></li>
-                    <li><a class="dropdown-item fw-medium py-2 rounded-2" href="{{ route('teacher.quizzes.create', ['difficulty' => 'hard', 'topic' => $topic]) }}">Hard</a></li>
-                </ul>
-            </div>
+            <a href="{{ route('teacher.quizzes.create', ['topic' => $topic]) }}" class="btn btn-primary fw-bold px-3 py-2 d-inline-flex align-items-center" style="border-radius: 10px; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(59,130,246,0.25);">
+                <i class="bi bi-plus-lg me-1 fs-6"></i> Create Quiz
+            </a>
         </div>
     </div>
 
