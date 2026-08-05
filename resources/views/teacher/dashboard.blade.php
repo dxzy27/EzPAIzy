@@ -165,7 +165,7 @@
 @section('content')
 @php
     $flashcardSetsCount = \App\Models\FlashcardSet::where('user_id', auth()->id())->count();
-    $materialsOnlyCount = $user->contents()->count();
+    $materialsOnlyCount = auth()->user()?->contents()->count() ?? 0;
     
     $cardQuizzes = [
         'title'  => 'Quizzes',
