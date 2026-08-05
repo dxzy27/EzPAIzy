@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../services/api_service.dart';
 
 class RevisionScreen extends StatefulWidget {
@@ -11,179 +12,433 @@ class RevisionScreen extends StatefulWidget {
 
 class _RevisionScreenState extends State<RevisionScreen> {
   List<dynamic> favorites = [];
+  List<dynamic> filteredFavorites = [];
   bool loading = true;
+  final _search = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _load();
+    _search.addListener(_filter);
+  }
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
     setState(() => loading = true);
     try {
       favorites = await ApiService.getRevision();
+      filteredFavorites = favorites;
     } catch (_) {}
     setState(() => loading = false);
   }
 
-  Future<void> _remove(int index, int contentId) async {
-    final removed = favorites[index];
-    setState(() => favorites.removeAt(index));
+  void _filter() {
+    final q = _search.text.toLowerCase();
+    setState(() {
+      filteredFavorites = favorites.where((fav) {
+        final isContent = fav['content'] != null;
+        final isFlashcard = fav['flashcard_set'] != null;
+        final item = isContent
+            ? fav['content']
+            : (isFlashcard ? fav['flashcard_set'] : fav);
+        final title = (item['title'] ?? item['topic'] ?? '').toString().toLowerCase();
+        return title.contains(q);
+      }).toList();
+    });
+  }
+
+  Future<void> _remove(int index, dynamic fav) async {
+    final removed = filteredFavorites[index];
+    setState(() {
+      filteredFavorites.removeAt(index);
+      favorites.remove(fav);
+    });
+
     try {
-      await ApiService.removeFavorite(contentId);
+      if (fav['content_id'] != null) {
+        await ApiService.removeFavorite(fav['content_id']);
+      } else if (fav['flashcard_set_id'] != null) {
+        await ApiService.removeFlashcardFavorite(fav['flashcard_set_id']);
+      }
     } catch (_) {
-      setState(() => favorites.insert(index, removed));
+      setState(() {
+        filteredFavorites.insert(index, removed);
+        favorites.add(fav);
+      });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to remove')),
+          const SnackBar(content: Text('Failed to remove from revision')),
         );
       }
+    }
+  }
+
+  String _formatDate(String? raw) {
+    if (raw == null) return '';
+    try {
+      final dt = DateTime.parse(raw);
+      return DateFormat('MMM d, yyyy').format(dt);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  String _timeAgo(String? raw) {
+    if (raw == null) return '';
+    try {
+      final dt = DateTime.parse(raw);
+      final diff = DateTime.now().difference(dt);
+      if (diff.inDays > 0) return '${diff.inDays} days ago';
+      if (diff.inHours > 0) return '${diff.inHours} hours ago';
+      if (diff.inMinutes > 0) return '${diff.inMinutes} mins ago';
+      return 'just now';
+    } catch (_) {
+      return '';
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Revision List')),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : favorites.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          color: const Color(0xFFF1F5F9).withOpacity(0.15),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
                     children: [
-                      const Icon(Icons.star_border,
-                          size: 64, color: Colors.grey),
-                      const SizedBox(height: 12),
-                      const Text('No saved materials',
-                          style: TextStyle(
-                              color: Colors.grey, fontSize: 16)),
-                      const SizedBox(height: 8),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () => context.pop(),
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: const Color(0xFFCBD5E1)),
+                              color: Colors.white,
+                            ),
+                            child: const Icon(Icons.arrow_back, size: 18, color: Color(0xFF475569)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
                       const Text(
-                          'Tap ⭐ on any content or flashcard to save it here',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey, fontSize: 13)),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () => context.go('/contents'),
-                        child: const Text('Browse Materials'),
+                        '🎴',
+                        style: TextStyle(fontSize: 22),
+                      ),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Text(
+                          'My Revision List',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF1E293B),
+                            fontFamily: 'Outfit',
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _load,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: favorites.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (_, i) {
-                      final fav = favorites[i];
-                      final isContent = fav['content'] != null;
-                      final item =
-                          isContent ? fav['content'] : fav['flashcard_set'];
-                      if (item == null) return const SizedBox.shrink();
-
-                      return Dismissible(
-                        key: Key('fav_${fav['id']}'),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const Icon(Icons.delete, color: Colors.white),
-                        ),
-                        onDismissed: (_) =>
-                            _remove(i, item['id']),
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Chip(
-                                      label: Text(
-                                        isContent ? 'Content' : 'Flashcard',
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11),
-                                      ),
-                                      backgroundColor: isContent
-                                          ? Colors.blue
-                                          : Colors.amber.shade700,
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete_outline,
-                                          color: Colors.red),
-                                      onPressed: () => _remove(i, item['id']),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  item['title'] ?? '',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  isContent
-                                      ? ((item['content'] ?? '') as String)
-                                          .substring(0,
-                                              ((item['content'] ?? '') as String)
-                                                          .length >
-                                                      100
-                                                  ? 100
-                                                  : (item['content'] ?? '')
-                                                      .length)
-                                      : (item['description'] ?? ''),
-                                  style: const TextStyle(
-                                      color: Colors.grey, fontSize: 13),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 10),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      if (isContent) {
-                                        context.push(
-                                            '/contents/${item['id']}');
-                                      } else {
-                                        context.push(
-                                            '/flashcards/${item['id']}');
-                                      }
-                                    },
-                                    icon: const Icon(Icons.visibility,
-                                        size: 16),
-                                    label: Text(isContent
-                                        ? 'Read Content'
-                                        : 'Practice'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: isContent
-                                          ? Colors.blue
-                                          : Colors.amber.shade700,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 56),
+                  child: Text(
+                    "Learning materials you've saved for review",
+                    style: TextStyle(fontSize: 12, color: Color(0xFF64748B), fontFamily: 'Outfit'),
                   ),
                 ),
+                const SizedBox(height: 16),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: TextField(
+                    controller: _search,
+                    style: const TextStyle(fontFamily: 'Outfit', fontSize: 13),
+                    decoration: const InputDecoration(
+                      hintText: 'Search revision list...',
+                      hintStyle: TextStyle(fontFamily: 'Outfit', fontSize: 13, color: Color(0xFF94A3B8)),
+                      prefixIcon: Icon(Icons.search, color: Color(0xFF94A3B8), size: 18),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : filteredFavorites.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.star_outline_rounded, size: 64, color: Color(0xFFCBD5E1)),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'No saved materials in your revision list',
+                                    style: TextStyle(color: Color(0xFF64748B), fontFamily: 'Outfit', fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  const Text(
+                                    'Tap ⭐ on any content or flashcard to save it here',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Color(0xFF94A3B8), fontFamily: 'Outfit', fontSize: 12),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ElevatedButton(
+                                    onPressed: () => context.go('/contents'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF3B82F6),
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    ),
+                                    child: const Text('Browse Materials', style: TextStyle(fontFamily: 'Outfit')),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : RefreshIndicator(
+                              onRefresh: _load,
+                              child: GridView.builder(
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 360,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16,
+                                  mainAxisExtent: 200,
+                                ),
+                                itemCount: filteredFavorites.length,
+                                itemBuilder: (context, i) {
+                                  final fav = filteredFavorites[i];
+                                  final isContent = fav['content'] != null;
+                                  final isFlashcard = fav['flashcard_set'] != null;
+                                  final item = isContent
+                                      ? fav['content']
+                                      : (isFlashcard ? fav['flashcard_set'] : fav);
+
+                                  if (item == null) return const SizedBox.shrink();
+
+                                  final title = item['title'] ?? item['topic'] ?? 'Untitled';
+                                  final teacherName = isContent
+                                      ? (item['teacher']?['name'] ?? 'Hamzah')
+                                      : (isFlashcard ? (item['user']?['name'] ?? 'Hamzah') : 'PAI Teacher');
+                                  final countLabel = isFlashcard
+                                      ? '${item['flashcards_count'] ?? (item['flashcards'] as List?)?.length ?? 1} Cards'
+                                      : (isContent ? (item['file_type'] ?? 'PDF').toString().toUpperCase() : 'Quiz');
+                                  final savedAgo = _timeAgo(fav['created_at']);
+                                  final uploadDate = _formatDate(item['created_at']);
+
+                                  Color badgeBg;
+                                  Color badgeText;
+                                  Color borderLeftColor;
+                                  String badgeLabel;
+                                  Color btnBg;
+                                  String btnText;
+
+                                  if (isFlashcard) {
+                                    badgeBg = const Color(0xFFFFF8E1);
+                                    badgeText = const Color(0xFFFF8F00);
+                                    borderLeftColor = const Color(0xFFFF8F00);
+                                    badgeLabel = '🎴 Flashcard';
+                                    btnBg = const Color(0xFFFFC107);
+                                    btnText = 'Open Flashcard Set';
+                                  } else if (isContent) {
+                                    badgeBg = const Color(0xFFE3F2FD);
+                                    badgeText = const Color(0xFF1565C0);
+                                    borderLeftColor = const Color(0xFF1565C0);
+                                    badgeLabel = '📄 Material';
+                                    btnBg = const Color(0xFF3B82F6);
+                                    btnText = 'Open Material';
+                                  } else {
+                                    badgeBg = const Color(0xFFE0F2F1);
+                                    badgeText = const Color(0xFF00A896);
+                                    borderLeftColor = const Color(0xFF00A896);
+                                    badgeLabel = '❓ Quiz';
+                                    btnBg = const Color(0xFF0D9488);
+                                    btnText = 'Take Quiz';
+                                  }
+
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border(
+                                        left: BorderSide(color: borderLeftColor, width: 5),
+                                        top: const BorderSide(color: Color(0xFFE2E8F0)),
+                                        right: const BorderSide(color: Color(0xFFE2E8F0)),
+                                        bottom: const BorderSide(color: Color(0xFFE2E8F0)),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.04),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: badgeBg,
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                badgeLabel,
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: badgeText,
+                                                  fontFamily: 'Outfit',
+                                                ),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () => _remove(i, fav),
+                                              child: const Icon(
+                                                Icons.delete_outline_rounded,
+                                                color: Color(0xFF94A3B8),
+                                                size: 18,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w800,
+                                            color: Color(0xFF1E293B),
+                                            fontFamily: 'Outfit',
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.person, size: 12, color: Color(0xFF94A3B8)),
+                                            const SizedBox(width: 4),
+                                            Flexible(
+                                              child: Text(
+                                                'By: $teacherName',
+                                                style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            const Text(' • ', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                                            Text(
+                                              countLabel,
+                                              style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontFamily: 'Outfit'),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '⭐ Saved $savedAgo',
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF3B82F6),
+                                                fontFamily: 'Outfit',
+                                              ),
+                                            ),
+                                            if (uploadDate.isNotEmpty) ...[
+                                              const Text(' | ', style: TextStyle(fontSize: 10, color: Color(0xFFCBD5E1))),
+                                              Text(
+                                                'Uploaded: $uploadDate',
+                                                style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontFamily: 'Outfit'),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                        const Spacer(),
+                                        const Divider(color: Color(0xFFF1F5F9), height: 1),
+                                        const SizedBox(height: 8),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          height: 36,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              if (isFlashcard) {
+                                                context.push('/flashcards/set/${item['id']}');
+                                              } else if (isContent) {
+                                                context.push('/contents/${item['id']}');
+                                              } else {
+                                                context.push('/take-quiz', extra: item);
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: btnBg,
+                                              foregroundColor: Colors.white,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  btnText,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Outfit',
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 6),
+                                                const Icon(Icons.arrow_forward, size: 14),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
