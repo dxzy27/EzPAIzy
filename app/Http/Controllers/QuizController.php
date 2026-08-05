@@ -142,7 +142,7 @@ class QuizController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string|in:easy,medium,hard',
             'questions' => 'required|array|min:1',
@@ -153,10 +153,7 @@ class QuizController extends Controller
         ]);
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
-        $quizTitle = trim($request->input('title', ''));
-        if (empty($quizTitle)) {
-            $quizTitle = $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ' Quiz)';
-        }
+        $quizTitle = trim($validated['title']);
 
         foreach ($validated['questions'] as $q) {
             $questionData = [
@@ -235,7 +232,7 @@ class QuizController extends Controller
     public function update(Request $request, string $topic, string $difficulty)
     {
         $validated = $request->validate([
-            'title' => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
             'topic' => 'required|string',
             'questions' => 'required|array|min:1',
             'questions.*.text' => 'required|string',
@@ -246,7 +243,7 @@ class QuizController extends Controller
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
         $oldTitle = $request->query('title');
-        $newTitle = trim($request->input('title', ''));
+        $newTitle = trim($validated['title']);
 
         // Target delete query for existing questions in this specific quiz set
         $deleteQuery = Question::where('topic', $topic)->where('difficulty', $difficulty);
@@ -420,7 +417,7 @@ class QuizController extends Controller
     public function saveSelected(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
             'topic' => 'required|string',
             'difficulty' => 'required|string',
             'questions' => 'required|string', // JSON string
@@ -429,10 +426,7 @@ class QuizController extends Controller
         $selectedQuestions = json_decode($validated['questions'], true);
 
         $hasTitleCol = \Illuminate\Support\Facades\Schema::hasColumn('questions', 'title');
-        $quizTitle = trim($request->input('title', ''));
-        if (empty($quizTitle)) {
-            $quizTitle = $validated['topic'] . ' (' . ucfirst($validated['difficulty']) . ' Quiz)';
-        }
+        $quizTitle = trim($validated['title']);
 
         if (is_array($selectedQuestions)) {
             foreach ($selectedQuestions as $q) {

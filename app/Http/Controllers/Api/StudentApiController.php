@@ -123,7 +123,7 @@ class StudentApiController extends Controller
                 'updated_at'      => $p->updated_at->toIso8601String(),
                 'quiz'            => [
                     'id'         => $p->id,
-                    'title'      => !empty($p->title) ? $p->title : (($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')'),
+                    'title'      => !empty($p->title) ? $p->title : ($p->topic ?? 'General'),
                     'difficulty' => $p->difficulty ?? 'easy',
                     'teacher'    => [
                         'id'   => $classTeacher?->id,
@@ -623,7 +623,7 @@ class StudentApiController extends Controller
                 'type'            => 'Quiz',
                 'student_id'      => $p->student_id,
                 'topic'           => $p->topic ?? 'General',
-                'title'           => !empty($p->title) ? $p->title : (($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')'),
+                'title'           => !empty($p->title) ? $p->title : ($p->topic ?? 'General'),
                 'difficulty'      => $p->difficulty ?? 'easy',
                 'score'           => $p->score,
                 'status'          => $p->status,
@@ -634,7 +634,7 @@ class StudentApiController extends Controller
                 'updated_at'      => $p->updated_at->toIso8601String(),
                 'quiz'            => [
                     'id'         => $p->id,
-                    'title'      => !empty($p->title) ? $p->title : (($p->topic ?? 'General') . ' (' . ucfirst($p->difficulty ?? 'easy') . ')'),
+                    'title'      => !empty($p->title) ? $p->title : ($p->topic ?? 'General'),
                     'difficulty' => $p->difficulty ?? 'easy',
                     'teacher'    => [
                         'id'   => $classTeacher?->id,
@@ -1243,7 +1243,7 @@ class StudentApiController extends Controller
             'teacher_notes'   => $progress->teacher_notes,
             'quiz'            => [
                 'id'         => $progress->id,
-                'title'      => !empty($progress->title) ? $progress->title : (($progress->topic ?? 'General') . ' (' . ucfirst($progress->difficulty ?? 'easy') . ')'),
+                'title'      => !empty($progress->title) ? $progress->title : ($progress->topic ?? 'General'),
                 'difficulty' => $progress->difficulty,
                 'teacher'    => $classTeacher ? $classTeacher->only(['id', 'name']) : ['id' => null, 'name' => $teacherName],
                 'questions'  => $questions->map(fn($q) => [

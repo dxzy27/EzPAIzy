@@ -24,7 +24,7 @@ class TeacherController extends Controller
                 $quiz = new \stdClass();
                 $quiz->topic = $q->topic;
                 $quiz->difficulty = $q->difficulty;
-                $quiz->title = $q->topic . ' (' . ucfirst($q->difficulty) . ')';
+                $quiz->title = $q->title ?? $q->topic;
                 $quiz->questions_count = $q->questions_count;
                 $quiz->created_at = \Carbon\Carbon::parse($q->latest_update);
                 $quiz->updated_at = \Carbon\Carbon::parse($q->latest_update);

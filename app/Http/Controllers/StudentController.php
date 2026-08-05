@@ -62,7 +62,7 @@ class StudentController extends Controller
                 $quiz = new \stdClass();
                 $quiz->topic = $q->topic;
                 $quiz->difficulty = $q->difficulty;
-                $quiz->title = $q->topic . ' (' . ucfirst($q->difficulty) . ')';
+                $quiz->title = $q->title ?? $q->topic;
                 $quiz->created_at = now();
                 $quiz->teacher = $classTeacher;
                 return $quiz;

@@ -33,8 +33,8 @@
                         @csrf
                         
                         <div class="mb-4">
-                            <label for="title" class="form-label fw-bold">Quiz Title (Optional)</label>
-                            <input type="text" class="form-control form-control-lg fw-semibold" id="title" name="title" placeholder="Enter Quiz Title" style="border-radius: 10px; font-size: 1.05rem;">
+                            <label for="title" class="form-label fw-bold">Quiz Title</label>
+                            <input type="text" class="form-control form-control-lg fw-semibold" id="title" name="title" placeholder="Enter Quiz Title" required style="border-radius: 10px; font-size: 1.05rem;">
                         </div>
 
                         <div class="mb-4">
