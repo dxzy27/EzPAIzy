@@ -33,13 +33,22 @@ class ProfileController extends Controller
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $validated = $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
-            'class_name' => 'nullable|string|exists:school_classes,name',
-        ]);
+        ];
+
+        if ($user->isTeacher()) {
+            $rules['class_name'] = 'nullable|string|exists:school_classes,name';
+        }
+
+        $validated = $request->validate($rules);
+
+        if (!$user->isTeacher()) {
+            unset($validated['class_name']);
+        }
 
         $user->update($validated);
 

@@ -67,6 +67,7 @@
                             @enderror
                         </div>
 
+                        @if($user->isTeacher())
                         <div class="mb-3">
                             <label for="class_name" class="form-label">Class</label>
                             <select id="class_name" class="form-select @error('class_name') is-invalid @enderror" name="class_name">
@@ -79,6 +80,7 @@
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
+                        @endif
 
 
 
