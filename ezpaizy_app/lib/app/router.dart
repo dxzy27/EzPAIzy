@@ -171,10 +171,10 @@ class ScaffoldWithNav extends StatelessWidget {
 
   int _selectedIndex(BuildContext context) {
     final loc = GoRouterState.of(context).matchedLocation;
-    if (loc.startsWith('/quizzes') || loc.startsWith('/quiz')) return 1;
+    if (loc.startsWith('/daily-doa')) return 1;
     if (loc.startsWith('/flashcards')) return 2;
     if (loc.startsWith('/contents')) return 3;
-    if (loc.startsWith('/daily-doa')) return 4;
+    if (loc.startsWith('/quizzes') || loc.startsWith('/quiz')) return 4;
     if (loc.startsWith('/learning-style')) return 5;
     return 0; // Default to Home/Dashboard
   }
@@ -196,7 +196,7 @@ class ScaffoldWithNav extends StatelessWidget {
               context.go('/dashboard');
               break;
             case 1:
-              context.go('/quizzes');
+              context.go('/daily-doa');
               break;
             case 2:
               context.go('/flashcards');
@@ -205,7 +205,7 @@ class ScaffoldWithNav extends StatelessWidget {
               context.go('/contents');
               break;
             case 4:
-              context.go('/daily-doa');
+              context.go('/quizzes');
               break;
             case 5:
               context.go('/learning-style');
@@ -219,9 +219,9 @@ class ScaffoldWithNav extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.edit_note_outlined),
-            activeIcon: Icon(Icons.edit_note),
-            label: 'Quizzes',
+            icon: Icon(Icons.nights_stay_outlined),
+            activeIcon: Icon(Icons.nights_stay),
+            label: 'Daily Doa',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment_outlined),
@@ -231,12 +231,12 @@ class ScaffoldWithNav extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.article_outlined),
             activeIcon: Icon(Icons.article),
-            label: 'Materials',
+            label: 'Other Materials',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.nights_stay_outlined),
-            activeIcon: Icon(Icons.nights_stay),
-            label: 'Daily Doa',
+            icon: Icon(Icons.edit_note_outlined),
+            activeIcon: Icon(Icons.edit_note),
+            label: 'Quizzes',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.psychology_outlined),
