@@ -28,6 +28,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
   // answers: index -> selected option key (e.g. 'a', 'b') or text for essay
   final Map<int, dynamic> answers = {};
   int currentPage = 0;
+  final TextEditingController _essayController = TextEditingController();
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
   @override
   void dispose() {
     TtsService.stop();
+    _essayController.dispose();
     super.dispose();
   }
 
@@ -234,7 +236,10 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                               onPressed: currentPage > 0
                                   ? () {
                                       TtsService.stop();
-                                      setState(() => currentPage--);
+                                      setState(() {
+                                        currentPage--;
+                                        _essayController.text = (answers[currentPage] ?? '').toString();
+                                      });
                                     }
                                   : null,
                               style: OutlinedButton.styleFrom(
@@ -256,7 +261,10 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                                   : (currentPage < questions.length - 1
                                       ? () {
                                           TtsService.stop();
-                                          setState(() => currentPage++);
+                                          setState(() {
+                                            currentPage++;
+                                            _essayController.text = (answers[currentPage] ?? '').toString();
+                                          });
                                         }
                                       : () {
                                           TtsService.stop();
@@ -442,6 +450,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
           })
         else
           TextField(
+            controller: _essayController,
             maxLines: 4,
             onChanged: (val) => answers[index] = val,
             style: const TextStyle(fontFamily: 'Outfit'),
