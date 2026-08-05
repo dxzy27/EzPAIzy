@@ -434,6 +434,7 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.white.withOpacity(0.08),
         elevation: 0,
         scrolledUnderElevation: 0,
+        centerTitle: false,
         titleSpacing: 24,
         shape: Border(
           bottom: BorderSide(
@@ -459,7 +460,7 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.only(right: 24.0),
             child: Center(
               child: ElevatedButton(
-                onPressed: () => context.push('/register'),
+                onPressed: () => context.go('/register'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white.withOpacity(0.6),
                   foregroundColor: const Color(0xFF1E293B),
@@ -490,9 +491,9 @@ class _LoginScreenState extends State<LoginScreen> {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/bg1.png'),
+            image: AssetImage('assets/images/login_bg.png'),
             fit: BoxFit.cover,
-            opacity: 0.12, // Subtle Islamic geometric watermark pattern matching web
+            opacity: 0.70,
           ),
           gradient: LinearGradient(
             colors: [

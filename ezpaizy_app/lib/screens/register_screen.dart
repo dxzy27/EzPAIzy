@@ -553,6 +553,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: Colors.white.withOpacity(0.08),
         elevation: 0,
         scrolledUnderElevation: 0,
+        centerTitle: false, // Left-aligned brand logo matching web
         titleSpacing: 24,
         shape: Border(
           bottom: BorderSide(
@@ -609,9 +610,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/bg1.png'),
+            image: AssetImage('assets/images/signup_bg.png'), // Match web signup background
             fit: BoxFit.cover,
-            opacity: 0.12, // Subtle Islamic geometric watermark pattern matching web
+            opacity: 0.70, // 0.70 overlay opacity matching web
           ),
           gradient: LinearGradient(
             colors: [
