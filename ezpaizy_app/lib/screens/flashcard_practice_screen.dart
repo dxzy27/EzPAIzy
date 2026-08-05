@@ -334,7 +334,8 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
         child: Container(
           color: const Color(0xFFF1F5F9).withOpacity(0.15),
           child: SafeArea(
-            child: Center(
+            child: Align(
+              alignment: Alignment.topCenter,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 800),
                 child: SingleChildScrollView(
