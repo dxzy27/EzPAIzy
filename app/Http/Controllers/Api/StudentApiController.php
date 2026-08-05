@@ -597,11 +597,37 @@ class StudentApiController extends Controller
 
 
     /**
-     * Single flashcard set with cards.
+     * Single flashcard set with cards and due cards status for authenticated user.
      */
-    public function flashcardDetail(FlashcardSet $set)
+    public function flashcardDetail(Request $request, FlashcardSet $set)
     {
-        return response()->json($set->load('flashcards'));
+        $userId = $request->user()->id;
+        $now = now();
+        $allCards = $set->flashcards()->get();
+
+        $progressMap = FlashcardProgress::where('user_id', $userId)
+            ->whereIn('flashcard_id', $allCards->pluck('id'))
+            ->get()
+            ->keyBy('flashcard_id');
+
+        $dueCards = collect();
+
+        foreach ($allCards as $card) {
+            $prog = $progressMap->get($card->id);
+            $card->progress = $prog;
+            $card->status = $prog ? $prog->status : 'new';
+            $isDue = !$prog || ($prog->next_review_date && $prog->next_review_date <= $now);
+            $card->is_due = $isDue;
+            if ($isDue) {
+                $dueCards->push($card);
+            }
+        }
+
+        $set->setRelation('flashcards', $allCards);
+        $result = $set->toArray();
+        $result['due_cards'] = $dueCards->values()->toArray();
+
+        return response()->json($result);
     }
 
     /**

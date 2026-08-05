@@ -51,9 +51,18 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
   Future<void> _load() async {
     try {
       final d = await ApiService.getFlashcardDetail(widget.setId);
+      final rawDue = d['due_cards'] as List?;
+      final rawCards = d['flashcards'] as List?;
+
       setState(() {
         set = d;
-        allCards = List<dynamic>.from(d['flashcards'] ?? []);
+        if (rawDue != null && rawDue.isNotEmpty) {
+          allCards = List<dynamic>.from(rawDue);
+        } else if (rawDue != null && rawDue.isEmpty && rawCards != null && rawCards.isNotEmpty) {
+          allCards = [];
+        } else {
+          allCards = List<dynamic>.from(rawCards ?? []);
+        }
         loading = false;
       });
     } catch (_) {
