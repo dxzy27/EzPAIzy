@@ -97,21 +97,33 @@ class AppRouter {
               ),
               GoRoute(
                 path: '/flashcards/:id',
-                builder: (_, state) => FlashcardPracticeScreen(
-                  setId: int.parse(state.pathParameters['id']!),
-                ),
+                builder: (_, state) {
+                  final index = int.tryParse(state.uri.queryParameters['index'] ?? '0') ?? 0;
+                  return FlashcardPracticeScreen(
+                    setId: int.parse(state.pathParameters['id']!),
+                    initialIndex: index,
+                  );
+                },
               ),
               GoRoute(
                 path: '/flashcards/set/:id',
-                builder: (_, state) => FlashcardPracticeScreen(
-                  setId: int.parse(state.pathParameters['id']!),
-                ),
+                builder: (_, state) {
+                  final index = int.tryParse(state.uri.queryParameters['index'] ?? '0') ?? 0;
+                  return FlashcardPracticeScreen(
+                    setId: int.parse(state.pathParameters['id']!),
+                    initialIndex: index,
+                  );
+                },
               ),
               GoRoute(
                 path: '/flashcards/:id/study',
-                builder: (_, state) => FlashcardStudyScreen(
-                  setId: int.parse(state.pathParameters['id']!),
-                ),
+                builder: (_, state) {
+                  final index = int.tryParse(state.uri.queryParameters['index'] ?? '0') ?? 0;
+                  return FlashcardStudyScreen(
+                    setId: int.parse(state.pathParameters['id']!),
+                    initialIndex: index,
+                  );
+                },
               ),
               GoRoute(
                 path: '/progress',

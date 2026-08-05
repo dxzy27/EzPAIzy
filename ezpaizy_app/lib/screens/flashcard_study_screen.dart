@@ -10,7 +10,8 @@ import '../widgets/study_notepad_widget.dart';
 
 class FlashcardStudyScreen extends StatefulWidget {
   final int setId;
-  const FlashcardStudyScreen({super.key, required this.setId});
+  final int initialIndex;
+  const FlashcardStudyScreen({super.key, required this.setId, this.initialIndex = 0});
 
   @override
   State<FlashcardStudyScreen> createState() => _FlashcardStudyScreenState();
@@ -201,6 +202,11 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
       setState(() {
         set = d['flashcard_set'];
         _cards = List<dynamic>.from(d['due_cards'] ?? []);
+        if (widget.initialIndex >= 0 && widget.initialIndex < _cards.length) {
+          currentIndex = widget.initialIndex;
+        } else {
+          currentIndex = 0;
+        }
         loading = false;
         _initCardItems();
       });
@@ -840,7 +846,7 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
             child: InkWell(
               onTap: () {
                 if (isStudyMode) {
-                  context.go('/flashcards/${widget.setId}');
+                  context.go('/flashcards/${widget.setId}?index=$currentIndex');
                 }
               },
               borderRadius: const BorderRadius.only(

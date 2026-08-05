@@ -10,7 +10,8 @@ import '../widgets/visual_highlight_text.dart';
 
 class FlashcardPracticeScreen extends StatefulWidget {
   final int setId;
-  const FlashcardPracticeScreen({super.key, required this.setId});
+  final int initialIndex;
+  const FlashcardPracticeScreen({super.key, required this.setId, this.initialIndex = 0});
 
   @override
   State<FlashcardPracticeScreen> createState() => _FlashcardPracticeScreenState();
@@ -55,6 +56,11 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
       setState(() {
         set = d;
         allCards = List<dynamic>.from(d['flashcards'] ?? []);
+        if (widget.initialIndex >= 0 && widget.initialIndex < allCards.length) {
+          currentIndex = widget.initialIndex;
+        } else {
+          currentIndex = 0;
+        }
         loading = false;
       });
     } catch (_) {
@@ -728,7 +734,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
             child: InkWell(
               onTap: () {
                 if (!isStudyMode) {
-                  context.go('/flashcards/${widget.setId}/study');
+                  context.go('/flashcards/${widget.setId}/study?index=$currentIndex');
                 }
               },
               borderRadius: const BorderRadius.only(
