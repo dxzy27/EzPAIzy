@@ -103,6 +103,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
       );
     }
     final q = questions[currentPage];
+    final auth = context.read<AuthProvider>();
     final userStyle = (auth.user?['learning_style'] ?? '').toString().toLowerCase();
     final isReadWrite = userStyle == 'read_write';
     final isKinesthetic = userStyle == 'kinesthetic' || userStyle == 'kinaesthetic';

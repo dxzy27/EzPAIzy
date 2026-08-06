@@ -211,6 +211,7 @@ class _FlashcardPracticeScreenState extends State<FlashcardPracticeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
     final userStyle = auth.user?['learning_style']?.toString().toLowerCase() ?? '';
     final isKinesthetic = userStyle == 'kinesthetic' || userStyle == 'kinaesthetic';
     final isReadWrite = userStyle == 'read_write';
