@@ -353,8 +353,9 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
   @override
   Widget build(BuildContext context) {
     final auth = context.read<AuthProvider>();
-    final isReadWrite = auth.user?['learning_style'] == 'read_write';
-    final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
+    final userStyle = (auth.user?['learning_style'] ?? '').toString().toLowerCase();
+    final isReadWrite = userStyle == 'read_write';
+    final isKinesthetic = userStyle == 'kinesthetic' || userStyle == 'kinaesthetic';
 
     if (!isKinesthetic) {
       return Scaffold(
@@ -538,6 +539,35 @@ class _FlashcardStudyScreenState extends State<FlashcardStudyScreen>
         ),
       ),
     );
+
+    if (isKinesthetic) {
+      cardWidget = Dismissible(
+        key: ValueKey<int>(card['id']),
+        direction: DismissDirection.horizontal,
+        onDismissed: (direction) {
+          if (direction == DismissDirection.endToStart) {
+            // Swiped Left: Still learning (1)
+            _submitReview(1);
+          } else {
+            // Swiped Right: Know (5)
+            _submitReview(5);
+          }
+        },
+        background: Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: 20),
+          color: Colors.green.withOpacity(0.1),
+          child: const Icon(Icons.check, color: Colors.green, size: 50),
+        ),
+        secondaryBackground: Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: 20),
+          color: Colors.red.withOpacity(0.1),
+          child: const Icon(Icons.close, color: Colors.red, size: 50),
+        ),
+        child: cardWidget,
+      );
+    }
 
 
 

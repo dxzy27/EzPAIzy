@@ -1434,6 +1434,7 @@ class StudentApiController extends Controller
                 'class_name' => $user->class_name,
                 'address' => $user->address,
                 'role' => $user->role ?? 'student',
+                'learning_style' => $user->learning_style,
                 'created_at' => $user->created_at ? $user->created_at->format('M d, Y') : null,
                 'avatar_color' => $user->avatar_color ?? '#7C3AED',
                 'stats' => [

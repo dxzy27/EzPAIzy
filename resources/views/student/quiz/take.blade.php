@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBar.style.width = `${progressPct}%`;
         progressText.innerText = `Question ${index + 1} of ${questions.length}`;
 
-        const isKinestheticEasy = false;
+        const isKinestheticEasy = (learningStyle.toLowerCase() === 'kinesthetic' || learningStyle.toLowerCase() === 'kinaesthetic');
         let inputHtml = '';
 
         if (type === 'mcq' && q.options) {

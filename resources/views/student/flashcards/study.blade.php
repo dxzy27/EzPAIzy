@@ -1005,7 +1005,7 @@
         };
 
         // ── SWIPE GESTURES FOR KINAESTHETIC LEARNERS ─────────────────────────
-        @if(auth()->user()?->learning_style === 'kinesthetic')
+        @if(in_array(auth()->user()?->learning_style, ['kinesthetic', 'kinaesthetic']))
         let startX = 0;
         let startY = 0;
         let isDragging = false;
@@ -1126,7 +1126,7 @@
         const originalRender = render;
         render = function() {
             originalRender();
-            @if(auth()->user()?->learning_style === 'kinesthetic')
+            @if(in_array(auth()->user()?->learning_style, ['kinesthetic', 'kinaesthetic']))
             initSwipeGestures();
             @endif
         };

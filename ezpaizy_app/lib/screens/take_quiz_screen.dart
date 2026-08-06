@@ -103,9 +103,9 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
       );
     }
     final q = questions[currentPage];
-    final auth = context.read<AuthProvider>();
-    final isReadWrite = auth.user?['learning_style'] == 'read_write';
-    final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
+    final userStyle = (auth.user?['learning_style'] ?? '').toString().toLowerCase();
+    final isReadWrite = userStyle == 'read_write';
+    final isKinesthetic = userStyle == 'kinesthetic' || userStyle == 'kinaesthetic';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9), // Soft grey background matching web
@@ -477,7 +477,8 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
         if (options != null && options.isNotEmpty)
           ...options.entries.map((entry) {
             final selected = answers[index] == entry.key;
-            final isKinesthetic = auth.user?['learning_style'] == 'kinesthetic';
+            final userStyle = (auth.user?['learning_style'] ?? '').toString().toLowerCase();
+            final isKinesthetic = userStyle == 'kinesthetic' || userStyle == 'kinaesthetic';
 
             final optionCard = Container(
               margin: const EdgeInsets.only(bottom: 12),
