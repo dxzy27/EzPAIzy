@@ -599,7 +599,7 @@ class QuizController extends Controller
      */
     private function callAI($prompt, $model = 'openai/gpt-4o-mini', $temp = 0.7)
     {
-        $key = env('OPENROUTER_API_KEY');
+        $key = config('services.openrouter.key');
         
         if (empty($key)) {
             return ['error' => 'API Key is not set in the .env file.'];
