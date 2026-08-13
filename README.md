@@ -281,36 +281,24 @@ The mobile app is located in the `ezpaizy_app/` folder. It connects to the same 
 
 ## Environment Variables
 
-These are the key values you need to set in your `.env` file:
+Copy `.env.example` to `.env` and fill in the values for your environment. Never commit your `.env` file or share its contents — it contains secrets that must be kept private.
 
-| Key | Description |
-|-----|-------------|
-| `APP_NAME` | The name of the application |
-| `APP_URL` | The full URL of your local or production server |
+The keys you need to obtain and fill in are:
+
+| Key | Where to get it |
+|-----|-----------------|
+| `APP_NAME` | Set to `EzPAIzy` or whatever name you prefer |
+| `APP_URL` | Your local or production server URL |
 | `DB_DATABASE` | Your MySQL database name |
 | `DB_USERNAME` | Your MySQL username |
 | `DB_PASSWORD` | Your MySQL password |
-| `OPENROUTER_API_KEY` | Your OpenRouter API key — used for both Gemini and ChatGPT quiz generation |
-| `MAIL_HOST` | Set to `smtp.sendgrid.net` |
-| `MAIL_USERNAME` | Set to `apikey` (literal string, not your SendGrid username) |
-| `MAIL_PASSWORD` | Your SendGrid API key (starts with `SG.`) |
-| `MAIL_FROM_ADDRESS` | The sender email address shown to recipients |
+| `OPENROUTER_API_KEY` | Sign up at [openrouter.ai](https://openrouter.ai) and create an API key |
+| `MAIL_HOST` | Already set to `smtp.sendgrid.net` in `.env.example` |
+| `MAIL_USERNAME` | Already set to `apikey` in `.env.example` — do not change this |
+| `MAIL_PASSWORD` | Your SendGrid API key — get one at [sendgrid.com](https://sendgrid.com) |
+| `MAIL_FROM_ADDRESS` | The sender address your emails will come from |
 
-**OpenRouter** is a single API that gives you access to many AI models — both Gemini and ChatGPT — with one key. To get your key, sign up at [openrouter.ai](https://openrouter.ai) and create an API key. Add it to your `.env` file:
-
-```
-OPENROUTER_API_KEY=your_key_here
-```
-
-**SendGrid** is used to send emails from the app. To set it up, create a free account at [sendgrid.com](https://sendgrid.com), generate an API key, and add it as your `MAIL_PASSWORD` in `.env`:
-
-```
-MAIL_HOST=smtp.sendgrid.net
-MAIL_PORT=2525
-MAIL_USERNAME=apikey
-MAIL_PASSWORD=SG.your_sendgrid_key_here
-MAIL_ENCRYPTION=tls
-```
+> **Important:** Keep all API keys and passwords out of version control. The `.gitignore` already excludes `.env` by default — make sure it stays that way.
 
 ---
 
