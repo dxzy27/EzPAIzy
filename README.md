@@ -14,7 +14,6 @@ EzPAIzy is a web-based learning platform built for Islamic education. It combine
   - [Teacher](#teacher)
   - [Student](#student)
 - [Mobile App (Flutter)](#mobile-app-flutter)
-- [Environment Variables](#environment-variables)
 - [Running Tests](#running-tests)
 
 ---
@@ -277,30 +276,6 @@ The mobile app is located in the `ezpaizy_app/` folder. It connects to the same 
 - Audio playback and text-to-speech for Auditory learners
 - Embedded PDF viewer for reading materials
 
----
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and fill in the values for your environment. Never commit your `.env` file or share its contents — it contains secrets that must be kept private.
-
-The keys you need to obtain and fill in are:
-
-| Key | Where to get it |
-|-----|-----------------|
-| `APP_NAME` | Set to `EzPAIzy` or whatever name you prefer |
-| `APP_URL` | Your local or production server URL |
-| `DB_DATABASE` | Your MySQL database name |
-| `DB_USERNAME` | Your MySQL username |
-| `DB_PASSWORD` | Your MySQL password |
-| `OPENROUTER_API_KEY` | Sign up at [openrouter.ai](https://openrouter.ai) and create an API key |
-| `MAIL_HOST` | Already set to `smtp.sendgrid.net` in `.env.example` |
-| `MAIL_USERNAME` | Already set to `apikey` in `.env.example` — do not change this |
-| `MAIL_PASSWORD` | Your SendGrid API key — get one at [sendgrid.com](https://sendgrid.com) |
-| `MAIL_FROM_ADDRESS` | The sender address your emails will come from |
-
-> **Important:** Keep all API keys and passwords out of version control. The `.gitignore` already excludes `.env` by default — make sure it stays that way.
-
----
 
 ## Running Tests
 
