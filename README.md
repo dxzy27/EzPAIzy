@@ -1,66 +1,324 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EzPAIzy
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+EzPAIzy is a web-based learning platform built for Islamic education. It combines quizzes, flashcards, personalised learning content, and spiritual guidance into one place. The platform is built with Laravel (backend/web) and Flutter (mobile app), and it supports three types of users — Admin, Teacher, and Student.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Table of Contents
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [What is EzPAIzy?](#what-is-ezpaizy)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [User Roles & How to Use](#user-roles--how-to-use)
+  - [Admin](#admin)
+  - [Teacher](#teacher)
+  - [Student](#student)
+- [Mobile App (Flutter)](#mobile-app-flutter)
+- [Environment Variables](#environment-variables)
+- [Running Tests](#running-tests)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## What is EzPAIzy?
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+EzPAIzy is designed to make Islamic learning easier for students and teachers. Here is what the platform does:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- Teachers upload learning materials, create quizzes, and build flashcard sets for their class.
+- Students take quizzes, study flashcards, save notes, and track their progress over time.
+- An expert system detects each student's learning style (Visual, Auditory, Read/Write, Kinesthetic) and adapts content recommendations accordingly.
+- A daily Quranic verse is shown on the student dashboard, pulled from the Al-Quran Cloud API and cached for performance.
+- Admins manage all user accounts and school classes from a control panel.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Tech Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Backend / Web**
+- PHP 8.1+
+- Laravel 10
+- MySQL
+- Laravel Sanctum (API authentication)
+- Vite (asset bundling)
 
-### Premium Partners
+**Mobile App**
+- Flutter (Dart)
+- Targets Android and iOS
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+**External Integrations**
+- Google Gemini 1.5 Flash — AI-powered quiz generation
+- Al-Quran Cloud API — Daily Quranic verse
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Installation
 
-## Code of Conduct
+### Requirements
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- PHP >= 8.1
+- Composer
+- Node.js & npm
+- MySQL
+- Laragon (recommended for local development on Windows) or any LAMP/WAMP stack
 
-## Security Vulnerabilities
+### Steps
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/dxzy27/EzPAIzy.git
+   cd EzPAIzy
+   ```
+
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Install JavaScript dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Copy the environment file and set it up**
+   ```bash
+   cp .env.example .env
+   ```
+   Open `.env` and fill in your database credentials and API keys (see [Environment Variables](#environment-variables)).
+
+5. **Generate the application key**
+   ```bash
+   php artisan key:generate
+   ```
+
+6. **Run database migrations and seeders**
+   ```bash
+   php artisan migrate --seed
+   ```
+
+7. **Link the storage folder**
+   ```bash
+   php artisan storage:link
+   ```
+
+8. **Build frontend assets**
+   ```bash
+   npm run dev
+   ```
+   Or for production:
+   ```bash
+   npm run build
+   ```
+
+9. **Start the server**
+
+   If you are using Laragon, your project should already be served at `http://ezpaizy.test`. Otherwise:
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## User Roles & How to Use
+
+There are three user roles in EzPAIzy. Each one has a different set of features and a different experience when they log in.
+
+---
+
+### Admin
+
+The Admin is responsible for managing the platform — creating accounts, organising classes, and moderating content. Admins do not interact with quizzes or learning materials as a learner.
+
+**How to access:**
+Log in with an account that has the `admin` role. You will be taken to the Admin dashboard.
+
+**What Admins can do:**
+
+**User Management**
+- View all teachers and students on the platform.
+- Search users by name or email, and filter by role.
+- Create new teacher or student accounts manually, assigning them to a class.
+- Edit or delete existing user accounts.
+- Reset passwords for any user.
+
+**Class Management**
+- Create and manage school classes.
+- Assign teachers and students to specific classes.
+
+**Content Moderation**
+- Review flagged or submitted content.
+- Approve or reject content if moderation is enabled.
+
+> **Tip:** If you need to create multiple users, use the user creation form and submit it for each account. There is no bulk import in the current version.
+
+---
+
+### Teacher
+
+Teachers are the content creators on the platform. They manage everything their students will study — lesson materials, quiz questions, and flashcard sets.
+
+**How to access:**
+Log in with an account that has the `teacher` role. You will land on the Teacher dashboard, which shows a summary of your recent content, quizzes, and how many students are in your class.
+
+**What Teachers can do:**
+
+**Learning Materials**
+- Upload lesson content (text, PDFs, or other files) and organise it under topics.
+- Browse and manage all uploaded materials in one place.
+- Edit or delete any material at any time.
+
+**Quizzes**
+- Create quizzes manually by entering questions, answer options, and the correct answer.
+- Use the **AI Quiz Generator** — type in a topic or upload a PDF/text file, and the system will use Google Gemini to generate quiz questions automatically. You can review and edit them before saving.
+- Organise quizzes by topic and difficulty level.
+- Activate or deactivate quizzes so students can only see what is ready.
+
+**Flashcard Sets**
+- Create sets of flashcards, each with a term and a definition.
+- Organise flashcard sets under topics.
+- Students in your class will see your flashcard sets when they study.
+
+**Topics**
+- Create and manage topics for both materials and quizzes.
+- Topics act as folders to keep everything organised.
+
+**Viewing Student Progress**
+- See how many students have completed quizzes and their scores.
+- Get an overview of class engagement from the dashboard.
+
+> **Tip:** The AI quiz generator works best with a specific topic or a focused document. Very broad prompts tend to produce generic questions.
+
+---
+
+### Student
+
+Students are the learners on the platform. Everything they see is tailored to what their teacher has set up for their class.
+
+**How to access:**
+Log in with an account that has the `student` role. You will see the Student dashboard, which shows your active quizzes, a daily Quranic verse, and a prompt to complete the learning style diagnosis if you have not done it yet.
+
+**What Students can do:**
+
+**Learning Style Diagnosis**
+- When you first log in, you will be prompted to complete a short questionnaire.
+- The expert system will analyse your answers and determine your dominant learning style: Visual, Auditory, Read/Write, or Kinesthetic.
+- Your result is saved to your profile and used to personalise which type of content the app highlights for you.
+- You can retake the diagnosis later from your profile page.
+
+**Quizzes**
+- See all quizzes your teacher has activated for your class.
+- Start any quiz and answer multiple-choice questions.
+- Quizzes are organised by topic and difficulty (Easy, Medium, Hard).
+- Once you finish, your score and progress are saved automatically.
+- You can see your scores and quiz history from the Progress section.
+
+**Flashcards**
+- Study flashcard sets that your teacher has created.
+- Swipe through cards — right if you know it, left if you do not.
+- Your progress through each set is saved, so you can pick up where you left off.
+
+**Learning Materials**
+- Browse lesson materials uploaded by your teacher, organised by topic.
+- View text-based content directly in the browser.
+- Open PDFs using the built-in PDF viewer.
+- Play audio content directly from the page.
+
+**Notes**
+- Write and save personal notes while studying.
+- Access your notes at any time from the Notes section.
+- Edit or delete notes whenever you need to.
+
+**Favourites**
+- Mark any content as a favourite for quick access later.
+
+**Progress Tracking**
+- View your quiz scores and completion status for each topic.
+- See a chart of your overall progress over time.
+
+**Daily Quranic Verse**
+- Every day, a different verse from the Quran is shown on your dashboard.
+- It includes the Arabic text, an English translation, and an audio recitation you can listen to.
+- The verse is the same for every student on that day.
+
+> **Tip:** Complete the learning style diagnosis early. The app will use your result to sort and highlight the most suitable content for your learning type.
+
+---
+
+## Mobile App (Flutter)
+
+The mobile app is located in the `ezpaizy_app/` folder. It connects to the same Laravel backend via a REST API.
+
+### Setup
+
+1. Make sure Flutter is installed. You can check with:
+   ```bash
+   flutter doctor
+   ```
+
+2. Navigate to the app folder:
+   ```bash
+   cd ezpaizy_app
+   ```
+
+3. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+
+4. Set the backend URL inside the app. Look for the base URL constant in the `lib/` folder and update it to point to your Laravel server (e.g., `http://10.0.2.2:8000` for an Android emulator, or your local IP address for a real device).
+
+5. Run the app:
+   ```bash
+   flutter run
+   ```
+
+### What the Mobile App Includes
+
+- Login and registration
+- Learning style quiz (expert system diagnosis)
+- Flashcard study with swipe-to-progress
+- Progress charts
+- Audio playback and text-to-speech for Auditory learners
+- Embedded PDF viewer for reading materials
+- Daily Quranic verse display
+
+---
+
+## Environment Variables
+
+These are the key values you need to set in your `.env` file:
+
+| Key | Description |
+|-----|-------------|
+| `APP_NAME` | The name of the application |
+| `APP_URL` | The full URL of your local or production server |
+| `DB_DATABASE` | Your MySQL database name |
+| `DB_USERNAME` | Your MySQL username |
+| `DB_PASSWORD` | Your MySQL password |
+| `GEMINI_API_KEY` | Your Google Gemini API key for AI quiz generation |
+
+To get a Gemini API key, visit [Google AI Studio](https://aistudio.google.com/app/apikey) and create a free key. Add it to your `.env` file like this:
+
+```
+GEMINI_API_KEY=your_key_here
+```
+
+---
+
+## Running Tests
+
+The project includes PHPUnit feature tests. To run them all:
+
+```bash
+php artisan test
+```
+
+To run a specific test file:
+
+```bash
+php artisan test --filter FlashcardProgressPreservedTest
+```
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is for educational use.
